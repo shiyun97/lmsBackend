@@ -101,8 +101,30 @@ public class Module implements Serializable {
 	this.grade = grade;
     }
 **/
-    public Module(){
-        
+	
+    @Override
+    public int hashCode() {
+        int hash = 0;
+        hash += (code != null ? code.hashCode() : 0);
+        return hash;
+    }
+
+    @Override
+    public boolean equals(Object object) {
+        // TODO: Warning - this method won't work in the case the code fields are not set
+        if (!(object instanceof module)) {
+            return false;
+        }
+        module other = (module) object;
+        if ((this.code == null && other.code != null) || (this.code != null && !this.code.equals(other.code))) {
+            return false;
+        }
+        return true;
+    }
+
+    @Override
+    public String toString() {
+        return "entity.module[ id=" + code + " ]";
     }
     
     public String getModuleId() {
@@ -264,30 +286,5 @@ public class Module implements Serializable {
     public void setClassGroupList(List<ClassGroupList> classGroupList) {
         this.classGroupList = classGroupList;
     }
-
-    /** * @Override
-    public int hashCode() {
-        int hash = 0;
-        hash += (code != null ? code.hashCode() : 0);
-        return hash;
-    }
-
-    @Override
-    public boolean equals(Object object) {
-        // TODO: Warning - this method won't work in the case the code fields are not set
-        if (!(object instanceof module)) {
-            return false;
-        }
-        module other = (module) object;
-        if ((this.code == null && other.code != null) || (this.code != null && !this.code.equals(other.code))) {
-            return false;
-        }
-        return true;
-    }
-
-    @Override
-    public String toString() {
-        return "entity.module[ id=" + code + " ]";
-    }**/
 
 }
