@@ -14,6 +14,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
+import javax.persistence.ManyToOne;
 
 /**
  *
@@ -22,11 +23,12 @@ import javax.persistence.OneToMany;
 @Entity
 public class ClassGroupList implements Serializable {
 
-    public ClassGroupList(String name, Timestamp startTs, Timestamp closeTs, List<ClassGroup> classGroup) {
+    public ClassGroupList(String name, Timestamp startTs, Timestamp closeTs, List<ClassGroup> classGroup, Module module) {
         this.name = name;
         this.startTs = startTs;
         this.closeTs = closeTs;
         this.classGroup = classGroup;
+        this.module = module;
     }
 
     private static final long serialVersionUID = 1L;
@@ -41,6 +43,8 @@ public class ClassGroupList implements Serializable {
     private Timestamp closeTs;
     @OneToMany(mappedBy = "classGroupList")
     private List<ClassGroup> classGroup;
+    @ManyToOne
+    private Module module;
     
     
     public Long getClassGroupListId() {
@@ -107,5 +111,13 @@ public class ClassGroupList implements Serializable {
     public void setClassGroup(List<ClassGroup> classGroup) {
         this.classGroup = classGroup;
     }
+    
+    public Module getModule() {
+        return module;
+    }
+
+    public void setModule(Module module) {
+        this.module = module;
+    }    
     
 }
