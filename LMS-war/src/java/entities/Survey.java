@@ -23,6 +23,17 @@ import javax.persistence.OneToMany;
 @Entity
 public class Survey implements Serializable {
 
+    public Survey(String title, String description, Timestamp createTs, Timestamp updateTs, Timestamp startDate, Timestamp endDate, List<Question> questionList, Module module) {
+        this.title = title;
+        this.description = description;
+        this.createTs = createTs;
+        this.updateTs = updateTs;
+        this.startDate = startDate;
+        this.endDate = endDate;
+        this.questionList = questionList;
+        this.module = module;
+    }
+
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -45,15 +56,6 @@ public class Survey implements Serializable {
     private Module module;
     
     
-    public Survey(String title, String description, Timestamp createTs, Timestamp updateTs, Timestamp startDate, Timestamp endDate){
-        this.title = title;
-        this.description = description;
-        this.createTs = createTs;
-        this.updateTs = updateTs;
-        this.startDate = startDate;
-        this.endDate = endDate;
-    }
-
     public Long getSurveyId() {
         return surveyId;
     }
@@ -135,12 +137,20 @@ public class Survey implements Serializable {
         this.endDate = endDate;
     }
 
-    public List<Question> getQuestion() {
-        return question;
+    public List<Question> getQuestionList() {
+        return questionList;
     }
 
-    public void setQuestion(List<Question> question) {
-        this.question = question;
+    public void setQuestionList(List<Question> questionList) {
+        this.questionList = questionList;
+    }
+
+    public Module getModule() {
+        return module;
+    }
+
+    public void setModule(Module module) {
+        this.module = module;
     }
     
 }

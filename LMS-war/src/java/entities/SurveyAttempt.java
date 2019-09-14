@@ -22,6 +22,15 @@ import javax.persistence.ManyToOne;
 @Entity
 public class SurveyAttempt implements Serializable {
 
+    public SurveyAttempt(Timestamp createTs, Timestamp updateTs, Timestamp submitTs, HashMap answers, Survey survey, User surveyTaker) {
+        this.createTs = createTs;
+        this.updateTs = updateTs;
+        this.submitTs = submitTs;
+        this.answers = answers;
+        this.survey = survey;
+        this.surveyTaker = surveyTaker;
+    }
+
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)

@@ -24,6 +24,16 @@ import javax.xml.bind.annotation.XmlRootElement;
 @XmlRootElement
 public class Annoucement implements Serializable {
 
+    public Annoucement(String title, String description, Timestamp createTs, Timestamp updateTs, Boolean systemWide, Module module, User owner) {
+        this.title = title;
+        this.description = description;
+        this.createTs = createTs;
+        this.updateTs = updateTs;
+        this.systemWide = systemWide;
+        this.module = module;
+        this.owner = owner;
+    }
+
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -106,14 +116,6 @@ public class Annoucement implements Serializable {
         this.description = description;
     }
 
-    public String getOwner() {
-        return owner;
-    }
-
-    public void setOwner(String owner) {
-        this.owner = owner;
-    }
-
     public Timestamp getCreateTs() {
         return createTs;
     }
@@ -144,6 +146,14 @@ public class Annoucement implements Serializable {
 
     public void setModule(Module module) {
         this.module = module;
+    }
+
+    public User getOwner() {
+        return owner;
+    }
+
+    public void setOwner(User owner) {
+        this.owner = owner;
     }
     
 }

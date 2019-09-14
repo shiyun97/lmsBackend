@@ -27,6 +27,13 @@ import javax.xml.bind.annotation.XmlRootElement;
 @XmlRootElement
 public class Consultation implements Serializable {
 
+    public Consultation(String title, String description, List<ConsultationTimeslot> consultationTimeslot, Module module) {
+        this.title = title;
+        this.description = description;
+        this.consultationTimeslot = consultationTimeslot;
+        this.module = module;
+    }
+
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -40,11 +47,6 @@ public class Consultation implements Serializable {
     @ManyToOne
     private Module module;
     
-    
-    public Consultation(String title, String description){
-        this.title = title;
-        this.description = description;
-    }
 
     public Long getConsultationId() {
         return consultationId;
@@ -101,6 +103,14 @@ public class Consultation implements Serializable {
 
     public void setConsultationTimeslot(List<ConsultationTimeslot> consultationTimeslot) {
         this.consultationTimeslot = consultationTimeslot;
+    }
+
+    public Module getModule() {
+        return module;
+    }
+
+    public void setModule(Module module) {
+        this.module = module;
     }
     
 }

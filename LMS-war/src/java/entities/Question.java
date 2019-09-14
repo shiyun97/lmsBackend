@@ -21,6 +21,19 @@ import javax.persistence.ManyToOne;
 @Entity
 public class Question implements Serializable {
 
+    public Question(Enum type, Integer number, String description, String key, Double marks, Integer maxLength, Boolean mandatory, HashMap options, Quiz quiz, Survey survey) {
+        this.type = type;
+        this.number = number;
+        this.description = description;
+        this.key = key;
+        this.marks = marks;
+        this.maxLength = maxLength;
+        this.mandatory = mandatory;
+        this.options = options;
+        this.quiz = quiz;
+        this.survey = survey;
+    }
+
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)

@@ -21,6 +21,14 @@ import javax.persistence.ManyToOne;
 @Entity
 public class ConsultationTimeslot implements Serializable {
 
+    public ConsultationTimeslot(Timestamp startTs, Integer length, Boolean booked, Consultation consultation, User booker) {
+        this.startTs = startTs;
+        this.length = length;
+        this.booked = booked;
+        this.consultation = consultation;
+        this.booker = booker;
+    }
+
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -36,10 +44,6 @@ public class ConsultationTimeslot implements Serializable {
     @ManyToOne
     private User booker;
     
-    public ConsultationTimeslot(Timestamp startTs, Integer length){
-        this.startTs = startTs;
-        this.length = length;
-    }
 
     public Long getconsultationTsId() {
         return consultationTsId;
@@ -96,6 +100,22 @@ public class ConsultationTimeslot implements Serializable {
 
     public void setConsultation(Consultation consultation) {
         this.consultation = consultation;
+    }
+
+    public Boolean getBooked() {
+        return booked;
+    }
+
+    public void setBooked(Boolean booked) {
+        this.booked = booked;
+    }
+
+    public User getBooker() {
+        return booker;
+    }
+
+    public void setBooker(User booker) {
+        this.booker = booker;
     }
     
 }

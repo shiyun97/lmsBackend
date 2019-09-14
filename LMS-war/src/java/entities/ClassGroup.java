@@ -21,6 +21,13 @@ import javax.persistence.ManyToOne;
 @Entity
 public class ClassGroup implements Serializable {
 
+    public ClassGroup(String name, Integer limit, ClassGroupList classGroupList, User members) {
+        this.name = name;
+        this.limit = limit;
+        this.classGroupList = classGroupList;
+        this.members = members;
+    }
+
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -34,11 +41,6 @@ public class ClassGroup implements Serializable {
     @ManyToMany
     private User members;
     
-    
-    public ClassGroup(String name, Integer limit){
-        this.name = name;
-        this.limit = limit;
-    }
 
     public Long getClassGroupId() {
         return classGroupId;
@@ -95,6 +97,14 @@ public class ClassGroup implements Serializable {
 
     public void setClassGroupList(ClassGroupList classGroupList) {
         this.classGroupList = classGroupList;
+    }
+
+    public User getMembers() {
+        return members;
+    }
+
+    public void setMembers(User members) {
+        this.members = members;
     }
     
 }

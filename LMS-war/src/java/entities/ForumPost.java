@@ -26,6 +26,18 @@ import javax.xml.bind.annotation.XmlRootElement;
 @XmlRootElement
 public class ForumPost implements Serializable {
 
+    public ForumPost(String title, String description, Integer numberOfReply, Timestamp createTs, Timestamp updateTs, Boolean threadStarter, String owner, Module module, ForumPost replies) {
+        this.title = title;
+        this.description = description;
+        this.numberOfReply = numberOfReply;
+        this.createTs = createTs;
+        this.updateTs = updateTs;
+        this.threadStarter = threadStarter;
+        this.owner = owner;
+        this.module = module;
+        this.replies = replies;
+    }
+
     private static long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -53,17 +65,7 @@ public class ForumPost implements Serializable {
     @OneToMany
     private ForumPost replies;
     
-    
-    
-    public ForumPost(String title, String description, Integer numberOfReply, Timestamp createTs, Timestamp updateTs, Boolean threadStarter, String owner){
-        this.title = title;
-        this.description = description;
-        this.numberOfReply = numberOfReply;
-        this.createTs = createTs;
-        this.updateTs = updateTs;
-        this.threadStarter = threadStarter;
-        this.owner = owner;
-    }
+
 
     public Long getForumPostId() {
         return forumPostId;
@@ -168,6 +170,14 @@ public class ForumPost implements Serializable {
 
     public void setModule(Module module) {
         this.module = module;
+    }
+
+    public ForumPost getReplies() {
+        return replies;
+    }
+
+    public void setReplies(ForumPost replies) {
+        this.replies = replies;
     }
     
 }

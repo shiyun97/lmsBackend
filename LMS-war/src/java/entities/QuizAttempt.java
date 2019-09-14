@@ -22,6 +22,16 @@ import javax.persistence.ManyToOne;
 @Entity
 public class QuizAttempt implements Serializable {
 
+    public QuizAttempt(Timestamp createTs, Timestamp updateTs, Timestamp submitTs, HashMap answers, Double totalMarks, Quiz quiz, User quizTaker) {
+        this.createTs = createTs;
+        this.updateTs = updateTs;
+        this.submitTs = submitTs;
+        this.answers = answers;
+        this.totalMarks = totalMarks;
+        this.quiz = quiz;
+        this.quizTaker = quizTaker;
+    }
+
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -40,14 +50,7 @@ public class QuizAttempt implements Serializable {
     private Quiz quiz;
     @ManyToOne
     private User quizTaker;
-    
-    public QuizAttempt(Timestamp createTs, Timestamp updateTs, Timestamp submitTs, HashMap answers, Double totalMarks){
-        this.createTs = createTs;
-        this.updateTs = updateTs;
-        this.submitTs = submitTs;
-        this.answers = answers;
-        this.totalMarks = totalMarks;
-    }
+
 
     public Long getQuizAttemptId() {
         return quizAttemptId;
@@ -120,6 +123,22 @@ public class QuizAttempt implements Serializable {
 
     public void setTotalMarks(Double totalMarks) {
         this.totalMarks = totalMarks;
+    }
+
+    public Quiz getQuiz() {
+        return quiz;
+    }
+
+    public void setQuiz(Quiz quiz) {
+        this.quiz = quiz;
+    }
+
+    public User getQuizTaker() {
+        return quizTaker;
+    }
+
+    public void setQuizTaker(User quizTaker) {
+        this.quizTaker = quizTaker;
     }
     
 }

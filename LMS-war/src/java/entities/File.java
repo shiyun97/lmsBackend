@@ -20,6 +20,13 @@ import javax.persistence.ManyToOne;
 @Entity
 public class File implements Serializable {
 
+    public File(String name, String type, String location, Folder folder) {
+        this.name = name;
+        this.type = type;
+        this.location = location;
+        this.folder = folder;
+    }
+
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -32,13 +39,7 @@ public class File implements Serializable {
     private String location;
     @ManyToOne
     private Folder folder;
-    
-    
-    public File(String name, String type, String location){
-        this.name = name;
-        this.type = type;
-        this.location = location;
-    }
+
 
     public Long getFileId() {
         return fileId;
@@ -95,6 +96,14 @@ public class File implements Serializable {
 
     public void setLocation(String location) {
         this.location = location;
+    }
+
+    public Folder getFolder() {
+        return folder;
+    }
+
+    public void setFolder(Folder folder) {
+        this.folder = folder;
     }
     
 }

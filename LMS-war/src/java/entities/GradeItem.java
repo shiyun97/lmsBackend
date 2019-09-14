@@ -23,6 +23,19 @@ import javax.persistence.OneToMany;
 @Entity
 public class GradeItem implements Serializable {
 
+    public GradeItem(Double title, Double mean, Double median, Double twentyFifth, Double seventyFifth, Timestamp createTs, Timestamp updateTs, Boolean released, List<GradeEntry> gradeEntries, Module module) {
+        this.title = title;
+        this.mean = mean;
+        this.median = median;
+        this.twentyFifth = twentyFifth;
+        this.seventyFifth = seventyFifth;
+        this.createTs = createTs;
+        this.updateTs = updateTs;
+        this.released = released;
+        this.gradeEntries = gradeEntries;
+        this.module = module;
+    }
+
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -47,17 +60,7 @@ public class GradeItem implements Serializable {
     private List<GradeEntry> gradeEntries;
     @ManyToOne
     private Module module;
-    
-    
-    public GradeItem(Double title, Double mean, Double median, Double twentyFifth, Double seventyFifth, Timestamp createTs, Timestamp updateTs){
-        this.title = title;
-        this.mean = mean;
-        this.median = median;
-        this.twentyFifth = twentyFifth;
-        this.seventyFifth = seventyFifth;
-        this.createTs = createTs;
-        this.updateTs = updateTs;
-    }
+
 
     public Long getGradeItemId() {
         return gradeItemId;
@@ -146,6 +149,30 @@ public class GradeItem implements Serializable {
 
     public void setUpdateTs(Timestamp updateTs) {
         this.updateTs = updateTs;
+    }
+
+    public Boolean getReleased() {
+        return released;
+    }
+
+    public void setReleased(Boolean released) {
+        this.released = released;
+    }
+
+    public List<GradeEntry> getGradeEntries() {
+        return gradeEntries;
+    }
+
+    public void setGradeEntries(List<GradeEntry> gradeEntries) {
+        this.gradeEntries = gradeEntries;
+    }
+
+    public Module getModule() {
+        return module;
+    }
+
+    public void setModule(Module module) {
+        this.module = module;
     }
     
 }

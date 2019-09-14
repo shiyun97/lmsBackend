@@ -28,6 +28,16 @@ import javax.xml.bind.annotation.XmlRootElement;
 @XmlRootElement
 public class Attendance implements Serializable {
 
+    public Attendance(Integer total, Integer attendedNumber, Integer semester, Timestamp createTs, Timestamp updateTs, Module module, List<User> attendees) {
+        this.total = total;
+        this.attendedNumber = attendedNumber;
+        this.semester = semester;
+        this.createTs = createTs;
+        this.updateTs = updateTs;
+        this.module = module;
+        this.attendees = attendees;
+    }
+
     private static long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -47,14 +57,6 @@ public class Attendance implements Serializable {
     @OneToMany(mappedBy = "attendance")
     private List<User> attendees;
             
-    
-    public Attendance(Integer total, Integer attendedNumber, Integer Semester, Timestamp createTs, Timestamp updateTs){
-        this.total = total;
-        this.attendedNumber = attendedNumber;
-        this.semester = semester;
-        this.createTs = createTs;
-        this.updateTs = updateTs;
-    }
 
     public Long getAttendanceId() {
         return attendanceId;
@@ -127,6 +129,22 @@ public class Attendance implements Serializable {
 
     public void setUpdateTs(Timestamp updateTs) {
         this.updateTs = updateTs;
+    }
+
+    public Module getModule() {
+        return module;
+    }
+
+    public void setModule(Module module) {
+        this.module = module;
+    }
+
+    public List<User> getAttendees() {
+        return attendees;
+    }
+
+    public void setAttendees(List<User> attendees) {
+        this.attendees = attendees;
     }
     
 }

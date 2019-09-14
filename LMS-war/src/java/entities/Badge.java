@@ -20,6 +20,13 @@ import javax.persistence.ManyToOne;
 @Entity
 public class Badge implements Serializable {
 
+    public Badge(String title, String description, String criteria, User user) {
+        this.title = title;
+        this.description = description;
+        this.criteria = criteria;
+        this.user = user;
+    }
+
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -64,6 +71,38 @@ public class Badge implements Serializable {
     @Override
     public String toString() {
         return "entities.Badge[ Id=" + badgeId + " ]";
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public String getCriteria() {
+        return criteria;
+    }
+
+    public void setCriteria(String criteria) {
+        this.criteria = criteria;
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
     }
     
 }

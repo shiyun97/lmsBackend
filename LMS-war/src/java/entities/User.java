@@ -21,6 +21,18 @@ import javax.persistence.OneToMany;
 @Entity
 public class User implements Serializable {
 
+    public User(String firstName, String lastName, String email, String password, Enum gender, Enum accessRight, List<ConsultationTimeslot> consultationTimeslotList, List<QuizAttempt> quizAttemptList, List<SurveyAttempt> surveyAttemptList) {
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.email = email;
+        this.password = password;
+        this.gender = gender;
+        this.accessRight = accessRight;
+        this.consultationTimeslotList = consultationTimeslotList;
+        this.quizAttemptList = quizAttemptList;
+        this.surveyAttemptList = surveyAttemptList;
+    }
+
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -44,10 +56,6 @@ public class User implements Serializable {
     @OneToMany(mappedBy = "surveyTaker")
     private List<SurveyAttempt> surveyAttemptList;
     
-    
-    public User(){
-        
-    }
 
     public Long getId() {
         return userId;
@@ -128,6 +136,30 @@ public class User implements Serializable {
 
     public void setAccessRight(Enum accessRight) {
         this.accessRight = accessRight;
+    }
+
+    public List<ConsultationTimeslot> getConsultationTimeslotList() {
+        return consultationTimeslotList;
+    }
+
+    public void setConsultationTimeslotList(List<ConsultationTimeslot> consultationTimeslotList) {
+        this.consultationTimeslotList = consultationTimeslotList;
+    }
+
+    public List<QuizAttempt> getQuizAttemptList() {
+        return quizAttemptList;
+    }
+
+    public void setQuizAttemptList(List<QuizAttempt> quizAttemptList) {
+        this.quizAttemptList = quizAttemptList;
+    }
+
+    public List<SurveyAttempt> getSurveyAttemptList() {
+        return surveyAttemptList;
+    }
+
+    public void setSurveyAttemptList(List<SurveyAttempt> surveyAttemptList) {
+        this.surveyAttemptList = surveyAttemptList;
     }
     
 }

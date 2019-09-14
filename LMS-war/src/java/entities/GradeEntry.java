@@ -21,6 +21,16 @@ import javax.persistence.ManyToOne;
 @Entity
 public class GradeEntry implements Serializable {
 
+    public GradeEntry(Double marks, String notes, Timestamp createTs, Timestamp updateTs, GradeItem gradeItem, User student, User grader) {
+        this.marks = marks;
+        this.notes = notes;
+        this.createTs = createTs;
+        this.updateTs = updateTs;
+        this.gradeItem = gradeItem;
+        this.student = student;
+        this.grader = grader;
+    }
+
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -40,13 +50,7 @@ public class GradeEntry implements Serializable {
     @ManyToOne
     private User grader;
     
-    
-    public GradeEntry(Double marks, String notes, Timestamp createTs, Timestamp updateTs){
-        this.marks = marks;
-        this.notes = notes;
-        this.createTs = createTs;
-        this.updateTs = updateTs;
-    }
+
 
     public Long getGradeEntryId() {
         return gradeEntryId;
@@ -111,6 +115,30 @@ public class GradeEntry implements Serializable {
 
     public void setUpdateTs(Timestamp updateTs) {
         this.updateTs = updateTs;
+    }
+
+    public GradeItem getGradeItem() {
+        return gradeItem;
+    }
+
+    public void setGradeItem(GradeItem gradeItem) {
+        this.gradeItem = gradeItem;
+    }
+
+    public User getStudent() {
+        return student;
+    }
+
+    public void setStudent(User student) {
+        this.student = student;
+    }
+
+    public User getGrader() {
+        return grader;
+    }
+
+    public void setGrader(User grader) {
+        this.grader = grader;
     }
     
 }

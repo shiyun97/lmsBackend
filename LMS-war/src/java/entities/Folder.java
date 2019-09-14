@@ -23,6 +23,17 @@ import javax.persistence.OneToMany;
 @Entity
 public class Folder implements Serializable {
 
+    public Folder(String name, Double size, Boolean submission, Timestamp submissionOpenTs, Timestamp submissionCloseTs, Enum accessRight, List<File> file, Module module) {
+        this.name = name;
+        this.size = size;
+        this.submission = submission;
+        this.submissionOpenTs = submissionOpenTs;
+        this.submissionCloseTs = submissionCloseTs;
+        this.accessRight = accessRight;
+        this.file = file;
+        this.module = module;
+    }
+
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -44,16 +55,6 @@ public class Folder implements Serializable {
     @ManyToOne
     private Module module;
   
-    
-    public Folder(String name, Double size, Boolean submission, Timestamp submissionOpenTs, Timestamp submissionCloseTs, Enum accessRight){
-        this.name = name;
-        this.size = size;
-        this.submission = submission;
-        this.submissionOpenTs = submissionOpenTs;
-        this.submissionCloseTs = submissionCloseTs;
-        this.accessRight = accessRight;
-        
-    }
 
     public Long getFolderId() {
         return folderId;

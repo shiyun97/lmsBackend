@@ -27,6 +27,21 @@ import javax.xml.bind.annotation.XmlRootElement;
 @XmlRootElement
 public class Quiz implements Serializable {
 
+    public Quiz(String title, String description, Timestamp startDate, Timestamp endDate, Timestamp createTs, Timestamp updateTs, Integer maxNoOfAttempt, Double maxMarks, String owner, Module module, List<Question> questionList, List<QuizAttempt> quizAttemptList) {
+        this.title = title;
+        this.description = description;
+        this.startDate = startDate;
+        this.endDate = endDate;
+        this.createTs = createTs;
+        this.updateTs = updateTs;
+        this.maxNoOfAttempt = maxNoOfAttempt;
+        this.maxMarks = maxMarks;
+        this.owner = owner;
+        this.module = module;
+        this.questionList = questionList;
+        this.quizAttemptList = quizAttemptList;
+    }
+
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -55,19 +70,7 @@ public class Quiz implements Serializable {
     private List<Question> questionList;
     @OneToMany(mappedBy = "quiz")
     private List<QuizAttempt> quizAttemptList;
-    
-    
-    public Quiz(String title, String description, Timestamp startDate, Timestamp endDate, Timestamp createTs, Timestamp updateTs, Integer maxNoOfAttempt, Double maxMarks, String owner){
-        this.title = title;
-        this.description = description;
-        this.startDate = startDate;
-        this.endDate = endDate;
-        this.createTs = createTs;
-        this.updateTs = updateTs;
-        this.maxNoOfAttempt = maxNoOfAttempt;
-        this.maxMarks = maxMarks;
-        this.owner = owner;
-    }
+
 
     public Long getQuizId() {
         return quizId;
@@ -182,20 +185,20 @@ public class Quiz implements Serializable {
         this.module = module;
     }
 
-    public List<Question> getQuestion() {
-        return question;
+    public List<Question> getQuestionList() {
+        return questionList;
     }
 
-    public void setQuestion(List<Question> question) {
-        this.question = question;
+    public void setQuestionList(List<Question> questionList) {
+        this.questionList = questionList;
     }
 
-    public List<QuizAttempt> getQuizAttempt() {
-        return quizAttempt;
+    public List<QuizAttempt> getQuizAttemptList() {
+        return quizAttemptList;
     }
 
-    public void setQuizAttempt(List<QuizAttempt> quizAttempt) {
-        this.quizAttempt = quizAttempt;
+    public void setQuizAttemptList(List<QuizAttempt> quizAttemptList) {
+        this.quizAttemptList = quizAttemptList;
     }
     
 }
