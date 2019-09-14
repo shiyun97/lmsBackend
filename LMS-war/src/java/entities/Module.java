@@ -24,10 +24,9 @@ import javax.xml.bind.annotation.XmlRootElement;
  */
 @Entity
 @Table(name = "MODULE")
-@XmlRootElement
 public class Module implements Serializable {
 
-    public Module(String title, String description, String feedback, Integer semesterOffered, Integer creditUnit, String grade, Integer maxEnrollment, List<User> studentList, List<User> publicUserList, List<Folder> folderList, List<Annoucement> annoucementList, List<ForumPost> forumPostList, List<Quiz> quizList, List<GradeItem> gradeItemList, List<Attendance> attandanceList, List<Consultation> consultationList, List<LessonPlan> lessonPlanList, User owner) {
+    public Module(String title, String description, String feedback, Integer semesterOffered, Integer creditUnit, String grade, Integer maxEnrollment, List<User> studentList, List<User> publicUserList, List<Folder> folderList, List<Annoucement> annoucementList, List<ForumPost> forumPostList, List<Quiz> quizList, List<GradeItem> gradeItemList, List<Attendance> attandanceList, List<Consultation> consultationList, List<LessonPlan> lessonPlanList, User owner, List<ClassGroupList> classGroupList) {
         this.title = title;
         this.description = description;
         this.feedback = feedback;
@@ -46,6 +45,7 @@ public class Module implements Serializable {
         this.consultationList = consultationList;
         this.lessonPlanList = lessonPlanList;
         this.owner = owner;
+	this.classGroupList = classGroupList;
     }
 
     private static final long serialVersionUID = 1L;
@@ -88,6 +88,8 @@ public class Module implements Serializable {
     private List<LessonPlan> lessonPlanList;
     @ManyToOne
     private User owner;
+    @OneToMany(mappedBy = "module")
+    private List<ClassGroupList> classGroupList;
     
     /**
     public Module(String title, String description, String feedback, Integer semesterOffered, Integer creditUnit, String grade){
@@ -253,6 +255,14 @@ public class Module implements Serializable {
 
     public void setOwner(User owner) {
         this.owner = owner;
+    }
+	
+    public List<ClassGroupList> getClassGroupList() {
+        return classGroupList;
+    }
+
+    public void setClassGroupList(List<ClassGroupList> classGroupList) {
+        this.classGroupList = classGroupList;
     }
 
     /** * @Override
