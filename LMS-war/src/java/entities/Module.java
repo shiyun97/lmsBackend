@@ -112,10 +112,10 @@ public class Module implements Serializable {
     @Override
     public boolean equals(Object object) {
         // TODO: Warning - this method won't work in the case the code fields are not set
-        if (!(object instanceof module)) {
+        if (!(object instanceof Module)) {
             return false;
         }
-        module other = (module) object;
+        Module other = (Module) object;
         if ((this.code == null && other.code != null) || (this.code != null && !this.code.equals(other.code))) {
             return false;
         }
