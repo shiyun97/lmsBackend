@@ -7,6 +7,8 @@ package entities;
 
 import java.io.Serializable;
 import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.List;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -26,7 +28,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 @XmlRootElement
 public class ForumPost implements Serializable {
 
-    public ForumPost(String title, String description, Integer numberOfReply, Timestamp createTs, Timestamp updateTs, Boolean threadStarter, String owner, Module module, ForumPost replies) {
+    public ForumPost(String title, String description, Integer numberOfReply, Timestamp createTs, Timestamp updateTs, Boolean threadStarter, String owner, Module module) {
         this.title = title;
         this.description = description;
         this.numberOfReply = numberOfReply;
@@ -35,7 +37,7 @@ public class ForumPost implements Serializable {
         this.threadStarter = threadStarter;
         this.owner = owner;
         this.module = module;
-        this.replies = replies;
+        this.replies = new ArrayList<>();
     }
 
     private static long serialVersionUID = 1L;
@@ -63,7 +65,7 @@ public class ForumPost implements Serializable {
     @ManyToOne
     private Module module;
     @OneToMany
-    private ForumPost replies;
+    private List<ForumPost> replies;
     
 
 
@@ -172,12 +174,11 @@ public class ForumPost implements Serializable {
         this.module = module;
     }
 
-    public ForumPost getReplies() {
+    public List<ForumPost> getReplies() {
         return replies;
     }
 
-    public void setReplies(ForumPost replies) {
+    public void setReplies(List<ForumPost> replies) {
         this.replies = replies;
     }
-    
 }

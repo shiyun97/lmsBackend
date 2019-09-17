@@ -6,6 +6,8 @@
 package entities;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -25,7 +27,7 @@ public class ClassGroup implements Serializable {
         this.name = name;
         this.limit = limit;
         this.classGroupList = classGroupList;
-        this.members = members;
+        this.members = new ArrayList<>();
     }
 
     private static final long serialVersionUID = 1L;
@@ -39,7 +41,7 @@ public class ClassGroup implements Serializable {
     @ManyToOne
     private ClassGroupList classGroupList;
     @ManyToMany
-    private User members;
+    private List<User> members;
     
 
     public Long getClassGroupId() {
@@ -99,12 +101,11 @@ public class ClassGroup implements Serializable {
         this.classGroupList = classGroupList;
     }
 
-    public User getMembers() {
+    public List<User> getMembers() {
         return members;
     }
 
-    public void setMembers(User members) {
+    public void setMembers(List<User> members) {
         this.members = members;
     }
-    
 }
