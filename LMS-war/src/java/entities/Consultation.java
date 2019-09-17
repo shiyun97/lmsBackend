@@ -34,6 +34,9 @@ public class Consultation implements Serializable {
         this.module = module;
     }
 
+    public Consultation() {
+    }
+
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)

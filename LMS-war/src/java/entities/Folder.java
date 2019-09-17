@@ -35,6 +35,9 @@ public class Folder implements Serializable {
         this.module = module;
     }
 
+    public Folder() {
+    }
+
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)

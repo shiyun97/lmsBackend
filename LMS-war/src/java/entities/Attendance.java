@@ -38,6 +38,9 @@ public class Attendance implements Serializable {
         this.attendees = attendees;
     }
 
+    public Attendance() {
+    }
+
     private static long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)

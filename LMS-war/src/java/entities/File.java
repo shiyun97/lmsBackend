@@ -27,6 +27,9 @@ public class File implements Serializable {
         this.folder = folder;
     }
 
+    public File() {
+    }
+
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)

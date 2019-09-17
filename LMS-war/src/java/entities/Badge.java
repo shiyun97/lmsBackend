@@ -27,6 +27,9 @@ public class Badge implements Serializable {
         this.user = user;
     }
 
+    public Badge() {
+    }
+
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)

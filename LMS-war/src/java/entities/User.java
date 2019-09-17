@@ -36,6 +36,9 @@ public class User implements Serializable {
         this.surveyAttemptList = surveyAttemptList;
     }
 
+    public User() {
+    }
+
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)

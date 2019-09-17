@@ -29,6 +29,9 @@ public class ConsultationTimeslot implements Serializable {
         this.booker = booker;
     }
 
+    public ConsultationTimeslot() {
+    }
+
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)

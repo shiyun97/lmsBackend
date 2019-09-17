@@ -40,6 +40,9 @@ public class ForumPost implements Serializable {
         this.replies = new ArrayList<>();
     }
 
+    public ForumPost() {
+    }
+
     private static long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
