@@ -13,6 +13,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
+import util.QuestionTypeEnum;
 
 /**
  *
@@ -21,7 +22,7 @@ import javax.persistence.ManyToOne;
 @Entity
 public class Question implements Serializable {
 
-    public Question(Enum type, Integer number, String description, String key, Double marks, Integer maxLength, Boolean mandatory, HashMap options, Quiz quiz, Survey survey) {
+    public Question(QuestionTypeEnum type, Integer number, String description, String key, Double marks, Integer maxLength, Boolean mandatory, HashMap options, Quiz quiz, Survey survey) {
         this.type = type;
         this.number = number;
         this.description = description;
@@ -39,7 +40,7 @@ public class Question implements Serializable {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long questionId;
     @Column
-    private Enum type; 
+    private QuestionTypeEnum type; 
     @Column
     private Integer number;
     @Column
@@ -60,7 +61,7 @@ public class Question implements Serializable {
     private Survey survey;
     
     
-    public Question(Enum type, Integer number, String description, String key, Double marks, Integer maxLength, Boolean mandatory, HashMap options){
+    public Question(QuestionTypeEnum type, Integer number, String description, String key, Double marks, Integer maxLength, Boolean mandatory, HashMap options){
         this.type = type;
         this.number = number;
         this.description = description;
@@ -105,11 +106,11 @@ public class Question implements Serializable {
         return "entities.Question[ Id=" + questionId + " ]";
     }
 
-    public Enum getType() {
+    public QuestionTypeEnum getType() {
         return type;
     }
 
-    public void setType(Enum type) {
+    public void setType(QuestionTypeEnum type) {
         this.type = type;
     }
 

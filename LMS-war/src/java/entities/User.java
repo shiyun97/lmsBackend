@@ -14,6 +14,8 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
+import util.AccessRightEnum;
+import util.GenderEnum;
 
 /**
  *
@@ -22,7 +24,7 @@ import javax.persistence.OneToMany;
 @Entity
 public class User implements Serializable {
 
-    public User(String firstName, String lastName, String email, String password, Enum gender, Enum accessRight, List<ConsultationTimeslot> consultationTimeslotList, List<QuizAttempt> quizAttemptList, List<SurveyAttempt> surveyAttemptList) {
+    public User(String firstName, String lastName, String email, String password, GenderEnum gender, AccessRightEnum accessRight, List<ConsultationTimeslot> consultationTimeslotList, List<QuizAttempt> quizAttemptList, List<SurveyAttempt> surveyAttemptList) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
@@ -47,9 +49,9 @@ public class User implements Serializable {
     @Column
     private String password;
     @Column
-    private Enum gender;
+    private GenderEnum gender;
     @Column
-    private Enum accessRight;
+    private AccessRightEnum accessRight;
     @OneToMany(mappedBy = "booker")
     private List<ConsultationTimeslot> consultationTimeslotList;
     @OneToMany(mappedBy = "quizTaker")
@@ -125,19 +127,19 @@ public class User implements Serializable {
         this.password = password;
     }
 
-    public Enum getGender() {
+    public GenderEnum getGender() {
         return gender;
     }
 
-    public void setGender(Enum gender) {
+    public void setGender(GenderEnum gender) {
         this.gender = gender;
     }
 
-    public Enum getAccessRight() {
+    public AccessRightEnum getAccessRight() {
         return accessRight;
     }
 
-    public void setAccessRight(Enum accessRight) {
+    public void setAccessRight(AccessRightEnum accessRight) {
         this.accessRight = accessRight;
     }
 
