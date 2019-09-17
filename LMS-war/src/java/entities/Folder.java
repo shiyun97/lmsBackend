@@ -15,6 +15,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import util.AccessRightEnum;
 
 /**
  *
@@ -23,7 +24,7 @@ import javax.persistence.OneToMany;
 @Entity
 public class Folder implements Serializable {
 
-    public Folder(String name, Double size, Boolean submission, Timestamp submissionOpenTs, Timestamp submissionCloseTs, Enum accessRight, List<File> file, Module module) {
+    public Folder(String name, Double size, Boolean submission, Timestamp submissionOpenTs, Timestamp submissionCloseTs, AccessRightEnum accessRight, List<File> file, Module module) {
         this.name = name;
         this.size = size;
         this.submission = submission;
@@ -49,7 +50,7 @@ public class Folder implements Serializable {
     @Column
     private Timestamp submissionCloseTs;
     @Column
-    private Enum accessRight;
+    private AccessRightEnum accessRight;
     @OneToMany(mappedBy = "folder")
     private List<File> file;
     @ManyToOne
@@ -129,11 +130,11 @@ public class Folder implements Serializable {
         this.submissionCloseTs = submissionCloseTs;
     }
 
-    public Enum getAccessRight() {
+    public AccessRightEnum getAccessRight() {
         return accessRight;
     }
 
-    public void setAccessRight(Enum accessRight) {
+    public void setAccessRight(AccessRightEnum accessRight) {
         this.accessRight = accessRight;
     }
 
