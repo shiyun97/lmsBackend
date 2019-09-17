@@ -12,6 +12,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 
 /**
@@ -55,6 +56,8 @@ public class User implements Serializable {
     private List<QuizAttempt> quizAttemptList;
     @OneToMany(mappedBy = "surveyTaker")
     private List<SurveyAttempt> surveyAttemptList;
+    @ManyToMany(mappedBy = "members")
+    private List<ClassGroup> classGroupList;
     
 
     public Long getId() {

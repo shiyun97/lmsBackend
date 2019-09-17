@@ -3,26 +3,9 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/C:/Users/Vixson/Desktop/IS4103/LMS/LMS-war/src/java/entities/SurveyAttempt.java</file>
-            <file>file:/C:/Users/Vixson/Desktop/IS4103/LMS/LMS-war/src/java/entities/Consultation.java</file>
-            <file>file:/C:/Users/Vixson/Desktop/IS4103/LMS/LMS-war/src/java/entities/Survey.java</file>
-            <file>file:/C:/Users/Vixson/Desktop/IS4103/LMS/LMS-war/src/java/entities/GradeEntry.java</file>
-            <file>file:/C:/Users/Vixson/Desktop/IS4103/LMS/LMS-war/src/java/entities/Badge.java</file>
-            <file>file:/C:/Users/Vixson/Desktop/IS4103/LMS/LMS-war/src/java/entities/QuizAttempt.java</file>
-            <file>file:/C:/Users/Vixson/Desktop/IS4103/LMS/LMS-war/src/java/entities/ConsultationTimeslot.java</file>
-            <file>file:/C:/Users/Vixson/Desktop/IS4103/LMS/LMS-war/src/java/entities/ClassGroupList.java</file>
-            <file>file:/C:/Users/Vixson/Desktop/IS4103/LMS/LMS-war/src/java/entities/Folder.java</file>
-            <file>file:/C:/Users/Vixson/Desktop/IS4103/LMS/LMS-war/src/java/entities/ClassGroup.java</file>
-            <file>file:/C:/Users/Vixson/Desktop/IS4103/LMS/LMS-war/src/java/entities/LessonPlan.java</file>
-            <file>file:/C:/Users/Vixson/Desktop/IS4103/LMS/LMS-war/src/java/entities/Quiz.java</file>
-            <file>file:/C:/Users/Vixson/Desktop/IS4103/LMS/LMS-war/src/java/entities/Annoucement.java</file>
-            <file>file:/C:/Users/Vixson/Desktop/IS4103/LMS/LMS-war/src/java/entities/File.java</file>
-            <file>file:/C:/Users/Vixson/Desktop/IS4103/LMS/LMS-war/src/java/entities/User.java</file>
-            <file>file:/C:/Users/Vixson/Desktop/IS4103/LMS/LMS-war/src/java/entities/GradeItem.java</file>
-            <file>file:/C:/Users/Vixson/Desktop/IS4103/LMS/LMS-war/src/java/entities/ForumPost.java</file>
-            <file>file:/C:/Users/Vixson/Desktop/IS4103/LMS/LMS-war/src/java/entities/Module.java</file>
-            <file>file:/C:/Users/Vixson/Desktop/IS4103/LMS/LMS-war/src/java/entities/Question.java</file>
-            <file>file:/C:/Users/Vixson/Desktop/IS4103/LMS/LMS-war/src/java/entities/Attendance.java</file>
+            <file>file:/C:/Users/Asus/Documents/GitHub/lmsBackend/LMS-war/src/java/entities/ForumPost.java</file>
+            <file>file:/C:/Users/Asus/Documents/GitHub/lmsBackend/LMS-war/src/java/entities/ClassGroupList.java</file>
+            <file>file:/C:/Users/Asus/Documents/GitHub/lmsBackend/LMS-war/src/java/entities/Module.java</file>
         </group>
     </open-files>
 </project-private>
