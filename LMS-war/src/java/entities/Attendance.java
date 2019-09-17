@@ -54,7 +54,7 @@ public class Attendance implements Serializable {
     private Timestamp updateTs;
     @ManyToOne
     private Module module;
-    @OneToMany(mappedBy = "attendance")
+    @OneToMany
     private List<User> attendees;
             
 
