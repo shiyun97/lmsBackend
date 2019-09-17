@@ -51,6 +51,9 @@ public class Module implements Serializable {
 	this.classGroupList = classGroupList;
     }
 
+    public Module() {
+    }
+
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)

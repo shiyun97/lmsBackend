@@ -34,6 +34,9 @@ public class Survey implements Serializable {
         this.module = module;
     }
 
+    public Survey() {
+    }
+
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)

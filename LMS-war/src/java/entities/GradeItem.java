@@ -36,6 +36,9 @@ public class GradeItem implements Serializable {
         this.module = module;
     }
 
+    public GradeItem() {
+    }
+
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)

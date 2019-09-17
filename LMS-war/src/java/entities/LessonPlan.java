@@ -29,6 +29,9 @@ public class LessonPlan implements Serializable {
         this.module = module;
     }
 
+    public LessonPlan() {
+    }
+
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)

@@ -32,6 +32,9 @@ public class QuizAttempt implements Serializable {
         this.quizTaker = quizTaker;
     }
 
+    public QuizAttempt() {
+    }
+
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)

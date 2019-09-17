@@ -31,6 +31,9 @@ public class GradeEntry implements Serializable {
         this.grader = grader;
     }
 
+    public GradeEntry() {
+    }
+
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)

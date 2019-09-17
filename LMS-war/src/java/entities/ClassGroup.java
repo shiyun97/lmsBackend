@@ -30,6 +30,9 @@ public class ClassGroup implements Serializable {
         this.members = new ArrayList<>();
     }
 
+    public ClassGroup() {
+    }
+
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
