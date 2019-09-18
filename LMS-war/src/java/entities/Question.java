@@ -26,7 +26,7 @@ public class Question implements Serializable {
         this.type = type;
         this.number = number;
         this.description = description;
-        this.key = key;
+        this.rightAnswer = key;
         this.marks = marks;
         this.maxLength = maxLength;
         this.mandatory = mandatory;
@@ -49,7 +49,7 @@ public class Question implements Serializable {
     @Column
     private String description;
     @Column
-    private String key;
+    private String rightAnswer;
     @Column
     private Double marks;
     @Column
@@ -68,7 +68,7 @@ public class Question implements Serializable {
         this.type = type;
         this.number = number;
         this.description = description;
-        this.key = key;
+        this.rightAnswer = key;
         this.marks = marks;
         this.maxLength = maxLength;
         this.mandatory = mandatory;
@@ -133,12 +133,12 @@ public class Question implements Serializable {
         this.description = description;
     }
 
-    public String getKey() {
-        return key;
+    public String getRightAnswer() {
+        return rightAnswer;
     }
 
-    public void setKey(String key) {
-        this.key = key;
+    public void setRightAnswer(String rightAnswer) {
+        this.rightAnswer = rightAnswer;
     }
 
     public Double getMarks() {
