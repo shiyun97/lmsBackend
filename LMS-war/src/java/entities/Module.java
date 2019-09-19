@@ -123,7 +123,7 @@ public class Module implements Serializable {
             return false;
         }
         Module other = (Module) object;
-        if ((this.code == null && other.code != null) || (this.code != null && !this.code.equals(other.code))) {
+        if ((this.moduleId == null && other.moduleId != null) || (this.moduleId != null && !this.moduleId.equals(other.moduleId))) {
             return false;
         }
         return true;
@@ -133,14 +133,31 @@ public class Module implements Serializable {
     public String toString() {
         return "entity.module[ id=" + code + " ]";
     }
-    
-    public String getModuleId() {
+
+    public Long getModuleId() {
+        return moduleId;
+    }
+
+    public void setModuleId(Long moduleId) {
+        this.moduleId = moduleId;
+    }
+
+    public String getCode() {
         return code;
     }
 
-    public void setModuleId(String code) {
+    public void setCode(String code) {
         this.code = code;
     }
+
+    public List<Feedback> getFeedbackList() {
+        return feedbackList;
+    }
+
+    public void setFeedbackList(List<Feedback> feedbackList) {
+        this.feedbackList = feedbackList;
+    }
+    
 
     public String getTitle() {
         return title;
