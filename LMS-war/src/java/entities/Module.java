@@ -54,6 +54,8 @@ public class Module implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
+    private Long moduleId;
+    @Column
     private String code;
     @Column
     private String title;
