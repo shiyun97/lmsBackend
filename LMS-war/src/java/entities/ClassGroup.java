@@ -25,7 +25,7 @@ public class ClassGroup implements Serializable {
 
     public ClassGroup(String name, Integer limit, ClassGroupList classGroupList, User members) {
         this.name = name;
-        this.limit = limit;
+        this.maxMember = limit;
         this.classGroupList = classGroupList;
         this.members = new ArrayList<>();
     }
@@ -40,7 +40,7 @@ public class ClassGroup implements Serializable {
     @Column
     private String name;
     @Column
-    private Integer limit;
+    private Integer maxMember;
     @ManyToOne
     private ClassGroupList classGroupList;
     @ManyToMany
@@ -88,12 +88,12 @@ public class ClassGroup implements Serializable {
         this.name = name;
     }
 
-    public Integer getLimit() {
-        return limit;
+    public Integer getMaxMember() {
+        return maxMember;
     }
 
-    public void setLimit(Integer limit) {
-        this.limit = limit;
+    public void setMaxMember(Integer maxMember) {
+        this.maxMember = maxMember;
     }
 
     public ClassGroupList getClassGroupList() {
