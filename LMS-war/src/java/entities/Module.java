@@ -95,6 +95,8 @@ public class Module implements Serializable {
     private User owner;
     @OneToMany(mappedBy = "module")
     private List<ClassGroupList> classGroupList;
+    @OneToMany(mappedBy = "module")
+    private List<Feedback> feedbackList;
     
     /**
     public Module(String title, String description, String feedback, Integer semesterOffered, Integer creditUnit, String grade){
