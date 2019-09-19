@@ -29,7 +29,6 @@ public class Module implements Serializable {
     public Module(String title, String description, String feedback, Integer semesterOffered, Integer creditUnit, String grade, Integer maxEnrollment, List<User> studentList, List<User> publicUserList, List<Folder> folderList, List<Annoucement> annoucementList, List<ForumPost> forumPostList, List<Quiz> quizList, List<GradeItem> gradeItemList, List<Attendance> attandanceList, List<Consultation> consultationList, List<LessonPlan> lessonPlanList, User owner, List<ClassGroupList> classGroupList) {
         this.title = title;
         this.description = description;
-        this.feedback = feedback;
         this.semesterOffered = semesterOffered;
         this.creditUnit = creditUnit;
         this.grade = grade;
@@ -61,8 +60,6 @@ public class Module implements Serializable {
     private String title;
     @Column
     private String description;
-    @Column
-    private String feedback;
     @Column
     private Integer semesterOffered;
     @Column
@@ -173,14 +170,6 @@ public class Module implements Serializable {
 
     public void setDescription(String description) {
         this.description = description;
-    }
-
-    public String getFeedback() {
-        return feedback;
-    }
-
-    public void setFeedback(String feedback) {
-        this.feedback = feedback;
     }
 
     public Integer getSemesterOffered() {
@@ -310,21 +299,4 @@ public class Module implements Serializable {
     public void setClassGroupList(List<ClassGroupList> classGroupList) {
         this.classGroupList = classGroupList;
     }
-
-    public List<Feedback> getFeedbackList() {
-        return feedbackList;
-    }
-
-    public void setFeedbackList(List<Feedback> feedbackList) {
-        this.feedbackList = feedbackList;
-    }
-
-    public String getCode() {
-        return code;
-    }
-
-    public void setCode(String code) {
-        this.code = code;
-    }
-
 }
