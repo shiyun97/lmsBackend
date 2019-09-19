@@ -26,9 +26,6 @@ import javax.xml.bind.annotation.XmlRootElement;
 @Table(name = "MODULE")
 public class Module implements Serializable {
 
-    @OneToMany(mappedBy = "module")
-    private List<Feedback> feedbackList;
-
     public Module(String title, String description, String feedback, Integer semesterOffered, Integer creditUnit, String grade, Integer maxEnrollment, List<User> studentList, List<User> publicUserList, List<Folder> folderList, List<Annoucement> annoucementList, List<ForumPost> forumPostList, List<Quiz> quizList, List<GradeItem> gradeItemList, List<Attendance> attandanceList, List<Consultation> consultationList, List<LessonPlan> lessonPlanList, User owner, List<ClassGroupList> classGroupList) {
         this.title = title;
         this.description = description;
@@ -96,6 +93,8 @@ public class Module implements Serializable {
     private User owner;
     @OneToMany(mappedBy = "module")
     private List<ClassGroupList> classGroupList;
+    @OneToMany(mappedBy = "module")
+    private List<Feedback> feedbackList;
     
     /**
     public Module(String title, String description, String feedback, Integer semesterOffered, Integer creditUnit, String grade){
