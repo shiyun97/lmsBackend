@@ -18,6 +18,7 @@ import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
@@ -32,19 +33,75 @@ public class ModuleResource {
     
     @PersistenceContext(unitName = "LMS-warPU")
     private EntityManager em;
-    
-    //Create module 
-    @POST
-    @Consumes(MediaType.APPLICATION_JSON)
+        
+      
+    //View module
+    @GET
+    @Path(value = "retrieveAllModules")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response createModule(CreateNewModule createNewModule){
+    public Response retrieveAllModules(){
+        
+        try{
+            
+            Query query = em.createQuery("Select m FROM Module m ");
+            List<Module> modules = (List<Module>) query.getResultList();
+            if(modules != null && !modules.isEmpty()){
+                 return Response.status(Response.Status.OK).entity(modules).build();
+            } else {
+                return Response.status(Response.Status.NOT_FOUND).entity("No module found").build();
+            }
+
+        }catch (Exception e){
+           e.printStackTrace();
+           return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(e).build();
+       }
+       
+    }
+    
+    //View module by moduleId
+    @GET
+    @Path(value = "retrieveAllModules/{moduleId}")
+    @Consumes(MediaType.TEXT_PLAIN)
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response retrieveModuleByModuleId(@PathParam("moduleId") Long moduleId) {
+        
+        try{
+            
+            Module module = em.find(Module.class, moduleId);
+            
+            if(module == null){
+                return Response.status(Response.Status.BAD_REQUEST).entity("Module Not Exists!").build();
+            }
+
+            if(module != null){
+                 return Response.status(Response.Status.OK).entity(module).build();
+            } else {
+                return Response.status(Response.Status.NOT_FOUND).entity("No module found").build();
+            }
+
+        }catch (Exception e){
+           e.printStackTrace();
+           return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(e).build();
+       }
+       
+    }
+    
+    //Update module 
+    /*
+    @GET
+    @Path(value = "retrieveAllModules/{moduleId}")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response updateModule(@PathParam("moduleId") Long moduleId){
          try{
+                if(moduleId!=null) && (moduleId.getValue()!= null){
+         }
+             
             User user = em.find(User.class, createNewModule.getUserId());
             if(user == null){
                 return Response.status(Response.Status.BAD_REQUEST).entity("User doesn't exist!").build();
             }
             
-            /*
+            
             Module module = em.find(Module.class, createNewFeedback.getModuleId());
             if(module == null){
                 return Response.status(Response.Status.BAD_REQUEST).entity("Module doesn't exist!").build();
@@ -54,7 +111,7 @@ public class ModuleResource {
                 return Response.status(Response.Status.FORBIDDEN).entity("Student isn't enrolled in this module!").build();
             }
 
-            */
+            
             
             Module module = new Module();
             //module.setModuleId(createNewModule.getModule());
@@ -73,34 +130,10 @@ public class ModuleResource {
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
         }
 
-    }
-        
-    /*   
-    //View module
-    @GET
-    @Path(value = "retrieveAllModules")
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response retrieveAllModules(){
-        
-        try{
-            if(em.find(Module.class, moduleId == null){
-                return Response.status(Response.Status.BAD_REQUEST).entity("Module Not Exists!").build();
-            }
-            
-            Query query = em.createQuery("Select m FROM Module m ");
-            List<Module> modules = (List<Module>) query.getResultList();
-            if(modules != null && !modules.isEmpty()){
-                 return Response.status(Response.Status.OK).entity(modules).build();
-            } else {
-                return Response.status(Response.Status.NOT_FOUND).entity("No module found").build();
-            }
-
-        }catch (Exception e){
-           e.printStackTrace();
-           return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(e).build();
-       }
-       
     }*/
+    
+    
+    
 
     
 }
