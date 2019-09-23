@@ -1,31 +1,51 @@
+package datamodel.rest;
+
+import entities.ClassGroup;
+import entities.ConsultationTimeslot;
+import entities.Module;
+import entities.QuizAttempt;
+import entities.User;
+import entities.SurveyAttempt;
+import util.GenderEnum;
+import util.AccessRightEnum;
+import java.util.List;
+
 /*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package entities;
-
-import java.io.Serializable;
-import java.util.List;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.ManyToMany;
-import javax.persistence.OneToMany;
-import util.AccessRightEnum;
-import util.CryptographicHelper;
-import util.GenderEnum;
 
 /**
  *
  * @author Vixson
  */
-@Entity
-public class User implements Serializable {
+public class UpdateUser {
+    private User user;
+    
+    private Long userId;
+    private String firstName;
+    private String lastName;
+    private String email;
+    private String username;
+    private String password;
+    private GenderEnum gender;
+    private AccessRightEnum accessRight;
+    private List<ConsultationTimeslot> consultationTimeslotList;
+    private List<QuizAttempt> quizAttemptList;
+    private List<SurveyAttempt> surveyAttemptList;
+    private List<ClassGroup> classGroupList;
+    private List<Module> teacherModuleList;
+    private List<Module> studentModuleList;
+    private List<Module> publicUserModuleList;
+    
+    
+    public UpdateUser() {
+    }
 
-    public User(String firstName, String lastName, String email, String username, String password, GenderEnum gender, AccessRightEnum accessRight, List<ConsultationTimeslot> consultationTimeslotList, List<QuizAttempt> quizAttemptList, List<SurveyAttempt> surveyAttemptList, List<ClassGroup> classGroupList, List<Module> teacherModuleList, List<Module> studentModuleList, List<Module> publicUserModuleList) {
+    public UpdateUser(User user, Long userId, String firstName, String lastName, String email, String username, String password, GenderEnum gender, AccessRightEnum accessRight, List<ConsultationTimeslot> consultationTimeslotList, List<QuizAttempt> quizAttemptList, List<SurveyAttempt> surveyAttemptList, List<ClassGroup> classGroupList, List<Module> teacherModuleList, List<Module> publicUserModuleList, List<Module> studentModuleList) {
+        this.user = user;
+        this.userId = userId;
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
@@ -40,80 +60,22 @@ public class User implements Serializable {
         this.teacherModuleList = teacherModuleList;
         this.studentModuleList = studentModuleList;
         this.publicUserModuleList = publicUserModuleList;
-        this.salt = CryptographicHelper.getInstance().generateRandomString(32);
     }
 
-    public User() {
+    public User getUser() {
+        return user;
     }
 
-    private static final long serialVersionUID = 1L;
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long userId;
-    @Column
-    private String firstName;
-    @Column
-    private String lastName;
-    @Column
-    private String email;
-    @Column
-    private String username;
-    @Column
-    private String password;
-    @Column
-    private GenderEnum gender;
-    @Column
-    private AccessRightEnum accessRight;
-    @OneToMany(mappedBy = "booker")
-    private List<ConsultationTimeslot> consultationTimeslotList;
-    @OneToMany(mappedBy = "quizTaker")
-    private List<QuizAttempt> quizAttemptList;
-    @OneToMany(mappedBy = "surveyTaker")
-    private List<SurveyAttempt> surveyAttemptList;
-    @ManyToMany(mappedBy = "members")
-    private List<ClassGroup> classGroupList;
-    @OneToMany(mappedBy = "assignedTeacher")
-    private List<Module> teacherModuleList;
-    @ManyToMany(mappedBy = "studentList")
-    private List<Module> studentModuleList;
-    @ManyToMany(mappedBy = "publicUserList")
-    private List<Module> publicUserModuleList;
-    
-    @Column(columnDefinition = "CHAR(32) NOT NULL")
-    private String salt;
-    
+    public void setUser(User user) {
+        this.user = user;
+    }
 
-    public Long getId() {
+    public Long getUserId() {
         return userId;
     }
 
-    public void setId(Long userId) {
+    public void setUserId(Long userId) {
         this.userId = userId;
-    }
-
-    @Override
-    public int hashCode() {
-        int hash = 0;
-        hash += (userId != null ? userId.hashCode() : 0);
-        return hash;
-    }
-
-    @Override
-    public boolean equals(Object object) {
-        // TODO: Warning - this method won't work in the case the userId fields are not set
-        if (!(object instanceof User)) {
-            return false;
-        }
-        User other = (User) object;
-        if ((this.userId == null && other.userId != null) || (this.userId != null && !this.userId.equals(other.userId))) {
-            return false;
-        }
-        return true;
-    }
-
-    @Override
-    public String toString() {
-        return "entities.User[ Id=" + userId + " ]";
     }
 
     public String getFirstName() {
@@ -138,6 +100,14 @@ public class User implements Serializable {
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
     }
 
     public String getPassword() {
@@ -188,14 +158,6 @@ public class User implements Serializable {
         this.surveyAttemptList = surveyAttemptList;
     }
 
-    public String getUsername() {
-        return username;
-    }
-
-    public void setUsername(String username) {
-        this.username = username;
-    }
-
     public List<ClassGroup> getClassGroupList() {
         return classGroupList;
     }
@@ -227,13 +189,4 @@ public class User implements Serializable {
     public void setPublicUserModuleList(List<Module> publicUserModuleList) {
         this.publicUserModuleList = publicUserModuleList;
     }
-
-    public String getSalt() {
-        return salt;
-    }
-
-    public void setSalt(String salt) {
-        this.salt = salt;
-    }
-    
 }

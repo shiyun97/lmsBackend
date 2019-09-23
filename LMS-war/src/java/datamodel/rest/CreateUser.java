@@ -35,13 +35,15 @@ public class CreateUser {
     private List<QuizAttempt> quizAttemptList;
     private List<SurveyAttempt> surveyAttemptList;
     private List<ClassGroup> classGroupList;
-    private List<Module> moduleList;
+    private List<Module> teacherModuleList;
+    private List<Module> studentModuleList;
+    private List<Module> publicUserModuleList;
     
     
     public CreateUser() {
     }
 
-    public CreateUser(User user, Long userId, String firstName, String lastName, String email, String username, String password, GenderEnum gender, AccessRightEnum accessRight, List<ConsultationTimeslot> consultationTimeslotList, List<QuizAttempt> quizAttemptList, List<SurveyAttempt> surveyAttemptList, List<ClassGroup> classGroupList, List<Module> moduleList) {
+    public CreateUser(User user, Long userId, String firstName, String lastName, String email, String username, String password, GenderEnum gender, AccessRightEnum accessRight, List<ConsultationTimeslot> consultationTimeslotList, List<QuizAttempt> quizAttemptList, List<SurveyAttempt> surveyAttemptList, List<ClassGroup> classGroupList, List<Module> moduleList, List<Module> teacherModuleList, List<Module> studentModuleList, List<Module> publicUserModuleList) {
         this.user = user;
         this.userId = userId;
         this.firstName = firstName;
@@ -55,7 +57,9 @@ public class CreateUser {
         this.quizAttemptList = quizAttemptList;
         this.surveyAttemptList = surveyAttemptList;
         this.classGroupList = classGroupList;
-        this.moduleList = moduleList;
+        this.teacherModuleList = teacherModuleList;
+        this.studentModuleList = studentModuleList;
+        this.publicUserModuleList = publicUserModuleList;
     }
 
     public User getUser() {
@@ -162,11 +166,27 @@ public class CreateUser {
         this.classGroupList = classGroupList;
     }
 
-    public List<Module> getModuleList() {
-        return moduleList;
+    public List<Module> getTeacherModuleList() {
+        return teacherModuleList;
     }
 
-    public void setModuleList(List<Module> moduleList) {
-        this.moduleList = moduleList;
+    public void setTeacherModuleList(List<Module> teacherModuleList) {
+        this.teacherModuleList = teacherModuleList;
+    }
+
+    public List<Module> getStudentModuleList() {
+        return studentModuleList;
+    }
+
+    public void setStudentModuleList(List<Module> studentModuleList) {
+        this.studentModuleList = studentModuleList;
+    }
+
+    public List<Module> getPublicUserModuleList() {
+        return publicUserModuleList;
+    }
+
+    public void setPublicUserModuleList(List<Module> publicUserModuleList) {
+        this.publicUserModuleList = publicUserModuleList;
     }
 }
