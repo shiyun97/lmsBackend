@@ -2,6 +2,26 @@
 <persistence version="2.1" xmlns="http://xmlns.jcp.org/xml/ns/persistence" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/persistence http://xmlns.jcp.org/xml/ns/persistence/persistence_2_1.xsd">
   <persistence-unit name="LMS-warPU" transaction-type="JTA">
     <jta-data-source>jdbc/lmsDatasource</jta-data-source>
+    <class>entities.Annoucement</class>
+    <class>entities.Attendance</class>
+    <class>entities.Badge</class>
+    <class>entities.ClassGroup</class>
+    <class>entities.ClassGroupList</class>
+    <class>entities.Consultation</class>
+    <class>entities.ConsultationTimeslot</class>
+    <class>entities.File</class>
+    <class>entities.Folder</class>
+    <class>entities.ForumPost</class>
+    <class>entities.GradeEntry</class>
+    <class>entities.GradeItem</class>
+    <class>entities.LessonPlan</class>
+    <class>entities.Module</class>
+    <class>entities.Question</class>
+    <class>entities.Quiz</class>
+    <class>entities.QuizAttempt</class>
+    <class>entities.Survey</class>
+    <class>entities.SurveyAttempt</class>
+    <class>entities.User</class>
     <exclude-unlisted-classes>true</exclude-unlisted-classes>
     <properties>
       <property name="javax.persistence.schema-generation.database.action" value="create"/>

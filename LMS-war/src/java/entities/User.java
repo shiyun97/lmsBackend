@@ -24,10 +24,11 @@ import util.GenderEnum;
 @Entity
 public class User implements Serializable {
 
-    public User(String firstName, String lastName, String email, String password, GenderEnum gender, AccessRightEnum accessRight, List<ConsultationTimeslot> consultationTimeslotList, List<QuizAttempt> quizAttemptList, List<SurveyAttempt> surveyAttemptList) {
+    public User(String firstName, String lastName, String email, String username, String password, GenderEnum gender, AccessRightEnum accessRight, List<ConsultationTimeslot> consultationTimeslotList, List<QuizAttempt> quizAttemptList, List<SurveyAttempt> surveyAttemptList) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
+        this.username = username;
         this.password = password;
         this.gender = gender;
         this.accessRight = accessRight;
@@ -49,6 +50,8 @@ public class User implements Serializable {
     private String lastName;
     @Column
     private String email;
+    @Column
+    private String username;
     @Column
     private String password;
     @Column
@@ -168,6 +171,14 @@ public class User implements Serializable {
 
     public void setSurveyAttemptList(List<SurveyAttempt> surveyAttemptList) {
         this.surveyAttemptList = surveyAttemptList;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
     }
     
 }

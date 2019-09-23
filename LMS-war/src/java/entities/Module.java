@@ -7,6 +7,7 @@ package entities;
 
 import unusedEntities.Student;
 import java.io.Serializable;
+import java.sql.Timestamp;
 import java.util.List;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -26,7 +27,8 @@ import javax.xml.bind.annotation.XmlRootElement;
 @Table(name = "MODULE")
 public class Module implements Serializable {
 
-    public Module(String title, String description, String feedback, Integer semesterOffered, Integer creditUnit, String grade, Integer maxEnrollment, List<User> studentList, List<User> publicUserList, List<Folder> folderList, List<Annoucement> annoucementList, List<ForumPost> forumPostList, List<Quiz> quizList, List<GradeItem> gradeItemList, List<Attendance> attandanceList, List<Consultation> consultationList, List<LessonPlan> lessonPlanList, User owner, List<ClassGroupList> classGroupList) {
+    public Module(String code, String title, String description, String feedback, Integer semesterOffered, Integer creditUnit, String grade, Integer maxEnrollment, List<User> studentList, List<User> publicUserList, List<Folder> folderList, List<Annoucement> annoucementList, List<ForumPost> forumPostList, List<Quiz> quizList, List<GradeItem> gradeItemList, List<Attendance> attandanceList, List<Consultation> consultationList, List<LessonPlan> lessonPlanList, User owner, List<ClassGroupList> classGroupList, boolean hasExam, Timestamp examTime, String examVenue) {
+        this.code = code;
         this.title = title;
         this.description = description;
         this.feedback = feedback;
@@ -46,6 +48,9 @@ public class Module implements Serializable {
         this.lessonPlanList = lessonPlanList;
         this.owner = owner;
 	this.classGroupList = classGroupList;
+        this.hasExam = hasExam;
+        this.examTime = examTime;
+        this.examVenue = examVenue;
     }
 
     public Module() {
@@ -54,6 +59,8 @@ public class Module implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
+    private Long moduleId;
+    @Column
     private String code;
     @Column
     private String title;
@@ -93,6 +100,12 @@ public class Module implements Serializable {
     private User owner;
     @OneToMany(mappedBy = "module")
     private List<ClassGroupList> classGroupList;
+    @Column
+    private boolean hasExam;
+    @Column
+    private Timestamp examTime;
+    @Column
+    private String examVenue;
     
     /**
     public Module(String title, String description, String feedback, Integer semesterOffered, Integer creditUnit, String grade){
@@ -108,7 +121,7 @@ public class Module implements Serializable {
     @Override
     public int hashCode() {
         int hash = 0;
-        hash += (code != null ? code.hashCode() : 0);
+        hash += (moduleId != null ? moduleId.hashCode() : 0);
         return hash;
     }
 
@@ -119,7 +132,7 @@ public class Module implements Serializable {
             return false;
         }
         Module other = (Module) object;
-        if ((this.code == null && other.code != null) || (this.code != null && !this.code.equals(other.code))) {
+        if ((this.moduleId == null && other.moduleId != null) || (this.moduleId != null && !this.moduleId.equals(other.moduleId))) {
             return false;
         }
         return true;
@@ -127,15 +140,15 @@ public class Module implements Serializable {
 
     @Override
     public String toString() {
-        return "entity.module[ id=" + code + " ]";
+        return "entity.module[ id=" + moduleId + " ]";
     }
     
     public String getModuleId() {
-        return code;
+        return getCode();
     }
 
     public void setModuleId(String code) {
-        this.code = code;
+        this.setCode(code);
     }
 
     public String getTitle() {
@@ -288,6 +301,42 @@ public class Module implements Serializable {
 
     public void setClassGroupList(List<ClassGroupList> classGroupList) {
         this.classGroupList = classGroupList;
+    }
+
+    public void setModuleId(Long moduleId) {
+        this.moduleId = moduleId;
+    }
+
+    public String getCode() {
+        return code;
+    }
+
+    public void setCode(String code) {
+        this.code = code;
+    }
+
+    public boolean isHasExam() {
+        return hasExam;
+    }
+
+    public void setHasExam(boolean hasExam) {
+        this.hasExam = hasExam;
+    }
+
+    public Timestamp getExamTime() {
+        return examTime;
+    }
+
+    public void setExamTime(Timestamp examTime) {
+        this.examTime = examTime;
+    }
+
+    public String getExamVenue() {
+        return examVenue;
+    }
+
+    public void setExamVenue(String examVenue) {
+        this.examVenue = examVenue;
     }
 
 }
