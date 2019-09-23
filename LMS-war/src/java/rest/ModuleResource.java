@@ -55,6 +55,21 @@ public class ModuleResource {
             module.setSemesterOffered(mountModuleReq.getSemesterOffered());
             module.setCreditUnit(mountModuleReq.getCreditUnit());
             module.setMaxEnrollment(mountModuleReq.getMaxEnrollment());
+            module.setHasExam(mountModuleReq.isHasExam());
+            module.setExamTime(mountModuleReq.getExamTime());
+            module.setExamVenue(mountModuleReq.getExamVenue());
+            module.setAnnoucementList(null);
+            module.setAttandanceList(null);
+            module.setClassGroupList(null);
+            module.setConsultationList(null);
+            module.setFeedback(null);
+            module.setFolderList(null);
+            module.setForumPostList(null);
+            module.setGrade(null);
+            module.setGradeItemList(null);
+            module.setLessonPlanList(null);
+            module.se
+            
 
             em.persist(module);
             em.flush();

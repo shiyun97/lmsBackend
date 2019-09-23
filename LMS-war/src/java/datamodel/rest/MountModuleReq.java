@@ -1,6 +1,7 @@
 package datamodel.rest;
 
 import entities.Module;
+import java.sql.Timestamp;
 
 /*
  * To change this license header, choose License Headers in Project Properties.
@@ -22,12 +23,15 @@ public class MountModuleReq {
     private Integer semesterOffered;
     private Integer creditUnit;
     private Integer maxEnrollment;
+    private boolean hasExam;
+    private Timestamp examTime;
+    private String examVenue;
     
     
     public MountModuleReq() {
     }
 
-    public MountModuleReq(Module module, Long moduleId, String code, String title, String description, Integer semesterOffered, Integer creditUnit, Integer maxEnrollment) {
+    public MountModuleReq(Module module, Long moduleId, String code, String title, String description, Integer semesterOffered, Integer creditUnit, Integer maxEnrollment, boolean hasExam, Timestamp examTime, String examVenue) {
         this.module = module;
         this.moduleId = moduleId;
         this.code = code;
@@ -36,6 +40,9 @@ public class MountModuleReq {
         this.semesterOffered = semesterOffered;
         this.creditUnit = creditUnit;
         this.maxEnrollment = maxEnrollment;
+        this.hasExam = hasExam;
+        this.examTime = examTime;
+        this.examVenue = examVenue;
     }
 
     public Module getModule() {
@@ -100,5 +107,29 @@ public class MountModuleReq {
 
     public void setModuleId(Long moduleId) {
         this.moduleId = moduleId;
+    }
+
+    public boolean isHasExam() {
+        return hasExam;
+    }
+
+    public void setHasExam(boolean hasExam) {
+        this.hasExam = hasExam;
+    }
+
+    public Timestamp getExamTime() {
+        return examTime;
+    }
+
+    public void setExamTime(Timestamp examTime) {
+        this.examTime = examTime;
+    }
+
+    public String getExamVenue() {
+        return examVenue;
+    }
+
+    public void setExamVenue(String examVenue) {
+        this.examVenue = examVenue;
     }
 }

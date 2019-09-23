@@ -24,7 +24,7 @@ import util.GenderEnum;
 @Entity
 public class User implements Serializable {
 
-    public User(String firstName, String lastName, String email, String username, String password, GenderEnum gender, AccessRightEnum accessRight, List<ConsultationTimeslot> consultationTimeslotList, List<QuizAttempt> quizAttemptList, List<SurveyAttempt> surveyAttemptList) {
+    public User(String firstName, String lastName, String email, String username, String password, GenderEnum gender, AccessRightEnum accessRight, List<ConsultationTimeslot> consultationTimeslotList, List<QuizAttempt> quizAttemptList, List<SurveyAttempt> surveyAttemptList, List<ClassGroup> classGroupList, List<Module> moduleList) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
@@ -35,6 +35,8 @@ public class User implements Serializable {
         this.consultationTimeslotList = consultationTimeslotList;
         this.quizAttemptList = quizAttemptList;
         this.surveyAttemptList = surveyAttemptList;
+        this.classGroupList = classGroupList;
+        this.moduleList = moduleList;
     }
 
     public User() {
@@ -66,6 +68,8 @@ public class User implements Serializable {
     private List<SurveyAttempt> surveyAttemptList;
     @ManyToMany(mappedBy = "members")
     private List<ClassGroup> classGroupList;
+    @OneToMany(mappedBy = "assignedTeacher")
+    private List<Module> moduleList;
     
 
     public Long getId() {
@@ -179,6 +183,22 @@ public class User implements Serializable {
 
     public void setUsername(String username) {
         this.username = username;
+    }
+
+    public List<ClassGroup> getClassGroupList() {
+        return classGroupList;
+    }
+
+    public void setClassGroupList(List<ClassGroup> classGroupList) {
+        this.classGroupList = classGroupList;
+    }
+
+    public List<Module> getModuleList() {
+        return moduleList;
+    }
+
+    public void setModuleList(List<Module> moduleList) {
+        this.moduleList = moduleList;
     }
     
 }
