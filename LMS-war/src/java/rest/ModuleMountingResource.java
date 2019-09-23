@@ -7,6 +7,7 @@ package rest;
 
 import datamodel.rest.MountModuleReq;
 import datamodel.rest.UpdateModule;
+import datamodel.rest.UserLogin;
 import entities.Module;
 import entities.User;
 import java.util.List;
@@ -85,7 +86,7 @@ public class ModuleMountingResource {
         }
     }
     
-    @Path("getModule/{id}")
+    @Path(value = "getModule/{id}")
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     public Response getModuleById(@PathParam("id") Long moduleId){
@@ -103,7 +104,7 @@ public class ModuleMountingResource {
         }
     }
     
-    @Path("getAllModule")
+    @Path(value = "getAllModule")
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     public Response getAllModule(){
@@ -121,7 +122,7 @@ public class ModuleMountingResource {
         }
     }
     
-    @Path("removeModule/{code}")
+    @Path(value = "removeModule/{code}")
     @DELETE
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
@@ -145,15 +146,18 @@ public class ModuleMountingResource {
         }
     }
     
-    @Path("updateModule")
+    @Path(value = "updateModule")
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public Response updateModule(UpdateModule updateModule){
         try{
+            
+            
             Long moduleId = updateModule.getModuleId();
-            Query query = em.createQuery("select m from Module m where m.moduleId = :moduleId");
-            Module module = (Module) query.getSingleResult();
+            Module module = em.find(Module.class, moduleId);
+            //em.createQuery("select m from Module m where m.moduleId = :moduleId");
+            //Module module = (Module) query.getSingleResult();
             
             if(module != null){
             module.setCode(updateModule.getCode());

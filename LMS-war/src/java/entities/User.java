@@ -72,9 +72,9 @@ public class User implements Serializable {
     private List<ClassGroup> classGroupList;
     @OneToMany(mappedBy = "assignedTeacher")
     private List<Module> teacherModuleList;
-    @ManyToMany(mappedBy = "students")
+    @ManyToMany(mappedBy = "studentList")
     private List<Module> studentModuleList;
-    @ManyToMany(mappedBy = "publicUsers")
+    @ManyToMany(mappedBy = "publicUserList")
     private List<Module> publicUserModuleList;
     
 

@@ -22,7 +22,6 @@ public class ApplicationConfig extends Application
     {
         resources.add(rest.ModuleMountingResource.class);
         resources.add(rest.UserResource.class);
-        
     }    
 }
 
