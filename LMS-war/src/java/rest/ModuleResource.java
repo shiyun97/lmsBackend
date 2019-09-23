@@ -58,6 +58,8 @@ public class ModuleResource {
             module.setHasExam(mountModuleReq.isHasExam());
             module.setExamTime(mountModuleReq.getExamTime());
             module.setExamVenue(mountModuleReq.getExamVenue());
+            module.setAssignedTeacher(mountModuleReq.getAssignedTeacher());
+            
             module.setAnnoucementList(null);
             module.setAttandanceList(null);
             module.setClassGroupList(null);
@@ -68,7 +70,9 @@ public class ModuleResource {
             module.setGrade(null);
             module.setGradeItemList(null);
             module.setLessonPlanList(null);
-            module.se
+            module.setPublicUserList(null);
+            module.setQuizList(null);
+            module.setStudentList(null);
             
 
             em.persist(module);

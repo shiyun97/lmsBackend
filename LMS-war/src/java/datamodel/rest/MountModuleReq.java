@@ -1,6 +1,7 @@
 package datamodel.rest;
 
 import entities.Module;
+import entities.User;
 import java.sql.Timestamp;
 
 /*
@@ -26,12 +27,13 @@ public class MountModuleReq {
     private boolean hasExam;
     private Timestamp examTime;
     private String examVenue;
+    private User assignedTeacher;
     
     
     public MountModuleReq() {
     }
 
-    public MountModuleReq(Module module, Long moduleId, String code, String title, String description, Integer semesterOffered, Integer creditUnit, Integer maxEnrollment, boolean hasExam, Timestamp examTime, String examVenue) {
+    public MountModuleReq(Module module, Long moduleId, String code, String title, String description, Integer semesterOffered, Integer creditUnit, Integer maxEnrollment, boolean hasExam, Timestamp examTime, String examVenue, User assignedTeacher) {
         this.module = module;
         this.moduleId = moduleId;
         this.code = code;
@@ -43,6 +45,7 @@ public class MountModuleReq {
         this.hasExam = hasExam;
         this.examTime = examTime;
         this.examVenue = examVenue;
+        this.assignedTeacher = assignedTeacher;
     }
 
     public Module getModule() {
@@ -131,5 +134,13 @@ public class MountModuleReq {
 
     public void setExamVenue(String examVenue) {
         this.examVenue = examVenue;
+    }
+
+    public User getAssignedTeacher() {
+        return assignedTeacher;
+    }
+
+    public void setAssignedTeacher(User assignedTeacher) {
+        this.assignedTeacher = assignedTeacher;
     }
 }

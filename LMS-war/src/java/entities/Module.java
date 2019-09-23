@@ -27,12 +27,13 @@ import javax.xml.bind.annotation.XmlRootElement;
 @Table(name = "MODULE")
 public class Module implements Serializable {
 
-    public Module(String code, String title, String description, String feedback, Integer semesterOffered, Integer creditUnit, String grade, Integer maxEnrollment, List<User> studentList, List<User> publicUserList, List<Folder> folderList, List<Annoucement> annoucementList, List<ForumPost> forumPostList, List<Quiz> quizList, List<GradeItem> gradeItemList, List<Attendance> attandanceList, List<Consultation> consultationList, List<LessonPlan> lessonPlanList, User owner, List<ClassGroupList> classGroupList, boolean hasExam, Timestamp examTime, String examVenue, User assignedTeacher) {
+    public Module(String code, String title, String description, String feedback, Integer semesterOffered, String yearOffered, Integer creditUnit, String grade, Integer maxEnrollment, List<User> studentList, List<User> publicUserList, List<Folder> folderList, List<Annoucement> annoucementList, List<ForumPost> forumPostList, List<Quiz> quizList, List<GradeItem> gradeItemList, List<Attendance> attandanceList, List<Consultation> consultationList, List<LessonPlan> lessonPlanList, User owner, List<ClassGroupList> classGroupList, boolean hasExam, Timestamp examTime, String examVenue, User assignedTeacher) {
         this.code = code;
         this.title = title;
         this.description = description;
         this.feedback = feedback;
         this.semesterOffered = semesterOffered;
+        this.yearOffered = yearOffered;
         this.creditUnit = creditUnit;
         this.grade = grade;
         this.maxEnrollment = maxEnrollment;
@@ -70,6 +71,8 @@ public class Module implements Serializable {
     private String feedback;
     @Column
     private Integer semesterOffered;
+    @Column
+    private String yearOffered;
     @Column
     private Integer creditUnit;
     @Column
@@ -337,6 +340,14 @@ public class Module implements Serializable {
 
     public void setAssignedTeacher(User assignedTeacher) {
         this.assignedTeacher = assignedTeacher;
+    }
+
+    public String getYearOffered() {
+        return yearOffered;
+    }
+
+    public void setYearOffered(String yearOffered) {
+        this.yearOffered = yearOffered;
     }
 
 }
