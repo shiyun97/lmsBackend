@@ -5,8 +5,9 @@
  */
 package rest;
 
-import datamodel.rest.MountModuleReq;
+import datamodel.rest.CreateUser;
 import entities.User;
+import java.util.List;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -33,27 +34,67 @@ public class UserResource {
 
     public UserResource() {
     }
+    
+    @PUT
+    @Path(value = "createUser")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response createUser(CreateUser createUser){
+        try{
+            User user = new User();
+            user.setFirstName(createUser.getFirstName());
+            user.setLastName(createUser.getLastName());
+            user.setEmail(createUser.getEmail());
+            user.setUsername(createUser.getUsername());
+            user.setPassword(createUser.getPassword());
+            user.setGender(createUser.getGender());
+            user.setAccessRight(createUser.getAccessRight());
+            
+            user.setClassGroupList(null);
+            user.setConsultationTimeslotList(null);
+            user.setModuleList(null);
+            user.setQuizAttemptList(null);
+            user.setSurveyAttemptList(null);
+            
+            em.persist(user);
+            em.flush();
+            
+            return Response.status(Response.Status.OK).entity(user).build();
+        } catch(Exception ex){
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
+        }
+    }
+    
+    @GET
+    @Path("getAllUser")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getAllUser(){
+        try{
+            Query query = em.createQuery("select u from User u");
+            List<User> userList = query.getResultList();
+            
+            if(userList != null && !userList.isEmpty()){
+                return Response.status(Response.Status.OK).entity(userList).build(); 
+            }
+        }
+    }
 
     @GET
     @Path(value = "userLogin")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public Response userLogin(@QueryParam("username") String username, @QueryParam("password") String password){
-        
-        Query query = em.createQuery("SELECT u FROM User u WHERE u.username = :username AND u.password = :password");
-        User user = (User) query.getSingleResult();
-        
-        User admin = em.find(User.class, username);
-        
-        if(admin.getPassword().equals(password)){
-            return admin;
-        }
-        
-        if(user != null && !user.isEmpty()){
-            return Response.status(Response.Status.OK).entity(user).build();
-        } else {
-            ErrorRsp = errorRsp = new ErrorRsp(ex.getMessage());
-            return Response.status(Response.Status.NOT_FOUND).entity(errorRsp).build();
+        try{
+            
+            Query query = em.createQuery("SELECT u FROM User u WHERE u.username = :username AND u.password = :password");
+            User user = (User) query.getSingleResult();
+
+            if(user != null){
+                return Response.status(Response.Status.OK).entity(user).build();
+            } else {
+                return Response.status(Response.Status.NOT_FOUND).entity("No such user").build();
+            } catch {Exception ex) {
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();           
         }
     }
 }

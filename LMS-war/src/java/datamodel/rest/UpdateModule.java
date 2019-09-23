@@ -1,6 +1,8 @@
 package datamodel.rest;
 
 import entities.Module;
+import entities.User;
+import java.sql.Timestamp;
 
 /*
  * To change this license header, choose License Headers in Project Properties.
@@ -20,14 +22,19 @@ public class UpdateModule {
     private String title;
     private String description;
     private Integer semesterOffered;
+    private String yearOffered;
     private Integer creditUnit;
     private Integer maxEnrollment;
+    private User assignedTeacher;
+    private boolean hasExam;
+    private Timestamp examTime;
+    private String examVenue;
     
     
     public UpdateModule() {
     }
 
-    public UpdateModule(Module module, Long moduleId, String code, String title, String description, Integer semesterOffered, Integer creditUnit, Integer maxEnrollment) {
+    public UpdateModule(Module module, Long moduleId, String code, String title, String description, Integer semesterOffered, String yearOffered, Integer creditUnit, Integer maxEnrollment, User assignedTeacher, boolean hasExam, Timestamp examTime, String examVenue) {
         this.module = module;
         this.moduleId = moduleId;
         this.code = code;
@@ -36,6 +43,11 @@ public class UpdateModule {
         this.semesterOffered = semesterOffered;
         this.creditUnit = creditUnit;
         this.maxEnrollment = maxEnrollment;
+        this.yearOffered = yearOffered;
+        this.assignedTeacher = assignedTeacher;
+        this.hasExam = hasExam;
+        this.examTime = examTime;
+        this.examVenue = examVenue;
     }
 
     public Module getModule() {
@@ -100,5 +112,45 @@ public class UpdateModule {
 
     public void setModuleId(Long moduleId) {
         this.moduleId = moduleId;
+    }
+
+    public String getYearOffered() {
+        return yearOffered;
+    }
+
+    public void setYearOffered(String yearOffered) {
+        this.yearOffered = yearOffered;
+    }
+
+    public User getAssignedTeacher() {
+        return assignedTeacher;
+    }
+
+    public void setAssignedTeacher(User assignedTeacher) {
+        this.assignedTeacher = assignedTeacher;
+    }
+
+    public boolean isHasExam() {
+        return hasExam;
+    }
+
+    public void setHasExam(boolean hasExam) {
+        this.hasExam = hasExam;
+    }
+
+    public Timestamp getExamTime() {
+        return examTime;
+    }
+
+    public void setExamTime(Timestamp examTime) {
+        this.examTime = examTime;
+    }
+
+    public String getExamVenue() {
+        return examVenue;
+    }
+
+    public void setExamVenue(String examVenue) {
+        this.examVenue = examVenue;
     }
 }

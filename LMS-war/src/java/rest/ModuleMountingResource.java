@@ -34,12 +34,12 @@ import util.exception.ModuleNotFoundException;
  */
 @Stateless
 @Path("User")
-public class ModuleResource {
+public class ModuleMountingResource {
 
     @PersistenceContext(unitName = "LMS-warPU")
     private EntityManager em;
 
-    public ModuleResource() {
+    public ModuleMountingResource() {
     }
 
     @PUT
@@ -53,6 +53,7 @@ public class ModuleResource {
             module.setTitle(mountModuleReq.getTitle());
             module.setDescription(mountModuleReq.getDescription());
             module.setSemesterOffered(mountModuleReq.getSemesterOffered());
+            module.setYearOffered(mountModuleReq.getYearOffered());
             module.setCreditUnit(mountModuleReq.getCreditUnit());
             module.setMaxEnrollment(mountModuleReq.getMaxEnrollment());
             module.setHasExam(mountModuleReq.isHasExam());
@@ -111,7 +112,7 @@ public class ModuleResource {
             List<Module> moduleList = query.getResultList();
             
             if(moduleList != null && !moduleList.isEmpty()){
-            return Response.status(Response.Status.OK).entity(moduleList).build();
+                return Response.status(Response.Status.OK).entity(moduleList).build();
             } else {
                 return Response.status(Response.Status.NOT_FOUND).entity("No module found").build();
             }
@@ -135,8 +136,9 @@ public class ModuleResource {
             
             if(module != null){
             em.remove(module);
-            }         
             return Response.status(Response.Status.OK).entity(query).build();
+            }         
+            return Response.status(Response.Status.NOT_FOUND).entity("No module found").build();
             
         } catch(Exception ex) {
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();           
@@ -149,20 +151,29 @@ public class ModuleResource {
     @Produces(MediaType.APPLICATION_JSON)
     public Response updateModule(UpdateModule updateModule){
         try{
-            Module module = updateModule.getModule();
+            Long moduleId = updateModule.getModuleId();
+            Query query = em.createQuery("select m from Module m where m.moduleId = :moduleId");
+            Module module = (Module) query.getSingleResult();
             
             if(module != null){
             module.setCode(updateModule.getCode());
             module.setTitle(updateModule.getTitle());
             module.setDescription(updateModule.getDescription());
             module.setSemesterOffered(updateModule.getSemesterOffered());
+            module.setYearOffered(updateModule.getYearOffered());
             module.setCreditUnit(updateModule.getCreditUnit());
             module.setMaxEnrollment(updateModule.getMaxEnrollment());
+            module.setAssignedTeacher(updateModule.getAssignedTeacher());
+            module.setHasExam(updateModule.isHasExam());
+            module.setExamTime(updateModule.getExamTime());
+            module.setExamVenue(updateModule.getExamVenue());
             
             em.merge(module);
             em.flush();
-            }
+            
             return Response.status(Response.Status.OK).entity(module).build();
+            }
+            return Response.status(Response.Status.NOT_FOUND).entity("Module does not exist").build();
         /**}catch(ModuleNotFoundException | InputDataValidationException ex) {
             return Response.status(Response.Status.BAD_REQUEST).entity("Module does not exist").build();   **/        
         }catch(Exception ex) {

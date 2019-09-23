@@ -22,6 +22,7 @@ public class MountModuleReq {
     private String title;
     private String description;
     private Integer semesterOffered;
+    private String yearOffered;
     private Integer creditUnit;
     private Integer maxEnrollment;
     private boolean hasExam;
@@ -33,13 +34,14 @@ public class MountModuleReq {
     public MountModuleReq() {
     }
 
-    public MountModuleReq(Module module, Long moduleId, String code, String title, String description, Integer semesterOffered, Integer creditUnit, Integer maxEnrollment, boolean hasExam, Timestamp examTime, String examVenue, User assignedTeacher) {
+    public MountModuleReq(Module module, Long moduleId, String code, String title, String description, Integer semesterOffered, String yearOffered, Integer creditUnit, Integer maxEnrollment, boolean hasExam, Timestamp examTime, String examVenue, User assignedTeacher) {
         this.module = module;
         this.moduleId = moduleId;
         this.code = code;
         this.title = title;
         this.description = description;
         this.semesterOffered = semesterOffered;
+        this.yearOffered = yearOffered;
         this.creditUnit = creditUnit;
         this.maxEnrollment = maxEnrollment;
         this.hasExam = hasExam;
@@ -142,5 +144,13 @@ public class MountModuleReq {
 
     public void setAssignedTeacher(User assignedTeacher) {
         this.assignedTeacher = assignedTeacher;
+    }
+
+    public String getYearOffered() {
+        return yearOffered;
+    }
+
+    public void setYearOffered(String yearOffered) {
+        this.yearOffered = yearOffered;
     }
 }

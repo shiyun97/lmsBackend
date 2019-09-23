@@ -24,7 +24,7 @@ import util.GenderEnum;
 @Entity
 public class User implements Serializable {
 
-    public User(String firstName, String lastName, String email, String username, String password, GenderEnum gender, AccessRightEnum accessRight, List<ConsultationTimeslot> consultationTimeslotList, List<QuizAttempt> quizAttemptList, List<SurveyAttempt> surveyAttemptList, List<ClassGroup> classGroupList, List<Module> moduleList) {
+    public User(String firstName, String lastName, String email, String username, String password, GenderEnum gender, AccessRightEnum accessRight, List<ConsultationTimeslot> consultationTimeslotList, List<QuizAttempt> quizAttemptList, List<SurveyAttempt> surveyAttemptList, List<ClassGroup> classGroupList, List<Module> teacherModuleList, List<Module> studentModuleList, List<Module> publicUserModuleList) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
@@ -36,7 +36,9 @@ public class User implements Serializable {
         this.quizAttemptList = quizAttemptList;
         this.surveyAttemptList = surveyAttemptList;
         this.classGroupList = classGroupList;
-        this.moduleList = moduleList;
+        this.teacherModuleList = teacherModuleList;
+        this.studentModuleList = studentModuleList;
+        this.publicUserModuleList = publicUserModuleList;
     }
 
     public User() {
@@ -69,7 +71,11 @@ public class User implements Serializable {
     @ManyToMany(mappedBy = "members")
     private List<ClassGroup> classGroupList;
     @OneToMany(mappedBy = "assignedTeacher")
-    private List<Module> moduleList;
+    private List<Module> teacherModuleList;
+    @ManyToMany(mappedBy = "students")
+    private List<Module> studentModuleList;
+    @ManyToMany(mappedBy = "publicUsers")
+    private List<Module> publicUserModuleList;
     
 
     public Long getId() {
@@ -193,12 +199,28 @@ public class User implements Serializable {
         this.classGroupList = classGroupList;
     }
 
-    public List<Module> getModuleList() {
-        return moduleList;
+    public List<Module> getTeacherModuleList() {
+        return teacherModuleList;
     }
 
-    public void setModuleList(List<Module> moduleList) {
-        this.moduleList = moduleList;
+    public void setTeacherModuleList(List<Module> teacherModuleList) {
+        this.teacherModuleList = teacherModuleList;
+    }
+
+    public List<Module> getStudentModuleList() {
+        return studentModuleList;
+    }
+
+    public void setStudentModuleList(List<Module> studentModuleList) {
+        this.studentModuleList = studentModuleList;
+    }
+
+    public List<Module> getPublicUserModuleList() {
+        return publicUserModuleList;
+    }
+
+    public void setPublicUserModuleList(List<Module> publicUserModuleList) {
+        this.publicUserModuleList = publicUserModuleList;
     }
     
 }
