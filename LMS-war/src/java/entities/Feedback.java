@@ -30,17 +30,6 @@ public class Feedback implements Serializable {
     private String feedback;
     @Column
     private Timestamp createTs;
-
-    @ManyToOne
-    private Module module;
-
-    public Module getModule() {
-        return module;
-    }
-
-    public void setModule(Module module) {
-        this.module = module;
-    }
     
     public String getFeedback() {
         return feedback;

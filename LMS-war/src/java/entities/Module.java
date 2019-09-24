@@ -7,6 +7,7 @@ package entities;
 
 import unusedEntities.Student;
 import java.io.Serializable;
+import java.sql.Timestamp;
 import java.util.List;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -26,10 +27,13 @@ import javax.xml.bind.annotation.XmlRootElement;
 @Table(name = "MODULE")
 public class Module implements Serializable {
 
-    public Module(String title, String description, String feedback, Integer semesterOffered, Integer creditUnit, String grade, Integer maxEnrollment, List<User> studentList, List<User> publicUserList, List<Folder> folderList, List<Annoucement> annoucementList, List<ForumPost> forumPostList, List<Quiz> quizList, List<GradeItem> gradeItemList, List<Attendance> attandanceList, List<Consultation> consultationList, List<LessonPlan> lessonPlanList, User owner, List<ClassGroupList> classGroupList) {
+    public Module(String code, String title, String description, String feedback, Integer semesterOffered, String yearOffered, Integer creditUnit, String grade, Integer maxEnrollment, List<User> studentList, List<User> publicUserList, List<Folder> folderList, List<Annoucement> annoucementList, List<ForumPost> forumPostList, List<Quiz> quizList, List<GradeItem> gradeItemList, List<Attendance> attandanceList, List<Consultation> consultationList, List<LessonPlan> lessonPlanList, User owner, List<ClassGroupList> classGroupList, boolean hasExam, Timestamp examTime, String examVenue, User assignedTeacher, String lectureDetails) {
+        this.code = code;
         this.title = title;
         this.description = description;
+        this.feedback = feedback;
         this.semesterOffered = semesterOffered;
+        this.yearOffered = yearOffered;
         this.creditUnit = creditUnit;
         this.grade = grade;
         this.maxEnrollment = maxEnrollment;
@@ -43,8 +47,12 @@ public class Module implements Serializable {
         this.attandanceList = attandanceList;
         this.consultationList = consultationList;
         this.lessonPlanList = lessonPlanList;
-        this.owner = owner;
 	this.classGroupList = classGroupList;
+        this.hasExam = hasExam;
+        this.examTime = examTime;
+        this.examVenue = examVenue;
+        this.assignedTeacher = assignedTeacher;
+        this.lectureDetails = lectureDetails;
     }
 
     public Module() {
@@ -61,7 +69,11 @@ public class Module implements Serializable {
     @Column
     private String description;
     @Column
+    private String feedback;
+    @Column
     private Integer semesterOffered;
+    @Column
+    private String yearOffered;
     @Column
     private Integer creditUnit;
     @Column
@@ -89,11 +101,21 @@ public class Module implements Serializable {
     @OneToMany(mappedBy = "module")
     private List<LessonPlan> lessonPlanList;
     @ManyToOne
-    private User owner;
+    private User assignedTeacher;
     @OneToMany(mappedBy = "module")
     private List<ClassGroupList> classGroupList;
-    @OneToMany(mappedBy = "module")
+    @OneToMany
     private List<Feedback> feedbackList;
+    @OneToMany(mappedBy = "module")
+    private List<Tutorial> tutorials;
+    @Column
+    private boolean hasExam;
+    @Column
+    private Timestamp examTime;
+    @Column
+    private String examVenue;
+    @Column
+    private String lectureDetails;
     
     /**
     public Module(String title, String description, String feedback, Integer semesterOffered, Integer creditUnit, String grade){
@@ -109,7 +131,7 @@ public class Module implements Serializable {
     @Override
     public int hashCode() {
         int hash = 0;
-        hash += (code != null ? code.hashCode() : 0);
+        hash += (moduleId != null ? moduleId.hashCode() : 0);
         return hash;
     }
 
@@ -128,33 +150,16 @@ public class Module implements Serializable {
 
     @Override
     public String toString() {
-        return "entity.module[ id=" + code + " ]";
-    }
-
-    public Long getModuleId() {
-        return moduleId;
-    }
-
-    public void setModuleId(Long moduleId) {
-        this.moduleId = moduleId;
-    }
-
-    public String getCode() {
-        return code;
-    }
-
-    public void setCode(String code) {
-        this.code = code;
-    }
-
-    public List<Feedback> getFeedbackList() {
-        return feedbackList;
-    }
-
-    public void setFeedbackList(List<Feedback> feedbackList) {
-        this.feedbackList = feedbackList;
+        return "entity.module[ id=" + moduleId + " ]";
     }
     
+    public String getModuleId() {
+        return getCode();
+    }
+
+    public void setModuleId(String code) {
+        this.setCode(code);
+    }
 
     public String getTitle() {
         return title;
@@ -170,6 +175,14 @@ public class Module implements Serializable {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public String getFeedback() {
+        return feedback;
+    }
+
+    public void setFeedback(String feedback) {
+        this.feedback = feedback;
     }
 
     public Integer getSemesterOffered() {
@@ -283,14 +296,6 @@ public class Module implements Serializable {
     public void setLessonPlanList(List<LessonPlan> lessonPlanList) {
         this.lessonPlanList = lessonPlanList;
     }
-
-    public User getOwner() {
-        return owner;
-    }
-
-    public void setOwner(User owner) {
-        this.owner = owner;
-    }
 	
     public List<ClassGroupList> getClassGroupList() {
         return classGroupList;
@@ -299,4 +304,81 @@ public class Module implements Serializable {
     public void setClassGroupList(List<ClassGroupList> classGroupList) {
         this.classGroupList = classGroupList;
     }
+
+    public void setModuleId(Long moduleId) {
+        this.moduleId = moduleId;
+    }
+
+    public String getCode() {
+        return code;
+    }
+
+    public void setCode(String code) {
+        this.code = code;
+    }
+
+    public boolean isHasExam() {
+        return hasExam;
+    }
+
+    public void setHasExam(boolean hasExam) {
+        this.hasExam = hasExam;
+    }
+
+    public Timestamp getExamTime() {
+        return examTime;
+    }
+
+    public void setExamTime(Timestamp examTime) {
+        this.examTime = examTime;
+    }
+
+    public String getExamVenue() {
+        return examVenue;
+    }
+
+    public void setExamVenue(String examVenue) {
+        this.examVenue = examVenue;
+    }
+
+    public User getAssignedTeacher() {
+        return assignedTeacher;
+    }
+
+    public void setAssignedTeacher(User assignedTeacher) {
+        this.assignedTeacher = assignedTeacher;
+    }
+
+    public String getYearOffered() {
+        return yearOffered;
+    }
+
+    public void setYearOffered(String yearOffered) {
+        this.yearOffered = yearOffered;
+    }
+
+    public String getLectureDetails() {
+        return lectureDetails;
+    }
+
+    public void setLectureDetails(String lectureDetails) {
+        this.lectureDetails = lectureDetails;
+    }
+
+    public List<Tutorial> getTutorials() {
+        return tutorials;
+    }
+
+    public void setTutorials(List<Tutorial> tutorials) {
+        this.tutorials = tutorials;
+    }
+
+    public List<Feedback> getFeedbackList() {
+        return feedbackList;
+    }
+
+    public void setFeedbackList(List<Feedback> feedbackList) {
+        this.feedbackList = feedbackList;
+    }
+
 }
