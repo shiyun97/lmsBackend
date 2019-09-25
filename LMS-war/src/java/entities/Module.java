@@ -152,13 +152,9 @@ public class Module implements Serializable {
     public String toString() {
         return "entity.module[ id=" + moduleId + " ]";
     }
-    
-    public String getModuleId() {
-        return getCode();
-    }
 
-    public void setModuleId(String code) {
-        this.setCode(code);
+    public Long getModuleId() {
+        return moduleId;
     }
 
     public String getTitle() {
