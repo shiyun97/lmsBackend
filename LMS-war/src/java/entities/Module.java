@@ -14,6 +14,8 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Column;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
@@ -83,6 +85,10 @@ public class Module implements Serializable {
     @ManyToMany
     private List<User> studentList;
     @ManyToMany
+    @JoinTable(
+    name = "module_publicuser", 
+    joinColumns = @JoinColumn(name = "moduleid"), 
+    inverseJoinColumns = @JoinColumn(name = "publicuserid"))
     private List<User> publicUserList;
     @OneToMany(mappedBy = "module")
     private List<Folder> folderList;
