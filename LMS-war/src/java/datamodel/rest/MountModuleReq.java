@@ -30,6 +30,14 @@ public class MountModuleReq {
     private String examVenue;
     private User assignedTeacher;
     
+    private User user;
+    
+    private Long userId;
+    private String username;
+    private String password;
+    
+    private String email;
+
     
     public MountModuleReq() {
     }
@@ -49,6 +57,29 @@ public class MountModuleReq {
         this.examVenue = examVenue;
         this.assignedTeacher = assignedTeacher;
     }
+
+    public MountModuleReq(Module module, Long moduleId, String code, String title, String description, Integer semesterOffered, String yearOffered, Integer creditUnit, Integer maxEnrollment, boolean hasExam, Timestamp examTime, String examVenue, User assignedTeacher, User user, Long userId, String username, String password, String email) {
+        this.module = module;
+        this.moduleId = moduleId;
+        this.code = code;
+        this.title = title;
+        this.description = description;
+        this.semesterOffered = semesterOffered;
+        this.yearOffered = yearOffered;
+        this.creditUnit = creditUnit;
+        this.maxEnrollment = maxEnrollment;
+        this.hasExam = hasExam;
+        this.examTime = examTime;
+        this.examVenue = examVenue;
+        this.assignedTeacher = assignedTeacher;
+        this.user = user;
+        this.userId = userId;
+        this.username = username;
+        this.password = password;
+        this.email = email;
+    }
+    
+    
 
     public Module getModule() {
         return module;
@@ -152,5 +183,45 @@ public class MountModuleReq {
 
     public void setYearOffered(String yearOffered) {
         this.yearOffered = yearOffered;
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
+    }
+
+    public Long getUserId() {
+        return userId;
+    }
+
+    public void setUserId(Long userId) {
+        this.userId = userId;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
     }
 }
