@@ -37,6 +37,18 @@ public class Tutorial implements Serializable {
     @ManyToOne
     private Module module;
 
+    public Tutorial(Long tutorialId, int maxEnrollment, String venue, String timing, List<User> studentList, Module module) {
+        this.tutorialId = tutorialId;
+        this.maxEnrollment = maxEnrollment;
+        this.venue = venue;
+        this.timing = timing;
+        this.studentList = studentList;
+        this.module = module;
+    }
+
+    public Tutorial() {
+    }
+
     public Long getTutorialId() {
         return tutorialId;
     }

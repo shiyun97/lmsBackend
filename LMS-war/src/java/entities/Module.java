@@ -29,7 +29,8 @@ import javax.xml.bind.annotation.XmlRootElement;
 @Table(name = "MODULE")
 public class Module implements Serializable {
 
-    public Module(String code, String title, String description, String feedback, Integer semesterOffered, String yearOffered, Integer creditUnit, String grade, Integer maxEnrollment, List<User> studentList, List<User> publicUserList, List<Folder> folderList, List<Annoucement> annoucementList, List<ForumPost> forumPostList, List<Quiz> quizList, List<GradeItem> gradeItemList, List<Attendance> attandanceList, List<Consultation> consultationList, List<LessonPlan> lessonPlanList, User owner, List<ClassGroupList> classGroupList, boolean hasExam, Timestamp examTime, String examVenue, User assignedTeacher, String lectureDetails) {
+    public Module(Long moduleId, String code, String title, String description, String feedback, Integer semesterOffered, String yearOffered, Integer creditUnit, String grade, Integer maxEnrollment, List<User> studentList, List<User> publicUserList, List<Folder> folderList, List<Annoucement> annoucementList, List<ForumPost> forumPostList, List<Quiz> quizList, List<GradeItem> gradeItemList, List<Attendance> attandanceList, List<Consultation> consultationList, List<LessonPlan> lessonPlanList, User assignedTeacher, List<ClassGroupList> classGroupList, List<Feedback> feedbackList, List<Tutorial> tutorials, boolean hasExam, Timestamp examTime, String examVenue, String lectureDetails) {
+        this.moduleId = moduleId;
         this.code = code;
         this.title = title;
         this.description = description;
@@ -49,13 +50,17 @@ public class Module implements Serializable {
         this.attandanceList = attandanceList;
         this.consultationList = consultationList;
         this.lessonPlanList = lessonPlanList;
-	this.classGroupList = classGroupList;
+        this.assignedTeacher = assignedTeacher;
+        this.classGroupList = classGroupList;
+        this.feedbackList = feedbackList;
+        this.tutorials = tutorials;
         this.hasExam = hasExam;
         this.examTime = examTime;
         this.examVenue = examVenue;
-        this.assignedTeacher = assignedTeacher;
         this.lectureDetails = lectureDetails;
     }
+
+    
 
     public Module() {
     }
