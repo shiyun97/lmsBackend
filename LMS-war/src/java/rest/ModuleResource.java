@@ -146,6 +146,9 @@ public class ModuleResource {
                 m.setMaxEnrollment(null);
                 m.setQuizList(null);
                
+                em.merge(m);
+                em.flush();
+
                 return Response.status(Response.Status.OK).entity(m).build();
             } else {
                 return Response.status(Response.Status.NOT_FOUND).entity("No module for this user").build();
