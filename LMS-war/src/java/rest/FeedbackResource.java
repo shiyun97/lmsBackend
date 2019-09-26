@@ -51,15 +51,13 @@ public class FeedbackResource {
         System.out.println("retrieveAllFeedbackForModule");
         System.out.println(em);
         try{
-            if(em.find(Module.class, moduleId) == null){
+            Module mod = em.find(Module.class, moduleId);
+            if(mod == null){
                 return Response.status(Response.Status.BAD_REQUEST).entity(new ErrorRsp("Module Not Exists!")).build();
             }
 
-            Query query = em.createQuery("SELECT f FROM Feedback f WHERE f.module = :moduleId");
-            List<Feedback> feedbacks = (List<Feedback>) query.getResultList();
-            for (Feedback f: feedbacks){
-                f.setModule(null);
-            }
+            
+            List<Feedback> feedbacks = mod.getFeedbackList();
             if(feedbacks != null && !feedbacks.isEmpty()){
                 return Response.status(Response.Status.OK).entity(new RetrieveAllFeedbacksForModuleRsp(feedbacks)).build();
             } else {
@@ -92,7 +90,6 @@ public class FeedbackResource {
             
             Feedback feedback = new Feedback();
             feedback.setFeedback(createNewFeedback.getFeedback());
-            feedback.setModule(module);
             // Set current time
             feedback.setCreateTs(new Timestamp(new Date().getTime()));
             

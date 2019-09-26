@@ -15,6 +15,9 @@ import java.util.List;
 public class RetrieveAllFeedbacksForModuleRsp {
     List<Feedback> feedbacks;
 
+    public RetrieveAllFeedbacksForModuleRsp() {
+    }
+
     public RetrieveAllFeedbacksForModuleRsp(List<Feedback> feedbacks) {
         this.feedbacks = feedbacks;
     }
