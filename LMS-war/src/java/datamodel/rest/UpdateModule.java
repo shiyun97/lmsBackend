@@ -1,8 +1,10 @@
 package datamodel.rest;
 
 import entities.Module;
+import entities.Tutorial;
 import entities.User;
 import java.sql.Timestamp;
+import java.util.List;
 
 /*
  * To change this license header, choose License Headers in Project Properties.
@@ -29,7 +31,14 @@ public class UpdateModule {
     private boolean hasExam;
     private Timestamp examTime;
     private String examVenue;
-       
+    private String lectureDetails;
+    
+    private Tutorial tutorialList;
+    private Long tutorialId;
+    private String venue;
+    private String timing;
+    private List<User> studentList;
+          
     private User user;
     
     private Long userId;
@@ -42,23 +51,48 @@ public class UpdateModule {
     public UpdateModule() {
     }
 
-    public UpdateModule(Module module, Long moduleId, String code, String title, String description, Integer semesterOffered, String yearOffered, Integer creditUnit, Integer maxEnrollment, User assignedTeacher, boolean hasExam, Timestamp examTime, String examVenue) {
+    public UpdateModule(Module module, Long moduleId, String code, String title, String description, Integer semesterOffered, String yearOffered, Integer creditUnit, Integer maxEnrollment, boolean hasExam, Timestamp examTime, String examVenue, User assignedTeacher,  String lectureDetails, Tutorial tutorialList) {
         this.module = module;
         this.moduleId = moduleId;
         this.code = code;
         this.title = title;
         this.description = description;
         this.semesterOffered = semesterOffered;
+        this.yearOffered = yearOffered;
         this.creditUnit = creditUnit;
         this.maxEnrollment = maxEnrollment;
-        this.yearOffered = yearOffered;
-        this.assignedTeacher = assignedTeacher;
         this.hasExam = hasExam;
         this.examTime = examTime;
         this.examVenue = examVenue;
+        this.assignedTeacher = assignedTeacher;
+        this.lectureDetails = lectureDetails;
+        this.tutorialList = tutorialList;
     }
 
-    public UpdateModule(Module module, Long moduleId, String code, String title, String description, Integer semesterOffered, String yearOffered, Integer creditUnit, Integer maxEnrollment, User assignedTeacher, boolean hasExam, Timestamp examTime, String examVenue, User user, Long userId, String username, String password, String email) {
+    public UpdateModule(Module module, Long moduleId, String code, String title, String description, Integer semesterOffered, String yearOffered, Integer creditUnit, Integer maxEnrollment, boolean hasExam, Timestamp examTime, String examVenue, User assignedTeacher, String lectureDetails, Tutorial tutorialList, User user, Long userId, String username, String password, String email) {
+        this.module = module;
+        this.moduleId = moduleId;
+        this.code = code;
+        this.title = title;
+        this.description = description;
+        this.semesterOffered = semesterOffered;
+        this.yearOffered = yearOffered;
+        this.creditUnit = creditUnit;
+        this.maxEnrollment = maxEnrollment;
+        this.hasExam = hasExam;
+        this.examTime = examTime;
+        this.examVenue = examVenue;
+        this.assignedTeacher = assignedTeacher;
+        this.lectureDetails = lectureDetails;
+        this.tutorialList = tutorialList;
+        this.user = user;
+        this.userId = userId;
+        this.username = username;
+        this.password = password;
+        this.email = email;
+    }
+
+    public UpdateModule(Module module, Long moduleId, String code, String title, String description, Integer semesterOffered, String yearOffered, Integer creditUnit, Integer maxEnrollment, User assignedTeacher, boolean hasExam, Timestamp examTime, String examVenue, String lectureDetails, Tutorial tutorialList, Long tutorialId, String venue, String timing, List<User> studentList, User user, Long userId, String username, String password, String email) {
         this.module = module;
         this.moduleId = moduleId;
         this.code = code;
@@ -72,6 +106,12 @@ public class UpdateModule {
         this.hasExam = hasExam;
         this.examTime = examTime;
         this.examVenue = examVenue;
+        this.lectureDetails = lectureDetails;
+        this.tutorialList = tutorialList;
+        this.tutorialId = tutorialId;
+        this.venue = venue;
+        this.timing = timing;
+        this.studentList = studentList;
         this.user = user;
         this.userId = userId;
         this.username = username;
@@ -223,5 +263,53 @@ public class UpdateModule {
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public String getLectureDetails() {
+        return lectureDetails;
+    }
+
+    public void setLectureDetails(String lectureDetails) {
+        this.lectureDetails = lectureDetails;
+    }
+
+    public Tutorial getTutorialList() {
+        return tutorialList;
+    }
+
+    public void setTutorialList(Tutorial tutorialList) {
+        this.tutorialList = tutorialList;
+    }
+
+    public Long getTutorialId() {
+        return tutorialId;
+    }
+
+    public void setTutorialId(Long tutorialId) {
+        this.tutorialId = tutorialId;
+    }
+
+    public String getVenue() {
+        return venue;
+    }
+
+    public void setVenue(String venue) {
+        this.venue = venue;
+    }
+
+    public String getTiming() {
+        return timing;
+    }
+
+    public void setTiming(String timing) {
+        this.timing = timing;
+    }
+
+    public List<User> getStudentList() {
+        return studentList;
+    }
+
+    public void setStudentList(List<User> studentList) {
+        this.studentList = studentList;
     }
 }

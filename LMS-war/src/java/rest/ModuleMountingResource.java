@@ -9,6 +9,7 @@ import datamodel.rest.MountModuleReq;
 import datamodel.rest.UpdateModule;
 import datamodel.rest.CheckUserLogin;
 import entities.Module;
+import entities.Tutorial;
 import entities.User;
 import java.util.List;
 import javax.ejb.Stateless;
@@ -36,7 +37,7 @@ import util.exception.ModuleNotFoundException;
  * @author Vixson
  */
 @Stateless
-@Path("User")
+@Path("ModuleMounting")
 public class ModuleMountingResource {
 
     @PersistenceContext(unitName = "LMS-warPU")
@@ -84,6 +85,16 @@ public class ModuleMountingResource {
                 module.setExamTime(mountModuleReq.getExamTime());
                 module.setExamVenue(mountModuleReq.getExamVenue());
                 module.setAssignedTeacher(mountModuleReq.getAssignedTeacher());
+                module.setLectureDetails(mountModuleReq.getLectureDetails());
+                
+                Tutorial tutorial = new Tutorial();
+                tutorial.setMaxEnrollment(mountModuleReq.getMaxEnrollment());
+                tutorial.setVenue(mountModuleReq.getVenue());
+                tutorial.setTiming(mountModuleReq.getTiming());
+                //tutorial.setStudentList(mountModuleReq.getStudentList());
+                tutorial.setModule(module);
+                
+                module.getTutorialList().add(tutorial);
 
                 module.setAnnoucementList(null);
                 module.setAttandanceList(null);
@@ -146,11 +157,11 @@ public class ModuleMountingResource {
         }
     }
 
-    @Path(value = "removeModule/{code}")
+    @Path(value = "deleteModule/{code}")
     @DELETE
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response removeModule(@QueryParam("code") String code, CheckUserLogin checkUserLogin) {
+    public Response deleteModule(@QueryParam("code") String code, CheckUserLogin checkUserLogin) {
 
         if (isLogin(checkUserLogin.getUser()) == true && checkUserLogin.getUser().getAccessRight() == Admin) {
 
@@ -164,7 +175,7 @@ public class ModuleMountingResource {
 
                 if (module != null) {
                     em.remove(module);
-                    return Response.status(Response.Status.OK).entity(query).build();
+                    return Response.status(Response.Status.OK).entity(module).build();
                 }
                 return Response.status(Response.Status.NOT_FOUND).entity("No module found").build();
 
@@ -202,6 +213,19 @@ public class ModuleMountingResource {
                     module.setHasExam(updateModule.isHasExam());
                     module.setExamTime(updateModule.getExamTime());
                     module.setExamVenue(updateModule.getExamVenue());
+                    module.setLectureDetails(updateModule.getLectureDetails());
+                    
+                    if(module.getTutorialList().isEmpty()){
+                        return Response.status(Response.Status.NOT_FOUND).entity("Module has no tutorial").build(); 
+                    }
+                    Query query = em.createQuery("select t from Tutorial t where t.module = :moduleId");
+                    List<Tutorial> tutorialList = (List<Tutorial>) query.getResultList();
+                    for(Tutorial t : tutorialList){
+                        t.setMaxEnrollment(updateModule.getMaxEnrollment());
+                        t.setVenue(updateModule.getVenue());
+                        t.setTiming(updateModule.getTiming());
+                        t.setStudentList(updateModule.getStudentList());
+                    }
 
                     em.merge(module);
                     em.flush();
