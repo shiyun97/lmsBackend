@@ -5,18 +5,18 @@
  */
 package rest;
 
-import datamodel.rest.CreateNewModule;
-import datamodel.rest.RetrieveAllModules;
 import entities.Module;
 import entities.User;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
-import javax.ws.rs.POST;
+import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
@@ -25,7 +25,7 @@ import javax.ws.rs.core.Response;
 
 /**
  *
- * @author Jasmine
+ * 
  */
 @Path("module")
 @Stateless
@@ -60,7 +60,7 @@ public class ModuleResource {
     
     //View module by moduleId
     @GET
-    @Path(value = "retrieveAllModules/{moduleId}")
+    @Path(value = "retrieveModules/{moduleId}")
     @Consumes(MediaType.TEXT_PLAIN)
     @Produces(MediaType.APPLICATION_JSON)
     public Response retrieveModuleByModuleId(@PathParam("moduleId") Long moduleId) {
@@ -86,54 +86,77 @@ public class ModuleResource {
        
     }
     
-    //Update module 
-    /*
+    //View module by userId
     @GET
-    @Path(value = "retrieveAllModules/{moduleId}")
+    @Path(value = "retrieveModulesForUser/{userId}")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response updateModule(@PathParam("moduleId") Long moduleId){
-         try{
-                if(moduleId!=null) && (moduleId.getValue()!= null){
-         }
-             
-            User user = em.find(User.class, createNewModule.getUserId());
-            if(user == null){
-                return Response.status(Response.Status.BAD_REQUEST).entity("User doesn't exist!").build();
+    public Response retrieveModuleByUserId(@PathParam("userId") Long userId) {
+        
+        try{
+            
+            if(em.find(User.class, userId) == null){
+               return Response.status(Response.Status.BAD_REQUEST).entity("User Not Exists!").build(); 
             }
             
-            
-            Module module = em.find(Module.class, createNewFeedback.getModuleId());
-            if(module == null){
-                return Response.status(Response.Status.BAD_REQUEST).entity("Module doesn't exist!").build();
+            Query query = em.createQuery("SELECT m FROM Module m WHERE m.owner = :userId");
+            List<Module> modules = (List<Module>) query.getResultList();
+            if(modules != null && !modules.isEmpty()){
+                return Response.status(Response.Status.OK).entity(modules).build();
+            } else {
+                return Response.status(Response.Status.NOT_FOUND).entity("No module for this user").build();
             }
             
-            if(!module.getStudentList().contains(user)){
-                return Response.status(Response.Status.FORBIDDEN).entity("Student isn't enrolled in this module!").build();
+        }catch (Exception e){
+           e.printStackTrace();
+           return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(e).build();
+       }
+       
+    }
+    
+    //Update module by userId 
+    @PUT
+    @Path(value = "updateModuleForUser/{userId}")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response updateModuleByUserId(@PathParam("userId") Long userId, @PathParam("moduleId") Long moduleId) {
+        
+        try{
+            
+            if(em.find(User.class, userId) == null){
+               return Response.status(Response.Status.BAD_REQUEST).entity("User Not Exists!").build(); 
             }
+            
+            Query query = em.createQuery("SELECT m FROM Module m WHERE m.owner = :userId");
+            
+            Module m = (Module)query.getSingleResult();
 
+            if(m != null){
+              
+                m.setAnnoucementList(null);
+                m.setAttandanceList(null);
+                m.setClassGroupList(null);
+                m.setConsultationList(null);
+                m.setFeedbackList(null);
+                m.setFolderList(null);
+                m.setForumPostList(null);
+                m.setGrade(null);
+                m.setGradeItemList(null);
+                m.setLessonPlanList(null);
+                m.setGradeItemList(null);
+                m.setLessonPlanList(null);
+                m.setMaxEnrollment(null);
+                m.setQuizList(null);
+               
+                return Response.status(Response.Status.OK).entity(m).build();
+            } else {
+                return Response.status(Response.Status.NOT_FOUND).entity("No module for this user").build();
+            }
             
-            
-            Module module = new Module();
-            //module.setModuleId(createNewModule.getModule());
-            //module.setModule(createNewModule.getModule());
-           
-            module.setOwner(user);
-
-            //module.getFeedbackList().add(feedback);
-            
-            em.persist(module);
-            //em.merge();
-            em.flush();
-            
-            return Response.status(Response.Status.OK).build();
-        } catch(Exception e){
-            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
-        }
-
-    }*/
+        }catch (Exception e){
+           e.printStackTrace();
+           return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(e).build();
+       }
+       
+    }
     
-    
-    
-
     
 }

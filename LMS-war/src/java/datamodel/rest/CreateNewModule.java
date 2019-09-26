@@ -7,7 +7,7 @@ package datamodel.rest;
 
 /**
  *
- * @author Jasmine
+ * 
  */
 public class CreateNewModule {
     private Long userId;

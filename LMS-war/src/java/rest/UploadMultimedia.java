@@ -15,12 +15,9 @@ import javax.ws.rs.core.UriInfo;
 import com.sun.jersey.core.header.FormDataContentDisposition;
 import com.sun.jersey.multipart.FormDataParam;
 /**
- * This example shows how to build Java REST web-service to upload files
- * accepting POST requests with encoding type "multipart/form-data". For more
- * details please read the full tutorial on
- * https://javatutorial.net/java-file-upload-rest-service
+ *
  * 
- * @author javatutorial.net
+ * 
  */
 @Path("/upload")
 public class UploadMultimedia {
