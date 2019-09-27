@@ -23,6 +23,8 @@
     <class>entities.Survey</class>
     <class>entities.SurveyAttempt</class>
     <class>entities.User</class>
+    <class>entities.Tutorial</class>
+    <class>entities.BiddingRound</class>
     <exclude-unlisted-classes>true</exclude-unlisted-classes>
     <properties>
       <property name="javax.persistence.schema-generation.database.action" value="create"/>

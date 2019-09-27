@@ -6,6 +6,8 @@
 package rest;
 
 import datamodel.rest.CreateNewFeedback;
+import datamodel.rest.ErrorRsp;
+import datamodel.rest.RetrieveAllFeedbacksForModuleRsp;
 import entities.Feedback;
 import entities.Module;
 import entities.User;
@@ -49,20 +51,21 @@ public class FeedbackResource {
         System.out.println("retrieveAllFeedbackForModule");
         System.out.println(em);
         try{
-            if(em.find(Module.class, moduleId) == null){
-                return Response.status(Response.Status.BAD_REQUEST).entity("Module Not Exists!").build();
+            Module mod = em.find(Module.class, moduleId);
+            if(mod == null){
+                return Response.status(Response.Status.BAD_REQUEST).entity(new ErrorRsp("Module Not Exists!")).build();
             }
 
-            Query query = em.createQuery("SELECT f FROM Feedback f WHERE f.module = :moduleId");
-            List<Feedback> feedbacks = (List<Feedback>) query.getResultList();
+            
+            List<Feedback> feedbacks = mod.getFeedbackList();
             if(feedbacks != null && !feedbacks.isEmpty()){
-                return Response.status(Response.Status.OK).entity(feedbacks).build();
+                return Response.status(Response.Status.OK).entity(new RetrieveAllFeedbacksForModuleRsp(feedbacks)).build();
             } else {
-                return Response.status(Response.Status.NOT_FOUND).entity("No feedback for this module").build();
+                return Response.status(Response.Status.NOT_FOUND).entity(new ErrorRsp("No feedback for this module")).build();
             }
        } catch (Exception e){
            e.printStackTrace();
-           return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(e).build();
+           return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(new ErrorRsp(e.getMessage())).build();
        }
     }
     
@@ -78,28 +81,26 @@ public class FeedbackResource {
             
             Module module = em.find(Module.class, createNewFeedback.getModuleId());
             if(module == null){
-                return Response.status(Response.Status.BAD_REQUEST).entity("Module doesn't exist!").build();
+                return Response.status(Response.Status.BAD_REQUEST).entity(new ErrorRsp("Module doesn't exist!")).build();
             }
             
             if(!module.getStudentList().contains(user)){
-                return Response.status(Response.Status.FORBIDDEN).entity("Student isn't enrolled in this module!").build();
+                return Response.status(Response.Status.FORBIDDEN).entity(new ErrorRsp("Student isn't enrolled in this module!")).build();
             }
             
             Feedback feedback = new Feedback();
             feedback.setFeedback(createNewFeedback.getFeedback());
-            feedback.setModule(module);
             // Set current time
             feedback.setCreateTs(new Timestamp(new Date().getTime()));
             
             module.getFeedbackList().add(feedback);
             
             em.persist(feedback);
-            em.merge(module);
             em.flush();
             
             return Response.status(Response.Status.OK).build();
         } catch(Exception e){
-            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(new ErrorRsp(e.getMessage())).build();
         }
     }
     
