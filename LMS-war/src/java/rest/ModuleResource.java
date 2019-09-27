@@ -5,11 +5,14 @@
  */
 package rest;
 
+import datamodel.rest.ErrorRsp;
+import datamodel.rest.RetrieveEnrolledStudentModulesRsp;
+import datamodel.rest.RetrieveModule;
+import ejb.AcademicYearSessionBean;
 import entities.Module;
 import entities.User;
-import java.util.HashSet;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -20,8 +23,11 @@ import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.Status;
+import util.AccessRightEnum;
 
 /**
  *
@@ -33,133 +39,82 @@ public class ModuleResource {
     
     @PersistenceContext(unitName = "LMS-warPU")
     private EntityManager em;
-        
-      
-    //View module
+
+
+    @Path("retrieveAllModules")
     @GET
-    @Path(value = "retrieveAllModules")
     @Produces(MediaType.APPLICATION_JSON)
     public Response retrieveAllModules(){
         
         try{
-            
-            Query query = em.createQuery("Select m FROM Module m ");
-            List<Module> modules = (List<Module>) query.getResultList();
-            if(modules != null && !modules.isEmpty()){
-                 return Response.status(Response.Status.OK).entity(modules).build();
+            Query query = em.createQuery("SELECT m FROM Module m ");
+            List<Module> modules = query.getResultList();
+            RetrieveEnrolledStudentModulesRsp resp = new RetrieveEnrolledStudentModulesRsp();
+            resp.setModules(new ArrayList<>());
+            if(modules.isEmpty()|| modules.get(0) == null){
+                return Response.status(Status.NOT_FOUND).entity(new ErrorRsp("No available modules")).build();
             } else {
-                return Response.status(Response.Status.NOT_FOUND).entity("No module found").build();
+                for (Module m: modules){
+                    User teacher = m.getAssignedTeacher();
+                    User teacherCopy = new User(teacher.getFirstName(), teacher.getLastName(), teacher.getEmail(),
+                            teacher.getUsername(), null, teacher.getGender(), teacher.getAccessRight(),
+                            null, null, null, null, null, null, null);
+                    resp.getModules().add(
+                            new Module(m.getModuleId(),m.getCode(), m.getTitle(), m.getDescription(),
+                                    m.getFeedback(), m.getSemesterOffered(), m.getYearOffered(),
+                                    m.getCreditUnit(), m.getGrade(), m.getMaxEnrollment(), 
+                                    null, null, null, null, null, null, null, null, null, null,
+                                    teacherCopy, null, null, null, m.isHasExam(), m.getExamTime(), m.getExamVenue(),
+                                    m.getLectureDetails()));
+                }
+                return Response.status(Status.OK).entity(resp).build();
             }
-
-        }catch (Exception e){
-           e.printStackTrace();
-           return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(e).build();
-       }
-       
+        } catch (Exception e){
+            return Response.status(Status.INTERNAL_SERVER_ERROR).entity(new ErrorRsp(e.getMessage())).build();            
+        }
     }
     
-    //View module by moduleId
+    @Path("retrieveTeacherModules/{userId}")
     @GET
-    @Path(value = "retrieveModules/{moduleId}")
-    @Consumes(MediaType.TEXT_PLAIN)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response retrieveModuleByModuleId(@PathParam("moduleId") Long moduleId) {
+    public Response retrieveTeacherModules(@PathParam("userId") Long userId){
+        
+        // Verify user
+        User user = em.find(User.class, userId);
+        if(user == null || user.getAccessRight() != AccessRightEnum.Teacher){
+            return Response
+                    .status(Status.FORBIDDEN)
+                    .entity(new ErrorRsp("User doesn't have access right for this function!"))
+                    .build();
+        }
         
         try{
-            
-            Module module = em.find(Module.class, moduleId);
-            
-            if(module == null){
-                return Response.status(Response.Status.BAD_REQUEST).entity("Module Not Exists!").build();
-            }
-
-            if(module != null){
-                 return Response.status(Response.Status.OK).entity(module).build();
+            Query query = em.createQuery("SELECT m FROM Module m WHERE m.assignedTeacher.userId= :userId ");
+            query.setParameter("userId", userId);
+            List<Module> modules = query.getResultList();
+            RetrieveEnrolledStudentModulesRsp resp = new RetrieveEnrolledStudentModulesRsp(new ArrayList<>());
+            if(modules.isEmpty()|| modules.get(0) == null){
+                return Response.status(Status.NOT_FOUND).entity(new ErrorRsp("User has no enrolled modules")).build();
             } else {
-                return Response.status(Response.Status.NOT_FOUND).entity("No module found").build();
+                for (Module m: modules){
+                    User teacher = m.getAssignedTeacher();
+                    User teacherCopy = new User(teacher.getFirstName(), teacher.getLastName(), teacher.getEmail(),
+                            teacher.getUsername(), null, teacher.getGender(), teacher.getAccessRight(),
+                            null, null, null, null, null, null, null);
+                    resp.getModules().add(
+                            new Module(m.getModuleId(),m.getCode(), m.getTitle(), m.getDescription(),
+                                    m.getFeedback(), m.getSemesterOffered(), m.getYearOffered(),
+                                    m.getCreditUnit(), m.getGrade(), m.getMaxEnrollment(), 
+                                    null, null, null, null, null, null, null, null, null, null,
+                                    teacherCopy, null, null, null, m.isHasExam(), m.getExamTime(), m.getExamVenue(),
+                                    m.getLectureDetails()));
+                }
+                return Response.status(Status.OK).entity(resp).build();
             }
-
-        }catch (Exception e){
-           e.printStackTrace();
-           return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(e).build();
-       }
-       
+        } catch (Exception e){
+            e.printStackTrace();
+            return Response.status(Status.INTERNAL_SERVER_ERROR).entity(new ErrorRsp(e.getMessage())).build();            
+        }
     }
-    
-    //View module by userId
-    @GET
-    @Path(value = "retrieveModulesForUser/{userId}")
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response retrieveModuleByUserId(@PathParam("userId") Long userId) {
-        
-        try{
-            
-            if(em.find(User.class, userId) == null){
-               return Response.status(Response.Status.BAD_REQUEST).entity("User Not Exists!").build(); 
-            }
-            
-            Query query = em.createQuery("SELECT m FROM Module m WHERE m.owner = :userId");
-            List<Module> modules = (List<Module>) query.getResultList();
-            if(modules != null && !modules.isEmpty()){
-                return Response.status(Response.Status.OK).entity(modules).build();
-            } else {
-                return Response.status(Response.Status.NOT_FOUND).entity("No module for this user").build();
-            }
-            
-        }catch (Exception e){
-           e.printStackTrace();
-           return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(e).build();
-       }
-       
-    }
-    
-    //Update module by userId 
-    @PUT
-    @Path(value = "updateModuleForUser/{userId}")
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response updateModuleByUserId(@PathParam("userId") Long userId, @PathParam("moduleId") Long moduleId) {
-        
-        try{
-            
-            if(em.find(User.class, userId) == null){
-               return Response.status(Response.Status.BAD_REQUEST).entity("User Not Exists!").build(); 
-            }
-            
-            Query query = em.createQuery("SELECT m FROM Module m WHERE m.owner = :userId");
-            
-            Module m = (Module)query.getSingleResult();
 
-            if(m != null){
-              
-                m.setAnnoucementList(null);
-                m.setAttandanceList(null);
-                m.setClassGroupList(null);
-                m.setConsultationList(null);
-                m.setFeedbackList(null);
-                m.setFolderList(null);
-                m.setForumPostList(null);
-                m.setGrade(null);
-                m.setGradeItemList(null);
-                m.setLessonPlanList(null);
-                m.setGradeItemList(null);
-                m.setLessonPlanList(null);
-                m.setMaxEnrollment(null);
-                m.setQuizList(null);
-               
-                em.merge(m);
-                em.flush();
-
-                return Response.status(Response.Status.OK).entity(m).build();
-            } else {
-                return Response.status(Response.Status.NOT_FOUND).entity("No module for this user").build();
-            }
-            
-        }catch (Exception e){
-           e.printStackTrace();
-           return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(e).build();
-       }
-       
-    }
-    
-    
 }

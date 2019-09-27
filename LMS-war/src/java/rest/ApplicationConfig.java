@@ -21,7 +21,6 @@ public class ApplicationConfig extends Application
         resources.add(rest.FeedbackResource.class);
         resources.add(rest.ModuleResource.class);
         resources.add(rest.StudentEnrollmentResource.class);
-        resources.add(rest.UploadMultimedia.class);
     }
 }
 

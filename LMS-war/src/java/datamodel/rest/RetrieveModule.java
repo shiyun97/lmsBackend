@@ -5,27 +5,31 @@
  */
 package datamodel.rest;
 
+import entities.Module;
+import java.util.List;
+
 /**
  *
  * 
  */
-public class CreateNewModule {
-    private Long userId;
-    private String module;
-
-    public Long getUserId() {
-        return userId;
+public class RetrieveModule {
+    
+    private Module module;
+   
+    public RetrieveModule(){
+        
+    }
+    
+     public RetrieveModule(Module modules){
+        
+         this.module = module;
     }
 
-    public void setUserId(Long userId) {
-        this.userId = userId;
-    }
-
-    public String getModule() {
+    public Module getModule() {
         return module;
     }
 
-    public void setModule(String module) {
+    public void setModule(Module module) {
         this.module = module;
     }
     
