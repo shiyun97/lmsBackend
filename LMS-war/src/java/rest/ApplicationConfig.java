@@ -16,12 +16,11 @@ public class ApplicationConfig extends Application
         addRestResourceClasses(resources);
         return resources;
     }
-    
-    
-    private void addRestResourceClasses(Set<Class<?>> resources) 
-    {
+
+    private void addRestResourceClasses(Set<Class<?>> resources) {
         resources.add(rest.FeedbackResource.class);
+        resources.add(rest.ModuleResource.class);
         resources.add(rest.StudentEnrollmentResource.class);
-    }    
+    }
 }
 
