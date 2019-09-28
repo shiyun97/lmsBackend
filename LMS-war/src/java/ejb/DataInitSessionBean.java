@@ -85,14 +85,14 @@ public class DataInitSessionBean {
         Module m1 = new Module();
         m1.setCode("CS1010");
         m1.setDescription("CS1010 Mod Desc");
-        m1.setExamTime(new Timestamp(2019-1900, 11, 29, 9, 0, 0, 0));
+        m1.setExamTime(new Timestamp(2020-1900, 4, 29, 9, 0, 0, 0));
         m1.setHasExam(true);
         m1.setCreditUnit(4);
         m1.setExamVenue("MPSH 1");
         m1.setMaxEnrollment(30);
         m1.setYearOffered("2019/2020");
         m1.setTitle("Programming Methodology");
-        m1.setSemesterOffered(1);
+        m1.setSemesterOffered(2);
         m1.setLectureDetails("Monday 12:00 - 14:00");
         m1.setAssignedTeacher(teacher);
         teacher.getTeacherModuleList().add(m1);
@@ -102,7 +102,7 @@ public class DataInitSessionBean {
         Module m2 = new Module();
         m2.setCode("CS2040");
         m2.setDescription("CS2040 Mod Desc");
-        m2.setExamTime(new Timestamp(2019-1900, 11, 30, 9, 0, 0, 0));
+        m2.setExamTime(new Timestamp(2020-1900, 4, 30, 9, 0, 0, 0));
         m2.setHasExam(true);
         m2.setCreditUnit(4);
         m2.setExamVenue("MPSH 1");
