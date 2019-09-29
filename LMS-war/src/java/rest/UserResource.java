@@ -86,7 +86,7 @@ public class UserResource {
     @Produces(MediaType.APPLICATION_JSON)
     public Response createUser(CreateUser createUser) {
         
-        if (createUser.getUser().getAccessRight() == Admin) {
+        //if (createUser.getUser().getAccessRight() == Admin) {
             
             try {
                 User user = new User();
@@ -105,8 +105,8 @@ public class UserResource {
             } catch (Exception ex) {
                 return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
             }
-        }
-        return Response.status(Response.Status.UNAUTHORIZED).build();
+        //}
+        //return Response.status(Response.Status.UNAUTHORIZED).build();
     }
     
     @GET
@@ -185,7 +185,7 @@ public class UserResource {
     @Produces(MediaType.APPLICATION_JSON)
     public Response updateUser(UpdateUser updateUser) {
         
-        if (updateUser.getUser().getAccessRight() == Admin) {
+        //if (updateUser.getUser().getAccessRight() == Admin) {
             
             try {
                 Long userId = updateUser.getUserId();
@@ -216,8 +216,8 @@ public class UserResource {
             } catch (Exception ex) {
                 return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
             }
-        }
-        return Response.status(Response.Status.UNAUTHORIZED).build();
+        //}
+        //return Response.status(Response.Status.UNAUTHORIZED).build();
     }
     
     @GET
