@@ -53,7 +53,8 @@ public class ClassGroup implements Serializable {
     @ManyToMany
     private List<User> members;*/
 
-    public ClassGroup(String name, Timestamp startTs, Timestamp closeTs, Module module, Integer maxMember, List<User> members) {
+    public ClassGroup(Long classGroupId, String name, Timestamp startTs, Timestamp closeTs, Module module, Integer maxMember, List<User> members) {
+        this.classGroupId = classGroupId;
         this.name = name;
         this.startTs = startTs;
         this.closeTs = closeTs;

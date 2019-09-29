@@ -8,11 +8,14 @@ package entities;
 import java.io.Serializable;
 import java.sql.Timestamp;
 import java.util.List;
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Column;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
@@ -24,6 +27,39 @@ import javax.xml.bind.annotation.XmlRootElement;
  */
 @Entity
 public class Module implements Serializable {
+
+    public Module(Long moduleId, String code, String title, String description, String feedback, Integer semesterOffered, String yearOffered, Integer creditUnit, String grade, Integer maxEnrollment, List<User> studentList, List<User> publicUserList, List<Folder> folderList, List<Annoucement> annoucementList, List<ForumPost> forumPostList, List<Quiz> quizList, List<GradeItem> gradeItemList, List<Attendance> attandanceList, List<Consultation> consultationList, List<LessonPlan> lessonPlanList, User assignedTeacher, List<ClassGroupList> classGroupList, List<Tutorial> tutorials, boolean hasExam, Timestamp examTime, String examVenue, String lectureDetails) {
+        this.moduleId = moduleId;
+        this.code = code;
+        this.title = title;
+        this.description = description;
+        this.feedback = feedback;
+        this.semesterOffered = semesterOffered;
+        this.yearOffered = yearOffered;
+        this.creditUnit = creditUnit;
+        this.grade = grade;
+        this.maxEnrollment = maxEnrollment;
+        this.studentList = studentList;
+        this.publicUserList = publicUserList;
+        this.folderList = folderList;
+        this.annoucementList = annoucementList;
+        this.forumPostList = forumPostList;
+        this.quizList = quizList;
+        this.gradeItemList = gradeItemList;
+        this.attandanceList = attandanceList;
+        this.consultationList = consultationList;
+        this.lessonPlanList = lessonPlanList;
+        this.assignedTeacher = assignedTeacher;
+        this.classGroupList = classGroupList;
+        //this.feedbackList = feedbackList;
+        this.tutorials = tutorials;
+        this.hasExam = hasExam;
+        this.examTime = examTime;
+        this.examVenue = examVenue;
+        this.lectureDetails = lectureDetails;
+    }
+
+    
 
     public Module() {
     }
@@ -53,6 +89,10 @@ public class Module implements Serializable {
     @ManyToMany
     private List<User> studentList;
     @ManyToMany
+    @JoinTable(
+    name = "module_publicuser", 
+    joinColumns = @JoinColumn(name = "moduleid"), 
+    inverseJoinColumns = @JoinColumn(name = "publicuserid"))
     private List<User> publicUserList;
     @OneToMany(mappedBy = "module")
     private List<Folder> folderList;
@@ -73,7 +113,11 @@ public class Module implements Serializable {
     @ManyToOne
     private User assignedTeacher;
     @OneToMany(mappedBy = "module")
-    private List<ClassGroup> classGroupList;
+    private List<ClassGroupList> classGroupList;
+    //@OneToMany
+    //private List<Feedback> feedbackList;
+    @OneToMany(mappedBy = "module", cascade = CascadeType.ALL)
+    private List<Tutorial> tutorials;
     @Column
     private boolean hasExam;
     @Column
@@ -82,39 +126,6 @@ public class Module implements Serializable {
     private String examVenue;
     @Column
     private String lectureDetails;
-    @OneToMany(mappedBy = "module") 
-    private List<Tutorial> tutorialList;
-
-    public Module(String code, String title, String description, String feedback, Integer semesterOffered, String yearOffered, Integer creditUnit, String grade, Integer maxEnrollment, List<User> studentList, List<User> publicUserList, List<Folder> folderList, List<Annoucement> annoucementList, List<ForumPost> forumPostList, List<Quiz> quizList, List<GradeItem> gradeItemList, List<Attendance> attandanceList, List<Consultation> consultationList, List<LessonPlan> lessonPlanList, User assignedTeacher, List<ClassGroup> classGroupList, boolean hasExam, Timestamp examTime, String examVenue, String lectureDetails, List<Tutorial> tutorialList) {
-        this.code = code;
-        this.title = title;
-        this.description = description;
-        this.feedback = feedback;
-        this.semesterOffered = semesterOffered;
-        this.yearOffered = yearOffered;
-        this.creditUnit = creditUnit;
-        this.grade = grade;
-        this.maxEnrollment = maxEnrollment;
-        this.studentList = studentList;
-        this.publicUserList = publicUserList;
-        this.folderList = folderList;
-        this.annoucementList = annoucementList;
-        this.forumPostList = forumPostList;
-        this.quizList = quizList;
-        this.gradeItemList = gradeItemList;
-        this.attandanceList = attandanceList;
-        this.consultationList = consultationList;
-        this.lessonPlanList = lessonPlanList;
-        this.assignedTeacher = assignedTeacher;
-        this.classGroupList = classGroupList;
-        this.hasExam = hasExam;
-        this.examTime = examTime;
-        this.examVenue = examVenue;
-        this.lectureDetails = lectureDetails;
-        this.tutorialList = tutorialList;
-    }
-    
-    
     
     /**
     public Module(String title, String description, String feedback, Integer semesterOffered, Integer creditUnit, String grade){
@@ -151,13 +162,9 @@ public class Module implements Serializable {
     public String toString() {
         return "entity.module[ id=" + moduleId + " ]";
     }
-    
-    public String getModuleId() {
-        return getCode();
-    }
 
-    public void setModuleId(String code) {
-        this.setCode(code);
+    public Long getModuleId() {
+        return moduleId;
     }
 
     public String getTitle() {
@@ -296,11 +303,11 @@ public class Module implements Serializable {
         this.lessonPlanList = lessonPlanList;
     }
 	
-    public List<ClassGroup> getClassGroupList() {
+    public List<ClassGroupList> getClassGroupList() {
         return classGroupList;
     }
 
-    public void setClassGroupList(List<ClassGroup> classGroupList) {
+    public void setClassGroupList(List<ClassGroupList> classGroupList) {
         this.classGroupList = classGroupList;
     }
 
@@ -364,12 +371,20 @@ public class Module implements Serializable {
         this.lectureDetails = lectureDetails;
     }
 
-    public List<Tutorial> getTutorialList() {
-        return tutorialList;
+    public List<Tutorial> getTutorials() {
+        return tutorials;
     }
 
-    public void setTutorialList(List<Tutorial> tutorialList) {
-        this.tutorialList = tutorialList;
+    public void setTutorials(List<Tutorial> tutorials) {
+        this.tutorials = tutorials;
     }
+
+    /*public List<Feedback> getFeedbackList() {
+        return feedbackList;
+    }
+
+    public void setFeedbackList(List<Feedback> feedbackList) {
+        this.feedbackList = feedbackList;
+    }*/
 
 }

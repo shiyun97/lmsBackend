@@ -8,9 +8,11 @@ package rest;
 import datamodel.rest.MountModuleReq;
 import datamodel.rest.UpdateModule;
 import datamodel.rest.CheckUserLogin;
+import datamodel.rest.GetModuleRsp;
 import entities.Module;
 import entities.Tutorial;
 import entities.User;
+import java.util.ArrayList;
 import java.util.List;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
@@ -70,7 +72,7 @@ public class ModuleMountingResource {
     @Produces(MediaType.APPLICATION_JSON)
     public Response mountModule(MountModuleReq mountModuleReq) {
 
-        if (isLogin(mountModuleReq.getUser()) == true && mountModuleReq.getUser().getAccessRight() == Admin) {
+        //if (mountModuleReq.getUser().getAccessRight() == Admin) {
 
             try {
                 Module module = new Module();
@@ -86,17 +88,17 @@ public class ModuleMountingResource {
                 module.setExamVenue(mountModuleReq.getExamVenue());
                 module.setAssignedTeacher(mountModuleReq.getAssignedTeacher());
                 module.setLectureDetails(mountModuleReq.getLectureDetails());
-                
+
                 Tutorial tutorial = new Tutorial();
                 tutorial.setMaxEnrollment(mountModuleReq.getMaxEnrollment());
                 tutorial.setVenue(mountModuleReq.getVenue());
                 tutorial.setTiming(mountModuleReq.getTiming());
-                //tutorial.setStudentList(mountModuleReq.getStudentList());
+                tutorial.setStudentList(null);
                 tutorial.setModule(module);
-                
-                module.getTutorialList().add(tutorial);
 
-                module.setAnnoucementList(null);
+                module.getTutorials().add(tutorial);
+
+                /*module.setAnnoucementList(null);
                 module.setAttandanceList(null);
                 module.setClassGroupList(null);
                 module.setConsultationList(null);
@@ -108,7 +110,7 @@ public class ModuleMountingResource {
                 module.setLessonPlanList(null);
                 module.setPublicUserList(null);
                 module.setQuizList(null);
-                module.setStudentList(null);
+                module.setStudentList(null);*/
 
                 em.persist(module);
                 em.flush();
@@ -117,8 +119,8 @@ public class ModuleMountingResource {
             } catch (Exception ex) {
                 return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
             }
-        }
-        return Response.status(Response.Status.UNAUTHORIZED).build();
+        //}
+        //return Response.status(Response.Status.UNAUTHORIZED).build();
     }
 
     @Path(value = "getModule/{id}")
@@ -126,51 +128,164 @@ public class ModuleMountingResource {
     @Produces(MediaType.APPLICATION_JSON)
     public Response getModuleById(@PathParam("id") Long moduleId) {
         try {
-            if (em.find(Module.class, moduleId) == null) {
+            Module module = em.find(Module.class, moduleId);
+
+            if (module == null) {
                 return Response.status(Response.Status.BAD_REQUEST).entity("Module does not exist").build();
             }
 
-            Query query = em.createQuery("select m from Module m where m.module = :moduleId");
-            Module module = (Module) query.getSingleResult();
-            return Response.status(Response.Status.OK).entity(module).build();
+            User teacher = module.getAssignedTeacher();
+            User teacherCopy = new User(teacher.getId(), teacher.getFirstName(), teacher.getLastName(), teacher.getEmail(),
+                    teacher.getUsername(), teacher.getPassword(), teacher.getGender(), teacher.getAccessRight(),
+                    null, null, null, null, null, null, null);
+
+            List<Tutorial> tutorials = new ArrayList<>();
+            for (Tutorial t : tutorials) {
+                t.getMaxEnrollment();
+                t.getVenue();
+                t.getTiming();
+                t.getStudentList();
+                t.getModule();
+
+                tutorials.add(t);
+            }
+
+            Module moduleCopy = new Module(module.getModuleId(), module.getCode(), module.getTitle(),
+                    module.getDescription(), null, module.getSemesterOffered(),
+                    module.getYearOffered(), module.getCreditUnit(), null, module.getMaxEnrollment(),
+                    null, null, null, null, null, null, null, null, null, null,
+                    teacherCopy, null, tutorials, module.isHasExam(),
+                    module.getExamTime(), module.getExamVenue(), module.getLectureDetails());
+
+            return Response.status(Response.Status.OK).entity(moduleCopy).build();
 
         } catch (Exception ex) {
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
         }
     }
 
-    @Path(value = "getAllModule")
+    @Path(value = "getModuleByCode/{code}")
     @GET
     @Produces(MediaType.APPLICATION_JSON)
+    public Response getModuleByCode(@PathParam("code") String code) {
+        try {
+            Query query = em.createQuery("select m from Module m where m.code = :code");
+            query.setParameter("code", code);
+            Module module = (Module) query.getSingleResult();
+
+            if (module == null) {
+                return Response.status(Response.Status.BAD_REQUEST).entity("Module does not exist").build();
+            }
+
+            User teacher = module.getAssignedTeacher();
+            User teacherCopy = new User(teacher.getId(), teacher.getFirstName(), teacher.getLastName(), teacher.getEmail(),
+                    teacher.getUsername(), teacher.getPassword(), teacher.getGender(), teacher.getAccessRight(),
+                    null, null, null, null, null, null, null);
+
+            List<Tutorial> tutorials = new ArrayList<>();
+            for (Tutorial t : tutorials) {
+                t.getMaxEnrollment();
+                t.getVenue();
+                t.getTiming();
+                t.getStudentList();
+                t.getModule();
+
+                tutorials.add(t);
+            }
+
+            Module moduleCopy = new Module(module.getModuleId(), module.getCode(), module.getTitle(),
+                    module.getDescription(), null, module.getSemesterOffered(),
+                    module.getYearOffered(), module.getCreditUnit(), null, module.getMaxEnrollment(),
+                    null, null, null, null, null, null, null, null, null, null,
+                    teacherCopy, null, tutorials, module.isHasExam(),
+                    module.getExamTime(), module.getExamVenue(), module.getLectureDetails());
+
+            return Response.status(Response.Status.OK).entity(moduleCopy).build();
+
+        } catch (Exception ex) {
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
+        }
+    }
+
+    @GET
+    @Path(value = "getAllModule")
+    @Produces(MediaType.APPLICATION_JSON)
     public Response getAllModule() {
+
         try {
             Query query = em.createQuery("select m from Module m");
             List<Module> moduleList = query.getResultList();
 
-            if (moduleList != null && !moduleList.isEmpty()) {
-                return Response.status(Response.Status.OK).entity(moduleList).build();
-            } else {
+            GetModuleRsp rsp = new GetModuleRsp(new ArrayList<>());
+
+            if (moduleList == null && moduleList.isEmpty()) {
                 return Response.status(Response.Status.NOT_FOUND).entity("No module found").build();
+            } else {
+                for (Module m : moduleList) {
+                    User teacher = m.getAssignedTeacher();
+                    User teacherCopy = new User(teacher.getId(), teacher.getFirstName(), teacher.getLastName(), teacher.getEmail(),
+                            teacher.getUsername(), teacher.getPassword(), teacher.getGender(), teacher.getAccessRight(),
+                            null, null, null, null, null, null, null);
+
+                    List<Tutorial> tutorials = new ArrayList<>();
+                    for (Tutorial t : tutorials) {
+                        t.getMaxEnrollment();
+                        t.getVenue();
+                        t.getTiming();
+                        t.getStudentList();
+                        t.getModule();
+
+                        tutorials.add(t);
+                    }
+
+                    rsp.getModule().add(
+                            new Module(m.getModuleId(), m.getCode(), m.getTitle(),
+                                    m.getDescription(), null, m.getSemesterOffered(),
+                                    m.getYearOffered(), m.getCreditUnit(), null, m.getMaxEnrollment(),
+                                    null, null, null, null, null, null, null, null, null, null,
+                                    teacherCopy, null, tutorials, m.isHasExam(),
+                                    m.getExamTime(), m.getExamVenue(), m.getLectureDetails()));
+                }
+                return Response.status(Response.Status.OK).entity(rsp).build();
             }
         } catch (Exception ex) {
+            ex.printStackTrace();
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
         }
     }
 
-    @Path(value = "deleteModule/{code}")
+    @Path(value = "deleteModule")
     @DELETE
-    @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response deleteModule(@QueryParam("code") String code, CheckUserLogin checkUserLogin) {
+    public Response deleteModule(@QueryParam("moduleId") Long moduleId) {
 
-        if (isLogin(checkUserLogin.getUser()) == true && checkUserLogin.getUser().getAccessRight() == Admin) {
+        //if (checkUserLogin.getUser().getAccessRight() == Admin) {
+        try {
+            Module module = em.find(Module.class, moduleId);
+            if (module == null) {
+                return Response.status(Response.Status.NOT_FOUND).entity("No module found").build();
+
+            }
+            em.remove(module);
+            
+            return Response.status(Response.Status.OK).entity("Module deleted").build();
+        } catch (Exception ex) {
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
+        }
+        //}
+        //return Response.status(Response.Status.UNAUTHORIZED).build();
+    }
+
+    @Path(value = "deleteModuleByCode")
+    @DELETE
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response deleteModuleByCode(@QueryParam("code") String code, CheckUserLogin checkUserLogin) {
+
+        //if (isLogin(checkUserLogin.getUser()) == true && checkUserLogin.getUser().getAccessRight() == Admin) {
 
             try {
-                if (em.find(Module.class, code) == null) {
-                    return Response.status(Response.Status.BAD_REQUEST).entity("Module does not exist").build();
-                }
-
                 Query query = em.createQuery("select m from Module m where m.code = :code");
+                query.setParameter("code", code);
                 Module module = (Module) query.getSingleResult();
 
                 if (module != null) {
@@ -182,8 +297,8 @@ public class ModuleMountingResource {
             } catch (Exception ex) {
                 return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
             }
-        }
-        return Response.status(Response.Status.UNAUTHORIZED).build();
+        //}
+        //return Response.status(Response.Status.UNAUTHORIZED).build();
     }
 
     @Path(value = "updateModule")
@@ -192,7 +307,7 @@ public class ModuleMountingResource {
     @Produces(MediaType.APPLICATION_JSON)
     public Response updateModule(UpdateModule updateModule) {
 
-        if (isLogin(updateModule.getUser()) == true && updateModule.getUser().getAccessRight() == Admin) {
+        //if (updateModule.getUser().getAccessRight() == Admin) {
 
             try {
 
@@ -214,13 +329,14 @@ public class ModuleMountingResource {
                     module.setExamTime(updateModule.getExamTime());
                     module.setExamVenue(updateModule.getExamVenue());
                     module.setLectureDetails(updateModule.getLectureDetails());
-                    
-                    if(module.getTutorialList().isEmpty()){
-                        return Response.status(Response.Status.NOT_FOUND).entity("Module has no tutorial").build(); 
+
+                    if (module.getTutorials().isEmpty()) {
+                        return Response.status(Response.Status.NOT_FOUND).entity("Module has no tutorial").build();
                     }
                     Query query = em.createQuery("select t from Tutorial t where t.module = :moduleId");
+                    query.setParameter("moduleId", moduleId);
                     List<Tutorial> tutorialList = (List<Tutorial>) query.getResultList();
-                    for(Tutorial t : tutorialList){
+                    for (Tutorial t : tutorialList) {
                         t.setMaxEnrollment(updateModule.getMaxEnrollment());
                         t.setVenue(updateModule.getVenue());
                         t.setTiming(updateModule.getTiming());
@@ -233,16 +349,10 @@ public class ModuleMountingResource {
                     return Response.status(Response.Status.OK).entity(module).build();
                 }
                 return Response.status(Response.Status.NOT_FOUND).entity("Module does not exist").build();
-                /**
-                 * }catch(ModuleNotFoundException | InputDataValidationException
-                 * ex) { return
-                 * Response.status(Response.Status.BAD_REQUEST).entity("Module
-                 * does not exist").build(); *
-                 */
             } catch (Exception ex) {
                 return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
             }
-        }
-        return Response.status(Response.Status.UNAUTHORIZED).build();
+        //}
+        //return Response.status(Response.Status.UNAUTHORIZED).build();
     }
 }

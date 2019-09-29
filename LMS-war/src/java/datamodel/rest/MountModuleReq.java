@@ -42,16 +42,14 @@ public class MountModuleReq {
     private User user;
     
     private Long userId;
-    private String username;
+    private String email;
     private String password;
     
-    private String email;
-
     
     public MountModuleReq() {
     }
 
-    public MountModuleReq(Module module, Long moduleId, String code, String title, String description, Integer semesterOffered, String yearOffered, Integer creditUnit, Integer maxEnrollment, boolean hasExam, Timestamp examTime, String examVenue, User assignedTeacher, String lectureDetails, Tutorial tutorialList, Long tutorialId, String venue, String timing, List<User> studentList, User user, Long userId, String username, String password, String email) {
+    public MountModuleReq(Module module, Long moduleId, String code, String title, String description, Integer semesterOffered, String yearOffered, Integer creditUnit, Integer maxEnrollment, boolean hasExam, Timestamp examTime, String examVenue, User assignedTeacher, String lectureDetails, Tutorial tutorialList, Long tutorialId, String venue, String timing, List<User> studentList, User user, Long userId, String password, String email) {
         this.module = module;
         this.moduleId = moduleId;
         this.code = code;
@@ -73,7 +71,7 @@ public class MountModuleReq {
         this.studentList = studentList;
         this.user = user;
         this.userId = userId;
-        this.username = username;
+        //this.username = username;
         this.password = password;
         this.email = email;
     }
@@ -199,13 +197,13 @@ public class MountModuleReq {
         this.userId = userId;
     }
 
-    public String getUsername() {
+    /**public String getUsername() {
         return username;
     }
 
     public void setUsername(String username) {
         this.username = username;
-    }
+    }**/
 
     public String getPassword() {
         return password;

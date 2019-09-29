@@ -42,57 +42,14 @@ public class UpdateModule {
     private User user;
     
     private Long userId;
-    private String username;
+    private String email;
     private String password;
     
-    private String email;
 
-    
     public UpdateModule() {
     }
 
-    public UpdateModule(Module module, Long moduleId, String code, String title, String description, Integer semesterOffered, String yearOffered, Integer creditUnit, Integer maxEnrollment, boolean hasExam, Timestamp examTime, String examVenue, User assignedTeacher,  String lectureDetails, Tutorial tutorialList) {
-        this.module = module;
-        this.moduleId = moduleId;
-        this.code = code;
-        this.title = title;
-        this.description = description;
-        this.semesterOffered = semesterOffered;
-        this.yearOffered = yearOffered;
-        this.creditUnit = creditUnit;
-        this.maxEnrollment = maxEnrollment;
-        this.hasExam = hasExam;
-        this.examTime = examTime;
-        this.examVenue = examVenue;
-        this.assignedTeacher = assignedTeacher;
-        this.lectureDetails = lectureDetails;
-        this.tutorialList = tutorialList;
-    }
-
-    public UpdateModule(Module module, Long moduleId, String code, String title, String description, Integer semesterOffered, String yearOffered, Integer creditUnit, Integer maxEnrollment, boolean hasExam, Timestamp examTime, String examVenue, User assignedTeacher, String lectureDetails, Tutorial tutorialList, User user, Long userId, String username, String password, String email) {
-        this.module = module;
-        this.moduleId = moduleId;
-        this.code = code;
-        this.title = title;
-        this.description = description;
-        this.semesterOffered = semesterOffered;
-        this.yearOffered = yearOffered;
-        this.creditUnit = creditUnit;
-        this.maxEnrollment = maxEnrollment;
-        this.hasExam = hasExam;
-        this.examTime = examTime;
-        this.examVenue = examVenue;
-        this.assignedTeacher = assignedTeacher;
-        this.lectureDetails = lectureDetails;
-        this.tutorialList = tutorialList;
-        this.user = user;
-        this.userId = userId;
-        this.username = username;
-        this.password = password;
-        this.email = email;
-    }
-
-    public UpdateModule(Module module, Long moduleId, String code, String title, String description, Integer semesterOffered, String yearOffered, Integer creditUnit, Integer maxEnrollment, User assignedTeacher, boolean hasExam, Timestamp examTime, String examVenue, String lectureDetails, Tutorial tutorialList, Long tutorialId, String venue, String timing, List<User> studentList, User user, Long userId, String username, String password, String email) {
+    public UpdateModule(Module module, Long moduleId, String code, String title, String description, Integer semesterOffered, String yearOffered, Integer creditUnit, Integer maxEnrollment, User assignedTeacher, boolean hasExam, Timestamp examTime, String examVenue, String lectureDetails, Tutorial tutorialList, Long tutorialId, String venue, String timing, List<User> studentList, User user, Long userId, String password, String email) {
         this.module = module;
         this.moduleId = moduleId;
         this.code = code;
@@ -114,7 +71,7 @@ public class UpdateModule {
         this.studentList = studentList;
         this.user = user;
         this.userId = userId;
-        this.username = username;
+        //this.username = username;
         this.password = password;
         this.email = email;
     }
@@ -241,13 +198,13 @@ public class UpdateModule {
         this.userId = userId;
     }
 
-    public String getUsername() {
+    /**public String getUsername() {
         return username;
     }
 
     public void setUsername(String username) {
         this.username = username;
-    }
+    }**/
 
     public String getPassword() {
         return password;

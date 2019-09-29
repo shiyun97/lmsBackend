@@ -6,6 +6,7 @@
 package datamodel.rest;
 
 import entities.Module;
+import java.util.List;
 
 /**
  *
@@ -13,22 +14,21 @@ import entities.Module;
  */
 public class GetModuleRsp {
     
-    private Module module;
+    private List<Module> module;
 
     public GetModuleRsp() {
     }
 
-    public GetModuleRsp(Module module) {
+    public GetModuleRsp(List<Module> module) {
         this.module = module;
     }
 
-    public Module getModule() {
+    public List<Module> getModule() {
         return module;
     }
 
-    public void setModule(Module module) {
+    public void setModule(List<Module> module) {
         this.module = module;
     }
-    
     
 }

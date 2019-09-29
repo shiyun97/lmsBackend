@@ -31,19 +31,12 @@ public class CreateUser {
     private String password;
     private GenderEnum gender;
     private AccessRightEnum accessRight;
-    private List<ConsultationTimeslot> consultationTimeslotList;
-    private List<QuizAttempt> quizAttemptList;
-    private List<SurveyAttempt> surveyAttemptList;
-    private List<ClassGroup> classGroupList;
-    private List<Module> teacherModuleList;
-    private List<Module> studentModuleList;
-    private List<Module> publicUserModuleList;
     
     
     public CreateUser() {
     }
 
-    public CreateUser(User user, Long userId, String firstName, String lastName, String email, String username, String password, GenderEnum gender, AccessRightEnum accessRight, List<ConsultationTimeslot> consultationTimeslotList, List<QuizAttempt> quizAttemptList, List<SurveyAttempt> surveyAttemptList, List<ClassGroup> classGroupList, List<Module> moduleList, List<Module> teacherModuleList, List<Module> studentModuleList, List<Module> publicUserModuleList) {
+    public CreateUser(User user, Long userId, String firstName, String lastName, String email, String username, String password, GenderEnum gender, AccessRightEnum accessRight) {
         this.user = user;
         this.userId = userId;
         this.firstName = firstName;
@@ -53,13 +46,6 @@ public class CreateUser {
         this.password = password;
         this.gender = gender;
         this.accessRight = accessRight;
-        this.consultationTimeslotList = consultationTimeslotList;
-        this.quizAttemptList = quizAttemptList;
-        this.surveyAttemptList = surveyAttemptList;
-        this.classGroupList = classGroupList;
-        this.teacherModuleList = teacherModuleList;
-        this.studentModuleList = studentModuleList;
-        this.publicUserModuleList = publicUserModuleList;
     }
 
     public User getUser() {
@@ -132,61 +118,5 @@ public class CreateUser {
 
     public void setAccessRight(AccessRightEnum accessRight) {
         this.accessRight = accessRight;
-    }
-
-    public List<ConsultationTimeslot> getConsultationTimeslotList() {
-        return consultationTimeslotList;
-    }
-
-    public void setConsultationTimeslotList(List<ConsultationTimeslot> consultationTimeslotList) {
-        this.consultationTimeslotList = consultationTimeslotList;
-    }
-
-    public List<QuizAttempt> getQuizAttemptList() {
-        return quizAttemptList;
-    }
-
-    public void setQuizAttemptList(List<QuizAttempt> quizAttemptList) {
-        this.quizAttemptList = quizAttemptList;
-    }
-
-    public List<SurveyAttempt> getSurveyAttemptList() {
-        return surveyAttemptList;
-    }
-
-    public void setSurveyAttemptList(List<SurveyAttempt> surveyAttemptList) {
-        this.surveyAttemptList = surveyAttemptList;
-    }
-
-    public List<ClassGroup> getClassGroupList() {
-        return classGroupList;
-    }
-
-    public void setClassGroupList(List<ClassGroup> classGroupList) {
-        this.classGroupList = classGroupList;
-    }
-
-    public List<Module> getTeacherModuleList() {
-        return teacherModuleList;
-    }
-
-    public void setTeacherModuleList(List<Module> teacherModuleList) {
-        this.teacherModuleList = teacherModuleList;
-    }
-
-    public List<Module> getStudentModuleList() {
-        return studentModuleList;
-    }
-
-    public void setStudentModuleList(List<Module> studentModuleList) {
-        this.studentModuleList = studentModuleList;
-    }
-
-    public List<Module> getPublicUserModuleList() {
-        return publicUserModuleList;
-    }
-
-    public void setPublicUserModuleList(List<Module> publicUserModuleList) {
-        this.publicUserModuleList = publicUserModuleList;
     }
 }

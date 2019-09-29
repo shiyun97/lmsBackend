@@ -15,7 +15,7 @@ import javax.persistence.Id;
 import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 import util.AccessRightEnum;
-import util.CryptographicHelper;
+//import util.CryptographicHelper;
 import util.GenderEnum;
 
 /**
@@ -25,7 +25,8 @@ import util.GenderEnum;
 @Entity
 public class User implements Serializable {
 
-    public User(String firstName, String lastName, String email, String username, String password, GenderEnum gender, AccessRightEnum accessRight, List<ConsultationTimeslot> consultationTimeslotList, List<QuizAttempt> quizAttemptList, List<SurveyAttempt> surveyAttemptList, List<ClassGroup> classGroupList, List<Module> teacherModuleList, List<Module> studentModuleList, List<Module> publicUserModuleList) {
+    public User(Long userId, String firstName, String lastName, String email, String username, String password, GenderEnum gender, AccessRightEnum accessRight, List<ConsultationTimeslot> consultationTimeslotList, List<QuizAttempt> quizAttemptList, List<SurveyAttempt> surveyAttemptList, List<ClassGroup> classGroupList, List<Module> teacherModuleList, List<Module> studentModuleList, List<Module> publicUserModuleList) {
+        this.userId = userId;
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
@@ -40,7 +41,7 @@ public class User implements Serializable {
         this.teacherModuleList = teacherModuleList;
         this.studentModuleList = studentModuleList;
         this.publicUserModuleList = publicUserModuleList;
-        this.salt = CryptographicHelper.getInstance().generateRandomString(32);
+        //this.salt = CryptographicHelper.getInstance().generateRandomString(32);
     }
 
     public User() {
@@ -79,8 +80,8 @@ public class User implements Serializable {
     @ManyToMany(mappedBy = "publicUserList")
     private List<Module> publicUserModuleList;
     
-    @Column(columnDefinition = "CHAR(32) NOT NULL")
-    private String salt;
+    //@Column(columnDefinition = "CHAR(32) NOT NULL")
+    //private String salt;
     
 
     public Long getId() {
@@ -228,12 +229,12 @@ public class User implements Serializable {
         this.publicUserModuleList = publicUserModuleList;
     }
 
-    public String getSalt() {
+    /*public String getSalt() {
         return salt;
     }
 
     public void setSalt(String salt) {
         this.salt = salt;
-    }
+    }*/
     
 }
