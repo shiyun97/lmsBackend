@@ -66,8 +66,8 @@ public class ModuleMountingResource {
         }
         throw new NotFoundException("Username does not exist");
     }
-
-
+    
+    
             /*module.setAnnoucementList(null);
                 module.setAttandanceList(null);
                 module.setClassGroupList(null);
@@ -100,10 +100,10 @@ public class ModuleMountingResource {
             module.setHasExam(mountModuleReq.isHasExam());
             module.setExamTime(mountModuleReq.getExamTime());
             module.setExamVenue(mountModuleReq.getExamVenue());
-            //User user = em.find(User.class, mountModuleReq.getUserId());
-            module.setAssignedTeacher(mountModuleReq.getUser());
+            //User user = em.find(User.class, mountModuleReq.getUserId());            
+            module.setAssignedTeacher(mountModuleReq.getUser());           
             module.setLectureDetails(mountModuleReq.getLectureDetails());
-
+            
             em.persist(module);
 
             Tutorial tutorial = new Tutorial();
@@ -112,9 +112,9 @@ public class ModuleMountingResource {
             tutorial.setTiming(mountModuleReq.getTiming());
             //tutorial.setStudentList(null);
             tutorial.setModule(module);
-
+            
             module.getTutorials().add(tutorial);
-
+           
             em.persist(tutorial);
             em.flush();
 
@@ -157,7 +157,7 @@ public class ModuleMountingResource {
                 f.getClass();
                 f.getCreateTs();
                 f.getFeedback();
-
+                
                 feedbackList.add(f);
             }
 
@@ -210,7 +210,7 @@ public class ModuleMountingResource {
                 f.getClass();
                 f.getCreateTs();
                 f.getFeedback();
-
+                
                 feedbackList.add(f);
             }
 
@@ -265,7 +265,7 @@ public class ModuleMountingResource {
                         f.getClass();
                         f.getCreateTs();
                         f.getFeedback();
-
+                        
                         feedbackList.add(f);
                     }
 
