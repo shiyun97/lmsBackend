@@ -155,6 +155,8 @@ public class ModuleMountingResource {
                 f.getClass();
                 f.getCreateTs();
                 f.getFeedback();
+                
+                feedbackList.add(f);
             }
 
             Module moduleCopy = new Module(module.getModuleId(), module.getCode(), module.getTitle(),
@@ -206,6 +208,8 @@ public class ModuleMountingResource {
                 f.getClass();
                 f.getCreateTs();
                 f.getFeedback();
+                
+                feedbackList.add(f);
             }
 
             Module moduleCopy = new Module(module.getModuleId(), module.getCode(), module.getTitle(),
@@ -259,6 +263,8 @@ public class ModuleMountingResource {
                         f.getClass();
                         f.getCreateTs();
                         f.getFeedback();
+                        
+                        feedbackList.add(f);
                     }
 
                     rsp.getModule().add(

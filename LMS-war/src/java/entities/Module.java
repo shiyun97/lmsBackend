@@ -80,7 +80,7 @@ public class Module implements Serializable {
     private User assignedTeacher;
     @OneToMany(mappedBy = "module")
     private List<ClassGroupList> classGroupList;
-    @OneToMany
+    @OneToMany(mappedBy = "module")
     private List<Feedback> feedbackList;
     @OneToMany(mappedBy = "module", cascade = CascadeType.ALL)
     private List<Tutorial> tutorials;
