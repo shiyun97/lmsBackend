@@ -22,9 +22,9 @@ import javax.xml.bind.annotation.XmlRootElement;
 @Entity
 @Table(name = "ANNOUCEMENT")
 @XmlRootElement
-public class Annoucement implements Serializable {
+public class Announcement implements Serializable {
 
-    public Annoucement(String title, String description, Timestamp createTs, Timestamp updateTs, Boolean systemWide, Module module, User owner) {
+    public Announcement(String title, String description, Timestamp createTs, Timestamp updateTs, Boolean systemWide, Module module, User owner) {
         this.title = title;
         this.description = description;
         this.createTs = createTs;
@@ -63,7 +63,7 @@ public class Annoucement implements Serializable {
         this.systemWide = systemWide;
     }
 **/
-    public Annoucement(){
+    public Announcement(){
         
     }
     
@@ -85,10 +85,10 @@ public class Annoucement implements Serializable {
     @Override
     public boolean equals(Object object) {
         // TODO: Warning - this method won't work in the case the annoucementId fields are not set
-        if (!(object instanceof Annoucement)) {
+        if (!(object instanceof Announcement)) {
             return false;
         }
-        Annoucement other = (Annoucement) object;
+        Announcement other = (Announcement) object;
         if ((this.annoucementId == null && other.annoucementId != null) || (this.annoucementId != null && !this.annoucementId.equals(other.annoucementId))) {
             return false;
         }
