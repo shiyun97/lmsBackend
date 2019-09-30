@@ -24,6 +24,9 @@ import util.GenderEnum;
  */
 @Entity
 public class User implements Serializable {
+    
+    @ManyToMany(mappedBy = "studentList")
+    private List<Tutorial> tutorials;
 
     public User(Long userId, String firstName, String lastName, String email, String username, String password, GenderEnum gender, AccessRightEnum accessRight, List<ConsultationTimeslot> consultationTimeslotList, List<QuizAttempt> quizAttemptList, List<SurveyAttempt> surveyAttemptList, List<ClassGroup> classGroupList, List<Module> teacherModuleList, List<Module> studentModuleList, List<Module> publicUserModuleList) {
         this.userId = userId;
@@ -43,6 +46,27 @@ public class User implements Serializable {
         this.publicUserModuleList = publicUserModuleList;
         //this.salt = CryptographicHelper.getInstance().generateRandomString(32);
     }
+
+    public User(List<Tutorial> tutorials, Long userId, String firstName, String lastName, String email, String username, String password, GenderEnum gender, AccessRightEnum accessRight, List<ConsultationTimeslot> consultationTimeslotList, List<QuizAttempt> quizAttemptList, List<SurveyAttempt> surveyAttemptList, List<ClassGroup> classGroupList, List<Module> teacherModuleList, List<Module> studentModuleList, List<Module> publicUserModuleList) {
+        this.tutorials = tutorials;
+        this.userId = userId;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.email = email;
+        this.username = username;
+        this.password = password;
+        this.gender = gender;
+        this.accessRight = accessRight;
+        this.consultationTimeslotList = consultationTimeslotList;
+        this.quizAttemptList = quizAttemptList;
+        this.surveyAttemptList = surveyAttemptList;
+        this.classGroupList = classGroupList;
+        this.teacherModuleList = teacherModuleList;
+        this.studentModuleList = studentModuleList;
+        this.publicUserModuleList = publicUserModuleList;
+    }
+    
+    
 
     public User() {
     }
@@ -236,5 +260,13 @@ public class User implements Serializable {
     public void setSalt(String salt) {
         this.salt = salt;
     }*/
+
+    public List<Tutorial> getTutorials() {
+        return tutorials;
+    }
+
+    public void setTutorials(List<Tutorial> tutorials) {
+        this.tutorials = tutorials;
+    }
     
 }
