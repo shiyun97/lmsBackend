@@ -234,7 +234,7 @@ public class UserResource {
             if (!user.getPassword().equals(password)) {
                 return Response.status(Response.Status.UNAUTHORIZED).entity("Invalid password").build();
             }
-            return Response.status(Response.Status.OK).entity(new CheckUserLogin(user)).build();
+            return Response.status(Response.Status.OK).entity(user).build();
             
         } catch (Exception ex) {
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
