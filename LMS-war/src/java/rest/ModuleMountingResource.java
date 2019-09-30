@@ -100,7 +100,8 @@ public class ModuleMountingResource {
             module.setHasExam(mountModuleReq.isHasExam());
             module.setExamTime(mountModuleReq.getExamTime());
             module.setExamVenue(mountModuleReq.getExamVenue());
-            module.setAssignedTeacher(mountModuleReq.getAssignedTeacher());
+            //User user = em.find(User.class, mountModuleReq.getUserId());            
+            module.setAssignedTeacher(mountModuleReq.getUser());           
             module.setLectureDetails(mountModuleReq.getLectureDetails());
             
             em.persist(module);
@@ -109,6 +110,7 @@ public class ModuleMountingResource {
             tutorial.setMaxEnrollment(mountModuleReq.getMaxEnrollment());
             tutorial.setVenue(mountModuleReq.getVenue());
             tutorial.setTiming(mountModuleReq.getTiming());
+            //tutorial.setStudentList(null);
             tutorial.setModule(module);
             
             module.getTutorials().add(tutorial);
@@ -334,12 +336,11 @@ public class ModuleMountingResource {
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response updateModule(UpdateModule updateModule) {
+    public Response updateModule(UpdateModule updateModule, @QueryParam("moduleId") Long moduleId) {
 
         //if (updateModule.getUser().getAccessRight() == Admin) {
         try {
 
-            Long moduleId = updateModule.getModuleId();
             Module module = em.find(Module.class, moduleId);
             //em.createQuery("select m from Module m where m.moduleId = :moduleId");
             //Module module = (Module) query.getSingleResult();
