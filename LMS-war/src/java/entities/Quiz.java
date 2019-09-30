@@ -23,8 +23,6 @@ import javax.xml.bind.annotation.XmlRootElement;
  * @author Vixson
  */
 @Entity
-@Table(name = "QUIZ")
-@XmlRootElement
 public class Quiz implements Serializable {
 
     public Quiz(String title, String description, Timestamp startDate, Timestamp endDate, Timestamp createTs, Timestamp updateTs, Integer maxNoOfAttempt, Double maxMarks, String owner, Module module, List<Question> questionList, List<QuizAttempt> quizAttemptList) {

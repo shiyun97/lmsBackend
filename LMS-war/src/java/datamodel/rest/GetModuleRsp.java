@@ -10,30 +10,25 @@ import java.util.List;
 
 /**
  *
- * 
+ * @author Vixson
  */
-public class RetrieveModule {
+public class GetModuleRsp {
     
-    private Module module;
-   
-    public RetrieveModule(){
-        
-    }
-    
-     public RetrieveModule(Module modules){
-        
-         this.module = module;
+    private List<Module> module;
+
+    public GetModuleRsp() {
     }
 
-    public Module getModule() {
+    public GetModuleRsp(List<Module> module) {
+        this.module = module;
+    }
+
+    public List<Module> getModule() {
         return module;
     }
 
-    public void setModule(Module module) {
+    public void setModule(List<Module> module) {
         this.module = module;
     }
-    
-    
-    
     
 }

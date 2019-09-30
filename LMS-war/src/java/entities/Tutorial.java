@@ -1,4 +1,4 @@
-/*
+  /*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
@@ -37,8 +37,7 @@ public class Tutorial implements Serializable {
     @ManyToOne
     private Module module;
 
-    public Tutorial(Long tutorialId, int maxEnrollment, String venue, String timing, List<User> studentList, Module module) {
-        this.tutorialId = tutorialId;
+    public Tutorial(int maxEnrollment, String venue, String timing, List<User> studentList, Module module) {
         this.maxEnrollment = maxEnrollment;
         this.venue = venue;
         this.timing = timing;
@@ -47,8 +46,9 @@ public class Tutorial implements Serializable {
     }
 
     public Tutorial() {
+        
     }
-
+    
     public Long getTutorialId() {
         return tutorialId;
     }
