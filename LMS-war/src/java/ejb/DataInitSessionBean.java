@@ -74,7 +74,7 @@ public class DataInitSessionBean {
         User extStu = new User();
         extStu.setFirstName("Jane");
         extStu.setLastName("Doe");
-        extStu.setEmail("teacher@gmail.com");
+        extStu.setEmail("public@gmail.com");
         extStu.setPassword("password");
         extStu.setGender(GenderEnum.Female);
         extStu.setAccessRight(AccessRightEnum.Public);
