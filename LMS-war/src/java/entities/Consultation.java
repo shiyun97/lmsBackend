@@ -23,6 +23,8 @@ import javax.xml.bind.annotation.XmlRootElement;
  * @author Vixson
  */
 @Entity
+@Table(name = "CONSULTATION")
+@XmlRootElement
 public class Consultation implements Serializable {
 
     public Consultation(String title, String description, List<ConsultationTimeslot> consultationTimeslot, Module module) {

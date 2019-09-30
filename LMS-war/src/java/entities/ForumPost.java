@@ -24,6 +24,8 @@ import javax.xml.bind.annotation.XmlRootElement;
  * @author Vixson
  */
 @Entity
+@Table(name = "FORUMPOST")
+@XmlRootElement
 public class ForumPost implements Serializable {
 
     public ForumPost(String title, String description, Integer numberOfReply, Timestamp createTs, Timestamp updateTs, Boolean threadStarter, String owner, Module module) {
