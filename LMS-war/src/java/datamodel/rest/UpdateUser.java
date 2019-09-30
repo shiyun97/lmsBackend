@@ -24,7 +24,7 @@ import java.util.List;
  */
 public class UpdateUser {
     private User user;
-    
+
     private Long userId;
     private String firstName;
     private String lastName;
@@ -41,8 +41,8 @@ public class UpdateUser {
     private List<Module> studentModuleList;
     private List<Module> publicUserModuleList;
     private List<Tutorial> tutorials;
-    
-    
+
+
     public UpdateUser() {
     }
 
@@ -66,7 +66,7 @@ public class UpdateUser {
         this.tutorials = tutorials;
     }
 
-    
+
 
     public User getUser() {
         return user;
