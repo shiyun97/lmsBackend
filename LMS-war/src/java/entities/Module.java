@@ -5,10 +5,10 @@
  */
 package entities;
 
-import unusedEntities.Student;
 import java.io.Serializable;
 import java.sql.Timestamp;
 import java.util.List;
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -26,9 +26,9 @@ import javax.xml.bind.annotation.XmlRootElement;
  * @author Vixson
  */
 @Entity
-@Table(name = "MODULE")
-public class Module implements Serializable {   
+public class Module implements Serializable {
 
+    
     public Module() {
     }
 
@@ -80,7 +80,7 @@ public class Module implements Serializable {
     private User assignedTeacher;
     @OneToMany(mappedBy = "module")
     private List<ClassGroupList> classGroupList;
-    @OneToMany
+    @OneToMany(mappedBy = "module")
     private List<Feedback> feedbackList;
     @OneToMany(mappedBy = "module")
     private List<Tutorial> tutorials;
@@ -93,11 +93,11 @@ public class Module implements Serializable {
     @Column
     private String lectureDetails;
     @Column
-    private String department;
-    @Column
     private String faculty;
+    @Column 
+    private String department;
 
-    public Module(Long moduleId, String code, String title, String description, Integer semesterOffered, String yearOffered, Integer creditUnit, String grade, Integer maxEnrollment, List<User> studentList, List<User> publicUserList, List<Folder> folderList, List<Annoucement> annoucementList, List<ForumPost> forumPostList, List<Quiz> quizList, List<GradeItem> gradeItemList, List<Attendance> attandanceList, List<Consultation> consultationList, List<LessonPlan> lessonPlanList, User assignedTeacher, List<ClassGroupList> classGroupList, List<Feedback> feedbackList, List<Tutorial> tutorials, boolean hasExam, Timestamp examTime, String examVenue, String lectureDetails, String department, String faculty) {
+    public Module(Long moduleId, String code, String title, String description, Integer semesterOffered, String yearOffered, Integer creditUnit, String grade, Integer maxEnrollment, List<User> studentList, List<User> publicUserList, List<Folder> folderList, List<Annoucement> annoucementList, List<ForumPost> forumPostList, List<Quiz> quizList, List<GradeItem> gradeItemList, List<Attendance> attandanceList, List<Consultation> consultationList, List<LessonPlan> lessonPlanList, User assignedTeacher, List<ClassGroupList> classGroupList, List<Feedback> feedbackList, List<Tutorial> tutorials, boolean hasExam, Timestamp examTime, String examVenue, String lectureDetails, String faculty, String department) {
         this.moduleId = moduleId;
         this.code = code;
         this.title = title;
@@ -125,9 +125,10 @@ public class Module implements Serializable {
         this.examTime = examTime;
         this.examVenue = examVenue;
         this.lectureDetails = lectureDetails;
-        this.department = department;
         this.faculty = faculty;
+        this.department = department;
     }
+
     
     
 	
@@ -364,12 +365,12 @@ public class Module implements Serializable {
         this.tutorials = tutorials;
     }
 
-    public List<Feedback> getFeedbackList() {
-        return feedbackList;
+    public String getFaculty() {
+        return faculty;
     }
 
-    public void setFeedbackList(List<Feedback> feedbackList) {
-        this.feedbackList = feedbackList;
+    public void setFaculty(String faculty) {
+        this.faculty = faculty;
     }
 
     public String getDepartment() {
@@ -380,12 +381,12 @@ public class Module implements Serializable {
         this.department = department;
     }
 
-    public String getFaculty() {
-        return faculty;
+    public List<Feedback> getFeedbackList() {
+        return feedbackList;
     }
 
-    public void setFaculty(String faculty) {
-        this.faculty = faculty;
+    public void setFeedbackList(List<Feedback> feedbackList) {
+        this.feedbackList = feedbackList;
     }
 
 }

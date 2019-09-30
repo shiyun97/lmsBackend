@@ -18,10 +18,9 @@ public class ApplicationConfig extends Application
     }
 
     private void addRestResourceClasses(Set<Class<?>> resources) {
-        resources.add(rest.FeedbackResource.class);
-        resources.add(rest.ModuleResource.class);
-        resources.add(rest.StudentEnrollmentResource.class);
+        resources.add(rest.GroupManagementResource.class    
+        resources.add(rest.ModuleMountingResource.class);
         resources.add(rest.UserResource.class);
- }
+ }    
 }
 

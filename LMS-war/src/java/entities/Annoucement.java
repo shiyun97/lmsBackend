@@ -20,8 +20,6 @@ import javax.xml.bind.annotation.XmlRootElement;
  * @author Vixson
  */
 @Entity
-@Table(name = "ANNOUCEMENT")
-@XmlRootElement
 public class Annoucement implements Serializable {
 
     public Annoucement(String title, String description, Timestamp createTs, Timestamp updateTs, Boolean systemWide, Module module, User owner) {

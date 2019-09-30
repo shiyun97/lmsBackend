@@ -13,6 +13,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 import javax.persistence.ManyToOne;
 
@@ -23,13 +24,13 @@ import javax.persistence.ManyToOne;
 @Entity
 public class ClassGroupList implements Serializable {
 
-    public ClassGroupList(String name, Timestamp startTs, Timestamp closeTs, List<ClassGroup> classGroup, Module module) {
+    /*public ClassGroupList(String name, Timestamp startTs, Timestamp closeTs, List<ClassGroup> classGroup, Module module) {
         this.name = name;
         this.startTs = startTs;
         this.closeTs = closeTs;
         this.classGroup = classGroup;
         this.module = module;
-    }
+    }*/
 
     public ClassGroupList() {
     }
@@ -44,10 +45,24 @@ public class ClassGroupList implements Serializable {
     private Timestamp startTs;
     @Column
     private Timestamp closeTs;
-    @OneToMany(mappedBy = "classGroupList")
-    private List<ClassGroup> classGroup;
+    //@OneToMany(mappedBy = "classGroupList")
+    //private List<ClassGroup> classGroup;
     @ManyToOne
     private Module module;
+    @Column
+    private Integer maxMember;
+    @ManyToMany
+    private List<User> members;
+
+    public ClassGroupList(String name, Timestamp startTs, Timestamp closeTs, Module module, Integer maxMember, List<User> members) {
+        this.name = name;
+        this.startTs = startTs;
+        this.closeTs = closeTs;
+        this.module = module;
+        this.maxMember = maxMember;
+        this.members = members;
+    }
+    
     
     
     public Long getClassGroupListId() {
@@ -106,14 +121,6 @@ public class ClassGroupList implements Serializable {
     public void setCloseTs(Timestamp closeTs) {
         this.closeTs = closeTs;
     }
-
-    public List<ClassGroup> getClassGroup() {
-        return classGroup;
-    }
-
-    public void setClassGroup(List<ClassGroup> classGroup) {
-        this.classGroup = classGroup;
-    }
     
     public Module getModule() {
         return module;
@@ -122,5 +129,21 @@ public class ClassGroupList implements Serializable {
     public void setModule(Module module) {
         this.module = module;
     }    
+
+    public Integer getMaxMember() {
+        return maxMember;
+    }
+
+    public void setMaxMember(Integer maxMember) {
+        this.maxMember = maxMember;
+    }
+
+    public List<User> getMembers() {
+        return members;
+    }
+
+    public void setMembers(List<User> members) {
+        this.members = members;
+    }
     
 }
