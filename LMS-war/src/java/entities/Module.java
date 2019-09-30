@@ -82,7 +82,7 @@ public class Module implements Serializable {
     private List<ClassGroupList> classGroupList;
     @OneToMany(mappedBy = "module")
     private List<Feedback> feedbackList;
-    @OneToMany(mappedBy = "module", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "module")
     private List<Tutorial> tutorials;
     @Column
     private boolean hasExam;

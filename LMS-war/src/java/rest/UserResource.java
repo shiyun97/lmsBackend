@@ -39,13 +39,13 @@ import util.exception.InvalidLoginCredentialException;
 @Stateless
 @Path("User")
 public class UserResource {
-    
+
     @PersistenceContext(unitName = "LMS-warPU")
     private EntityManager em;
-    
+
     public UserResource() {
     }
-    
+
     public boolean isLogin(User user) {
         user = em.find(User.class, user.getId());
         if (user != null) {
@@ -53,7 +53,7 @@ public class UserResource {
         }
         return false;
     }
-    
+
     /*public User retrieveUser(String attri, String val) {
         String input = "select u from User u where u." + attri + "=:inVal";
         Query query = em.createQuery(input);
@@ -85,30 +85,36 @@ public class UserResource {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public Response createUser(CreateUser createUser) {
-        
+
         //if (createUser.getUser().getAccessRight() == Admin) {
-            
-            try {
-                User user = new User();
-                user.setFirstName(createUser.getFirstName());
-                user.setLastName(createUser.getLastName());
+        User existingUser = em.find(User.class, createUser.getUserId());
+
+        try {
+            User user = new User();
+            user.setFirstName(createUser.getFirstName());
+            user.setLastName(createUser.getLastName());
+            if (!existingUser.getEmail().equals(createUser.getEmail())) {
                 user.setEmail(createUser.getEmail());
-                user.setPassword(createUser.getPassword());
-                user.setGender(createUser.getGender());
-                user.setAccessRight(createUser.getAccessRight());
-                user.setUsername(createUser.getUsername());
-                
-                em.persist(user);
-                em.flush();
-                
-                return Response.status(Response.Status.OK).entity(user).build();
-            } catch (Exception ex) {
-                return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
             }
+            else{
+                return Response.status(Response.Status.NOT_ACCEPTABLE).entity("Email already used/exist").build();
+            }
+            user.setPassword(createUser.getPassword());
+            user.setGender(createUser.getGender());
+            user.setAccessRight(createUser.getAccessRight());
+            user.setUsername(createUser.getUsername());
+
+            em.persist(user);
+            em.flush();
+
+            return Response.status(Response.Status.OK).entity(user).build();
+        } catch (Exception ex) {
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
+        }
         //}
         //return Response.status(Response.Status.UNAUTHORIZED).build();
     }
-    
+
     @GET
     @Path("getAllUser")
     @Produces(MediaType.APPLICATION_JSON)
@@ -116,12 +122,12 @@ public class UserResource {
         try {
             Query query = em.createQuery("select u from User u");
             List<User> userList = query.getResultList();
-            
+
             GetUserRsp rsp = new GetUserRsp(new ArrayList<>());
-            
+
             if (userList == null && userList.isEmpty()) {
                 return Response.status(Response.Status.NOT_FOUND).entity("No user found").build();
-            } else {                
+            } else {
                 for (User u : userList) {
                     rsp.getUserList().add(
                             new User(null, u.getId(), u.getFirstName(), u.getLastName(),
@@ -135,91 +141,90 @@ public class UserResource {
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
         }
     }
-    
+
     @GET
     @Path(value = "getUser/{id}")
     @Produces(MediaType.APPLICATION_JSON)
     public Response getUserById(@PathParam("id") Long userId) {
         try {
-            User user = em.find(User.class, userId);            
-            
+            User user = em.find(User.class, userId);
+
             if (user == null) {
                 return Response.status(Response.Status.BAD_REQUEST).entity("User does not exist").build();
             }
-            
+
             User userCopy = new User(null, user.getId(), user.getFirstName(), user.getLastName(),
                     user.getEmail(), user.getUsername(), user.getPassword(), user.getGender(),
                     user.getAccessRight(), null, null, null, null, null, null, null);
-            
+
             return Response.status(Response.Status.OK).entity(userCopy).build();
         } catch (Exception ex) {
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
         }
     }
-    
+
     @DELETE
     @Path(value = "deleteUser")
     @Produces(MediaType.APPLICATION_JSON)
     public Response deleteUser(@QueryParam("userId") Long userId) {
-        
-        //if (checkUserLogin.getUser().getAccessRight() == Admin) {
-            
-            try {
-                User user = em.find(User.class, userId);
-                if (user == null) {
-                    return Response.status(Response.Status.NOT_FOUND).entity("User does not exist").build();
-                }
-                em.remove(user);
 
-                return Response.status(Response.Status.OK).build();
-            } catch (Exception ex) {
-                return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
+        //if (checkUserLogin.getUser().getAccessRight() == Admin) {
+        try {
+            User user = em.find(User.class, userId);
+            if (user == null) {
+                return Response.status(Response.Status.NOT_FOUND).entity("User does not exist").build();
             }
+            em.remove(user);
+
+            return Response.status(Response.Status.OK).build();
+        } catch (Exception ex) {
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
+        }
         //}
         //return Response.status(Response.Status.UNAUTHORIZED).build();
     }
-    
+
     @POST
     @Path(value = "updateUser")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public Response updateUser(UpdateUser updateUser) {
-        
+
         //if (updateUser.getUser().getAccessRight() == Admin) {
-            
-            try {
-                Long userId = updateUser.getUserId();
-                User user = em.find(User.class, userId);
-                
-                if (user != null) {
-                    user.setAccessRight(updateUser.getAccessRight());
-                    user.setClassGroupList(updateUser.getClassGroupList());
-                    user.setConsultationTimeslotList(updateUser.getConsultationTimeslotList());
-                    user.setEmail(updateUser.getEmail());
-                    user.setUsername(updateUser.getUsername());
-                    user.setFirstName(updateUser.getFirstName());
-                    user.setGender(updateUser.getGender());
-                    user.setLastName(updateUser.getLastName());
-                    user.setPassword(updateUser.getPassword());
-                    user.setPublicUserModuleList(updateUser.getPublicUserModuleList());
-                    user.setQuizAttemptList(updateUser.getQuizAttemptList());
-                    user.setStudentModuleList(updateUser.getStudentModuleList());
-                    user.setSurveyAttemptList(updateUser.getSurveyAttemptList());
-                    user.setTeacherModuleList(updateUser.getTeacherModuleList());
-                    
-                    em.merge(user);
-                    em.flush();
-                    
-                    return Response.status(Response.Status.OK).entity(user).build();
-                }
-                return Response.status(Response.Status.NOT_FOUND).entity("User does not exist").build();
-            } catch (Exception ex) {
-                return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
+        try {
+            Long userId = updateUser.getUserId();
+            User user = em.find(User.class, userId);
+
+            if (user != null) {
+                user.setAccessRight(updateUser.getAccessRight());
+                user.setClassGroupList(updateUser.getClassGroupList());
+                user.setConsultationTimeslotList(updateUser.getConsultationTimeslotList());
+                user.setEmail(updateUser.getEmail());
+                user.setUsername(updateUser.getUsername());
+                user.setFirstName(updateUser.getFirstName());
+                user.setGender(updateUser.getGender());
+                user.setLastName(updateUser.getLastName());
+                user.setPassword(updateUser.getPassword());
+                user.setPublicUserModuleList(updateUser.getPublicUserModuleList());
+                user.setQuizAttemptList(updateUser.getQuizAttemptList());
+                user.setStudentModuleList(updateUser.getStudentModuleList());
+                user.setSurveyAttemptList(updateUser.getSurveyAttemptList());
+                user.setTeacherModuleList(updateUser.getTeacherModuleList());
+                user.setTutorials(updateUser.getTutorials());
+
+                em.merge(user);
+                em.flush();
+
+                return Response.status(Response.Status.OK).entity(user).build();
             }
+            return Response.status(Response.Status.NOT_FOUND).entity("User does not exist").build();
+        } catch (Exception ex) {
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
+        }
         //}
         //return Response.status(Response.Status.UNAUTHORIZED).build();
     }
-    
+
     @GET
     @Path(value = "userLogin")
     @Produces(MediaType.APPLICATION_JSON)
@@ -235,7 +240,7 @@ public class UserResource {
                 return Response.status(Response.Status.UNAUTHORIZED).entity("Invalid password").build();
             }
             return Response.status(Response.Status.OK).entity(user).build();
-            
+
         } catch (Exception ex) {
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
         }

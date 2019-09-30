@@ -66,38 +66,8 @@ public class ModuleMountingResource {
         }
         throw new NotFoundException("Username does not exist");
     }
-
-    @PUT
-    @Path(value = "mountModule")
-    @Consumes(MediaType.APPLICATION_JSON)
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response mountModule(MountModuleReq mountModuleReq) {
-
-        //if (mountModuleReq.getUser().getAccessRight() == Admin) {
-        try {
-            Module module = new Module();
-            module.setCode(mountModuleReq.getCode());
-            module.setTitle(mountModuleReq.getTitle());
-            module.setDescription(mountModuleReq.getDescription());
-            module.setSemesterOffered(mountModuleReq.getSemesterOffered());
-            module.setYearOffered(mountModuleReq.getYearOffered());
-            module.setCreditUnit(mountModuleReq.getCreditUnit());
-            module.setMaxEnrollment(mountModuleReq.getMaxEnrollment());
-            module.setHasExam(mountModuleReq.isHasExam());
-            module.setExamTime(mountModuleReq.getExamTime());
-            module.setExamVenue(mountModuleReq.getExamVenue());
-            module.setAssignedTeacher(mountModuleReq.getAssignedTeacher());
-            module.setLectureDetails(mountModuleReq.getLectureDetails());
-
-            Tutorial tutorial = new Tutorial();
-            tutorial.setMaxEnrollment(mountModuleReq.getMaxEnrollment());
-            tutorial.setVenue(mountModuleReq.getVenue());
-            tutorial.setTiming(mountModuleReq.getTiming());
-            tutorial.setStudentList(null);
-            tutorial.setModule(module);
-
-            module.getTutorials().add(tutorial);
-
+    
+    
             /*module.setAnnoucementList(null);
                 module.setAttandanceList(null);
                 module.setClassGroupList(null);
@@ -112,15 +82,45 @@ public class ModuleMountingResource {
                 module.setQuizList(null);
                 module.setStudentList(null);
                 module.setFeedbackList(null)*/
+
+    @PUT
+    @Path(value = "mountModule")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response mountModule(MountModuleReq mountModuleReq) {
+        try {
+            Module module = new Module();
+            module.setCode(mountModuleReq.getCode());
+            module.setTitle(mountModuleReq.getTitle());
+            module.setDescription(mountModuleReq.getDescription());
+            module.setSemesterOffered(mountModuleReq.getSemesterOffered());
+            module.setYearOffered(mountModuleReq.getYearOffered());
+            module.setCreditUnit(mountModuleReq.getCreditUnit());
+            module.setMaxEnrollment(mountModuleReq.getMaxEnrollment());
+            module.setHasExam(mountModuleReq.isHasExam());
+            module.setExamTime(mountModuleReq.getExamTime());
+            module.setExamVenue(mountModuleReq.getExamVenue());
+            module.setAssignedTeacher(mountModuleReq.getAssignedTeacher());
+            module.setLectureDetails(mountModuleReq.getLectureDetails());
+            
             em.persist(module);
+
+            Tutorial tutorial = new Tutorial();
+            tutorial.setMaxEnrollment(mountModuleReq.getMaxEnrollment());
+            tutorial.setVenue(mountModuleReq.getVenue());
+            tutorial.setTiming(mountModuleReq.getTiming());
+            tutorial.setModule(module);
+            
+            module.getTutorials().add(tutorial);
+           
+            em.persist(tutorial);
             em.flush();
 
             return Response.status(Response.Status.OK).entity(module).build();
         } catch (Exception ex) {
+            ex.printStackTrace();
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
         }
-        //}
-        //return Response.status(Response.Status.UNAUTHORIZED).build();
     }
 
     @Path(value = "getModule/{id}")

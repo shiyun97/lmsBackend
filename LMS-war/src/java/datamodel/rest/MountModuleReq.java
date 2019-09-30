@@ -41,8 +41,7 @@ public class MountModuleReq {
     private String timing;
     private List<User> studentList;
     
-    private User user;
-    
+    private User user; 
     private Long userId;
     private String email;
     private String password;
