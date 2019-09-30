@@ -7,7 +7,6 @@ import entities.Module;
 import entities.QuizAttempt;
 import entities.User;
 import entities.SurveyAttempt;
-import entities.Tutorial;
 import util.GenderEnum;
 import util.AccessRightEnum;
 import java.util.List;
@@ -40,13 +39,12 @@ public class UpdateUser {
     private List<Module> teacherModuleList;
     private List<Module> studentModuleList;
     private List<Module> publicUserModuleList;
-    private List<Tutorial> tutorials;
     
     
     public UpdateUser() {
     }
 
-    public UpdateUser(User user, Long userId, String firstName, String lastName, String email, String username, String password, GenderEnum gender, AccessRightEnum accessRight, List<ConsultationTimeslot> consultationTimeslotList, List<QuizAttempt> quizAttemptList, List<SurveyAttempt> surveyAttemptList, List<ClassGroup> classGroupList, List<Module> teacherModuleList, List<Module> studentModuleList, List<Module> publicUserModuleList, List<Tutorial> tutorials) {
+    public UpdateUser(User user, Long userId, String firstName, String lastName, String email, String username, String password, GenderEnum gender, AccessRightEnum accessRight, List<ConsultationTimeslot> consultationTimeslotList, List<QuizAttempt> quizAttemptList, List<SurveyAttempt> surveyAttemptList, List<ClassGroup> classGroupList, List<Module> teacherModuleList, List<Module> publicUserModuleList, List<Module> studentModuleList) {
         this.user = user;
         this.userId = userId;
         this.firstName = firstName;
@@ -63,10 +61,7 @@ public class UpdateUser {
         this.teacherModuleList = teacherModuleList;
         this.studentModuleList = studentModuleList;
         this.publicUserModuleList = publicUserModuleList;
-        this.tutorials = tutorials;
     }
-
-    
 
     public User getUser() {
         return user;
@@ -194,13 +189,5 @@ public class UpdateUser {
 
     public void setPublicUserModuleList(List<Module> publicUserModuleList) {
         this.publicUserModuleList = publicUserModuleList;
-    }
-
-    public List<Tutorial> getTutorials() {
-        return tutorials;
-    }
-
-    public void setTutorials(List<Tutorial> tutorials) {
-        this.tutorials = tutorials;
     }
 }
