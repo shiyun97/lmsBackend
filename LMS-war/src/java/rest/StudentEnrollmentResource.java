@@ -579,7 +579,7 @@ public class StudentEnrollmentResource {
             } else {
                 for (Module m: modules){
                     User teacher = m.getAssignedTeacher();
-                    User teacherCopy = new User(teacher.getId(), teacher.getFirstName(), teacher.getLastName(), teacher.getEmail(),
+                    User teacherCopy = new User(null, teacher.getId(), teacher.getFirstName(), teacher.getLastName(), teacher.getEmail(),
                             teacher.getUsername(), null, teacher.getGender(), teacher.getAccessRight(),
                             null, null, null, null, null, null, null);
                     resp.getModules().add(
@@ -616,7 +616,7 @@ public class StudentEnrollmentResource {
             } else {
                 for (Module m: modules){
                     User teacher = m.getAssignedTeacher();
-                    User teacherCopy = new User(teacher.getId(), teacher.getFirstName(), teacher.getLastName(), teacher.getEmail(),
+                    User teacherCopy = new User(null, teacher.getId(), teacher.getFirstName(), teacher.getLastName(), teacher.getEmail(),
                             teacher.getUsername(), null, teacher.getGender(), teacher.getAccessRight(),
                             null, null, null, null, null, null, null);
                     resp.getModules().add(
@@ -937,11 +937,11 @@ public class StudentEnrollmentResource {
         Appeal resp = null;
         
         User stu = appeal.getStudent();
-        User stuCopy = new User(stu.getId(), stu.getFirstName(), stu.getLastName(), stu.getEmail(),
+        User stuCopy = new User(null, stu.getId(), stu.getFirstName(), stu.getLastName(), stu.getEmail(),
                     stu.getUsername(), null, stu.getGender(), stu.getAccessRight(),
                     null, null, null, null, null, null, null);
         
-        User adminCopy = new User(user.getId(), user.getFirstName(), user.getLastName(), user.getEmail(),
+        User adminCopy = new User(null, user.getId(), user.getFirstName(), user.getLastName(), user.getEmail(),
                             user.getUsername(), null, user.getGender(), user.getAccessRight(),
                             null, null, null, null, null, null, null);
         if(appeal.getType() == AppealTypeEnum.Module){
@@ -1010,14 +1010,14 @@ public class StudentEnrollmentResource {
             
             for(Appeal appeal: appeals){
                 User stu = appeal.getStudent();
-                User stuCopy = new User(stu.getId(), stu.getFirstName(), stu.getLastName(), stu.getEmail(),
+                User stuCopy = new User(null, stu.getId(), stu.getFirstName(), stu.getLastName(), stu.getEmail(),
                             stu.getUsername(), null, stu.getGender(), stu.getAccessRight(),
                             null, null, null, null, null, null, null);
                 
                 User admin = appeal.getAdmin();
                 User adminCopy = null;
                 if(admin != null){
-                    adminCopy = new User(admin.getId(), admin.getFirstName(), admin.getLastName(), admin.getEmail(),
+                    adminCopy = new User(null, admin.getId(), admin.getFirstName(), admin.getLastName(), admin.getEmail(),
                             admin.getUsername(), null, admin.getGender(), admin.getAccessRight(),
                             null, null, null, null, null, null, null);
                 }
@@ -1092,14 +1092,14 @@ public class StudentEnrollmentResource {
             
             for(Appeal appeal: appeals){
                 User stu = appeal.getStudent();
-                User stuCopy = new User(stu.getId(), stu.getFirstName(), stu.getLastName(), stu.getEmail(),
+                User stuCopy = new User(null, stu.getId(), stu.getFirstName(), stu.getLastName(), stu.getEmail(),
                             stu.getUsername(), null, stu.getGender(), stu.getAccessRight(),
                             null, null, null, null, null, null, null);
                 
                 User admin = appeal.getAdmin();
                 User adminCopy = null;
                 if(admin != null){
-                    adminCopy = new User(admin.getId(), admin.getFirstName(), admin.getLastName(), admin.getEmail(),
+                    adminCopy = new User(null, admin.getId(), admin.getFirstName(), admin.getLastName(), admin.getEmail(),
                             admin.getUsername(), null, admin.getGender(), admin.getAccessRight(),
                             null, null, null, null, null, null, null);
                 }
@@ -1174,14 +1174,14 @@ public class StudentEnrollmentResource {
             
             for(Appeal appeal: appeals){
                 User stu = appeal.getStudent();
-                User stuCopy = new User(stu.getId(), stu.getFirstName(), stu.getLastName(), stu.getEmail(),
+                User stuCopy = new User(null, stu.getId(), stu.getFirstName(), stu.getLastName(), stu.getEmail(),
                             stu.getUsername(), null, stu.getGender(), stu.getAccessRight(),
                             null, null, null, null, null, null, null);
                 
                 User admin = appeal.getAdmin();
                 User adminCopy = null;
                 if(admin != null){
-                    adminCopy = new User(admin.getId(), admin.getFirstName(), admin.getLastName(), admin.getEmail(),
+                    adminCopy = new User(null, admin.getId(), admin.getFirstName(), admin.getLastName(), admin.getEmail(),
                             admin.getUsername(), null, admin.getGender(), admin.getAccessRight(),
                             null, null, null, null, null, null, null);
                 }
