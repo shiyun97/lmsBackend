@@ -9,6 +9,7 @@ import datamodel.rest.MountModuleReq;
 import datamodel.rest.UpdateModule;
 import datamodel.rest.CheckUserLogin;
 import datamodel.rest.GetModuleRsp;
+import entities.Feedback;
 import entities.Module;
 import entities.Tutorial;
 import entities.User;
@@ -73,32 +74,31 @@ public class ModuleMountingResource {
     public Response mountModule(MountModuleReq mountModuleReq) {
 
         //if (mountModuleReq.getUser().getAccessRight() == Admin) {
+        try {
+            Module module = new Module();
+            module.setCode(mountModuleReq.getCode());
+            module.setTitle(mountModuleReq.getTitle());
+            module.setDescription(mountModuleReq.getDescription());
+            module.setSemesterOffered(mountModuleReq.getSemesterOffered());
+            module.setYearOffered(mountModuleReq.getYearOffered());
+            module.setCreditUnit(mountModuleReq.getCreditUnit());
+            module.setMaxEnrollment(mountModuleReq.getMaxEnrollment());
+            module.setHasExam(mountModuleReq.isHasExam());
+            module.setExamTime(mountModuleReq.getExamTime());
+            module.setExamVenue(mountModuleReq.getExamVenue());
+            module.setAssignedTeacher(mountModuleReq.getAssignedTeacher());
+            module.setLectureDetails(mountModuleReq.getLectureDetails());
 
-            try {
-                Module module = new Module();
-                module.setCode(mountModuleReq.getCode());
-                module.setTitle(mountModuleReq.getTitle());
-                module.setDescription(mountModuleReq.getDescription());
-                module.setSemesterOffered(mountModuleReq.getSemesterOffered());
-                module.setYearOffered(mountModuleReq.getYearOffered());
-                module.setCreditUnit(mountModuleReq.getCreditUnit());
-                module.setMaxEnrollment(mountModuleReq.getMaxEnrollment());
-                module.setHasExam(mountModuleReq.isHasExam());
-                module.setExamTime(mountModuleReq.getExamTime());
-                module.setExamVenue(mountModuleReq.getExamVenue());
-                module.setAssignedTeacher(mountModuleReq.getAssignedTeacher());
-                module.setLectureDetails(mountModuleReq.getLectureDetails());
+            Tutorial tutorial = new Tutorial();
+            tutorial.setMaxEnrollment(mountModuleReq.getMaxEnrollment());
+            tutorial.setVenue(mountModuleReq.getVenue());
+            tutorial.setTiming(mountModuleReq.getTiming());
+            tutorial.setStudentList(null);
+            tutorial.setModule(module);
 
-                Tutorial tutorial = new Tutorial();
-                tutorial.setMaxEnrollment(mountModuleReq.getMaxEnrollment());
-                tutorial.setVenue(mountModuleReq.getVenue());
-                tutorial.setTiming(mountModuleReq.getTiming());
-                tutorial.setStudentList(null);
-                tutorial.setModule(module);
+            module.getTutorials().add(tutorial);
 
-                module.getTutorials().add(tutorial);
-
-                /*module.setAnnoucementList(null);
+            /*module.setAnnoucementList(null);
                 module.setAttandanceList(null);
                 module.setClassGroupList(null);
                 module.setConsultationList(null);
@@ -112,14 +112,13 @@ public class ModuleMountingResource {
                 module.setQuizList(null);
                 module.setStudentList(null);
                 module.setFeedbackList(null)*/
+            em.persist(module);
+            em.flush();
 
-                em.persist(module);
-                em.flush();
-
-                return Response.status(Response.Status.OK).entity(module).build();
-            } catch (Exception ex) {
-                return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
-            }
+            return Response.status(Response.Status.OK).entity(module).build();
+        } catch (Exception ex) {
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
+        }
         //}
         //return Response.status(Response.Status.UNAUTHORIZED).build();
     }
@@ -151,12 +150,20 @@ public class ModuleMountingResource {
                 tutorials.add(t);
             }
 
+            List<Feedback> feedbackList = new ArrayList<>();
+            for (Feedback f : feedbackList) {
+                f.getClass();
+                f.getCreateTs();
+                f.getFeedback();
+            }
+
             Module moduleCopy = new Module(module.getModuleId(), module.getCode(), module.getTitle(),
-                    module.getDescription(), null, module.getSemesterOffered(),
+                    module.getDescription(), module.getSemesterOffered(),
                     module.getYearOffered(), module.getCreditUnit(), null, module.getMaxEnrollment(),
                     null, null, null, null, null, null, null, null, null, null,
-                    teacherCopy, null, tutorials, module.isHasExam(),
-                    module.getExamTime(), module.getExamVenue(), module.getLectureDetails());
+                    teacherCopy, null, feedbackList, tutorials, module.isHasExam(),
+                    module.getExamTime(), module.getExamVenue(), module.getLectureDetails(), module.getFaculty(),
+                    module.getDepartment());
 
             return Response.status(Response.Status.OK).entity(moduleCopy).build();
 
@@ -194,12 +201,20 @@ public class ModuleMountingResource {
                 tutorials.add(t);
             }
 
+            List<Feedback> feedbackList = new ArrayList<>();
+            for (Feedback f : feedbackList) {
+                f.getClass();
+                f.getCreateTs();
+                f.getFeedback();
+            }
+
             Module moduleCopy = new Module(module.getModuleId(), module.getCode(), module.getTitle(),
-                    module.getDescription(), null, module.getSemesterOffered(),
+                    module.getDescription(), module.getSemesterOffered(),
                     module.getYearOffered(), module.getCreditUnit(), null, module.getMaxEnrollment(),
                     null, null, null, null, null, null, null, null, null, null,
-                    teacherCopy, null, tutorials, module.isHasExam(),
-                    module.getExamTime(), module.getExamVenue(), module.getLectureDetails());
+                    teacherCopy, null, feedbackList, tutorials, module.isHasExam(),
+                    module.getExamTime(), module.getExamVenue(), module.getLectureDetails(), module.getFaculty(),
+                    module.getDepartment());
 
             return Response.status(Response.Status.OK).entity(moduleCopy).build();
 
@@ -222,8 +237,8 @@ public class ModuleMountingResource {
             if (moduleList == null && moduleList.isEmpty()) {
                 return Response.status(Response.Status.NOT_FOUND).entity("No module found").build();
             } else {
-                for (Module m : moduleList) {
-                    User teacher = m.getAssignedTeacher();
+                for (Module module : moduleList) {
+                    User teacher = module.getAssignedTeacher();
                     User teacherCopy = new User(teacher.getId(), teacher.getFirstName(), teacher.getLastName(), teacher.getEmail(),
                             teacher.getUsername(), teacher.getPassword(), teacher.getGender(), teacher.getAccessRight(),
                             null, null, null, null, null, null, null);
@@ -239,13 +254,21 @@ public class ModuleMountingResource {
                         tutorials.add(t);
                     }
 
+                    List<Feedback> feedbackList = new ArrayList<>();
+                    for (Feedback f : feedbackList) {
+                        f.getClass();
+                        f.getCreateTs();
+                        f.getFeedback();
+                    }
+
                     rsp.getModule().add(
-                            new Module(m.getModuleId(), m.getCode(), m.getTitle(),
-                                    m.getDescription(), null, m.getSemesterOffered(),
-                                    m.getYearOffered(), m.getCreditUnit(), null, m.getMaxEnrollment(),
+                            new Module(module.getModuleId(), module.getCode(), module.getTitle(),
+                                    module.getDescription(), module.getSemesterOffered(),
+                                    module.getYearOffered(), module.getCreditUnit(), null, module.getMaxEnrollment(),
                                     null, null, null, null, null, null, null, null, null, null,
-                                    teacherCopy, null, tutorials, m.isHasExam(),
-                                    m.getExamTime(), m.getExamVenue(), m.getLectureDetails()));
+                                    teacherCopy, null, feedbackList, tutorials, module.isHasExam(),
+                                    module.getExamTime(), module.getExamVenue(), module.getLectureDetails(), module.getFaculty(),
+                                    module.getDepartment()));
                 }
                 return Response.status(Response.Status.OK).entity(rsp).build();
             }
@@ -268,7 +291,7 @@ public class ModuleMountingResource {
 
             }
             em.remove(module);
-            
+
             return Response.status(Response.Status.OK).entity("Module deleted").build();
         } catch (Exception ex) {
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
@@ -283,21 +306,20 @@ public class ModuleMountingResource {
     public Response deleteModuleByCode(@QueryParam("code") String code, CheckUserLogin checkUserLogin) {
 
         //if (isLogin(checkUserLogin.getUser()) == true && checkUserLogin.getUser().getAccessRight() == Admin) {
+        try {
+            Query query = em.createQuery("select m from Module m where m.code = :code");
+            query.setParameter("code", code);
+            Module module = (Module) query.getSingleResult();
 
-            try {
-                Query query = em.createQuery("select m from Module m where m.code = :code");
-                query.setParameter("code", code);
-                Module module = (Module) query.getSingleResult();
-
-                if (module != null) {
-                    em.remove(module);
-                    return Response.status(Response.Status.OK).entity(module).build();
-                }
-                return Response.status(Response.Status.NOT_FOUND).entity("No module found").build();
-
-            } catch (Exception ex) {
-                return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
+            if (module != null) {
+                em.remove(module);
+                return Response.status(Response.Status.OK).entity(module).build();
             }
+            return Response.status(Response.Status.NOT_FOUND).entity("No module found").build();
+
+        } catch (Exception ex) {
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
+        }
         //}
         //return Response.status(Response.Status.UNAUTHORIZED).build();
     }
@@ -309,50 +331,49 @@ public class ModuleMountingResource {
     public Response updateModule(UpdateModule updateModule) {
 
         //if (updateModule.getUser().getAccessRight() == Admin) {
+        try {
 
-            try {
+            Long moduleId = updateModule.getModuleId();
+            Module module = em.find(Module.class, moduleId);
+            //em.createQuery("select m from Module m where m.moduleId = :moduleId");
+            //Module module = (Module) query.getSingleResult();
 
-                Long moduleId = updateModule.getModuleId();
-                Module module = em.find(Module.class, moduleId);
-                //em.createQuery("select m from Module m where m.moduleId = :moduleId");
-                //Module module = (Module) query.getSingleResult();
+            if (module != null) {
+                module.setCode(updateModule.getCode());
+                module.setTitle(updateModule.getTitle());
+                module.setDescription(updateModule.getDescription());
+                module.setSemesterOffered(updateModule.getSemesterOffered());
+                module.setYearOffered(updateModule.getYearOffered());
+                module.setCreditUnit(updateModule.getCreditUnit());
+                module.setMaxEnrollment(updateModule.getMaxEnrollment());
+                module.setAssignedTeacher(updateModule.getAssignedTeacher());
+                module.setHasExam(updateModule.isHasExam());
+                module.setExamTime(updateModule.getExamTime());
+                module.setExamVenue(updateModule.getExamVenue());
+                module.setLectureDetails(updateModule.getLectureDetails());
 
-                if (module != null) {
-                    module.setCode(updateModule.getCode());
-                    module.setTitle(updateModule.getTitle());
-                    module.setDescription(updateModule.getDescription());
-                    module.setSemesterOffered(updateModule.getSemesterOffered());
-                    module.setYearOffered(updateModule.getYearOffered());
-                    module.setCreditUnit(updateModule.getCreditUnit());
-                    module.setMaxEnrollment(updateModule.getMaxEnrollment());
-                    module.setAssignedTeacher(updateModule.getAssignedTeacher());
-                    module.setHasExam(updateModule.isHasExam());
-                    module.setExamTime(updateModule.getExamTime());
-                    module.setExamVenue(updateModule.getExamVenue());
-                    module.setLectureDetails(updateModule.getLectureDetails());
-
-                    if (module.getTutorials().isEmpty()) {
-                        return Response.status(Response.Status.NOT_FOUND).entity("Module has no tutorial").build();
-                    }
-                    Query query = em.createQuery("select t from Tutorial t where t.module = :moduleId");
-                    query.setParameter("moduleId", moduleId);
-                    List<Tutorial> tutorialList = (List<Tutorial>) query.getResultList();
-                    for (Tutorial t : tutorialList) {
-                        t.setMaxEnrollment(updateModule.getMaxEnrollment());
-                        t.setVenue(updateModule.getVenue());
-                        t.setTiming(updateModule.getTiming());
-                        t.setStudentList(updateModule.getStudentList());
-                    }
-
-                    em.merge(module);
-                    em.flush();
-
-                    return Response.status(Response.Status.OK).entity(module).build();
+                if (module.getTutorials().isEmpty()) {
+                    return Response.status(Response.Status.NOT_FOUND).entity("Module has no tutorial").build();
                 }
-                return Response.status(Response.Status.NOT_FOUND).entity("Module does not exist").build();
-            } catch (Exception ex) {
-                return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
+                Query query = em.createQuery("select t from Tutorial t where t.module = :moduleId");
+                query.setParameter("moduleId", moduleId);
+                List<Tutorial> tutorialList = (List<Tutorial>) query.getResultList();
+                for (Tutorial t : tutorialList) {
+                    t.setMaxEnrollment(updateModule.getMaxEnrollment());
+                    t.setVenue(updateModule.getVenue());
+                    t.setTiming(updateModule.getTiming());
+                    t.setStudentList(updateModule.getStudentList());
+                }
+
+                em.merge(module);
+                em.flush();
+
+                return Response.status(Response.Status.OK).entity(module).build();
             }
+            return Response.status(Response.Status.NOT_FOUND).entity("Module does not exist").build();
+        } catch (Exception ex) {
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
+        }
         //}
         //return Response.status(Response.Status.UNAUTHORIZED).build();
     }
