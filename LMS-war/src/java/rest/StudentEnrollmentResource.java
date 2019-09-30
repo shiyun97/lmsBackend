@@ -482,7 +482,7 @@ public class StudentEnrollmentResource {
                     .build();
         }
         
-        User admin = em.find(User.class, userId);
+        User admin = em.find(User.class, adminId);
         if(admin == null || admin.getAccessRight() != AccessRightEnum.Admin){
             return Response
                     .status(Status.FORBIDDEN)
@@ -534,6 +534,13 @@ public class StudentEnrollmentResource {
             } else if(!module.getStudentList().contains(user)){
                 return Response.status(Status.BAD_REQUEST).entity(new ErrorRsp("Student isn't enrolled in the module")).build();
             } else {
+                // Check if student is enrolled in any tutorials yet.
+                for (Tutorial t: module.getTutorials()){
+                    if(t.getStudentList().contains(user)){
+                        t.getStudentList().remove(user);
+                        user.getTutorials().remove(t);
+                    }
+                }
                 module.getStudentList().remove(user);
                 user.getStudentModuleList().remove(module);
                 em.flush();
@@ -572,7 +579,7 @@ public class StudentEnrollmentResource {
             } else {
                 for (Module m: modules){
                     User teacher = m.getAssignedTeacher();
-                    User teacherCopy = new User(teacher.getFirstName(), teacher.getLastName(), teacher.getEmail(),
+                    User teacherCopy = new User(teacher.getId(), teacher.getFirstName(), teacher.getLastName(), teacher.getEmail(),
                             teacher.getUsername(), null, teacher.getGender(), teacher.getAccessRight(),
                             null, null, null, null, null, null, null);
                     resp.getModules().add(
@@ -609,7 +616,7 @@ public class StudentEnrollmentResource {
             } else {
                 for (Module m: modules){
                     User teacher = m.getAssignedTeacher();
-                    User teacherCopy = new User(teacher.getFirstName(), teacher.getLastName(), teacher.getEmail(),
+                    User teacherCopy = new User(teacher.getId(), teacher.getFirstName(), teacher.getLastName(), teacher.getEmail(),
                             teacher.getUsername(), null, teacher.getGender(), teacher.getAccessRight(),
                             null, null, null, null, null, null, null);
                     resp.getModules().add(
@@ -651,9 +658,17 @@ public class StudentEnrollmentResource {
         if(tutorial == null){
             return Response.status(Status.BAD_REQUEST).entity(new ErrorRsp("Tutorial not found!")).build();
         }
+        
         System.out.println(tutorial);
         if(!tutorial.getModule().getStudentList().contains(user)){
             return Response.status(Status.BAD_REQUEST).entity(new ErrorRsp("Student not enrolled in the module yet")).build();
+        }
+        
+        // Check if student is enrolled in any tutorials yet.
+        for (Tutorial t: tutorial.getModule().getTutorials()){
+            if(t.getStudentList().contains(user)){
+                return Response.status(Status.BAD_REQUEST).entity(new ErrorRsp("Student already enrolled in another tutorial of the same module!")).build();
+            }
         }
         
         if(!tutorial.getModule().getYearOffered().equals(AcademicYearSessionBean.getYear())
@@ -921,11 +936,11 @@ public class StudentEnrollmentResource {
         Appeal resp = null;
         
         User stu = appeal.getStudent();
-        User stuCopy = new User(stu.getFirstName(), stu.getLastName(), stu.getEmail(),
+        User stuCopy = new User(stu.getId(), stu.getFirstName(), stu.getLastName(), stu.getEmail(),
                     stu.getUsername(), null, stu.getGender(), stu.getAccessRight(),
                     null, null, null, null, null, null, null);
         
-        User adminCopy = new User(user.getFirstName(), user.getLastName(), user.getEmail(),
+        User adminCopy = new User(user.getId(), user.getFirstName(), user.getLastName(), user.getEmail(),
                             user.getUsername(), null, user.getGender(), user.getAccessRight(),
                             null, null, null, null, null, null, null);
         if(appeal.getType() == AppealTypeEnum.Module){
@@ -993,14 +1008,14 @@ public class StudentEnrollmentResource {
             
             for(Appeal appeal: appeals){
                 User stu = appeal.getStudent();
-                User stuCopy = new User(stu.getFirstName(), stu.getLastName(), stu.getEmail(),
+                User stuCopy = new User(stu.getId(), stu.getFirstName(), stu.getLastName(), stu.getEmail(),
                             stu.getUsername(), null, stu.getGender(), stu.getAccessRight(),
                             null, null, null, null, null, null, null);
                 
                 User admin = appeal.getAdmin();
                 User adminCopy = null;
                 if(admin != null){
-                    adminCopy = new User(admin.getFirstName(), admin.getLastName(), admin.getEmail(),
+                    adminCopy = new User(admin.getId(), admin.getFirstName(), admin.getLastName(), admin.getEmail(),
                             admin.getUsername(), null, admin.getGender(), admin.getAccessRight(),
                             null, null, null, null, null, null, null);
                 }
@@ -1075,14 +1090,14 @@ public class StudentEnrollmentResource {
             
             for(Appeal appeal: appeals){
                 User stu = appeal.getStudent();
-                User stuCopy = new User(stu.getFirstName(), stu.getLastName(), stu.getEmail(),
+                User stuCopy = new User(stu.getId(), stu.getFirstName(), stu.getLastName(), stu.getEmail(),
                             stu.getUsername(), null, stu.getGender(), stu.getAccessRight(),
                             null, null, null, null, null, null, null);
                 
                 User admin = appeal.getAdmin();
                 User adminCopy = null;
                 if(admin != null){
-                    adminCopy = new User(admin.getFirstName(), admin.getLastName(), admin.getEmail(),
+                    adminCopy = new User(admin.getId(), admin.getFirstName(), admin.getLastName(), admin.getEmail(),
                             admin.getUsername(), null, admin.getGender(), admin.getAccessRight(),
                             null, null, null, null, null, null, null);
                 }
