@@ -6,7 +6,9 @@
 package entities;
 
 import java.io.Serializable;
+import java.sql.Time;
 import java.sql.Timestamp;
+import java.util.Date;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -21,11 +23,13 @@ import javax.persistence.ManyToOne;
 @Entity
 public class ConsultationTimeslot implements Serializable {
 
-    public ConsultationTimeslot(Timestamp startTs, Integer length, Boolean booked, Consultation consultation, User booker) {
+    public ConsultationTimeslot(Time startTs, Time endTs, Date startD, Date endD, Module module, User booker) {
         this.startTs = startTs;
-        this.length = length;
-        this.booked = booked;
-        this.consultation = consultation;
+        this.endTs = endTs;
+        this.endD = endD;
+        this.startD = startD;
+        //this.booked = booked;
+        this.module = module;
         this.booker = booker;
     }
 
@@ -37,13 +41,17 @@ public class ConsultationTimeslot implements Serializable {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long consultationTsId;
     @Column
-    private Timestamp startTs;
+    private Time startTs;
     @Column 
-    private Integer length;
-    @Column
-    private Boolean booked;
+    private Time endTs;
+    @Column 
+    private Date endD;
+    @Column 
+    private Date startD;
+    //@Column
+    //private Boolean booked;
     @ManyToOne
-    private Consultation consultation;
+    private Module module;
     @ManyToOne
     private User booker;
     
@@ -81,37 +89,21 @@ public class ConsultationTimeslot implements Serializable {
         return "entities.consultationTimeslot[ Id=" + consultationTsId + " ]";
     }
 
-    public Timestamp getStartTs() {
+    public Time getStartTs() {
         return startTs;
     }
 
-    public void setStartTs(Timestamp startTs) {
+    public void setStartTs(Time startTs) {
         this.startTs = startTs;
     }
 
-    public Integer getLength() {
-        return length;
-    }
-
-    public void setLength(Integer length) {
-        this.length = length;
-    }
-
-    public Consultation getConsultation() {
-        return consultation;
-    }
-
-    public void setConsultation(Consultation consultation) {
-        this.consultation = consultation;
-    }
-
-    public Boolean getBooked() {
+    /*public Boolean getBooked() {
         return booked;
     }
 
     public void setBooked(Boolean booked) {
         this.booked = booked;
-    }
+    }*/
 
     public User getBooker() {
         return booker;
@@ -119,6 +111,38 @@ public class ConsultationTimeslot implements Serializable {
 
     public void setBooker(User booker) {
         this.booker = booker;
+    }
+    
+    public Module getModule() {
+        return module;
+    }
+
+    public void setModule(Module module) {
+        this.module = module;
+    }
+    
+    public Time getEndTs() {
+        return endTs;
+    }
+
+    public void setEndTs(Time endTs) {
+        this.endTs = endTs;
+    }
+    
+      public Date getEndD() {
+        return endD;
+    }
+
+    public void setEndD(Date endD) {
+        this.endD = endD;
+    }
+
+    public Date getStartD() {
+        return startD;
+    }
+
+    public void setStartD(Date startD) {
+        this.startD = startD;
     }
     
 }

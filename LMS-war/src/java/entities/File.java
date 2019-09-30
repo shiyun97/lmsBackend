@@ -43,7 +43,6 @@ public class File implements Serializable {
     @ManyToOne
     private Folder folder;
 
-
     public Long getFileId() {
         return fileId;
     }
@@ -108,5 +107,5 @@ public class File implements Serializable {
     public void setFolder(Folder folder) {
         this.folder = folder;
     }
-    
+
 }
