@@ -884,6 +884,7 @@ public class StudentEnrollmentResource {
             em.persist(appeal);
             em.flush();
             
+            resp.setAppealId(appeal.getAppealId());
             
             return Response.status(Status.OK).entity(resp).build();
         } catch (Exception e){
@@ -980,10 +981,10 @@ public class StudentEnrollmentResource {
     }
     
     // Only Current semester's appeals
-    @Path("retrieveAllAppeal")
+    @Path("retrievePendingAppeals")
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    public Response retrieveAllAppeal(@QueryParam("userId") Long userId){
+    public Response retrievePendingAppeals(@QueryParam("userId") Long userId){
         // Verify user
         User user = em.find(User.class, userId);
         if(user == null || user.getAccessRight() != AccessRightEnum.Admin){
@@ -994,7 +995,90 @@ public class StudentEnrollmentResource {
         }
         
         try{
-            Query query = em.createQuery("SELECT a FROM Appeal a");
+            Query query = em.createQuery("SELECT a FROM Appeal a WHERE a.status = :status");
+            query.setParameter("status", AppealStatusEnum.Pending);
+            
+            List<Appeal> appeals = query.getResultList();
+            
+            System.out.println(appeals);
+            
+            if(appeals == null || appeals.isEmpty()){
+                return Response.status(Status.NOT_FOUND).entity(new ErrorRsp("No appeals found for this semester.")).build();
+            }
+            
+            RetrieveAppealsRsp resp = new RetrieveAppealsRsp(new ArrayList<>());
+            
+            for(Appeal appeal: appeals){
+                User stu = appeal.getStudent();
+                User stuCopy = new User(stu.getId(), stu.getFirstName(), stu.getLastName(), stu.getEmail(),
+                            stu.getUsername(), null, stu.getGender(), stu.getAccessRight(),
+                            null, null, null, null, null, null, null);
+                
+                User admin = appeal.getAdmin();
+                User adminCopy = null;
+                if(admin != null){
+                    adminCopy = new User(admin.getId(), admin.getFirstName(), admin.getLastName(), admin.getEmail(),
+                            admin.getUsername(), null, admin.getGender(), admin.getAccessRight(),
+                            null, null, null, null, null, null, null);
+                }
+                if(appeal.getType() == AppealTypeEnum.Module 
+                        && appeal.getModule().getYearOffered().equals(AcademicYearSessionBean.getYear()) 
+                        && appeal.getModule().getSemesterOffered() == AcademicYearSessionBean.getSemester()){
+                    Module m = appeal.getModule();
+                    Module mCopy = new Module(m.getModuleId(),m.getCode(), m.getTitle(), m.getDescription(),
+                                    m.getFeedback(), m.getSemesterOffered(), m.getYearOffered(),
+                                    m.getCreditUnit(), m.getGrade(), m.getMaxEnrollment(), 
+                                    null, null, null, null, null, null, null, null, null, null,
+                                    null, null, null, null, m.isHasExam(), m.getExamTime(), m.getExamVenue(),
+                                    m.getLectureDetails());
+            
+                    resp.getAppeals().add(new Appeal(appeal.getAppealId(), appeal.getType(),
+                            appeal.getReason(), appeal.getCreateDate(), appeal.getStatus(),
+                            mCopy, null, null, stuCopy, adminCopy, appeal.getResultDetails()));
+                } else if(appeal.getOldTutorial().getModule().getYearOffered().equals(AcademicYearSessionBean.getYear()) 
+                        && appeal.getOldTutorial().getModule().getSemesterOffered() == AcademicYearSessionBean.getSemester()) {
+                    Tutorial old = appeal.getOldTutorial();
+                    Tutorial newT = appeal.getNewTutorial();
+                    
+                    Module m = old.getModule();
+                    Module mCopy = new Module(m.getModuleId(),m.getCode(), m.getTitle(), m.getDescription(),
+                                    m.getFeedback(), m.getSemesterOffered(), m.getYearOffered(),
+                                    m.getCreditUnit(), m.getGrade(), m.getMaxEnrollment(), 
+                                    null, null, null, null, null, null, null, null, null, null,
+                                    null, null, null, null, m.isHasExam(), m.getExamTime(), m.getExamVenue(),
+                                    m.getLectureDetails());
+                    
+                    Tutorial oldR = new Tutorial(old.getTutorialId(), old.getMaxEnrollment(), old.getVenue(), old.getTiming(), null, mCopy);
+                    Tutorial newR = new Tutorial(newT.getTutorialId(), newT.getMaxEnrollment(), newT.getVenue(), newT.getTiming(), null, mCopy);
+                    resp.getAppeals().add(new Appeal(appeal.getAppealId(), appeal.getType(),
+                            appeal.getReason(), appeal.getCreateDate(), appeal.getStatus(),
+                            null, oldR, newR, stuCopy, adminCopy, appeal.getResultDetails()));
+                }
+            }
+            
+            return Response.status(Status.OK).entity(resp).build();
+        } catch (Exception e){
+            return Response.status(Status.INTERNAL_SERVER_ERROR).entity(new ErrorRsp(e.getMessage())).build(); 
+        }
+    }
+    
+    // Only Current semester's appeals
+    @Path("retrieveReviewedAppeals")
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response retrieveReviewedAppeals(@QueryParam("userId") Long userId){
+        // Verify user
+        User user = em.find(User.class, userId);
+        if(user == null || user.getAccessRight() != AccessRightEnum.Admin){
+            return Response
+                    .status(Status.FORBIDDEN)
+                    .entity(new ErrorRsp("User doesn't have access right for this function!"))
+                    .build();
+        }
+        
+        try{
+            Query query = em.createQuery("SELECT a FROM Appeal a WHERE a.status != :status");
+            query.setParameter("status", AppealStatusEnum.Pending);
             
             List<Appeal> appeals = query.getResultList();
             
