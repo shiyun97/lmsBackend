@@ -30,7 +30,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import static util.AccessRightEnum.Admin;
 //import util.CryptographicHelper;
-import util.exception.InvalidLoginCredentialException;
+//import util.exception.InvalidLoginCredentialException;
 
 /**
  *
@@ -124,7 +124,7 @@ public class UserResource {
             } else {                
                 for (User u : userList) {
                     rsp.getUserList().add(
-                            new User(u.getId(), u.getFirstName(), u.getLastName(),
+                            new User(u.getTutorials(), u.getId(), u.getFirstName(), u.getLastName(),
                                     u.getEmail(), u.getUsername(), u.getPassword(), u.getGender(),
                                     u.getAccessRight(), null, null, null,
                                     null, null, null, null));
@@ -147,7 +147,7 @@ public class UserResource {
                 return Response.status(Response.Status.BAD_REQUEST).entity("User does not exist").build();
             }
             
-            User userCopy = new User(user.getId(), user.getFirstName(), user.getLastName(),
+            User userCopy = new User(user.getTutorials(), user.getId(), user.getFirstName(), user.getLastName(),
                     user.getEmail(), user.getUsername(), user.getPassword(), user.getGender(),
                     user.getAccessRight(), null, null, null, null, null, null, null);
             
