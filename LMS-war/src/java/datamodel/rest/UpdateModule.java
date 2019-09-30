@@ -38,6 +38,8 @@ public class UpdateModule {
     private String venue;
     private String timing;
     private List<User> studentList;
+    private String faculty;
+    private String department;
           
     private User user;
     
@@ -49,7 +51,7 @@ public class UpdateModule {
     public UpdateModule() {
     }
 
-    public UpdateModule(Module module, Long moduleId, String code, String title, String description, Integer semesterOffered, String yearOffered, Integer creditUnit, Integer maxEnrollment, User assignedTeacher, boolean hasExam, Timestamp examTime, String examVenue, String lectureDetails, Tutorial tutorialList, Long tutorialId, String venue, String timing, List<User> studentList, User user, Long userId, String password, String email) {
+    public UpdateModule(Module module, Long moduleId, String code, String title, String description, Integer semesterOffered, String yearOffered, Integer creditUnit, Integer maxEnrollment, User assignedTeacher, boolean hasExam, Timestamp examTime, String examVenue, String lectureDetails, Tutorial tutorialList, Long tutorialId, String venue, String timing, List<User> studentList, String faculty, String department, User user, Long userId, String email, String password) {
         this.module = module;
         this.moduleId = moduleId;
         this.code = code;
@@ -69,12 +71,15 @@ public class UpdateModule {
         this.venue = venue;
         this.timing = timing;
         this.studentList = studentList;
+        this.faculty = faculty;
+        this.department = department;
         this.user = user;
         this.userId = userId;
-        //this.username = username;
-        this.password = password;
         this.email = email;
+        this.password = password;
     }
+
+    
     
     
 
@@ -268,5 +273,21 @@ public class UpdateModule {
 
     public void setStudentList(List<User> studentList) {
         this.studentList = studentList;
+    }
+
+    public String getFaculty() {
+        return faculty;
+    }
+
+    public void setFaculty(String faculty) {
+        this.faculty = faculty;
+    }
+
+    public String getDepartment() {
+        return department;
+    }
+
+    public void setDepartment(String department) {
+        this.department = department;
     }
 }

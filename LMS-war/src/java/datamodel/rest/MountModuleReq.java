@@ -32,6 +32,8 @@ public class MountModuleReq {
     private String examVenue;
     private User assignedTeacher;
     private String lectureDetails;
+    private String faculty;
+    private String department;
     
     private Tutorial tutorialList;
     private Long tutorialId;
@@ -49,7 +51,7 @@ public class MountModuleReq {
     public MountModuleReq() {
     }
 
-    public MountModuleReq(Module module, Long moduleId, String code, String title, String description, Integer semesterOffered, String yearOffered, Integer creditUnit, Integer maxEnrollment, boolean hasExam, Timestamp examTime, String examVenue, User assignedTeacher, String lectureDetails, Tutorial tutorialList, Long tutorialId, String venue, String timing, List<User> studentList, User user, Long userId, String password, String email) {
+    public MountModuleReq(Module module, Long moduleId, String code, String title, String description, Integer semesterOffered, String yearOffered, Integer creditUnit, Integer maxEnrollment, boolean hasExam, Timestamp examTime, String examVenue, User assignedTeacher, String lectureDetails, String faculty, String department, Tutorial tutorialList, Long tutorialId, String venue, String timing, List<User> studentList, User user, Long userId, String email, String password) {
         this.module = module;
         this.moduleId = moduleId;
         this.code = code;
@@ -64,6 +66,8 @@ public class MountModuleReq {
         this.examVenue = examVenue;
         this.assignedTeacher = assignedTeacher;
         this.lectureDetails = lectureDetails;
+        this.faculty = faculty;
+        this.department = department;
         this.tutorialList = tutorialList;
         this.tutorialId = tutorialId;
         this.venue = venue;
@@ -71,12 +75,10 @@ public class MountModuleReq {
         this.studentList = studentList;
         this.user = user;
         this.userId = userId;
-        //this.username = username;
-        this.password = password;
         this.email = email;
+        this.password = password;
     }
 
-   
     
 
     public Module getModule() {
@@ -269,5 +271,21 @@ public class MountModuleReq {
 
     public void setStudentList(List<User> studentList) {
         this.studentList = studentList;
+    }
+
+    public String getFaculty() {
+        return faculty;
+    }
+
+    public void setFaculty(String faculty) {
+        this.faculty = faculty;
+    }
+
+    public String getDepartment() {
+        return department;
+    }
+
+    public void setDepartment(String department) {
+        this.department = department;
     }
 }

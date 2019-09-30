@@ -110,7 +110,8 @@ public class ModuleMountingResource {
                 module.setLessonPlanList(null);
                 module.setPublicUserList(null);
                 module.setQuizList(null);
-                module.setStudentList(null);*/
+                module.setStudentList(null);
+                module.setFeedbackList(null)*/
 
                 em.persist(module);
                 em.flush();
