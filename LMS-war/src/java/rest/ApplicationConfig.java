@@ -22,6 +22,7 @@ public class ApplicationConfig extends Application
     {
         resources.add(rest.GroupManagementResource.class);
         resources.add(rest.ModuleMountingResource.class);
+        resources.add(rest.StudentEnrollmentResource.class);
         resources.add(rest.UserResource.class);
     }    
 }
