@@ -93,10 +93,18 @@ public class GroupManagementResource {
             if (classGroup == null) {
                 return Response.status(Response.Status.NOT_FOUND).entity("Group does not exist").build();
             }
-
+            List<User> members = new ArrayList<>();
+            for (User u : members) {
+                u.getEmail();
+                u.getFirstName();
+                u.getGender();
+                u.getId();
+                u.getLastName();
+                members.add(u);
+            }
             ClassGroup classGroupCopy = new ClassGroup(classGroup.getClassGroupId(), classGroup.getName(),
                     classGroup.getStartTs(), classGroup.getCloseTs(), classGroup.getModule(),
-                    classGroup.getMaxMember(), classGroup.getMembers());
+                    classGroup.getMaxMember(), members);
 
             return Response.status(Response.Status.OK).entity(classGroupCopy).build();
 
@@ -118,14 +126,22 @@ public class GroupManagementResource {
             if (classGroupList == null && classGroupList.isEmpty()) {
                 return Response.status(Response.Status.NOT_FOUND).entity("No group found").build();
 
-            } else {
-                for (ClassGroup c : classGroupList) {
-                    rsp.getUserList().add(new ClassGroup(c.getClassGroupId(), c.getName(),
-                            c.getStartTs(), c.getCloseTs(), c.getModule(), c.getMaxMember(),
-                            c.getMembers()));
-                }
-                return Response.status(Response.Status.OK).entity(rsp).build();
             }
+            List<User> members = new ArrayList<>();
+            for (User u : members) {
+                u.getEmail();
+                u.getFirstName();
+                u.getGender();
+                u.getId();
+                u.getLastName();
+                members.add(u);
+            }
+            for (ClassGroup c : classGroupList) {
+                rsp.getUserList().add(new ClassGroup(c.getClassGroupId(), c.getName(),
+                        c.getStartTs(), c.getCloseTs(), c.getModule(), c.getMaxMember(),
+                        members));
+            }
+            return Response.status(Response.Status.OK).entity(rsp).build();
         } catch (Exception ex) {
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
         }
@@ -134,7 +150,8 @@ public class GroupManagementResource {
     @DELETE
     @Path(value = "deleteGroup")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response deleteGroup(@QueryParam("classGroupId") Long classGroupId) {
+    public Response deleteGroup(@QueryParam("classGroupId") Long classGroupId
+    ) {
 
         //if (checkUserLogin.getUser().getAccessRight() == Admin) {
         try {
@@ -156,11 +173,10 @@ public class GroupManagementResource {
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response updateClassGroup(UpdateClassGroup updateClassGroup) {
+    public Response updateClassGroup(UpdateClassGroup updateClassGroup, @QueryParam("classGroupId") Long classGroupId) {
 
         //if (updateClassGroup.getUser().getAccessRight() == Teacher) {
         try {
-            Long classGroupId = updateClassGroup.getClassGroupId();
             ClassGroup classGroup = em.find(ClassGroup.class, classGroupId);
 
             if (classGroup != null) {
@@ -173,10 +189,8 @@ public class GroupManagementResource {
                 if (classGroup.getMembers().isEmpty()) {
                     return Response.status(Response.Status.NOT_FOUND).entity("Group has no members").build();
                 }
-                Query query = em.createQuery("select u from User u where u.classGroupList = :classGroupId");
-                query.setParameter("classGroupId", classGroupId);
-                List<User> memberList = (List<User>) query.getResultList();
-                for (User u : memberList) {
+                List<User> members = classGroup.getMembers();
+                for (User u : members) {
                     u.setId(updateClassGroup.getUserId());
                 }
 
@@ -199,7 +213,8 @@ public class GroupManagementResource {
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response joinClassGroup(JoinClassGroup joinClassGroup) {
+    public Response joinClassGroup(JoinClassGroup joinClassGroup
+    ) {
         try {
             ClassGroup classGroup = em.find(ClassGroup.class, joinClassGroup.getClassGroupId());
 
@@ -223,7 +238,8 @@ public class GroupManagementResource {
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response quitClassGroup(QuitClassGroup quitClassGroup) {
+    public Response quitClassGroup(QuitClassGroup quitClassGroup
+    ) {
         try {
 
             ClassGroup classGroup = em.find(ClassGroup.class, quitClassGroup.getClassGroupId());
@@ -246,7 +262,8 @@ public class GroupManagementResource {
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response viewClassGroup(ViewClassGroup viewClassGroup) {
+    public Response viewClassGroup(ViewClassGroup viewClassGroup
+    ) {
         try {
             ClassGroup classGroup = em.find(ClassGroup.class, viewClassGroup.getClassGroupId());
 
