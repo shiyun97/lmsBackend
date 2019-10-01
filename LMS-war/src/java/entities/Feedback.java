@@ -30,26 +30,6 @@ public class Feedback implements Serializable {
     private String feedback;
     @Column
     private Timestamp createTs;
-    @ManyToOne
-    private Module module;
-
-    public Feedback() {
-    }
-    
-    public Feedback(Long feedbackId, String feedback, Timestamp createTs, Module module) {
-        this.feedbackId = feedbackId;
-        this.feedback = feedback;
-        this.createTs = createTs;
-        this.module = module;
-    }
-
-    public Feedback(String feedback, Timestamp createTs, Module module) {
-        this.feedback = feedback;
-        this.createTs = createTs;
-        this.module = module;
-    }
-    
-  
     
     public String getFeedback() {
         return feedback;
@@ -98,14 +78,6 @@ public class Feedback implements Serializable {
     @Override
     public String toString() {
         return "entities.Feedback[ id=" + feedbackId + " ]";
-    }
-
-    public Module getModule() {
-        return module;
-    }
-
-    public void setModule(Module module) {
-        this.module = module;
     }
     
 }

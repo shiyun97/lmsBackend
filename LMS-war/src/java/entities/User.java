@@ -15,7 +15,6 @@ import javax.persistence.Id;
 import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 import util.AccessRightEnum;
-//import util.CryptographicHelper;
 import util.GenderEnum;
 
 /**
@@ -40,7 +39,6 @@ public class User implements Serializable {
         this.teacherModuleList = teacherModuleList;
         this.studentModuleList = studentModuleList;
         this.publicUserModuleList = publicUserModuleList;
-        //this.salt = CryptographicHelper.getInstance().generateRandomString(32);
     }
 
     public User(List<Tutorial> tutorials, Long userId, String firstName, String lastName, String email, String username, String password, GenderEnum gender, AccessRightEnum accessRight, List<ConsultationTimeslot> consultationTimeslotList, List<QuizAttempt> quizAttemptList, List<SurveyAttempt> surveyAttemptList, List<ClassGroup> classGroupList, List<Module> teacherModuleList, List<Module> studentModuleList, List<Module> publicUserModuleList) {
@@ -99,10 +97,7 @@ public class User implements Serializable {
     private List<Module> publicUserModuleList;
     @ManyToMany(mappedBy = "studentList")
     private List<Tutorial> tutorials;
-
-    //@Column(columnDefinition = "CHAR(32) NOT NULL")
-    //private String salt;
-
+    
 
     public Long getId() {
         return userId;
@@ -249,14 +244,6 @@ public class User implements Serializable {
         this.publicUserModuleList = publicUserModuleList;
     }
 
-    /*public String getSalt() {
-        return salt;
-    }
-
-    public void setSalt(String salt) {
-        this.salt = salt;
-    }*/
-
     public List<Tutorial> getTutorials() {
         return tutorials;
     }
@@ -265,4 +252,12 @@ public class User implements Serializable {
         this.tutorials = tutorials;
     }
 
+    public Long getUserId() {
+        return userId;
+    }
+
+    public void setUserId(Long userId) {
+        this.userId = userId;
+    }
+    
 }

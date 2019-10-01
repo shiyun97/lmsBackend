@@ -24,6 +24,8 @@ import javax.xml.bind.annotation.XmlRootElement;
  * @author Vixson
  */
 @Entity
+@Table(name = "ATTENDANCE")
+@XmlRootElement
 public class Attendance implements Serializable {
 
     public Attendance(Integer total, Integer attendedNumber, Integer semester, Timestamp createTs, Timestamp updateTs, Module module, List<User> attendees) {
