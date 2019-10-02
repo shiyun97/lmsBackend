@@ -9,6 +9,7 @@ import datamodel.rest.MountModuleReq;
 import datamodel.rest.UpdateModule;
 import datamodel.rest.CheckUserLogin;
 import datamodel.rest.GetModuleRsp;
+import datamodel.rest.GetTutorialRsp;
 import datamodel.rest.MountTutorial;
 import datamodel.rest.UpdateModuleTutorial;
 import entities.Feedback;
@@ -382,7 +383,7 @@ public class ModuleMountingResource {
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
         }
     }
-    
+
     @Path(value = "updateModuleWithTutorial")
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
@@ -452,6 +453,55 @@ public class ModuleMountingResource {
                 em.merge(t);
             }
             return Response.status(Response.Status.OK).entity(tutorials).build();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
+        }
+    }
+
+    @GET
+    @Path(value = "getAllTutorialByModule")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getAllTutorialByModule(@QueryParam("moduleId") Long moduleId) {
+        try {
+            Module module = em.find(Module.class, moduleId);
+            if (module == null) {
+                return Response.status(Response.Status.NOT_FOUND).entity("No module found").build();
+            }
+            /*Query query = em.createQuery("select t from Tutorial t where t.module = :moduleId");
+            query.setParameter("moduleId", moduleId);
+            List<Tutorial> tutorials = query.getResultList();*/
+            GetTutorialRsp rsp = new GetTutorialRsp(new ArrayList<>());
+            List<Tutorial> tutorials = module.getTutorials();
+            if (tutorials == null && tutorials.isEmpty()) {
+                return Response.status(Response.Status.NOT_FOUND).entity("No tutorial found").build();
+            } else {
+                for (Tutorial tutorial : tutorials) {
+                    List<User> students = new ArrayList<>();
+                    for (User s : students) {
+                        /*User user = em.find(User.class, userId);
+                        if (tutorial.getStudentList().contains(user)) {*/
+                        s.getAccessRight();
+                        s.getClassGroupList();
+                        s.getConsultationTimeslotList();
+                        s.getEmail();
+                        s.getFirstName();
+                        s.getGender();
+                        s.getLastName();
+                        s.getQuizAttemptList();
+                        s.getStudentModuleList();
+                        s.getSurveyAttemptList();
+                        s.getTutorials();
+                        s.getUsername();
+                        students.add(s);
+                    }
+                    //}
+                    rsp.getTutorials().add(
+                            new Tutorial(tutorial.getTutorialId(), tutorial.getMaxEnrollment(),
+                                    tutorial.getVenue(), tutorial.getTiming(), students, tutorial.getModule()));
+                }
+            }
+            return Response.status(Response.Status.OK).entity(rsp).build();
         } catch (Exception ex) {
             ex.printStackTrace();
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();

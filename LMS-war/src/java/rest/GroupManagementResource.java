@@ -8,12 +8,14 @@ package rest;
 import datamodel.rest.CheckUserLogin;
 import datamodel.rest.CreateClassGroup;
 import datamodel.rest.GetClassGroupRsp;
+import datamodel.rest.GetUserRsp;
 import datamodel.rest.JoinClassGroup;
 import datamodel.rest.QuitClassGroup;
 import datamodel.rest.UpdateClassGroup;
 import datamodel.rest.ViewClassGroup;
 import entities.ClassGroup;
 import entities.Module;
+import entities.Tutorial;
 import entities.User;
 import java.util.ArrayList;
 import java.util.List;
@@ -203,6 +205,34 @@ public class GroupManagementResource {
         }
         //}
         //return Response.status(Response.Status.UNAUTHORIZED).build();
+    }
+
+    @GET
+    @Path(value = "getAllStudentByTutorial")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getAllStudentByTutorial(@QueryParam("tutorialId") Long tutorialId) {
+        try {
+            Tutorial tutorial = em.find(Tutorial.class, tutorialId);
+            if (tutorial == null) {
+                return Response.status(Response.Status.NOT_FOUND).entity("No tutorial found").build();
+            }
+            GetUserRsp rsp = new GetUserRsp(new ArrayList<>());
+            List<User> students = tutorial.getStudentList();
+            if (students == null && students.isEmpty()) {
+                return Response.status(Response.Status.NOT_FOUND).entity("No students found").build();
+            }
+            for (User s : students) {
+                rsp.getUserList().add(
+                        new User(s.getFirstName(), s.getLastName(), s.getEmail(),
+                        s.getUsername(), null, s.getGender(), s.getAccessRight(), null,
+                        null, null, s.getClassGroupList(), null, null, null));
+            }
+            //}
+            return Response.status(Response.Status.OK).entity(rsp).build();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
+        }
     }
 
 //FOR THE STUDENTS    
