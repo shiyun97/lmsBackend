@@ -10,6 +10,7 @@ import datamodel.rest.UpdateModule;
 import datamodel.rest.CheckUserLogin;
 import datamodel.rest.GetModuleRsp;
 import datamodel.rest.MountTutorial;
+import datamodel.rest.UpdateModuleTutorial;
 import entities.Feedback;
 import entities.Module;
 import entities.Tutorial;
@@ -117,7 +118,7 @@ public class ModuleMountingResource {
         }
     }
 
-    @POST
+    @PUT
     @Path(value = "mountTutorial")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
@@ -369,17 +370,6 @@ public class ModuleMountingResource {
                 module.setExamTime(updateModule.getExamTime());
                 module.setExamVenue(updateModule.getExamVenue());
                 module.setLectureDetails(updateModule.getLectureDetails());
-                
-                if (module.getTutorials().isEmpty()) {
-                    return Response.status(Response.Status.NOT_FOUND).entity("Module has no tutorial").build();
-                }                
-                List<Tutorial> tutorials = module.getTutorials();
-                for (Tutorial t : tutorials) {
-                    t.setMaxEnrollment(updateModule.getMaxEnrollment());
-                    t.setVenue(updateModule.getVenue());
-                    t.setTiming(updateModule.getTiming());
-                    t.setStudentList(updateModule.getStudentList());
-                }
 
                 em.merge(module);
                 em.flush();
@@ -387,6 +377,82 @@ public class ModuleMountingResource {
                 return Response.status(Response.Status.OK).entity(module).build();
             }
             return Response.status(Response.Status.NOT_FOUND).entity("Module does not exist").build();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
+        }
+    }
+    
+    @Path(value = "updateModuleWithTutorial")
+    @POST
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response updateModuleWithTutorial(UpdateModule updateModule, @QueryParam("moduleId") Long moduleId) {
+
+        try {
+
+            Module module = em.find(Module.class, moduleId);
+
+            if (module != null) {
+                module.setCode(updateModule.getCode());
+                module.setTitle(updateModule.getTitle());
+                module.setDescription(updateModule.getDescription());
+                module.setSemesterOffered(updateModule.getSemesterOffered());
+                module.setYearOffered(updateModule.getYearOffered());
+                module.setCreditUnit(updateModule.getCreditUnit());
+                module.setMaxEnrollment(updateModule.getMaxEnrollment());
+                module.setAssignedTeacher(updateModule.getAssignedTeacher());
+                module.setHasExam(updateModule.isHasExam());
+                module.setExamTime(updateModule.getExamTime());
+                module.setExamVenue(updateModule.getExamVenue());
+                module.setLectureDetails(updateModule.getLectureDetails());
+
+                if (module.getTutorials().isEmpty()) {
+                    em.merge(module);
+                    return Response.status(Response.Status.NOT_FOUND).entity("Module has no tutorial").build();
+                }
+                List<Tutorial> tutorials = module.getTutorials();
+                for (Tutorial t : tutorials) {
+                    t.setMaxEnrollment(updateModule.getMaxEnrollment());
+                    t.setVenue(updateModule.getVenue());
+                    t.setTiming(updateModule.getTiming());
+                    t.setStudentList(updateModule.getStudentList());
+                    em.merge(t);
+                }
+                em.flush();
+                return Response.status(Response.Status.OK).entity(module).build();
+            }
+            return Response.status(Response.Status.NOT_FOUND).entity("Module does not exist").build();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
+        }
+    }
+
+    @Path(value = "updateModuleTutorial")
+    @POST
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response updateModuleTutorial(UpdateModuleTutorial updateModuleTutorial, @QueryParam("moduleId") Long moduleId) {
+
+        try {
+            Module module = em.find(Module.class, moduleId);
+            if (module == null) {
+                return Response.status(Response.Status.NOT_FOUND).entity("Module does not exist").build();
+            }
+            if (module.getTutorials().isEmpty()) {
+                return Response.status(Response.Status.NOT_FOUND).entity("Module has no tutorial").build();
+            }
+            List<Tutorial> tutorials = module.getTutorials();
+            for (Tutorial t : tutorials) {
+                t.setMaxEnrollment(updateModuleTutorial.getMaxEnrollment());
+                t.setVenue(updateModuleTutorial.getVenue());
+                t.setTiming(updateModuleTutorial.getTiming());
+                t.setStudentList(updateModuleTutorial.getStudentList());
+                em.merge(t);
+                module.getTutorials().add(t);
+            }
+            return Response.status(Response.Status.OK).entity(module).build();
         } catch (Exception ex) {
             ex.printStackTrace();
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
