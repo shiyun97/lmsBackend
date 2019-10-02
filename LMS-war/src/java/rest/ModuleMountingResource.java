@@ -10,6 +10,7 @@ import datamodel.rest.UpdateModule;
 import datamodel.rest.CheckUserLogin;
 import datamodel.rest.GetModuleRsp;
 import datamodel.rest.GetTutorialRsp;
+import datamodel.rest.GetUserRsp;
 import datamodel.rest.MountTutorial;
 import datamodel.rest.UpdateModuleTutorial;
 import entities.Feedback;
@@ -500,6 +501,36 @@ public class ModuleMountingResource {
                             new Tutorial(tutorial.getTutorialId(), tutorial.getMaxEnrollment(),
                                     tutorial.getVenue(), tutorial.getTiming(), students, tutorial.getModule()));
                 }
+            }
+            return Response.status(Response.Status.OK).entity(rsp).build();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
+        }
+    }
+
+    @GET
+    @Path(value = "getAllStudentByModule")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getAllStudentByModule(@QueryParam("moduleId") Long moduleId) {
+        try {
+            Module module = em.find(Module.class, moduleId);
+            if (module == null) {
+                return Response.status(Response.Status.NOT_FOUND).entity("No module found").build();
+            }
+            GetUserRsp rsp = new GetUserRsp(new ArrayList<>());
+            List<User> students = module.getStudentList();
+            if (students == null && students.isEmpty()) {
+                return Response.status(Response.Status.NOT_FOUND).entity("No students found").build();
+            }
+            for (User s : students) {
+                rsp.getUserList().add(
+                        new User(s.getTutorials(), s.getUserId(), s.getFirstName(), 
+                                s.getLastName(), s.getEmail(), s.getUsername(), null, 
+                                s.getGender(), s.getAccessRight(), s.getConsultationTimeslotList(), 
+                                s.getQuizAttemptList(), s.getSurveyAttemptList(), 
+                                s.getClassGroupList(), null, s.getStudentModuleList(), null));
+
             }
             return Response.status(Response.Status.OK).entity(rsp).build();
         } catch (Exception ex) {
