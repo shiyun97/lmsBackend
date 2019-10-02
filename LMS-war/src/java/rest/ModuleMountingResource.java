@@ -450,9 +450,8 @@ public class ModuleMountingResource {
                 t.setTiming(updateModuleTutorial.getTiming());
                 t.setStudentList(updateModuleTutorial.getStudentList());
                 em.merge(t);
-                module.getTutorials().add(t);
             }
-            return Response.status(Response.Status.OK).entity(module).build();
+            return Response.status(Response.Status.OK).entity(tutorials).build();
         } catch (Exception ex) {
             ex.printStackTrace();
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();

@@ -187,16 +187,14 @@ public class GroupManagementResource {
                 classGroup.setName(updateClassGroup.getName());
 
                 if (classGroup.getMembers().isEmpty()) {
+                    em.merge(classGroup);
                     return Response.status(Response.Status.NOT_FOUND).entity("Group has no members").build();
                 }
                 List<User> members = classGroup.getMembers();
                 for (User u : members) {
                     u.setId(updateClassGroup.getUserId());
                 }
-
-                em.merge(classGroup);
                 em.flush();
-
                 return Response.status(Response.Status.OK).entity(classGroup).build();
             }
             return Response.status(Response.Status.NOT_FOUND).entity("Group does not exist").build();
@@ -271,9 +269,7 @@ public class GroupManagementResource {
                 return Response.status(Response.Status.NOT_FOUND).entity("Group does not exist").build();
             }
 
-            Query query = em.createQuery("select u from User u where u.classGroupList = :classGroupId");
-            query.setParameter("classGroupId", viewClassGroup.getClassGroupId());
-            List<User> memberList = (List<User>) query.getResultList();
+            List<User> memberList = classGroup.getMembers();
 
             for (int x = 0; x < memberList.size(); x++) {
                 if (viewClassGroup.getUser().equals(classGroup.getMembers().get(x))) {

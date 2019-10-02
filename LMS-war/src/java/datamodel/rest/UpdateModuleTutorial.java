@@ -31,6 +31,13 @@ public class UpdateModuleTutorial {
     public UpdateModuleTutorial() {
     }
 
+    public UpdateModuleTutorial(int maxEnrollment, String venue, String timing, List<User> studentList) {
+        this.maxEnrollment = maxEnrollment;
+        this.venue = venue;
+        this.timing = timing;
+        this.studentList = studentList;
+    }
+
     public UpdateModuleTutorial(Module module, Tutorial tutorialList, Long tutorialId, int maxEnrollment, String venue, String timing, List<User> studentList) {
         this.module = module;
         this.tutorialList = tutorialList;
