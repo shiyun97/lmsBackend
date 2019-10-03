@@ -542,34 +542,37 @@ public class ModuleMountingResource {
             /*Query query = em.createQuery("select t from Tutorial t where t.module = :moduleId");
             query.setParameter("moduleId", moduleId);
             List<Tutorial> tutorials = query.getResultList();*/
-            GetTutorialRsp rsp = new GetTutorialRsp(new ArrayList<>());
+            GetTutorialRsp rsp = new GetTutorialRsp(new ArrayList<>(), new ArrayList<>());
             List<Tutorial> tutorials = module.getTutorials();
             if (tutorials == null && tutorials.isEmpty()) {
                 return Response.status(Response.Status.NOT_FOUND).entity("No tutorial found").build();
             } else {
                 for (Tutorial tutorial : tutorials) {
-                    List<User> students = tutorial.getStudentList();
+                    Tutorial temp = em.find(Tutorial.class, tutorial.getTutorialId());
+                    int currentEnrollment = temp.getStudentList().size();
+                    /*List<User> students = tutorial.getStudentList();
                     for (User s : students) {
                         /*User user = em.find(User.class, userId);
-                        if (tutorial.getStudentList().contains(user)) {*/
+                        if (tutorial.getStudentList().contains(user)) {
                         s.getAccessRight();
-                        s.getClassGroupList();
-                        s.getConsultationTimeslotList();
+                        //s.getClassGroupList();
+                        //s.getConsultationTimeslotList();
                         s.getEmail();
                         s.getFirstName();
                         s.getGender();
                         s.getLastName();
-                        s.getQuizAttemptList();
-                        s.getStudentModuleList();
-                        s.getSurveyAttemptList();
-                        s.getTutorials();
+                        //s.getQuizAttemptList();
+                        //s.getStudentModuleList();
+                        //s.getSurveyAttemptList();
+                        //s.getTutorials();
                         s.getUsername();
                         students.add(s);
-                    }
+                    }*/
                     //}
                     rsp.getTutorials().add(
                             new Tutorial(tutorial.getTutorialId(), tutorial.getMaxEnrollment(),
-                                    tutorial.getVenue(), tutorial.getTiming(), students, null));
+                                    tutorial.getVenue(), tutorial.getTiming(), null, null));
+                    rsp.getCurrentEnrollment().add(new Integer(currentEnrollment));
                 }
             }
             return Response.status(Response.Status.OK).entity(rsp).build();
@@ -597,9 +600,9 @@ public class ModuleMountingResource {
                 rsp.getUserList().add(
                         new User(null, s.getUserId(), s.getFirstName(),
                                 s.getLastName(), s.getEmail(), s.getUsername(), null,
-                                s.getGender(), s.getAccessRight(), s.getConsultationTimeslotList(),
-                                s.getQuizAttemptList(), s.getSurveyAttemptList(),
-                                s.getClassGroupList(), null, null, null));
+                                s.getGender(), s.getAccessRight(), null,
+                                null, null,
+                                null, null, null, null));
 
             }
             return Response.status(Response.Status.OK).entity(rsp).build();
