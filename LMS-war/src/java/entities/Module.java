@@ -16,6 +16,7 @@ import javax.persistence.Id;
 import javax.persistence.Column;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
+import javax.persistence.Lob;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
@@ -27,40 +28,7 @@ import javax.xml.bind.annotation.XmlRootElement;
  */
 @Entity
 @Table(name = "MODULE")
-public class Module implements Serializable {
-
-    public Module(Long moduleId, String code, String title, String description, String feedback, Integer semesterOffered, String yearOffered, Integer creditUnit, String grade, Integer maxEnrollment, List<User> studentList, List<User> publicUserList, List<Folder> folderList, List<Annoucement> annoucementList, List<ForumPost> forumPostList, List<Quiz> quizList, List<GradeItem> gradeItemList, List<Attendance> attandanceList, List<Consultation> consultationList, List<LessonPlan> lessonPlanList, User assignedTeacher, List<ClassGroupList> classGroupList, List<Feedback> feedbackList, List<Tutorial> tutorials, boolean hasExam, Timestamp examTime, String examVenue, String lectureDetails) {
-        this.moduleId = moduleId;
-        this.code = code;
-        this.title = title;
-        this.description = description;
-        this.feedback = feedback;
-        this.semesterOffered = semesterOffered;
-        this.yearOffered = yearOffered;
-        this.creditUnit = creditUnit;
-        this.grade = grade;
-        this.maxEnrollment = maxEnrollment;
-        this.studentList = studentList;
-        this.publicUserList = publicUserList;
-        this.folderList = folderList;
-        this.annoucementList = annoucementList;
-        this.forumPostList = forumPostList;
-        this.quizList = quizList;
-        this.gradeItemList = gradeItemList;
-        this.attandanceList = attandanceList;
-        this.consultationList = consultationList;
-        this.lessonPlanList = lessonPlanList;
-        this.assignedTeacher = assignedTeacher;
-        this.classGroupList = classGroupList;
-        this.feedbackList = feedbackList;
-        this.tutorials = tutorials;
-        this.hasExam = hasExam;
-        this.examTime = examTime;
-        this.examVenue = examVenue;
-        this.lectureDetails = lectureDetails;
-    }
-
-    
+public class Module implements Serializable {   
 
     public Module() {
     }
@@ -73,10 +41,9 @@ public class Module implements Serializable {
     private String code;
     @Column
     private String title;
+    @Lob
     @Column
     private String description;
-    @Column
-    private String feedback;
     @Column
     private Integer semesterOffered;
     @Column
@@ -114,7 +81,7 @@ public class Module implements Serializable {
     @ManyToOne
     private User assignedTeacher;
     @OneToMany(mappedBy = "module")
-    private List<ClassGroupList> classGroupList;
+    private List<ClassGroup> classGroupList;
     @OneToMany
     private List<Feedback> feedbackList;
     @OneToMany(mappedBy = "module")
@@ -127,17 +94,44 @@ public class Module implements Serializable {
     private String examVenue;
     @Column
     private String lectureDetails;
-    
-    /**
-    public Module(String title, String description, String feedback, Integer semesterOffered, Integer creditUnit, String grade){
+    @Column
+    private String department;
+    @Column
+    private String faculty;
+
+    public Module(Long moduleId, String code, String title, String description, Integer semesterOffered, String yearOffered, Integer creditUnit, String grade, Integer maxEnrollment, List<User> studentList, List<User> publicUserList, List<Folder> folderList, List<Annoucement> annoucementList, List<ForumPost> forumPostList, List<Quiz> quizList, List<GradeItem> gradeItemList, List<Attendance> attandanceList, List<Consultation> consultationList, List<LessonPlan> lessonPlanList, User assignedTeacher, List<ClassGroup> classGroupList, List<Feedback> feedbackList, List<Tutorial> tutorials, boolean hasExam, Timestamp examTime, String examVenue, String lectureDetails, String department, String faculty) {
+        this.moduleId = moduleId;
+        this.code = code;
         this.title = title;
         this.description = description;
-        this.feedback = feedback;
         this.semesterOffered = semesterOffered;
+        this.yearOffered = yearOffered;
         this.creditUnit = creditUnit;
-	this.grade = grade;
+        this.grade = grade;
+        this.maxEnrollment = maxEnrollment;
+        this.studentList = studentList;
+        this.publicUserList = publicUserList;
+        this.folderList = folderList;
+        this.annoucementList = annoucementList;
+        this.forumPostList = forumPostList;
+        this.quizList = quizList;
+        this.gradeItemList = gradeItemList;
+        this.attandanceList = attandanceList;
+        this.consultationList = consultationList;
+        this.lessonPlanList = lessonPlanList;
+        this.assignedTeacher = assignedTeacher;
+        this.classGroupList = classGroupList;
+        this.feedbackList = feedbackList;
+        this.tutorials = tutorials;
+        this.hasExam = hasExam;
+        this.examTime = examTime;
+        this.examVenue = examVenue;
+        this.lectureDetails = lectureDetails;
+        this.department = department;
+        this.faculty = faculty;
     }
-**/
+    
+    
 	
     @Override
     public int hashCode() {
@@ -182,14 +176,6 @@ public class Module implements Serializable {
 
     public void setDescription(String description) {
         this.description = description;
-    }
-
-    public String getFeedback() {
-        return feedback;
-    }
-
-    public void setFeedback(String feedback) {
-        this.feedback = feedback;
     }
 
     public Integer getSemesterOffered() {
@@ -304,11 +290,11 @@ public class Module implements Serializable {
         this.lessonPlanList = lessonPlanList;
     }
 	
-    public List<ClassGroupList> getClassGroupList() {
+    public List<ClassGroup> getClassGroupList() {
         return classGroupList;
     }
 
-    public void setClassGroupList(List<ClassGroupList> classGroupList) {
+    public void setClassGroupList(List<ClassGroup> classGroupList) {
         this.classGroupList = classGroupList;
     }
 
@@ -386,6 +372,22 @@ public class Module implements Serializable {
 
     public void setFeedbackList(List<Feedback> feedbackList) {
         this.feedbackList = feedbackList;
+    }
+
+    public String getDepartment() {
+        return department;
+    }
+
+    public void setDepartment(String department) {
+        this.department = department;
+    }
+
+    public String getFaculty() {
+        return faculty;
+    }
+
+    public void setFaculty(String faculty) {
+        this.faculty = faculty;
     }
 
 }

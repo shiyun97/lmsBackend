@@ -6,6 +6,7 @@
 package entities;
 
 import java.io.Serializable;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 import javax.persistence.Column;
@@ -23,13 +24,6 @@ import javax.persistence.ManyToOne;
 @Entity
 public class ClassGroup implements Serializable {
 
-    public ClassGroup(String name, Integer limit, ClassGroupList classGroupList, User members) {
-        this.name = name;
-        this.maxMember = limit;
-        this.classGroupList = classGroupList;
-        this.members = new ArrayList<>();
-    }
-
     public ClassGroup() {
     }
 
@@ -39,12 +33,36 @@ public class ClassGroup implements Serializable {
     private Long classGroupId;
     @Column
     private String name;
+    @Column 
+    private Timestamp startTs;
+    @Column
+    private Timestamp closeTs;
+    @ManyToOne
+    private Module module;
+    @Column
+    private Integer maxMember;
+    @ManyToMany
+    private List<User> members;
+    
+    /*@Column
+    private String name;
     @Column
     private Integer maxMember;
     @ManyToOne
     private ClassGroupList classGroupList;
     @ManyToMany
-    private List<User> members;
+    private List<User> members;*/
+
+    public ClassGroup(Long classGroupId, String name, Timestamp startTs, Timestamp closeTs, Module module, Integer maxMember, List<User> members) {
+        this.classGroupId = classGroupId;
+        this.name = name;
+        this.startTs = startTs;
+        this.closeTs = closeTs;
+        this.module = module;
+        this.maxMember = maxMember;
+        this.members = members;
+    }
+    
     
 
     public Long getClassGroupId() {
@@ -88,20 +106,36 @@ public class ClassGroup implements Serializable {
         this.name = name;
     }
 
+    public Timestamp getStartTs() {
+        return startTs;
+    }
+
+    public void setStartTs(Timestamp startTs) {
+        this.startTs = startTs;
+    }
+
+    public Timestamp getCloseTs() {
+        return closeTs;
+    }
+
+    public void setCloseTs(Timestamp closeTs) {
+        this.closeTs = closeTs;
+    }
+
+    public Module getModule() {
+        return module;
+    }
+
+    public void setModule(Module module) {
+        this.module = module;
+    }
+
     public Integer getMaxMember() {
         return maxMember;
     }
 
     public void setMaxMember(Integer maxMember) {
         this.maxMember = maxMember;
-    }
-
-    public ClassGroupList getClassGroupList() {
-        return classGroupList;
-    }
-
-    public void setClassGroupList(ClassGroupList classGroupList) {
-        this.classGroupList = classGroupList;
     }
 
     public List<User> getMembers() {
