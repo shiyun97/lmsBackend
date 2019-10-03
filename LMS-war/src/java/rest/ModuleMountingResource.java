@@ -245,7 +245,7 @@ public class ModuleMountingResource {
                     module.getDescription(), module.getSemesterOffered(),
                     module.getYearOffered(), module.getCreditUnit(), null, module.getMaxEnrollment(),
                     null, null, null, null, null, null, null, null, null, null,
-                    teacherCopy, null, feedbackList, tutorials, module.isHasExam(),
+                    teacherCopy, null, feedbackListCopy, tutorialsCopy, module.isHasExam(),
                     module.getExamTime(), module.getExamVenue(), module.getLectureDetails(), module.getFaculty(),
                     module.getDepartment());
 
@@ -302,7 +302,7 @@ public class ModuleMountingResource {
                                     module.getDescription(), module.getSemesterOffered(),
                                     module.getYearOffered(), module.getCreditUnit(), null, module.getMaxEnrollment(),
                                     null, null, null, null, null, null, null, null, null, null,
-                                    teacherCopy, null, feedbackList, tutorials, module.isHasExam(),
+                                    teacherCopy, null, feedbackListCopy, tutorialsCopy, module.isHasExam(),
                                     module.getExamTime(), module.getExamVenue(), module.getLectureDetails(), module.getFaculty(),
                                     module.getDepartment()));
                 }
