@@ -478,10 +478,36 @@ public class ModuleMountingResource {
                 t.setMaxEnrollment(updateModuleTutorial.getMaxEnrollment());
                 t.setVenue(updateModuleTutorial.getVenue());
                 t.setTiming(updateModuleTutorial.getTiming());
-                t.setStudentList(updateModuleTutorial.getStudentList());
                 em.merge(t);
+                em.flush();
             }
-            return Response.status(Response.Status.OK).entity(tutorials).build();
+            return Response.status(Response.Status.OK).build();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
+        }
+    }
+
+    @Path(value = "updateTutorial")
+    @POST
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response updateTutorial(UpdateModuleTutorial updateModuleTutorial, @QueryParam("tutorialId") Long tutorialId) {
+
+        try {
+            Tutorial tutorial = em.find(Tutorial.class, tutorialId);
+            if (tutorial == null) {
+                return Response.status(Response.Status.NOT_FOUND).entity("Tutorial does not exist").build();
+            }
+            tutorial.setMaxEnrollment(updateModuleTutorial.getMaxEnrollment());
+            tutorial.setVenue(updateModuleTutorial.getVenue());
+            tutorial.setTiming(updateModuleTutorial.getTiming());
+            em.merge(tutorial);
+            em.flush();
+
+            Tutorial tutorialCopy = new Tutorial(tutorial.getTutorialId(), tutorial.getMaxEnrollment(),
+                    tutorial.getVenue(), tutorial.getTiming(), null, null);
+            return Response.status(Response.Status.OK).entity(tutorialCopy).build();
         } catch (Exception ex) {
             ex.printStackTrace();
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
