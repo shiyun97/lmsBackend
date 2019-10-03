@@ -27,6 +27,8 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import util.AccessRightEnum;
+import util.GenderEnum;
 //import util.CryptographicHelper;
 //import util.exception.InvalidLoginCredentialException;
 
@@ -232,9 +234,12 @@ public class UserResource {
             if (!user.getPassword().equals(password)) {
                 return Response.status(Response.Status.UNAUTHORIZED).entity("Invalid password").build();
             }
-            return Response.status(Response.Status.OK).entity(new CheckUserLogin(user)).build();
+            
+            User newU = new User(null, user.getId(), user.getFirstName(), user.getLastName(), user.getEmail(), user.getUsername(), null, user.getGender(), user.getAccessRight(), null, null, null, null, null, null, null);
+            return Response.status(Response.Status.OK).entity(new CheckUserLogin(newU)).build();
             
         } catch (Exception ex) {
+            ex.printStackTrace();
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
         }
     }
