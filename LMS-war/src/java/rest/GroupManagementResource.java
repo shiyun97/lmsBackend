@@ -244,17 +244,21 @@ public class GroupManagementResource {
                 classGroup.setCloseTs(updateClassGroup.getCloseTs());
                 classGroup.setModule(updateClassGroup.getModule());
                 classGroup.setName(updateClassGroup.getName());
-
                 if (classGroup.getMembers().isEmpty()) {
                     em.merge(classGroup);
                     return Response.status(Response.Status.NOT_FOUND).entity("Group has no members").build();
                 }
+                List<User> membersCopy = new ArrayList<>();
                 List<User> members = classGroup.getMembers();
                 for (User u : members) {
                     u.setId(updateClassGroup.getUserId());
+                    membersCopy.add(new User(u.getFirstName(), u.getLastName(), u.getEmail(),
+                            u.getUsername(), null, u.getGender(), null, null, null, null, null, null, null, null));
                 }
                 em.flush();
-                return Response.status(Response.Status.OK).entity(classGroup).build();
+                ClassGroup classGroupCopy = new ClassGroup(classGroup.getClassGroupId(), classGroup.getName(),
+                        classGroup.getStartTs(), classGroup.getCloseTs(), null, classGroup.getMaxMember(), membersCopy);
+                return Response.status(Response.Status.OK).entity(classGroupCopy).build();
             }
             return Response.status(Response.Status.NOT_FOUND).entity("Group does not exist").build();
         } catch (Exception ex) {
@@ -271,18 +275,25 @@ public class GroupManagementResource {
     public Response updateGroupMember(UpdateClassGroup updateClassGroup, @QueryParam("classGroupId") Long classGroupId) {
         try {
             ClassGroup classGroup = em.find(ClassGroup.class, classGroupId);
-
             if (classGroup == null) {
                 return Response.status(Response.Status.NOT_FOUND).entity("Group does not exist").build();
             }
+            List<User> membersCopy = new ArrayList<>();
             List<User> members = classGroup.getMembers();
             if (members == null && members.isEmpty()) {
                 return Response.status(Response.Status.NOT_FOUND).entity("Group has no members").build();
             }
             for (User u : members) {
                 u.setUserId(updateClassGroup.getUserId());
+                membersCopy.add(new User(
+                        u.getFirstName(), u.getLastName(), u.getEmail(), u.getUsername(),
+                        null, u.getGender(), null, null, null, null, null, null, null, null));
             }
-            return Response.status(Response.Status.OK).entity(classGroup).build();
+            ClassGroup classGroupCopy = new ClassGroup(classGroup.getClassGroupId(),
+                    classGroup.getName(), null, null, null,
+                    classGroup.getMaxMember(), membersCopy);
+            em.merge(classGroup);
+            return Response.status(Response.Status.OK).entity(classGroupCopy).build();
         } catch (Exception ex) {
             ex.printStackTrace();
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
@@ -375,17 +386,14 @@ public class GroupManagementResource {
     public Response quitClassGroup(@QueryParam("classGroupId") Long classGroupId, @QueryParam("userId") Long userId
     ) {
         try {
-
             ClassGroup classGroup = em.find(ClassGroup.class, classGroupId);
             if (classGroup == null) {
                 return Response.status(Response.Status.NOT_FOUND).entity("Group does not exist").build();
             }
-
             User user = em.find(User.class, userId);
-
             classGroup.getMembers().remove(user);
+            user.getClassGroupList().remove(classGroup);
             em.merge(classGroup);
-
             return Response.status(Response.Status.OK).entity("You have quit the group").build();
         } catch (Exception ex) {
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
@@ -399,20 +407,18 @@ public class GroupManagementResource {
     ) {
         try {
             ClassGroup classGroup = em.find(ClassGroup.class, classGroupId);
-
             if (classGroup == null) {
                 return Response.status(Response.Status.NOT_FOUND).entity("Group does not exist").build();
             }
-
-            /*Query query = em.createQuery("select u from User u where u.classGroupList = :classGroupId");
-            query.setParameter("classGroupId", viewClassGroup.getClassGroupId());
-            List<User> memberList = (List<User>) query.getResultList();*/
+            List<User> memberListCopy = new ArrayList<>();
             List<User> memberList = classGroup.getMembers();
-
             User user = em.find(User.class, userId);
             for (int x = 0; x < memberList.size(); x++) {
                 if (user.equals(classGroup.getMembers().get(x))) {
-                    return Response.status(Response.Status.OK).entity(memberList).build();
+                    memberListCopy.add(new User(
+                    user.getFirstName(),user.getLastName(),user.getEmail(),user.getUsername(),
+                            null,user.getGender(),null,null,null,null,null,null,null,null));
+                    return Response.status(Response.Status.OK).entity(memberListCopy).build();
                 }
             }
             return Response.status(Response.Status.UNAUTHORIZED).entity("Not allowed").build();
@@ -420,6 +426,9 @@ public class GroupManagementResource {
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
         }
     }
+            /*Query query = em.createQuery("select u from User u where u.classGroupList = :classGroupId");
+            query.setParameter("classGroupId", viewClassGroup.getClassGroupId());
+            List<User> memberList = (List<User>) query.getResultList();*/
 
     /*@Path(value = "quitClassGroup")
     @POST

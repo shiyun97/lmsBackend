@@ -13,6 +13,7 @@ import datamodel.rest.GetTutorialRsp;
 import datamodel.rest.GetUserRsp;
 import datamodel.rest.MountTutorial;
 import datamodel.rest.UpdateModuleTutorial;
+import datamodel.rest.UpdateTutorialStudent;
 import entities.Feedback;
 import entities.Module;
 import entities.Tutorial;
@@ -101,20 +102,19 @@ public class ModuleMountingResource {
             module.setExamTime(mountModuleReq.getExamTime());
             module.setExamVenue(mountModuleReq.getExamVenue());
             User user = em.find(User.class, userId);
+            User userCopy = new User(user.getFirstName(), user.getLastName(), user.getEmail(),
+                    user.getUsername(), null, user.getGender(), null, null, null, null, null, null, null, null);
             module.setAssignedTeacher(user);
             module.setLectureDetails(mountModuleReq.getLectureDetails());
+            module.setFaculty(mountModuleReq.getFaculty());
+            module.setDepartment(mountModuleReq.getDepartment());
             em.persist(module);
             em.flush();
-            /*Tutorial tutorial = new Tutorial();
-            tutorial.setMaxEnrollment(mountModuleReq.getMaxEnrollment());
-            tutorial.setVenue(mountModuleReq.getVenue());
-            tutorial.setTiming(mountModuleReq.getTiming());
-            tutorial.setModule(mountModuleReq.getModule());
-            em.persist(tutorial);
-            em.flush();
-            module.getTutorials().add(tutorial);*/
-
-            return Response.status(Response.Status.OK).entity(module).build();
+            Module moduleCopy = new Module(module.getModuleId(), module.getCode(), module.getTitle(), module.getDescription(),
+                    module.getSemesterOffered(), module.getYearOffered(), module.getCreditUnit(), null, module.getMaxEnrollment(), null,
+                    null, null, null, null, null, null, null, null, null, userCopy, null, null, null, module.isHasExam(), module.getExamTime(),
+                    module.getExamVenue(), module.getLectureDetails(), module.getDepartment(), module.getFaculty());
+            return Response.status(Response.Status.OK).entity(moduleCopy).build();
         } catch (Exception ex) {
             ex.printStackTrace();
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
@@ -378,17 +378,23 @@ public class ModuleMountingResource {
                 module.setYearOffered(updateModule.getYearOffered());
                 module.setCreditUnit(updateModule.getCreditUnit());
                 module.setMaxEnrollment(updateModule.getMaxEnrollment());
-                User user = em.find(User.class, userId);
-                module.setAssignedTeacher(user);
                 module.setHasExam(updateModule.isHasExam());
                 module.setExamTime(updateModule.getExamTime());
                 module.setExamVenue(updateModule.getExamVenue());
+                User user = em.find(User.class, userId);
+                User userCopy = new User(user.getFirstName(), user.getLastName(), user.getEmail(),
+                        user.getUsername(), null, user.getGender(), null, null, null, null, null, null, null, null);
+                module.setAssignedTeacher(user);
                 module.setLectureDetails(updateModule.getLectureDetails());
-
+                module.setFaculty(updateModule.getFaculty());
+                module.setDepartment(updateModule.getDepartment());
                 em.merge(module);
                 em.flush();
-
-                return Response.status(Response.Status.OK).entity(module).build();
+                Module moduleCopy = new Module(module.getModuleId(), module.getCode(), module.getTitle(), module.getDescription(),
+                        module.getSemesterOffered(), module.getYearOffered(), module.getCreditUnit(), null, module.getMaxEnrollment(), null,
+                        null, null, null, null, null, null, null, null, null, userCopy, null, null, null, module.isHasExam(), module.getExamTime(),
+                        module.getExamVenue(), module.getLectureDetails(), module.getDepartment(), module.getFaculty());
+                return Response.status(Response.Status.OK).entity(moduleCopy).build();
             }
             return Response.status(Response.Status.NOT_FOUND).entity("Module does not exist").build();
         } catch (Exception ex) {
@@ -416,26 +422,31 @@ public class ModuleMountingResource {
                 module.setCreditUnit(updateModule.getCreditUnit());
                 module.setMaxEnrollment(updateModule.getMaxEnrollment());
                 User user = em.find(User.class, userId);
+                User userCopy = new User(user.getFirstName(), user.getLastName(), user.getEmail(),
+                        user.getUsername(), null, user.getGender(), null, null, null, null, null, null, null, null);
                 module.setAssignedTeacher(user);
-                module.setHasExam(updateModule.isHasExam());
-                module.setExamTime(updateModule.getExamTime());
-                module.setExamVenue(updateModule.getExamVenue());
                 module.setLectureDetails(updateModule.getLectureDetails());
-
+                module.setFaculty(updateModule.getFaculty());
+                module.setDepartment(updateModule.getDepartment());
                 if (module.getTutorials().isEmpty()) {
                     em.merge(module);
                     return Response.status(Response.Status.NOT_FOUND).entity("Module has no tutorial").build();
                 }
+                List<Tutorial> tutorialsCopy = new ArrayList<>();
                 List<Tutorial> tutorials = module.getTutorials();
                 for (Tutorial t : tutorials) {
                     t.setMaxEnrollment(updateModule.getMaxEnrollment());
                     t.setVenue(updateModule.getVenue());
                     t.setTiming(updateModule.getTiming());
-                    t.setStudentList(updateModule.getStudentList());
                     em.merge(t);
+                    tutorialsCopy.add(new Tutorial(t.getTutorialId(), t.getMaxEnrollment(),
+                            t.getVenue(), t.getTiming(), null, null));
                 }
-                em.flush();
-                return Response.status(Response.Status.OK).entity(module).build();
+                Module moduleCopy = new Module(module.getModuleId(), module.getCode(), module.getTitle(), module.getDescription(),
+                        module.getSemesterOffered(), module.getYearOffered(), module.getCreditUnit(), null, module.getMaxEnrollment(), null,
+                        null, null, null, null, null, null, null, null, null, userCopy, null, null, null, module.isHasExam(), module.getExamTime(),
+                        module.getExamVenue(), module.getLectureDetails(), module.getDepartment(), module.getFaculty());
+                return Response.status(Response.Status.OK).entity(moduleCopy).build();
             }
             return Response.status(Response.Status.NOT_FOUND).entity("Module does not exist").build();
         } catch (Exception ex) {
@@ -494,8 +505,8 @@ public class ModuleMountingResource {
                 em.merge(t);
                 em.flush();
                 tutorialsCopy.add(new Tutorial(
-                t.getTutorialId(),t.getMaxEnrollment(),t.getVenue()
-                ,t.getTiming(),null,null));
+                        t.getTutorialId(), t.getMaxEnrollment(), t.getVenue(),
+                        t.getTiming(), null, null));
             }
             return Response.status(Response.Status.OK).entity(tutorialsCopy).build();
         } catch (Exception ex) {
@@ -523,6 +534,44 @@ public class ModuleMountingResource {
 
             Tutorial tutorialCopy = new Tutorial(tutorial.getTutorialId(), tutorial.getMaxEnrollment(),
                     tutorial.getVenue(), tutorial.getTiming(), null, null);
+            return Response.status(Response.Status.OK).entity(tutorialCopy).build();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
+        }
+    }
+
+    @Path(value = "updateTutorialWithStudent")
+    @POST
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response updateTutorialWithStudent(UpdateTutorialStudent updateTutorialStudent, @QueryParam("tutorialId") Long tutorialId) {
+
+        try {
+            Tutorial tutorial = em.find(Tutorial.class, tutorialId);
+            if (tutorial == null) {
+                return Response.status(Response.Status.NOT_FOUND).entity("Tutorial does not exist").build();
+            }
+            tutorial.setMaxEnrollment(updateTutorialStudent.getMaxEnrollment());
+            tutorial.setVenue(updateTutorialStudent.getVenue());
+            tutorial.setTiming(updateTutorialStudent.getTiming());
+            List<User> studentsCopy = new ArrayList<>();
+            List<User> students = tutorial.getStudentList();
+            for (User s : students) {
+                s.setId(updateTutorialStudent.getUserId());
+                s.setEmail(updateTutorialStudent.getEmail());
+                s.setFirstName(updateTutorialStudent.getFirstName());
+                s.setLastName(updateTutorialStudent.getLastName());
+                s.setGender(updateTutorialStudent.getGender());
+                s.setUsername(updateTutorialStudent.getUsername());
+                studentsCopy.add(new User(s.getFirstName(), s.getLastName(), s.getEmail(), s.getUsername(), null,
+                        s.getGender(), null, null, null, null, null, null, null, null));
+            }
+            em.merge(tutorial);
+            em.flush();
+
+            Tutorial tutorialCopy = new Tutorial(tutorial.getTutorialId(), tutorial.getMaxEnrollment(),
+                    tutorial.getVenue(), tutorial.getTiming(), studentsCopy, null);
             return Response.status(Response.Status.OK).entity(tutorialCopy).build();
         } catch (Exception ex) {
             ex.printStackTrace();
