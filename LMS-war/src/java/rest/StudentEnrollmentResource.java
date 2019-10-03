@@ -556,7 +556,6 @@ public class StudentEnrollmentResource {
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     public Response retrieveStudentModules(@PathParam("userId") Long userId){
-        
         // Verify user
         User user = em.find(User.class, userId);
         if(user == null || user.getAccessRight() != AccessRightEnum.Student){

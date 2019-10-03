@@ -6,9 +6,8 @@
 package entities;
 
 import java.io.Serializable;
-import java.sql.Time;
-import java.sql.Timestamp;
-import java.util.Date;
+import java.time.LocalDate;
+import java.time.LocalTime;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -23,12 +22,11 @@ import javax.persistence.ManyToOne;
 @Entity
 public class ConsultationTimeslot implements Serializable {
 
-    public ConsultationTimeslot(Time startTs, Time endTs, Date startD, Date endD, Module module, User booker) {
+    public ConsultationTimeslot(LocalTime startTs, LocalTime endTs, LocalDate startD, LocalDate endD, Module module, User booker) {
         this.startTs = startTs;
         this.endTs = endTs;
         this.endD = endD;
         this.startD = startD;
-        //this.booked = booked;
         this.module = module;
         this.booker = booker;
     }
@@ -41,13 +39,13 @@ public class ConsultationTimeslot implements Serializable {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long consultationTsId;
     @Column
-    private Time startTs;
+    private LocalTime startTs;
     @Column 
-    private Time endTs;
+    private LocalTime endTs;
     @Column 
-    private Date endD;
+    private LocalDate endD;
     @Column 
-    private Date startD;
+    private LocalDate startD;
     //@Column
     //private Boolean booked;
     @ManyToOne
@@ -89,11 +87,11 @@ public class ConsultationTimeslot implements Serializable {
         return "entities.consultationTimeslot[ Id=" + consultationTsId + " ]";
     }
 
-    public Time getStartTs() {
+    public LocalTime getStartTs() {
         return startTs;
     }
 
-    public void setStartTs(Time startTs) {
+    public void setStartTs(LocalTime startTs) {
         this.startTs = startTs;
     }
 
@@ -121,27 +119,27 @@ public class ConsultationTimeslot implements Serializable {
         this.module = module;
     }
     
-    public Time getEndTs() {
+    public LocalTime getEndTs() {
         return endTs;
     }
 
-    public void setEndTs(Time endTs) {
+    public void setEndTs(LocalTime endTs) {
         this.endTs = endTs;
     }
     
-      public Date getEndD() {
+      public LocalDate getEndD() {
         return endD;
     }
 
-    public void setEndD(Date endD) {
+    public void setEndD(LocalDate endD) {
         this.endD = endD;
     }
 
-    public Date getStartD() {
+    public LocalDate getStartD() {
         return startD;
     }
 
-    public void setStartD(Date startD) {
+    public void setStartD(LocalDate startD) {
         this.startD = startD;
     }
     
