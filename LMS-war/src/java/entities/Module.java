@@ -16,6 +16,7 @@ import javax.persistence.Id;
 import javax.persistence.Column;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
+import javax.persistence.Lob;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
@@ -40,6 +41,7 @@ public class Module implements Serializable {
     private String code;
     @Column
     private String title;
+    @Lob
     @Column
     private String description;
     @Column
