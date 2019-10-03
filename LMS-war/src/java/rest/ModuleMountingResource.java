@@ -87,7 +87,7 @@ public class ModuleMountingResource {
     @Path(value = "mountModule")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response mountModule(MountModuleReq mountModuleReq) {
+    public Response mountModule(MountModuleReq mountModuleReq, @QueryParam("userId") Long userId) {
         try {
             Module module = new Module();
             module.setCode(mountModuleReq.getCode());
@@ -100,7 +100,8 @@ public class ModuleMountingResource {
             module.setHasExam(mountModuleReq.isHasExam());
             module.setExamTime(mountModuleReq.getExamTime());
             module.setExamVenue(mountModuleReq.getExamVenue());
-            module.setAssignedTeacher(mountModuleReq.getUser());
+            User user = em.find(User.class, userId);
+            module.setAssignedTeacher(user);          
             module.setLectureDetails(mountModuleReq.getLectureDetails());
             em.persist(module);
             em.flush();
