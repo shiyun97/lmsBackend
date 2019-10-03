@@ -132,6 +132,7 @@ public class GroupManagementResource {
             }
             for (ClassGroup g : classGroupList) {
                 List<User> students = g.getMembers();
+                List<User> studentsCopy = new ArrayList<>();
                 for (User s : students) {
                     s.getAccessRight();
                     s.getClassGroupList();
@@ -145,11 +146,14 @@ public class GroupManagementResource {
                     s.getSurveyAttemptList();
                     s.getTutorials();
                     s.getUsername();
-                    students.add(s);
+                    studentsCopy.add(new User(s.getFirstName(), s.getLastName(),
+                             s.getEmail(), s.getUsername(), null, s.getGender(), null,
+                             s.getConsultationTimeslotList(), s.getQuizAttemptList(),
+                             s.getSurveyAttemptList(), null, null, null, null));
                 }
                 rsp.getClassGroupList().add(
                         new ClassGroup(g.getClassGroupId(), g.getName(), g.getStartTs(),
-                                g.getCloseTs(), null, g.getMaxMember(), students));
+                                g.getCloseTs(), null, g.getMaxMember(), studentsCopy));
             }
             return Response.status(Response.Status.OK).entity(rsp).build();
 

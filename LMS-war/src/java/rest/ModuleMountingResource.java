@@ -101,7 +101,7 @@ public class ModuleMountingResource {
             module.setExamTime(mountModuleReq.getExamTime());
             module.setExamVenue(mountModuleReq.getExamVenue());
             User user = em.find(User.class, userId);
-            module.setAssignedTeacher(user);          
+            module.setAssignedTeacher(user);
             module.setLectureDetails(mountModuleReq.getLectureDetails());
             em.persist(module);
             em.flush();
@@ -164,31 +164,33 @@ public class ModuleMountingResource {
                     teacher.getUsername(), null, teacher.getGender(), teacher.getAccessRight(),
                     null, null, null, null, null, null, null);
 
-            List<Tutorial> tutorials = new ArrayList<>();
+            List<Tutorial> tutorialsCopy = new ArrayList<>();
+            List<Tutorial> tutorials = module.getTutorials();
             for (Tutorial t : tutorials) {
                 t.getMaxEnrollment();
                 t.getVenue();
                 t.getTiming();
                 t.getStudentList();
                 t.getModule();
-
-                tutorials.add(t);
+                tutorialsCopy.add(new Tutorial(
+                        t.getTutorialId(), t.getMaxEnrollment(), t.getVenue(),
+                        t.getTiming(), null, null));
             }
 
-            List<Feedback> feedbackList = new ArrayList<>();
+            List<Feedback> feedbackListCopy = new ArrayList<>();
+            List<Feedback> feedbackList = module.getFeedbackList();
             for (Feedback f : feedbackList) {
-                f.getClass();
                 f.getCreateTs();
                 f.getFeedback();
-
-                feedbackList.add(f);
+                feedbackListCopy.add(new Feedback(
+                        f.getFeedbackId(), f.getFeedback(), f.getCreateTs()));
             }
 
             Module moduleCopy = new Module(module.getModuleId(), module.getCode(), module.getTitle(),
                     module.getDescription(), module.getSemesterOffered(),
                     module.getYearOffered(), module.getCreditUnit(), null, module.getMaxEnrollment(),
                     null, null, null, null, null, null, null, null, null, null,
-                    teacherCopy, null, feedbackList, tutorials, module.isHasExam(),
+                    teacherCopy, null, feedbackListCopy, tutorialsCopy, module.isHasExam(),
                     module.getExamTime(), module.getExamVenue(), module.getLectureDetails(), module.getFaculty(),
                     module.getDepartment());
 
@@ -217,24 +219,26 @@ public class ModuleMountingResource {
                     teacher.getUsername(), null, teacher.getGender(), teacher.getAccessRight(),
                     null, null, null, null, null, null, null);
 
-            List<Tutorial> tutorials = new ArrayList<>();
+            List<Tutorial> tutorialsCopy = new ArrayList<>();
+            List<Tutorial> tutorials = module.getTutorials();
             for (Tutorial t : tutorials) {
                 t.getMaxEnrollment();
                 t.getVenue();
                 t.getTiming();
                 t.getStudentList();
                 t.getModule();
-
-                tutorials.add(t);
+                tutorialsCopy.add(new Tutorial(
+                        t.getTutorialId(), t.getMaxEnrollment(), t.getVenue(),
+                        t.getTiming(), null, null));
             }
 
-            List<Feedback> feedbackList = new ArrayList<>();
+            List<Feedback> feedbackListCopy = new ArrayList<>();
+            List<Feedback> feedbackList = module.getFeedbackList();
             for (Feedback f : feedbackList) {
-                f.getClass();
                 f.getCreateTs();
                 f.getFeedback();
-
-                feedbackList.add(f);
+                feedbackListCopy.add(new Feedback(
+                        f.getFeedbackId(), f.getFeedback(), f.getCreateTs()));
             }
 
             Module moduleCopy = new Module(module.getModuleId(), module.getCode(), module.getTitle(),
@@ -272,21 +276,26 @@ public class ModuleMountingResource {
                             teacher.getUsername(), null, teacher.getGender(), teacher.getAccessRight(),
                             null, null, null, null, null, null, null);
 
-                    List<Tutorial> tutorials = new ArrayList<>();
+                    List<Tutorial> tutorialsCopy = new ArrayList<>();
+                    List<Tutorial> tutorials = module.getTutorials();
                     for (Tutorial t : tutorials) {
                         t.getMaxEnrollment();
                         t.getVenue();
                         t.getTiming();
                         t.getStudentList();
                         t.getModule();
-                        tutorials.add(t);
+                        tutorialsCopy.add(new Tutorial(
+                                t.getTutorialId(), t.getMaxEnrollment(), t.getVenue(),
+                                t.getTiming(), null, null));
                     }
-                    List<Feedback> feedbackList = new ArrayList<>();
+
+                    List<Feedback> feedbackListCopy = new ArrayList<>();
+                    List<Feedback> feedbackList = module.getFeedbackList();
                     for (Feedback f : feedbackList) {
-                        f.getClass();
                         f.getCreateTs();
                         f.getFeedback();
-                        feedbackList.add(f);
+                        feedbackListCopy.add(new Feedback(
+                                f.getFeedbackId(), f.getFeedback(), f.getCreateTs()));
                     }
                     rsp.getModule().add(
                             new Module(module.getModuleId(), module.getCode(), module.getTitle(),
@@ -476,6 +485,7 @@ public class ModuleMountingResource {
             if (module.getTutorials().isEmpty()) {
                 return Response.status(Response.Status.NOT_FOUND).entity("Module has no tutorial").build();
             }
+            List<Tutorial> tutorialsCopy = new ArrayList<>();
             List<Tutorial> tutorials = module.getTutorials();
             for (Tutorial t : tutorials) {
                 t.setMaxEnrollment(updateModuleTutorial.getMaxEnrollment());
@@ -483,8 +493,11 @@ public class ModuleMountingResource {
                 t.setTiming(updateModuleTutorial.getTiming());
                 em.merge(t);
                 em.flush();
+                tutorialsCopy.add(new Tutorial(
+                t.getTutorialId(),t.getMaxEnrollment(),t.getVenue()
+                ,t.getTiming(),null,null));
             }
-            return Response.status(Response.Status.OK).build();
+            return Response.status(Response.Status.OK).entity(tutorialsCopy).build();
         } catch (Exception ex) {
             ex.printStackTrace();
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();

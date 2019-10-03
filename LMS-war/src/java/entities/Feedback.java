@@ -33,15 +33,22 @@ public class Feedback implements Serializable {
     /*@ManyToOne
     private Module module;
 
-    public Feedback() {
-    }
-
+    
     public Feedback(Long feedbackId, String feedback, Timestamp createTs, Module module) {
         this.feedbackId = feedbackId;
         this.feedback = feedback;
         this.createTs = createTs;
         this.module = module;
     }*/
+
+    public Feedback() {
+    }
+    
+    public Feedback(Long feedbackId, String feedback, Timestamp createTs) {
+        this.feedbackId = feedbackId;
+        this.feedback = feedback;
+        this.createTs = createTs;
+    }
     
     
     
