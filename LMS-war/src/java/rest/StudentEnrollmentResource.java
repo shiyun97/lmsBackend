@@ -5,6 +5,7 @@
  */
 package rest;
 
+import datamodel.rest.AppealRoundRsp;
 import datamodel.rest.CreateAppealRqst;
 import datamodel.rest.ErrorRsp;
 import datamodel.rest.RetrieveAppealsRsp;
@@ -135,7 +136,7 @@ public class StudentEnrollmentResource {
             return Response.status(Status.INTERNAL_SERVER_ERROR).entity(new ErrorRsp(e.getMessage())).build();
         }
     }
-    
+     
     @Path("updateSchedule")
     @POST
     @Produces(MediaType.APPLICATION_JSON)
@@ -1223,6 +1224,29 @@ public class StudentEnrollmentResource {
             return Response.status(Status.OK).entity(resp).build();
         } catch (Exception e){
             return Response.status(Status.INTERNAL_SERVER_ERROR).entity(new ErrorRsp(e.getMessage())).build(); 
+        }
+    }
+    
+    @Path("isAppealOpen")
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response isAppealOpen(){
+        try{
+            Query q = em.createQuery("SELECT s FROM Schedule s WHERE s.semester=:semester AND s.year=:year");
+            q.setParameter("semester", AcademicYearSessionBean.getSemester());
+            q.setParameter("year", AcademicYearSessionBean.getYear());
+            Schedule sched = (Schedule) q.getSingleResult();
+            
+            Date date = sched.getTutorialRound2EndDate();
+            date = new Date(date.getTime() + 2*7*24*3600000);
+            Boolean resp = new Date().before(date);
+            System.out.println(resp);
+            return Response.status(Status.OK).entity(resp.toString()).build();
+        } catch (NoResultException n){
+            return Response.status(Status.NOT_FOUND).entity(new ErrorRsp("No schedule exists with the given year and semester")).build();
+        } catch (Exception e){
+            e.printStackTrace();
+            return Response.status(Status.INTERNAL_SERVER_ERROR).entity(new ErrorRsp(e.getMessage())).build();
         }
     }
 }
