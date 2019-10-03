@@ -584,9 +584,9 @@ public class ModuleMountingResource {
                 rsp.getUserList().add(
                         new User(null, s.getUserId(), s.getFirstName(),
                                 s.getLastName(), s.getEmail(), s.getUsername(), null,
-                                s.getGender(), s.getAccessRight(), s.getConsultationTimeslotList(),
-                                s.getQuizAttemptList(), s.getSurveyAttemptList(),
-                                s.getClassGroupList(), null, null, null));
+                                s.getGender(), s.getAccessRight(), null,
+                                null, null,
+                                null, null, null, null));
 
             }
             return Response.status(Response.Status.OK).entity(rsp).build();

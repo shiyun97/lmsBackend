@@ -100,17 +100,20 @@ public class GroupManagementResource {
                 return Response.status(Response.Status.NOT_FOUND).entity("Group does not exist").build();
             }
             List<User> members = classGroup.getMembers();
+            List<User> membersRsp = new ArrayList<>();
             for (User u : members) {
-                u.getEmail();
-                u.getFirstName();
-                u.getGender();
-                u.getId();
-                u.getLastName();
-                members.add(u);
+                User temp = new User();
+                temp.setEmail(u.getEmail());
+                temp.setFirstName(u.getFirstName());
+                temp.setLastName(u.getLastName());
+                temp.setEmail(u.getEmail());
+                temp.setGender(u.getGender());
+                temp.setId(u.getId());
+                membersRsp.add(temp);
             }
             ClassGroup classGroupCopy = new ClassGroup(classGroup.getClassGroupId(), classGroup.getName(),
                     classGroup.getStartTs(), classGroup.getCloseTs(), null,
-                    classGroup.getMaxMember(), members);
+                    classGroup.getMaxMember(), membersRsp);
 
             return Response.status(Response.Status.OK).entity(classGroupCopy).build();
 
