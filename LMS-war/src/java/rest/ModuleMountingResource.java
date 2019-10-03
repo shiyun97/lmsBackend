@@ -355,7 +355,7 @@ public class ModuleMountingResource {
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response updateModule(UpdateModule updateModule, @QueryParam("moduleId") Long moduleId) {
+    public Response updateModule(UpdateModule updateModule, @QueryParam("moduleId") Long moduleId, @QueryParam("userId") Long userId) {
 
         try {
 
@@ -369,7 +369,8 @@ public class ModuleMountingResource {
                 module.setYearOffered(updateModule.getYearOffered());
                 module.setCreditUnit(updateModule.getCreditUnit());
                 module.setMaxEnrollment(updateModule.getMaxEnrollment());
-                module.setAssignedTeacher(updateModule.getAssignedTeacher());
+                User user = em.find(User.class, userId);
+                module.setAssignedTeacher(user);
                 module.setHasExam(updateModule.isHasExam());
                 module.setExamTime(updateModule.getExamTime());
                 module.setExamVenue(updateModule.getExamVenue());
@@ -391,7 +392,7 @@ public class ModuleMountingResource {
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response updateModuleWithTutorial(UpdateModule updateModule, @QueryParam("moduleId") Long moduleId) {
+    public Response updateModuleWithTutorial(UpdateModule updateModule, @QueryParam("moduleId") Long moduleId, @QueryParam("userId") Long userId) {
 
         try {
 
@@ -405,7 +406,8 @@ public class ModuleMountingResource {
                 module.setYearOffered(updateModule.getYearOffered());
                 module.setCreditUnit(updateModule.getCreditUnit());
                 module.setMaxEnrollment(updateModule.getMaxEnrollment());
-                module.setAssignedTeacher(updateModule.getAssignedTeacher());
+                User user = em.find(User.class, userId);
+                module.setAssignedTeacher(user);
                 module.setHasExam(updateModule.isHasExam());
                 module.setExamTime(updateModule.getExamTime());
                 module.setExamVenue(updateModule.getExamVenue());
