@@ -478,7 +478,7 @@ public class ModuleMountingResource {
                 return Response.status(Response.Status.NOT_FOUND).entity("No tutorial found").build();
             } else {
                 for (Tutorial tutorial : tutorials) {
-                    List<User> students = new ArrayList<>();
+                    List<User> students = tutorial.getStudentList();
                     for (User s : students) {
                         /*User user = em.find(User.class, userId);
                         if (tutorial.getStudentList().contains(user)) {*/
@@ -525,10 +525,10 @@ public class ModuleMountingResource {
             }
             for (User s : students) {
                 rsp.getUserList().add(
-                        new User(s.getTutorials(), s.getUserId(), s.getFirstName(), 
-                                s.getLastName(), s.getEmail(), s.getUsername(), null, 
-                                s.getGender(), s.getAccessRight(), s.getConsultationTimeslotList(), 
-                                s.getQuizAttemptList(), s.getSurveyAttemptList(), 
+                        new User(s.getTutorials(), s.getUserId(), s.getFirstName(),
+                                s.getLastName(), s.getEmail(), s.getUsername(), null,
+                                s.getGender(), s.getAccessRight(), s.getConsultationTimeslotList(),
+                                s.getQuizAttemptList(), s.getSurveyAttemptList(),
                                 s.getClassGroupList(), null, s.getStudentModuleList(), null));
 
             }

@@ -115,6 +115,49 @@ public class GroupManagementResource {
         }
     }
 
+    @Path(value = "getAllClassGroupByModule")
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getAllClassGroupByModule(@QueryParam("moduleId") Long moduleId) {
+        try {
+            Module module = em.find(Module.class, moduleId);
+            if (module == null) {
+                return Response.status(Response.Status.NOT_FOUND).entity("Module does not exist").build();
+            }
+            GetClassGroupRsp rsp = new GetClassGroupRsp(new ArrayList<>());
+            List<ClassGroup> classGroupList = module.getClassGroupList();
+            if (classGroupList == null && classGroupList.isEmpty()) {
+                return Response.status(Response.Status.NOT_FOUND).entity("No class group found").build();
+            }
+            for (ClassGroup g : classGroupList) {
+                List<User> students = g.getMembers();
+                for (User s : students) {
+                    s.getAccessRight();
+                    s.getClassGroupList();
+                    s.getConsultationTimeslotList();
+                    s.getEmail();
+                    s.getFirstName();
+                    s.getGender();
+                    s.getLastName();
+                    s.getQuizAttemptList();
+                    s.getStudentModuleList();
+                    s.getSurveyAttemptList();
+                    s.getTutorials();
+                    s.getUsername();
+                    students.add(s);
+                }
+                rsp.getClassGroupList().add(
+                        new ClassGroup(g.getClassGroupId(), g.getName(), g.getStartTs(),
+                                g.getCloseTs(), g.getModule(), g.getMaxMember(), students));
+            }
+            return Response.status(Response.Status.OK).entity(rsp).build();
+
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
+        }
+    }
+
     @GET
     @Path(value = "getAllClassGroup")
     @Produces(MediaType.APPLICATION_JSON)
@@ -139,7 +182,7 @@ public class GroupManagementResource {
                 members.add(u);
             }
             for (ClassGroup c : classGroupList) {
-                rsp.getUserList().add(new ClassGroup(c.getClassGroupId(), c.getName(),
+                rsp.getClassGroupList().add(new ClassGroup(c.getClassGroupId(), c.getName(),
                         c.getStartTs(), c.getCloseTs(), c.getModule(), c.getMaxMember(),
                         members));
             }
@@ -261,7 +304,6 @@ public class GroupManagementResource {
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
         }
     }*/
-    
     @Path(value = "joinClassGroup")
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
@@ -311,6 +353,35 @@ public class GroupManagementResource {
         }
     }
     
+    @Path(value = "viewClassGroup")
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response viewClassGroup(@QueryParam("classGroupId") Long classGroupId, @QueryParam("userId") Long userId
+    ) {
+        try {
+            ClassGroup classGroup = em.find(ClassGroup.class, classGroupId);
+
+            if (classGroup == null) {
+                return Response.status(Response.Status.NOT_FOUND).entity("Group does not exist").build();
+            }
+
+            /*Query query = em.createQuery("select u from User u where u.classGroupList = :classGroupId");
+            query.setParameter("classGroupId", viewClassGroup.getClassGroupId());
+            List<User> memberList = (List<User>) query.getResultList();*/
+            List<User> memberList = classGroup.getMembers();
+            
+            User user = em.find(User.class, userId);
+            for (int x = 0; x < memberList.size(); x++) {
+                if (user.equals(classGroup.getMembers().get(x))) {
+                    return Response.status(Response.Status.OK).entity(memberList).build();
+                }
+            }
+            return Response.status(Response.Status.UNAUTHORIZED).entity("Not allowed").build();
+        } catch (Exception ex) {
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
+        }
+    }
+
     /*@Path(value = "quitClassGroup")
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
@@ -334,8 +405,7 @@ public class GroupManagementResource {
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
         }
     }*/
-
-    @Path(value = "viewClassGroup")
+    /*@Path(value = "viewClassGroup")
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
@@ -359,7 +429,7 @@ public class GroupManagementResource {
         } catch (Exception ex) {
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
         }
-    }
+    }*/
 
 //NORMAL
     /*public void joinClassGroup(ClassGroup classGroup, User user) throws GroupIsFullException {

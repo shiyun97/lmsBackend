@@ -23,11 +23,11 @@ public class GetClassGroupRsp {
         this.classGroupList = classGroupList;
     }
     
-    public List<ClassGroup> getUserList() {
+    public List<ClassGroup> getClassGroupList() {
         return classGroupList;
     }
 
-    public void setUserList(List<ClassGroup> classGroupList) {
+    public void setClassGroupList(List<ClassGroup> classGroupList) {
         this.classGroupList = classGroupList;
     }
     
