@@ -431,6 +431,33 @@ public class ModuleMountingResource {
         }
     }
 
+    @Path(value = "updateModuleDescription/{moduleId}")
+    @POST
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response updateModuleDescription(String description, @PathParam("moduleId") Long moduleId) {
+
+        try {
+
+            Module module = em.find(Module.class, moduleId);
+
+            if(module == null){
+                return Response.status(Response.Status.NOT_FOUND).entity("Module does not exist").build();
+            }
+            
+            module.setDescription(description);
+
+//            em.merge(module);
+            em.flush();
+
+            return Response.status(Response.Status.OK).build();
+            
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(ex.getMessage()).build();
+        }
+    }
+    
     @Path(value = "updateModuleTutorial")
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
