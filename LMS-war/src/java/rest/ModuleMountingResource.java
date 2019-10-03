@@ -104,14 +104,14 @@ public class ModuleMountingResource {
             module.setLectureDetails(mountModuleReq.getLectureDetails());
             em.persist(module);
             em.flush();
-            Tutorial tutorial = new Tutorial();
+            /*Tutorial tutorial = new Tutorial();
             tutorial.setMaxEnrollment(mountModuleReq.getMaxEnrollment());
             tutorial.setVenue(mountModuleReq.getVenue());
             tutorial.setTiming(mountModuleReq.getTiming());
             tutorial.setModule(mountModuleReq.getModule());
             em.persist(tutorial);
             em.flush();
-            module.getTutorials().add(tutorial);
+            module.getTutorials().add(tutorial);*/
 
             return Response.status(Response.Status.OK).entity(module).build();
         } catch (Exception ex) {
@@ -133,13 +133,14 @@ public class ModuleMountingResource {
             Tutorial tutorial = new Tutorial();
             tutorial.setMaxEnrollment(mountTutorial.getMaxEnrollment());
             tutorial.setVenue(mountTutorial.getVenue());
-            tutorial.setTiming(mountTutorial.getTiming());
-            tutorial.setModule(mountTutorial.getModule());
+            tutorial.setTiming(mountTutorial.getTiming());;
+            tutorial.setModule(module);
             em.persist(tutorial);
             em.flush();
             module.getTutorials().add(tutorial);
-            return Response.status(Response.Status.OK).entity(module).build();
-
+            Tutorial tutorialCopy = new Tutorial(tutorial.getTutorialId(), tutorial.getMaxEnrollment(),
+                    tutorial.getVenue(), tutorial.getTiming(), null, null);
+            return Response.status(Response.Status.OK).entity(tutorialCopy).build();
         } catch (Exception ex) {
             ex.printStackTrace();
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
@@ -441,23 +442,23 @@ public class ModuleMountingResource {
 
             Module module = em.find(Module.class, moduleId);
 
-            if(module == null){
+            if (module == null) {
                 return Response.status(Response.Status.NOT_FOUND).entity("Module does not exist").build();
             }
-            
+
             module.setDescription(description);
 
 //            em.merge(module);
             em.flush();
 
             return Response.status(Response.Status.OK).build();
-            
+
         } catch (Exception ex) {
             ex.printStackTrace();
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(ex.getMessage()).build();
         }
     }
-    
+
     @Path(value = "updateModuleTutorial")
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
@@ -477,10 +478,36 @@ public class ModuleMountingResource {
                 t.setMaxEnrollment(updateModuleTutorial.getMaxEnrollment());
                 t.setVenue(updateModuleTutorial.getVenue());
                 t.setTiming(updateModuleTutorial.getTiming());
-                t.setStudentList(updateModuleTutorial.getStudentList());
                 em.merge(t);
+                em.flush();
             }
-            return Response.status(Response.Status.OK).entity(tutorials).build();
+            return Response.status(Response.Status.OK).build();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
+        }
+    }
+
+    @Path(value = "updateTutorial")
+    @POST
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response updateTutorial(UpdateModuleTutorial updateModuleTutorial, @QueryParam("tutorialId") Long tutorialId) {
+
+        try {
+            Tutorial tutorial = em.find(Tutorial.class, tutorialId);
+            if (tutorial == null) {
+                return Response.status(Response.Status.NOT_FOUND).entity("Tutorial does not exist").build();
+            }
+            tutorial.setMaxEnrollment(updateModuleTutorial.getMaxEnrollment());
+            tutorial.setVenue(updateModuleTutorial.getVenue());
+            tutorial.setTiming(updateModuleTutorial.getTiming());
+            em.merge(tutorial);
+            em.flush();
+
+            Tutorial tutorialCopy = new Tutorial(tutorial.getTutorialId(), tutorial.getMaxEnrollment(),
+                    tutorial.getVenue(), tutorial.getTiming(), null, null);
+            return Response.status(Response.Status.OK).entity(tutorialCopy).build();
         } catch (Exception ex) {
             ex.printStackTrace();
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
