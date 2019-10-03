@@ -95,10 +95,11 @@ public class UserResource {
                 user.setGender(createUser.getGender());
                 user.setAccessRight(createUser.getAccessRight());
                 user.setUsername(createUser.getUsername());
-                
                 em.persist(user);
                 em.flush();
-                
+                /*User userCopy = new User(user.getFirstName(),user.getLastName(),user.getEmail(),
+                        user.getUsername(),user.getPassword(),user.getGender(),user.getAccessRight(),
+                        null,null,null,null,null,null,null);*/
                 return Response.status(Response.Status.OK).entity(user).build();
             } catch (Exception ex) {
                 return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
@@ -183,12 +184,10 @@ public class UserResource {
     @Produces(MediaType.APPLICATION_JSON)
     public Response updateUser(UpdateUser updateUser) {
         
-        //if (updateUser.getUser().getAccessRight() == Admin) {
-            
+        //if (updateUser.getUser().getAccessRight() == Admin) {            
             try {
                 Long userId = updateUser.getUserId();
-                User user = em.find(User.class, userId);
-                
+                User user = em.find(User.class, userId);               
                 if (user != null) {
                     user.setAccessRight(updateUser.getAccessRight());
                     user.setClassGroupList(updateUser.getClassGroupList());
@@ -203,11 +202,14 @@ public class UserResource {
                     user.setQuizAttemptList(updateUser.getQuizAttemptList());
                     user.setStudentModuleList(updateUser.getStudentModuleList());
                     user.setSurveyAttemptList(updateUser.getSurveyAttemptList());
-                    user.setTeacherModuleList(updateUser.getTeacherModuleList());
-                    
+                    user.setTeacherModuleList(updateUser.getTeacherModuleList());                    
                     em.merge(user);
-                    em.flush();
+                    em.flush();   
                     
+                    /*User userCopy = new User(null,user.getId(),user.getFirstName(),user.getLastName(),
+                            user.getEmail(),user.getUsername(),user.getPassword(),
+                            user.getGender(),user.getAccessRight(),null,null,
+                            null,null,null,null,null);*/
                     return Response.status(Response.Status.OK).entity(user).build();
                 }
                 return Response.status(Response.Status.NOT_FOUND).entity("User does not exist").build();
