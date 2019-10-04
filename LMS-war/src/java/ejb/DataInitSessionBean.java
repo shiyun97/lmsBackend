@@ -11,6 +11,8 @@ import entities.Schedule;
 import entities.Tutorial;
 import entities.User;
 import java.sql.Timestamp;
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.Date;
 import javax.annotation.PostConstruct;
 import javax.ejb.Singleton;
@@ -249,8 +251,26 @@ public class DataInitSessionBean {
         schedule.setTutorialRound2EndDate(new Date(2019-1900, 12, 1));
         em.persist(schedule);
         em.flush();
-
-
+        
+        ConsultationTimeslot c1 = new ConsultationTimeslot();
+        c1.setBooker(student);
+        c1.setEndTs(LocalTime.parse("11:30:00"));
+        c1.setModule(m4);
+        c1.setStartD(LocalDate.parse("10-28-2019"));
+        c1.setStartTs(LocalTime.parse("10:30:00"));
+        em.persist(c1);
+        em.flush();
+        
+        ConsultationTimeslot c2 = new ConsultationTimeslot();
+        c1.setEndTs(LocalTime.parse("11:30:00"));
+        c1.setModule(m4);
+        c1.setStartD(LocalDate.parse("9-28-2019"));
+        c1.setStartTs(LocalTime.parse("10:30:00"));
+        em.persist(c2);
+        em.flush();
+        m1.getConsultationList().add(c1);
+        em.merge(m1);
+        em.flush();
     }
 
     public void persist(Object object) {
