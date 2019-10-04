@@ -38,7 +38,7 @@ public class ConsultationResource {
 
     @PersistenceContext(unitName = "LMS-warPU")
     private EntityManager em;
-    
+
     public DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("dd-MM-uuuu");
     public DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("HH:mm:ss");
 
@@ -176,7 +176,7 @@ public class ConsultationResource {
         try {
             User user = em.find(User.class, userId);
             Module mod = em.find(Module.class, moduleId);
-            
+
             LocalTime startTime = LocalTime.parse(consultationTimeReq.getStartTime(), timeFormatter);
             LocalTime endTime = LocalTime.parse(consultationTimeReq.getEndTime(), timeFormatter);
             LocalDate startDate = LocalDate.parse(consultationTimeReq.getStartDate(), dateFormatter);
@@ -193,26 +193,30 @@ public class ConsultationResource {
                 q.setParameter("startTime", startTime);
                 q.setParameter("endTime", endTime);
 
-                if (q.getSingleResult() != null) {
-                    return Response.status(Response.Status.BAD_REQUEST).entity(new ErrorRsp("Timeslot has already been created!")).build();
-                } else {
-                    ConsultationTimeslot newTimeslot = new ConsultationTimeslot();
-                    newTimeslot.setStartD(startDate);
-                    newTimeslot.setStartTs(startTime);
-                    newTimeslot.setEndTs(endTime);
-                    newTimeslot.setModule(mod);
-
-                    mod.getConsultationList().add(newTimeslot);
-                    em.persist(newTimeslot);
-                    em.flush();
-                    return Response.status(Response.Status.OK).build();
+                List<ConsultationTimeslot> cList = q.getResultList();
+                for (ConsultationTimeslot c : cList) {
+                    if (c.getStartTs().equals(startTime) && (c.getEndTs().equals(endTime) && (c.getStartD().equals(startDate)))) {
+                        return Response.status(Response.Status.BAD_REQUEST).entity(new ErrorRsp("Timeslot has already been created!")).build();
+                    }
                 }
+                ConsultationTimeslot newTimeslot = new ConsultationTimeslot();
+                newTimeslot.setStartD(startDate);
+                newTimeslot.setStartTs(startTime);
+                newTimeslot.setEndTs(endTime);
+                newTimeslot.setModule(mod);
+
+                mod.getConsultationList().add(newTimeslot);
+                em.persist(newTimeslot);
+                em.flush();
+                return Response.status(Response.Status.OK).build();
+
             }
         } catch (Exception e) {
             e.printStackTrace();
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(new ErrorRsp(e.getMessage())).build();
         }
     }
+
     @Path("deleteConsultation")
     @DELETE
     @Produces(MediaType.APPLICATION_JSON)
