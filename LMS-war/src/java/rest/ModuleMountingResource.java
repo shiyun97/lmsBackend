@@ -660,4 +660,22 @@ public class ModuleMountingResource {
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
         }
     }
+    
+    @Path(value = "deleteTutorial")
+    @DELETE
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response deleteTutorial(@QueryParam("tutorialId") Long tutorialId) {
+        try {
+            Tutorial tutorial = em.find(Tutorial.class, tutorialId);
+            if (tutorial == null) {
+                return Response.status(Response.Status.NOT_FOUND).entity("No tutorial found").build();
+
+            }
+            em.remove(tutorial);
+
+            return Response.status(Response.Status.OK).entity("Tutorial deleted").build();
+        } catch (Exception ex) {
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
+        }
+    }
 }

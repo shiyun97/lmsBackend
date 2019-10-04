@@ -370,7 +370,16 @@ public class GroupManagementResource {
             if (classGroup.getMembers().size() == classGroup.getMaxMember()) {
                 return Response.status(Response.Status.BAD_REQUEST).entity("Group is full").build();
             }
-            User user = em.find(User.class, userId);
+            User user = em.find(User.class, userId);      
+            List<ClassGroup> userGroups = user.getClassGroupList();
+            if(userGroups.contains(classGroup)){
+                return Response.status(Response.Status.BAD_REQUEST).entity("Group already joined").build();
+            }
+            for(ClassGroup g : classGroup.getModule().getClassGroupList()){
+                if(g.getMembers().contains(user)){
+                    return Response.status(Response.Status.BAD_REQUEST).entity("You have already joined a group").build();
+                }
+            }
             classGroup.getMembers().add(user);
             user.getClassGroupList().add(classGroup);
             return Response.status(Response.Status.OK).entity("You have joined the group").build();
