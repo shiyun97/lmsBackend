@@ -375,6 +375,9 @@ public class GroupManagementResource {
                 return Response.status(Response.Status.BAD_REQUEST).entity(new ErrorRsp("Group is full")).build();
             }
             User user = em.find(User.class, userId);
+            if (classGroup.getMembers().contains(user)) {
+                return Response.status(Response.Status.BAD_REQUEST).entity(new ErrorRsp("Student already added into this class group")).build();
+            }
             List<ClassGroup> userGroups = user.getClassGroupList();
             if(userGroups.contains(classGroup)){
                 return Response.status(Response.Status.BAD_REQUEST).entity("Group already joined").build();
@@ -383,7 +386,7 @@ public class GroupManagementResource {
                 if(g.getMembers().contains(user)){
                     return Response.status(Response.Status.BAD_REQUEST).entity("You have already joined a group").build();
                 }
-            }
+            }            
             classGroup.getMembers().add(user);
             user.getClassGroupList().add(classGroup);
             return Response.status(Response.Status.OK).entity("You have joined the group").build();
