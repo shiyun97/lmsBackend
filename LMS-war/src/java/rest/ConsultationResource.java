@@ -2,6 +2,7 @@ package rest;
 
 import datamodel.rest.ConsultationTimeReq;
 import datamodel.rest.ErrorRsp;
+import datamodel.rest.GetConsultationRsp;
 import datamodel.rest.RetrieveAllConsultationsForModule;
 import entities.ConsultationTimeslot;
 import entities.Module;
@@ -35,38 +36,41 @@ import java.time.format.DateTimeFormatter;
 @Stateless
 @Path("Consultation")
 public class ConsultationResource {
-
+    
     @PersistenceContext(unitName = "LMS-warPU")
     private EntityManager em;
-
+    
     public DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("dd-MM-uuuu");
     public DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("HH:mm:ss");
-
+    
     @Path("viewAllAvailableConsultation/{moduleId}")
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     public Response retrieveAllAvailableConsultationTimeslot(@PathParam("moduleId") Long moduleId) {
-        System.out.println("retrieveAllAvailableConsultationForModule");
-        System.out.println(em);
         try {
             Module mod = em.find(Module.class, moduleId);
             if (mod == null) {
                 return Response.status(Response.Status.BAD_REQUEST).entity(new ErrorRsp("Module Not Exists!")).build();
             } else {
-                Query query = em.createQuery("SELECT c FROM ConsultationTimeslot c WHERE c.module = :module AND c.booker =:booker AND c.startD >=:startD AND c.startTs >=:startTs");
+                /*Query query = em.createQuery("SELECT c FROM ConsultationTimeslot c WHERE c.module = :module "
+                        + "AND c.booker is null AND c.startD >=:startD AND c.startTs >=:startTs");
                 query.setParameter("module", mod);
-                query.setParameter("booker", null);
+                //query.setParameter("booker", null);
                 query.setParameter("startD", LocalDate.now());
-                query.setParameter("startTs", LocalTime.now());
-
-                List<ConsultationTimeslot> consultations = (List<ConsultationTimeslot>) query.getResultList();
+                query.setParameter("startTs", LocalTime.now());*/
+                List<ConsultationTimeslot> consultations = mod.getConsultationList();
+                GetConsultationRsp rsp = new GetConsultationRsp(new ArrayList<>());
+                //List<ConsultationTimeslot> consultations = query.getResultList();
                 if (consultations != null && !consultations.isEmpty()) {
-                    List<ConsultationTimeslot> consultationsCopy = new ArrayList<>();
+                    //List<ConsultationTimeslot> consultationsCopy = new ArrayList<>();
                     for (ConsultationTimeslot ct : consultations) {
-                        consultationsCopy.add(new ConsultationTimeslot(
-                                ct.getStartTs(), ct.getEndTs(), ct.getStartD(), null, null));
+                        if (ct.getBooker() == null && ct.getStartD().isAfter(LocalDate.now()) /*&& (ct.getStartD().isEqual(LocalDate.now())) */                              
+                                && (ct.getStartTs().isAfter(LocalTime.now())) /*&& (ct.getStartTs().equals(LocalTime.now()))*/) {
+                            rsp.getConsultationTimeslot().add(new ConsultationTimeslot(ct.getconsultationTsId(),
+                                    ct.getStartTs(), ct.getEndTs(), ct.getStartD(), null, null));
+                        }
                     }
-                    return Response.status(Response.Status.OK).entity(consultationsCopy).build();
+                    return Response.status(Response.Status.OK).entity(rsp).build();
                 } else {
                     return Response.status(Response.Status.NOT_FOUND).entity("No consultation for this module").build();
                 }
@@ -76,7 +80,7 @@ public class ConsultationResource {
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(new ErrorRsp(e.getMessage())).build();
         }
     }
-
+    
     @Path("viewAllConsultationslot")
     @GET
     @Produces(MediaType.APPLICATION_JSON)
@@ -97,7 +101,7 @@ public class ConsultationResource {
                     //List<ConsultationTimeslot> timeslotsCopy = new ArrayList<>();
                     for (ConsultationTimeslot ct : timeslots) {
                         rsp.getConsultationTimeslots().add(new ConsultationTimeslot(
-                        ct.getStartTs(),ct.getEndTs(),ct.getStartD(),null,null));
+                                ct.getStartTs(), ct.getEndTs(), ct.getStartD(), null, null));
                     }
                     return Response.status(Response.Status.OK).entity(rsp).build();
                 } else {
@@ -109,7 +113,7 @@ public class ConsultationResource {
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(new ErrorRsp(e.getMessage())).build();
         }
     }
-
+    
     @Path("dropConsultation")
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
@@ -131,7 +135,7 @@ public class ConsultationResource {
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(new ErrorRsp(e.getMessage())).build();
         }
     }
-
+    
     @Path("bookConsultation")
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
@@ -151,22 +155,22 @@ public class ConsultationResource {
                 q.setParameter("currentTs", LocalTime.now());
                 q.setParameter("startD", cs.getStartD());
                 q.setParameter("startTs", cs.getStartTs());
-
+                
                 if (!q.getResultList().isEmpty()) {
                     user.getConsultationTimeslotList().add(cs);
                     cs.setBooker(user);
                     return Response.status(Response.Status.OK).build();
                 } else {
                     return Response.status(Response.Status.BAD_REQUEST).entity(new ErrorRsp("Timeslot not valid!")).build();
-
+                    
                 }
             }
-
+            
         } catch (Exception e) {
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(new ErrorRsp(e.getMessage())).build();
         }
     }
-
+    
     @Path("createConsultation")
     @PUT
     @Consumes(MediaType.APPLICATION_JSON)
@@ -175,11 +179,11 @@ public class ConsultationResource {
         try {
             User user = em.find(User.class, userId);
             Module mod = em.find(Module.class, moduleId);
-
+            
             LocalTime startTime = LocalTime.parse(consultationTimeReq.getStartTime(), timeFormatter);
             LocalTime endTime = LocalTime.parse(consultationTimeReq.getEndTime(), timeFormatter);
             LocalDate startDate = LocalDate.parse(consultationTimeReq.getStartDate(), dateFormatter);
-
+            
             if (mod == null) {
                 return Response.status(Response.Status.BAD_REQUEST).entity(new ErrorRsp("Module do not exist !")).build();
             } else if (user.getAccessRight() != AccessRightEnum.Teacher) {
@@ -191,7 +195,7 @@ public class ConsultationResource {
                 q.setParameter("startDate", startDate);
                 q.setParameter("startTime", startTime);
                 q.setParameter("endTime", endTime);
-
+                
                 List<ConsultationTimeslot> cList = q.getResultList();
                 for (ConsultationTimeslot c : cList) {
                     if (c.getStartTs().equals(startTime) && (c.getEndTs().equals(endTime) && (c.getStartD().equals(startDate)))) {
@@ -203,19 +207,19 @@ public class ConsultationResource {
                 newTimeslot.setStartTs(startTime);
                 newTimeslot.setEndTs(endTime);
                 newTimeslot.setModule(mod);
-
+                
                 mod.getConsultationList().add(newTimeslot);
                 em.persist(newTimeslot);
                 em.flush();
                 return Response.status(Response.Status.OK).build();
-
+                
             }
         } catch (Exception e) {
             e.printStackTrace();
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(new ErrorRsp(e.getMessage())).build();
         }
     }
-
+    
     @Path("deleteConsultation")
     @DELETE
     @Produces(MediaType.APPLICATION_JSON)
@@ -227,7 +231,7 @@ public class ConsultationResource {
             } else {
                 User user = em.find(User.class, userId);
                 Module mod = em.find(Module.class, moduleId);
-
+                
                 if (mod == null) {
                     return Response.status(Response.Status.BAD_REQUEST).entity(new ErrorRsp("Module does not exist!")).build();
                 } else if (user.getAccessRight() != AccessRightEnum.Teacher) {
@@ -245,7 +249,7 @@ public class ConsultationResource {
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(new ErrorRsp(e.getMessage())).build();
         }
     }
-
+    
     @Path("viewConsultationByStudent")
     @GET
     @Produces(MediaType.APPLICATION_JSON)
@@ -256,7 +260,7 @@ public class ConsultationResource {
                 return Response.status(Response.Status.BAD_REQUEST).entity(new ErrorRsp("User does not exist!")).build();
             } else {
                 List<ConsultationTimeslot> cs = user.getConsultationTimeslotList();
-
+                
                 if (cs != null && !cs.isEmpty()) {
                     List<ConsultationTimeslot> csCopy = new ArrayList<>();
                     for (ConsultationTimeslot ct : cs) {

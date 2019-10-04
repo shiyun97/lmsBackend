@@ -31,6 +31,17 @@ public class ConsultationTimeslot implements Serializable {
         this.booker = booker;
     }
 
+    public ConsultationTimeslot(Long consultationTsId, LocalTime startTs, LocalTime endTs, LocalDate startD, Module module, User booker) {
+        this.consultationTsId = consultationTsId;
+        this.startTs = startTs;
+        this.endTs = endTs;
+        this.startD = startD;
+        this.module = module;
+        this.booker = booker;
+    }
+    
+    
+
     public ConsultationTimeslot() {
     }
 
