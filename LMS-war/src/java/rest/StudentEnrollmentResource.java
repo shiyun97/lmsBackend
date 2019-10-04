@@ -470,9 +470,9 @@ public class StudentEnrollmentResource {
     @Produces(MediaType.APPLICATION_JSON)
     public Response enrollModule(@QueryParam("userId") Long userId, @QueryParam("moduleId") Long moduleId, @QueryParam("adminId") Long adminId){
         // Check session open or not
-        if(!isModuleRoundOpen()){
-            return Response.status(Status.BAD_REQUEST).entity(new ErrorRsp("Module enrollment is closed")).build();
-        }
+//        if(!isModuleRoundOpen()){
+//            return Response.status(Status.BAD_REQUEST).entity(new ErrorRsp("Module enrollment is closed")).build();
+//        }
         
         // Verify user
         User user = em.find(User.class, userId);
