@@ -75,7 +75,7 @@ public class Module implements Serializable {
     @OneToMany(mappedBy = "module")
     private List<Attendance> attandanceList;
     @OneToMany(mappedBy = "module")
-    private List<Consultation> consultationList;
+    private List<ConsultationTimeslot> consultationList;
     @OneToMany(mappedBy = "module")
     private List<LessonPlan> lessonPlanList;
     @ManyToOne
@@ -99,7 +99,7 @@ public class Module implements Serializable {
     @Column
     private String faculty;
 
-    public Module(Long moduleId, String code, String title, String description, Integer semesterOffered, String yearOffered, Integer creditUnit, String grade, Integer maxEnrollment, List<User> studentList, List<User> publicUserList, List<Folder> folderList, List<Annoucement> annoucementList, List<ForumPost> forumPostList, List<Quiz> quizList, List<GradeItem> gradeItemList, List<Attendance> attandanceList, List<Consultation> consultationList, List<LessonPlan> lessonPlanList, User assignedTeacher, List<ClassGroup> classGroupList, List<Feedback> feedbackList, List<Tutorial> tutorials, boolean hasExam, Timestamp examTime, String examVenue, String lectureDetails, String department, String faculty) {
+    public Module(Long moduleId, String code, String title, String description, Integer semesterOffered, String yearOffered, Integer creditUnit, String grade, Integer maxEnrollment, List<User> studentList, List<User> publicUserList, List<Folder> folderList, List<Annoucement> annoucementList, List<ForumPost> forumPostList, List<Quiz> quizList, List<GradeItem> gradeItemList, List<Attendance> attandanceList, List<ConsultationTimeslot> consultationList, List<LessonPlan> lessonPlanList, User assignedTeacher, List<ClassGroup> classGroupList, List<Feedback> feedbackList, List<Tutorial> tutorials, boolean hasExam, Timestamp examTime, String examVenue, String lectureDetails, String department, String faculty) {
         this.moduleId = moduleId;
         this.code = code;
         this.title = title;
@@ -274,11 +274,11 @@ public class Module implements Serializable {
         this.attandanceList = attandanceList;
     }
 
-    public List<Consultation> getConsultationList() {
+    public List<ConsultationTimeslot> getConsultationList() {
         return consultationList;
     }
 
-    public void setConsultationList(List<Consultation> consultationList) {
+    public void setConsultationList(List<ConsultationTimeslot> consultationList) {
         this.consultationList = consultationList;
     }
 

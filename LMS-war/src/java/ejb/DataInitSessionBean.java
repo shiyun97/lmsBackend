@@ -5,10 +5,13 @@
  */
 package ejb;
 
+import entities.ConsultationTimeslot;
 import entities.Module;
 import entities.Tutorial;
 import entities.User;
 import java.sql.Timestamp;
+import java.time.LocalDate;
+import java.time.LocalTime;
 import javax.annotation.PostConstruct;
 import javax.ejb.Singleton;
 import javax.ejb.LocalBean;
@@ -230,6 +233,32 @@ public class DataInitSessionBean {
         m3.getTutorials().add(t9);
         em.persist(t9);
         em.flush();
+        
+        ConsultationTimeslot ct1 = new ConsultationTimeslot();      
+        ct1.setStartD(LocalDate.of(2019, 10, 3));
+        ct1.setStartTs(LocalTime.of(10, 00, 00));
+        ct1.setEndTs(LocalTime.of(11, 00, 00));
+        ct1.setBooker(student);
+        ct1.setModule(m1);
+        em.persist(ct1);
+        em.flush();
+        
+        /*Module m5 = new Module();
+        m1.setCode("IS4100");
+        m1.setDescription("IS4100 Mod Desc");
+        m1.setExamTime(new Timestamp(2019-1200, 10, 20, 10, 0, 0, 0));
+        m1.setHasExam(false);
+        m1.setCreditUnit(4);
+        m1.setMaxEnrollment(40);
+        m1.setYearOffered("2019/2020");
+        m1.setTitle("Project Management");
+        m1.setSemesterOffered(1);
+        m1.setLectureDetails("Thursday 10:00 - 12:00");
+        m1.setAssignedTeacher(teacher);
+        teacher.getTeacherModuleList().add(m5);
+        m1.getConsultationList().add(ct1);
+        em.persist(m5);
+        em.flush();*/
     }
 
     public void persist(Object object) {
