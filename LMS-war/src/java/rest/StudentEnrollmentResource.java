@@ -1249,4 +1249,64 @@ public class StudentEnrollmentResource {
             return Response.status(Status.INTERNAL_SERVER_ERROR).entity(new ErrorRsp(e.getMessage())).build();
         }
     }
+    
+    @Path("getAppealById/{appealId}")
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getAppealById(@PathParam("appealId") Long appealId){
+        Appeal appeal = em.find(Appeal.class, appealId);
+        
+        if(appeal == null){
+            return Response.status(Status.NOT_FOUND).entity(new ErrorRsp("Appeal with the given ID is not found")).build();
+        }
+        Appeal resp = null;
+        
+        User stu = appeal.getStudent();
+        User stuCopy = new User(null, stu.getId(), stu.getFirstName(), stu.getLastName(), stu.getEmail(),
+                    stu.getUsername(), null, stu.getGender(), stu.getAccessRight(),
+                    null, null, null, null, null, null, null);
+
+        User admin = appeal.getAdmin();
+        User adminCopy = null;
+        if(admin != null){
+            adminCopy = new User(null, admin.getId(), admin.getFirstName(), admin.getLastName(), admin.getEmail(),
+                    admin.getUsername(), null, admin.getGender(), admin.getAccessRight(),
+                    null, null, null, null, null, null, null);
+        }
+        
+        if(appeal.getType() == AppealTypeEnum.Module){
+            Module m = appeal.getModule();
+            Module mCopy = new Module(m.getModuleId(),m.getCode(), m.getTitle(), m.getDescription(),
+                            m.getSemesterOffered(), m.getYearOffered(),
+                            m.getCreditUnit(), m.getGrade(), m.getMaxEnrollment(), 
+                            null, null, null, null, null, null, null, null, null, null,
+                            null, null, null, null, m.isHasExam(), m.getExamTime(), m.getExamVenue(),
+                            m.getLectureDetails(), m.getDepartment(), m.getFaculty());
+
+            resp = new Appeal(appeal.getAppealId(), appeal.getType(),
+                    appeal.getReason(), appeal.getCreateDate(), appeal.getStatus(),
+                    mCopy, null, null, stuCopy, adminCopy, appeal.getResultDetails());
+        } else if(appeal.getOldTutorial().getModule().getYearOffered().equals(AcademicYearSessionBean.getYear()) 
+                && appeal.getOldTutorial().getModule().getSemesterOffered() == AcademicYearSessionBean.getSemester()) {
+            Tutorial old = appeal.getOldTutorial();
+            Tutorial newT = appeal.getNewTutorial();
+
+            Module m = old.getModule();
+            Module mCopy = new Module(m.getModuleId(),m.getCode(), m.getTitle(), m.getDescription(),
+                            m.getSemesterOffered(), m.getYearOffered(),
+                            m.getCreditUnit(), m.getGrade(), m.getMaxEnrollment(), 
+                            null, null, null, null, null, null, null, null, null, null,
+                            null, null, null, null, m.isHasExam(), m.getExamTime(), m.getExamVenue(),
+                            m.getLectureDetails(), m.getDepartment(), m.getFaculty());
+
+            Tutorial oldR = new Tutorial(old.getTutorialId(), old.getMaxEnrollment(), old.getVenue(), old.getTiming(), null, mCopy);
+            Tutorial newR = new Tutorial(newT.getTutorialId(), newT.getMaxEnrollment(), newT.getVenue(), newT.getTiming(), null, mCopy);
+            resp = new Appeal(appeal.getAppealId(), appeal.getType(),
+                    appeal.getReason(), appeal.getCreateDate(), appeal.getStatus(),
+                    null, oldR, newR, stuCopy, adminCopy, appeal.getResultDetails());
+        }
+        
+        return Response.status(Status.OK).entity(resp).build();
+        
+    }
 }
