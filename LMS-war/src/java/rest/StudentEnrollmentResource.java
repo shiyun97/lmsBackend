@@ -5,7 +5,7 @@
  */
 package rest;
 
-import datamodel.rest.AppealRoundRsp;
+//import datamodel.rest.AppealRoundRsp;
 import datamodel.rest.CreateAppealRqst;
 import datamodel.rest.ErrorRsp;
 import datamodel.rest.RetrieveAppealsRsp;
