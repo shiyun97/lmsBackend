@@ -236,16 +236,16 @@ public class DataInitSessionBean {
         Schedule schedule = new Schedule();
         schedule.setSemester(1);
         schedule.setYear("2019/2020");
-        schedule.setModuleRound1StartDate(new Date(2019, 8, 20));
-        schedule.setModuleRound1EndDate(new Date(2019, 8, 25));
-        schedule.setModuleRound2StartDate(new Date(2019, 8, 29));
-        schedule.setModuleRound2EndDate(new Date(2019, 9, 5));
-        schedule.setModuleRound3StartDate(new Date(2019, 9, 20));
-        schedule.setModuleRound3EndDate(new Date(2019, 12, 5));
-        schedule.setTutorialRound1StartDate(new Date(2019, 9, 1));
-        schedule.setTutorialRound1EndDate(new Date(2019, 9, 8));
-        schedule.setTutorialRound2StartDate(new Date(2019, 9, 20));
-        schedule.setTutorialRound2EndDate(new Date(2019, 12, 1));
+        schedule.setModuleRound1StartDate(new Date(2019-1900, 8, 20));
+        schedule.setModuleRound1EndDate(new Date(2019-1900, 8, 25));
+        schedule.setModuleRound2StartDate(new Date(2019-1900, 8, 29));
+        schedule.setModuleRound2EndDate(new Date(2019-1900, 9, 5));
+        schedule.setModuleRound3StartDate(new Date(2019-1900, 9, 20));
+        schedule.setModuleRound3EndDate(new Date(2019-1900, 12, 5));
+        schedule.setTutorialRound1StartDate(new Date(2019-1900, 9, 1));
+        schedule.setTutorialRound1EndDate(new Date(2019-1900, 9, 8));
+        schedule.setTutorialRound2StartDate(new Date(2019-1900, 9, 20));
+        schedule.setTutorialRound2EndDate(new Date(2019-1900, 12, 1));
         em.persist(schedule);
         em.flush();
         
