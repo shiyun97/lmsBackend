@@ -6,9 +6,11 @@
 package ejb;
 
 import entities.Module;
+import entities.Schedule;
 import entities.Tutorial;
 import entities.User;
 import java.sql.Timestamp;
+import java.util.Date;
 import javax.annotation.PostConstruct;
 import javax.ejb.Singleton;
 import javax.ejb.LocalBean;
@@ -109,7 +111,7 @@ public class DataInitSessionBean {
         m2.setMaxEnrollment(30);
         m2.setYearOffered("2019/2020");
         m2.setTitle("Programming Methodology 2");
-        m2.setSemesterOffered(2);
+        m2.setSemesterOffered(1);
         m2.setLectureDetails("Tuesday 12:00 - 14:00");
         m2.setAssignedTeacher(teacher);
         teacher.getTeacherModuleList().add(m2);
@@ -126,7 +128,7 @@ public class DataInitSessionBean {
         m3.setMaxEnrollment(30);
         m3.setYearOffered("2019/2020");
         m3.setTitle("Capstone");
-        m3.setSemesterOffered(2);
+        m3.setSemesterOffered(1);
         m3.setLectureDetails("Wednesday 12:00 - 14:00");
         m3.setAssignedTeacher(teacher);
         teacher.getTeacherModuleList().add(m3);
@@ -230,6 +232,24 @@ public class DataInitSessionBean {
         m3.getTutorials().add(t9);
         em.persist(t9);
         em.flush();
+        
+        Schedule schedule = new Schedule();
+        schedule.setSemester(1);
+        schedule.setYear("2019/2020");
+        schedule.setModuleRound1StartDate(new Date(2019, 8, 20));
+        schedule.setModuleRound1EndDate(new Date(2019, 8, 25));
+        schedule.setModuleRound2StartDate(new Date(2019, 8, 29));
+        schedule.setModuleRound2EndDate(new Date(2019, 9, 5));
+        schedule.setModuleRound3StartDate(new Date(2019, 9, 20));
+        schedule.setModuleRound3EndDate(new Date(2019, 12, 5));
+        schedule.setTutorialRound1StartDate(new Date(2019, 9, 1));
+        schedule.setTutorialRound1EndDate(new Date(2019, 9, 8));
+        schedule.setTutorialRound2StartDate(new Date(2019, 9, 20));
+        schedule.setTutorialRound2EndDate(new Date(2019, 12, 1));
+        em.persist(schedule);
+        em.flush();
+        
+        
     }
 
     public void persist(Object object) {
