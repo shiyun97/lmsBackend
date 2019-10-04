@@ -256,7 +256,7 @@ public class DataInitSessionBean {
         c1.setBooker(student);
         c1.setEndTs(LocalTime.parse("11:30:00"));
         c1.setModule(m4);
-        c1.setStartD(LocalDate.parse("10-28-2019"));
+        c1.setStartD(LocalDate.parse("2019-10-28"));
         c1.setStartTs(LocalTime.parse("10:30:00"));
         em.persist(c1);
         em.flush();
@@ -264,12 +264,12 @@ public class DataInitSessionBean {
         ConsultationTimeslot c2 = new ConsultationTimeslot();
         c1.setEndTs(LocalTime.parse("11:30:00"));
         c1.setModule(m4);
-        c1.setStartD(LocalDate.parse("9-28-2019"));
+        c1.setStartD(LocalDate.parse("2019-09-29"));
         c1.setStartTs(LocalTime.parse("10:30:00"));
         em.persist(c2);
         em.flush();
         m1.getConsultationList().add(c1);
-        em.merge(m1);
+
         em.flush();
     }
 

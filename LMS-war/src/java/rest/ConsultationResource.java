@@ -53,8 +53,8 @@ public class ConsultationResource {
             if (mod == null) {
                 return Response.status(Response.Status.BAD_REQUEST).entity(new ErrorRsp("Module Not Exists!")).build();
             } else {
-                Query query = em.createQuery("SELECT c FROM ConsultationTimeslot c WHERE c.module.moduleId = :moduleId AND c.booker =:booker AND c.startD >=:startD AND c.startTs >=:startTs");
-                query.setParameter("moduleId", moduleId);
+                Query query = em.createQuery("SELECT c FROM ConsultationTimeslot c WHERE c.module = :module AND c.booker =:booker AND c.startD >=:startD AND c.startTs >=:startTs");
+                query.setParameter("module", mod);
                 query.setParameter("booker", null);
                 query.setParameter("startD", LocalDate.now());
                 query.setParameter("startTs", LocalTime.now());
@@ -64,7 +64,7 @@ public class ConsultationResource {
                     List<ConsultationTimeslot> consultationsCopy = new ArrayList<>();
                     for (ConsultationTimeslot ct : consultations) {
                         consultationsCopy.add(new ConsultationTimeslot(
-                                ct.getStartTs(), ct.getEndTs(), ct.getStartD(), mod, null));
+                                ct.getStartTs(), ct.getEndTs(), ct.getStartD(), null, null));
                     }
                     return Response.status(Response.Status.OK).entity(consultationsCopy).build();
                 } else {
@@ -91,16 +91,15 @@ public class ConsultationResource {
             } else if (user.getAccessRight() != AccessRightEnum.Teacher) {
                 return Response.status(Response.Status.BAD_REQUEST).entity(new ErrorRsp("Do not have right to view")).build();
             } else {
-
+                RetrieveAllConsultationsForModule rsp = new RetrieveAllConsultationsForModule(new ArrayList<>());
                 List<ConsultationTimeslot> timeslots = mod.getConsultationList();
-
                 if (timeslots != null && !timeslots.isEmpty()) {
-                    List<ConsultationTimeslot> timeslotsCopy = new ArrayList<>();
+                    //List<ConsultationTimeslot> timeslotsCopy = new ArrayList<>();
                     for (ConsultationTimeslot ct : timeslots) {
-                        timeslotsCopy.add(new ConsultationTimeslot(
-                                ct.getStartTs(), ct.getEndTs(), ct.getStartD(), mod, user));
+                        rsp.getConsultationTimeslots().add(new ConsultationTimeslot(
+                        ct.getStartTs(),ct.getEndTs(),ct.getStartD(),null,null));
                     }
-                    return Response.status(Response.Status.OK).entity(new RetrieveAllConsultationsForModule(timeslotsCopy)).build();
+                    return Response.status(Response.Status.OK).entity(rsp).build();
                 } else {
                     return Response.status(Response.Status.NOT_FOUND).entity("No consultation for this module").build();
                 }
