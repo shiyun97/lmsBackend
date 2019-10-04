@@ -836,6 +836,10 @@ public class StudentEnrollmentResource {
                         || m.getSemesterOffered() != AcademicYearSessionBean.getSemester()){
                     return Response.status(Status.NOT_FOUND).entity(new ErrorRsp("Module is not found or not offered in this semester!")).build();
                 }
+                
+                if(m.getStudentList().contains(user)){
+                    return Response.status(Status.BAD_REQUEST).entity(new ErrorRsp("Student already enrolled in the module")).build();
+                }
                 appeal.setModule(m);
                 appeal.setType(AppealTypeEnum.Module);
                 
@@ -857,7 +861,9 @@ public class StudentEnrollmentResource {
                     return Response.status(Status.NOT_FOUND).entity(new ErrorRsp("New tutorial and old tutorial are from different modules!")).build();
                 } else if(!old.getStudentList().contains(user)){
                     return Response.status(Status.BAD_REQUEST).entity(new ErrorRsp("Student isn't enrolled in the old tutorial.")).build();
-                } else {
+                } else if(newT.getStudentList().contains(user)){
+                    return Response.status(Status.BAD_REQUEST).entity(new ErrorRsp("Student is already enrolled in the new tutorial")).build();
+                } else{
                     Module m = old.getModule();
                     if(m == null || !m.getYearOffered().equals(AcademicYearSessionBean.getYear()) 
                         || m.getSemesterOffered() != AcademicYearSessionBean.getSemester()){
