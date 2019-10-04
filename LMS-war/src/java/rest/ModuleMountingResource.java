@@ -664,15 +664,18 @@ public class ModuleMountingResource {
     @Path(value = "deleteTutorial")
     @DELETE
     @Produces(MediaType.APPLICATION_JSON)
-    public Response deleteTutorial(@QueryParam("tutorialId") Long tutorialId) {
+    public Response deleteTutorial(@QueryParam("moduleId") Long moduleId, @QueryParam("tutorialId") Long tutorialId) {
         try {
+            Module module = em.find(Module.class, moduleId);
             Tutorial tutorial = em.find(Tutorial.class, tutorialId);
+            /*if(!module.getTutorials().contains(tutorial)){
+                 return Response.status(Response.Status.NOT_FOUND).entity("No tutorial found in module").build();
+            }*/    
             if (tutorial == null) {
                 return Response.status(Response.Status.NOT_FOUND).entity("No tutorial found").build();
-
             }
-            em.remove(tutorial);
-
+            em.remove(tutorial);     
+            module.getTutorials().remove(tutorial);
             return Response.status(Response.Status.OK).entity("Tutorial deleted").build();
         } catch (Exception ex) {
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
