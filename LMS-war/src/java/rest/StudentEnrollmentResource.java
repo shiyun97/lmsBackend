@@ -442,6 +442,12 @@ public class StudentEnrollmentResource {
         }
         
         // Check the number of credits the student has registered for
+        int mc = 0;
+        for(Module m: user.getStudentModuleList()){
+            if(m.getYearOffered().equals(AcademicYearSessionBean.getYear()) && m.getSemesterOffered() == AcademicYearSessionBean.getSemester()){
+                mc += m.getCreditUnit();
+            }
+        }
         
         try {
             Module module = em.find(Module.class, moduleId);
@@ -452,9 +458,11 @@ public class StudentEnrollmentResource {
             } else if(!module.getYearOffered().equals(AcademicYearSessionBean.getYear())
                     || module.getSemesterOffered() != AcademicYearSessionBean.getSemester()){
                 return Response.status(Status.BAD_REQUEST).entity(new ErrorRsp("Module isn't offered this semester")).build();
-            }else if(module.getMaxEnrollment() <= module.getStudentList().size()){
+            } else if(module.getMaxEnrollment() <= module.getStudentList().size()){
                 return Response.status(Status.BAD_REQUEST).entity(new ErrorRsp("Module already full")).build();
-            } else {
+            } else if(module.getCreditUnit() + mc > 24){
+                return Response.status(Status.BAD_REQUEST).entity(new ErrorRsp("Student can only take 24MC per semester")).build();
+            }else {
                 module.getStudentList().add(user);
                 user.getStudentModuleList().add(module);
                 em.flush();
