@@ -148,7 +148,7 @@ public class ConsultationResource {
             if (cs == null) {
                 return Response.status(Response.Status.BAD_REQUEST).entity(new ErrorRsp("Consultation Not Exists!")).build();
             } else {
-                Query q = em.createQuery("Select c FROM ConsultationTimeslot c WHERE c.booker =:booker AND c.startD >=:curentD AND c.startTs>=:currentTs AND c.startD =:startD AND c.startTs=:startTs");
+                Query q = em.createQuery("Select c FROM ConsultationTimeslot c WHERE c.booker =:booker AND c.startD >=:currentD AND c.startTs>=:currentTs AND c.startD =:startD AND c.startTs=:startTs");
                 //q.setParameter("booker", user.getId());
                 q.setParameter("booker", user);
                 q.setParameter("currentD", LocalDate.now());
