@@ -65,6 +65,8 @@ public class Module implements Serializable {
     @OneToMany(mappedBy = "module")
     private List<Folder> folderList;
     @OneToMany(mappedBy = "module")
+    private List<File> multimediaList;
+    @OneToMany(mappedBy = "module")
     private List<Annoucement> annoucementList;
     @OneToMany(mappedBy = "module")
     private List<ForumPost> forumPostList;
@@ -131,7 +133,38 @@ public class Module implements Serializable {
         this.faculty = faculty;
     }
     
-    
+    public Module(Long moduleId, String code, String title, String description, Integer semesterOffered, String yearOffered, Integer creditUnit, String grade, Integer maxEnrollment, List<User> studentList, List<User> publicUserList, List<Folder> folderList, List<File> multimediaList, List<Annoucement> annoucementList, List<ForumPost> forumPostList, List<Quiz> quizList, List<GradeItem> gradeItemList, List<Attendance> attandanceList, List<ConsultationTimeslot> consultationList, List<LessonPlan> lessonPlanList, User assignedTeacher, List<ClassGroup> classGroupList, List<Feedback> feedbackList, List<Tutorial> tutorials, boolean hasExam, Timestamp examTime, String examVenue, String lectureDetails, String department, String faculty) {
+        this.moduleId = moduleId;
+        this.code = code;
+        this.title = title;
+        this.description = description;
+        this.semesterOffered = semesterOffered;
+        this.yearOffered = yearOffered;
+        this.creditUnit = creditUnit;
+        this.grade = grade;
+        this.maxEnrollment = maxEnrollment;
+        this.studentList = studentList;
+        this.publicUserList = publicUserList;
+        this.folderList = folderList;
+        this.multimediaList = multimediaList;
+        this.annoucementList = annoucementList;
+        this.forumPostList = forumPostList;
+        this.quizList = quizList;
+        this.gradeItemList = gradeItemList;
+        this.attandanceList = attandanceList;
+        this.consultationList = consultationList;
+        this.lessonPlanList = lessonPlanList;
+        this.assignedTeacher = assignedTeacher;
+        this.classGroupList = classGroupList;
+        this.feedbackList = feedbackList;
+        this.tutorials = tutorials;
+        this.hasExam = hasExam;
+        this.examTime = examTime;
+        this.examVenue = examVenue;
+        this.lectureDetails = lectureDetails;
+        this.department = department;
+        this.faculty = faculty;
+    }
 	
     @Override
     public int hashCode() {
@@ -372,6 +405,14 @@ public class Module implements Serializable {
 
     public void setFeedbackList(List<Feedback> feedbackList) {
         this.feedbackList = feedbackList;
+    }
+
+    public List<File> getMultimediaList() {
+        return multimediaList;
+    }
+
+    public void setMultimediaList(List<File> multimediaList) {
+        this.multimediaList = multimediaList;
     }
 
     public String getDepartment() {
