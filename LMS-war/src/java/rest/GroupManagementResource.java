@@ -69,7 +69,7 @@ public class GroupManagementResource {
         //if (createClassGroup.getUser().getAccessRight() == Teacher) {
         Module module = em.find(Module.class, createClassGroup.getModuleId());
         if (module == null) {
-            return Response.status(Response.Status.NOT_FOUND).entity("Module does not exist").build();
+            return Response.status(Response.Status.NOT_FOUND).entity(new ErrorRsp("Module does not exist")).build();
         }
         try {
 
@@ -88,7 +88,7 @@ public class GroupManagementResource {
             return Response.status(Response.Status.OK).build();
         } catch (Exception ex) {
             ex.printStackTrace();
-            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(new ErrorRsp(ex.getMessage())).build();
         }
         //}
         //return Response.status(Response.Status.UNAUTHORIZED).build();
@@ -101,7 +101,7 @@ public class GroupManagementResource {
         try {
             ClassGroup classGroup = em.find(ClassGroup.class, classGroupId);
             if (classGroup == null) {
-                return Response.status(Response.Status.NOT_FOUND).entity("Group does not exist").build();
+                return Response.status(Response.Status.NOT_FOUND).entity(new ErrorRsp("Group does not exist")).build();
             }
             List<User> members = classGroup.getMembers();
             List<User> membersRsp = new ArrayList<>();
@@ -123,7 +123,7 @@ public class GroupManagementResource {
 
         } catch (Exception ex) {
             ex.printStackTrace();
-            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(new ErrorRsp(ex.getMessage())).build();
         }
     }
 
@@ -134,12 +134,12 @@ public class GroupManagementResource {
         try {
             Module module = em.find(Module.class, moduleId);
             if (module == null) {
-                return Response.status(Response.Status.NOT_FOUND).entity("Module does not exist").build();
+                return Response.status(Response.Status.NOT_FOUND).entity(new ErrorRsp("Module does not exist")).build();
             }
             GetClassGroupRsp rsp = new GetClassGroupRsp(new ArrayList<>(), new ArrayList<>());
             List<ClassGroup> classGroupList = module.getClassGroupList();
             if (classGroupList == null && classGroupList.isEmpty()) {
-                return Response.status(Response.Status.NOT_FOUND).entity("No class group found").build();
+                return Response.status(Response.Status.NOT_FOUND).entity(new ErrorRsp("No class group found")).build();
             }
             for (ClassGroup g : classGroupList) {
                 ClassGroup temp = em.find(ClassGroup.class, g.getClassGroupId());
@@ -172,7 +172,7 @@ public class GroupManagementResource {
 
         } catch (Exception ex) {
             ex.printStackTrace();
-            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(new ErrorRsp(ex.getMessage())).build();
         }
     }
 
@@ -311,12 +311,12 @@ public class GroupManagementResource {
         try {
             Tutorial tutorial = em.find(Tutorial.class, tutorialId);
             if (tutorial == null) {
-                return Response.status(Response.Status.NOT_FOUND).entity("No tutorial found").build();
+                return Response.status(Response.Status.NOT_FOUND).entity(new ErrorRsp("No tutorial found")).build();
             }
             GetUserRsp rsp = new GetUserRsp(new ArrayList<>());
             List<User> students = tutorial.getStudentList();
             if (students == null && students.isEmpty()) {
-                return Response.status(Response.Status.NOT_FOUND).entity("No students found").build();
+                return Response.status(Response.Status.NOT_FOUND).entity(new ErrorRsp("No students found")).build();
             }
             for (User s : students) {
                 rsp.getUserList().add(
@@ -328,7 +328,7 @@ public class GroupManagementResource {
             return Response.status(Response.Status.OK).entity(rsp).build();
         } catch (Exception ex) {
             ex.printStackTrace();
-            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(new ErrorRsp(ex.getMessage())).build();
         }
     }
 
@@ -380,11 +380,11 @@ public class GroupManagementResource {
             }
             List<ClassGroup> userGroups = user.getClassGroupList();
             if(userGroups.contains(classGroup)){
-                return Response.status(Response.Status.BAD_REQUEST).entity("Group already joined").build();
+                return Response.status(Response.Status.BAD_REQUEST).entity(new ErrorRsp("Group already joined")).build();
             }
             for(ClassGroup g : classGroup.getModule().getClassGroupList()){
                 if(g.getMembers().contains(user)){
-                    return Response.status(Response.Status.BAD_REQUEST).entity("You have already joined a group").build();
+                    return Response.status(Response.Status.BAD_REQUEST).entity(new ErrorRsp("You have already joined a group")).build();
                 }
             }            
             classGroup.getMembers().add(user);

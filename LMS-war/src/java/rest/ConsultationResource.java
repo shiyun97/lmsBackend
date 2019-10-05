@@ -65,7 +65,7 @@ public class ConsultationResource {
                     //List<ConsultationTimeslot> consultationsCopy = new ArrayList<>();
                     for (ConsultationTimeslot ct : consultations) {
                         if (ct.getBooker() == null && ct.getStartD().isAfter(LocalDate.now()) /*&& (ct.getStartD().isEqual(LocalDate.now())) */                              
-                                && (ct.getStartTs().isAfter(LocalTime.now())) /*&& (ct.getStartTs().equals(LocalTime.now()))*/) {
+                               /*&& (ct.getStartTs().equals(LocalTime.now()))*/) {
                             rsp.getConsultationTimeslot().add(new ConsultationTimeslot(ct.getconsultationTsId(),
                                     ct.getStartTs(), ct.getEndTs(), ct.getStartD(), null, null));
                         }
@@ -259,15 +259,16 @@ public class ConsultationResource {
             if (user == null) {
                 return Response.status(Response.Status.BAD_REQUEST).entity(new ErrorRsp("User does not exist!")).build();
             } else {
+                GetConsultationRsp rsp = new GetConsultationRsp(new ArrayList<>());
                 List<ConsultationTimeslot> cs = user.getConsultationTimeslotList();
                 
                 if (cs != null && !cs.isEmpty()) {
-                    List<ConsultationTimeslot> csCopy = new ArrayList<>();
                     for (ConsultationTimeslot ct : cs) {
-                        csCopy.add(new ConsultationTimeslot(
+                        rsp.getConsultationTimeslot().add(new ConsultationTimeslot(
                                 ct.getconsultationTsId(), ct.getStartTs(), ct.getEndTs(), ct.getStartD(), null, null));
+
                     }
-                    return Response.status(Response.Status.OK).entity(csCopy).build();
+                    return Response.status(Response.Status.OK).entity(rsp).build();
                 } else {
                     return Response.status(Response.Status.NOT_FOUND).entity("No consultation for this module").build();
                 }
