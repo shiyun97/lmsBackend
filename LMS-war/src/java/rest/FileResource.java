@@ -344,19 +344,24 @@ public class FileResource {
         if (module == null) {
             return Response.status(Response.Status.BAD_REQUEST).entity(new ErrorRsp("Module does not exist!")).build();
         }
-        List<entities.File> multimediaList = module.getMultimediaList();
-        List<entities.File> multimediaRsp = new ArrayList<>();
-        for (entities.File f : multimediaList) {
-            if (f.getIsDelete() == false) {
-                User u = new User();
-                u.setUserId(f.getUploader().getUserId());
-                u.setFirstName(f.getUploader().getFirstName());
-                u.setLastName(f.getUploader().getLastName());
-                entities.File temp = new entities.File(f.getFileId(), f.getName(), f.getType(), f.getLocation(), f.getCreatedDt(), f.getIsDelete(), null, null, u);
-                multimediaRsp.add(temp);
+        try {
+            List<entities.File> multimediaList = module.getMultimediaList();
+            List<entities.File> multimediaRsp = new ArrayList<>();
+            for (entities.File f : multimediaList) {
+                if (f.getIsDelete() == false) {
+                    User u = new User();
+                    u.setUserId(f.getUploader().getUserId());
+                    u.setFirstName(f.getUploader().getFirstName());
+                    u.setLastName(f.getUploader().getLastName());
+                    entities.File temp = new entities.File(f.getFileId(), f.getName(), f.getType(), f.getLocation(), f.getCreatedDt(), f.getIsDelete(), null, null, u);
+                    multimediaRsp.add(temp);
+                }
             }
+            return Response.status(Response.Status.OK).entity(new RetrieveFilesRsp(multimediaRsp, new ArrayList<>(), new Folder())).build();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(new ErrorRsp(e.getMessage())).build();
         }
-        return Response.status(Response.Status.OK).entity(new RetrieveFilesRsp(multimediaRsp, new ArrayList<>(), new Folder())).build();
     }
     
     @Path("createFolder")
@@ -413,7 +418,7 @@ public class FileResource {
         try {
             Folder folder = em.find(Folder.class, folderId);
             if (folder == null) {
-                return Response.status(Response.Status.NOT_FOUND).entity("Folder does not exist!").build();
+                return Response.status(Response.Status.NOT_FOUND).entity(new ErrorRsp("Folder does not exist!")).build();
             }
             List<entities.File> files = folder.getFile();
             for (entities.File f : files) {
@@ -427,7 +432,7 @@ public class FileResource {
             return Response.status(Response.Status.OK).build();
         } catch (Exception e) {
             e.printStackTrace();
-            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(new ErrorRsp(e.getMessage())).build();
         }
     }
     
@@ -439,7 +444,7 @@ public class FileResource {
         try {
             entities.File file = em.find(entities.File.class, fileId);
             if (file == null) {
-                return Response.status(Response.Status.NOT_FOUND).entity("File does not exist!").build();
+                return Response.status(Response.Status.NOT_FOUND).entity(new ErrorRsp("File does not exist!")).build();
             }
             em.detach(file);
             
@@ -450,7 +455,7 @@ public class FileResource {
             return Response.status(Response.Status.OK).build();
         } catch (Exception e) {
             e.printStackTrace();
-            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(new ErrorRsp(e.getMessage())).build();
         }
     }
     
@@ -460,7 +465,7 @@ public class FileResource {
     public Response downloadFile(@QueryParam("fileId") Long fileId) {
         entities.File fileToRetrieve = em.find(entities.File.class, fileId);
         if (fileToRetrieve == null) {
-            return Response.status(Response.Status.NOT_FOUND).entity("File does not exist!").build();
+            return Response.status(Response.Status.NOT_FOUND).entity(new ErrorRsp("File does not exist!")).build();
         }
         try {
             String path = fileToRetrieve.getLocation();
@@ -471,7 +476,7 @@ public class FileResource {
         }
         catch (Exception e) {
             e.printStackTrace();
-            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(new ErrorRsp(e.getMessage())).build();
         }
     }
 }
