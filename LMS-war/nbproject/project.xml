@@ -7,6 +7,7 @@
             <minimum-ant-version>1.6.5</minimum-ant-version>
             <web-module-libraries>
                 <library dirs="200">
+<<<<<<< HEAD
                     <file>${libs.javaee-endorsed-api-7.0.classpath}</file>
                     <path-in-war>WEB-INF/lib</path-in-war>
                 </library>
@@ -60,6 +61,21 @@
                 </library>
                 <library dirs="200">
                     <file>${file.reference.osgi-resource-locator-1.0.1.jar}</file>
+=======
+                    <file>${file.reference.jersey-media-multipart-2.29.1.jar}</file>
+                    <path-in-war>WEB-INF/lib</path-in-war>
+                </library>
+                <library dirs="200">
+                    <file>${file.reference.jersey-common-2.29.1.jar}</file>
+                    <path-in-war>WEB-INF/lib</path-in-war>
+                </library>
+                <library dirs="200">
+                    <file>${file.reference.mimepull-1.9.11.jar}</file>
+                    <path-in-war>WEB-INF/lib</path-in-war>
+                </library>
+                <library dirs="200">
+                    <file>${file.reference.osgi-resource-locator-1.0.3.jar}</file>
+>>>>>>> dd25e62258c4a197860fd938f789bc88fb5e17fb
                     <path-in-war>WEB-INF/lib</path-in-war>
                 </library>
             </web-module-libraries>
