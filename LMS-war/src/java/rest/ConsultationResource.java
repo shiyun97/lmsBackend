@@ -101,7 +101,7 @@ public class ConsultationResource {
                     //List<ConsultationTimeslot> timeslotsCopy = new ArrayList<>();
                     for (ConsultationTimeslot ct : timeslots) {
                         rsp.getConsultationTimeslots().add(new ConsultationTimeslot(
-                                ct.getStartTs(), ct.getEndTs(), ct.getStartD(), null, null));
+                                ct.getconsultationTsId(), ct.getStartTs(), ct.getEndTs(), ct.getStartD(), null, null));
                     }
                     return Response.status(Response.Status.OK).entity(rsp).build();
                 } else {
@@ -156,7 +156,7 @@ public class ConsultationResource {
                 q.setParameter("startD", cs.getStartD());
                 q.setParameter("startTs", cs.getStartTs());
                 
-                if (!q.getResultList().isEmpty()) {
+                if (q.getResultList().isEmpty()) {
                     user.getConsultationTimeslotList().add(cs);
                     cs.setBooker(user);
                     return Response.status(Response.Status.OK).build();
@@ -265,7 +265,7 @@ public class ConsultationResource {
                     List<ConsultationTimeslot> csCopy = new ArrayList<>();
                     for (ConsultationTimeslot ct : cs) {
                         csCopy.add(new ConsultationTimeslot(
-                                ct.getStartTs(), ct.getEndTs(), ct.getStartD(), null, null));
+                                ct.getconsultationTsId(), ct.getStartTs(), ct.getEndTs(), ct.getStartD(), null, null));
                     }
                     return Response.status(Response.Status.OK).entity(csCopy).build();
                 } else {
