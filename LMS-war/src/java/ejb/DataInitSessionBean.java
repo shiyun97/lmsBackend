@@ -86,6 +86,17 @@ public class DataInitSessionBean {
         extStu.setUsername("public");
         em.persist(extStu);
         em.flush();
+        
+        User student2 = new User();
+        student2.setFirstName("Mark");
+        student2.setLastName("Hamilton");
+        student2.setEmail("student2@gmail.com");
+        student2.setPassword("password");
+        student2.setGender(GenderEnum.Male);
+        student2.setAccessRight(AccessRightEnum.Student);
+        student2.setUsername("student2");
+        em.persist(student2);
+        em.flush();
 
         Module m1 = new Module();
         m1.setCode("CS1010");
@@ -100,6 +111,8 @@ public class DataInitSessionBean {
         m1.setSemesterOffered(1);
         m1.setLectureDetails("Monday 12:00 - 14:00");
         m1.setAssignedTeacher(teacher);
+        m1.setFaculty("School of Computing");
+        m1.setDepartment("Department of Computer Science");
         teacher.getTeacherModuleList().add(m1);
         em.persist(m1);
         em.flush();
@@ -117,6 +130,8 @@ public class DataInitSessionBean {
         m2.setSemesterOffered(1);
         m2.setLectureDetails("Tuesday 12:00 - 14:00");
         m2.setAssignedTeacher(teacher);
+        m2.setFaculty("School of Computing");
+        m2.setDepartment("Department of Computer Science");
         teacher.getTeacherModuleList().add(m2);
         em.persist(m2);
         em.flush();
@@ -134,6 +149,8 @@ public class DataInitSessionBean {
         m3.setSemesterOffered(1);
         m3.setLectureDetails("Wednesday 12:00 - 14:00");
         m3.setAssignedTeacher(teacher);
+        m3.setFaculty("School of Computing");
+        m3.setDepartment("Department of Information Systems and Analytics");
         teacher.getTeacherModuleList().add(m3);
         em.persist(m3);
         em.flush();
@@ -151,9 +168,14 @@ public class DataInitSessionBean {
         m4.setSemesterOffered(1);
         m4.setLectureDetails("Wednesday 12:00 - 14:00");
         m4.setAssignedTeacher(teacher);
+        m4.setFaculty("School of Computing");
+        m4.setDepartment("Department of Information Systems and Analytics");
         teacher.getTeacherModuleList().add(m4);
         em.persist(m4);
         em.flush();
+        
+        student2.getStudentModuleList().add(m1);
+        m1.getStudentList().add(student2);
 
         Tutorial t1 = new Tutorial();
         t1.setModule(m1);
@@ -236,6 +258,9 @@ public class DataInitSessionBean {
         em.persist(t9);
         em.flush();
 
+        student2.getTutorials().add(t1);
+        t1.getStudentList().add(student2);
+        
         Schedule schedule = new Schedule();
         schedule.setSemester(1);
         schedule.setYear("2019/2020");
@@ -253,7 +278,7 @@ public class DataInitSessionBean {
         em.flush();
         
         ConsultationTimeslot c1 = new ConsultationTimeslot();
-        c1.setBooker(student);
+        c1.setBooker(student2);
         c1.setEndTs(LocalTime.parse("11:30:00"));
         c1.setModule(m4);
         c1.setStartD(LocalDate.parse("2019-10-28"));
