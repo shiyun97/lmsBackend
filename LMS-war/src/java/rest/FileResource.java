@@ -194,14 +194,12 @@ public class FileResource {
         }
         
         try {
-            System.out.println("hi");
             System.out.println(body);
             for (BodyPart part : body.getParent().getBodyParts()) {
                 InputStream inputStream = part.getEntityAs(InputStream.class);
                 ContentDisposition meta = part.getContentDisposition();
                 Timestamp timestamp = new Timestamp(System.currentTimeMillis());
-                Instant instant = timestamp.toInstant();
-                String outputFilePath = servletContext.getInitParameter("alternatedocroot_1") + System.getProperty("file.separator") + meta.getFileName();
+                String outputFilePath = servletContext.getInitParameter("alternatedocroot_1") + System.getProperty("file.separator") + timestamp.getTime() + "_" + meta.getFileName();
                 // do upload
                 java.io.File file = new java.io.File(outputFilePath);
                 FileOutputStream fileOutputStream = new FileOutputStream(file);
@@ -448,6 +446,8 @@ public class FileResource {
             }
             em.detach(file);
             
+            File actualFile = new File(file.getLocation());
+            actualFile.delete();
             file.setIsDelete(true);
             em.merge(file);
             em.flush();
