@@ -267,7 +267,7 @@ public class UserResource {
         }
     }
 
-    @POST
+    @PUT
     @Path(value = "updateAccount")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
