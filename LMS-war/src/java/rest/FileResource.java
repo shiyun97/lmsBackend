@@ -243,6 +243,7 @@ public class FileResource {
                 }
                 if (type.equals("multimedia")) {
                     newFile.setModule(module);
+                    module.getMultimediaList().add(newFile);
                 }
 
                 em.persist(newFile);
@@ -356,6 +357,25 @@ public class FileResource {
                 }
             }
             return Response.status(Response.Status.OK).entity(new RetrieveFilesRsp(multimediaRsp, new ArrayList<>(), new Folder())).build();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(new ErrorRsp(e.getMessage())).build();
+        }
+    }
+    
+    @Path("retrieveMultimediaById")
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response retrieveMultimediaById(@QueryParam("multimediaId") Long multimediaId) {
+        try {
+            entities.File multimedia = em.find(entities.File.class, multimediaId);
+            if (multimedia == null) {
+                return Response.status(Response.Status.BAD_REQUEST).entity(new ErrorRsp("Multimedia does not exist!")).build();
+            }
+            entities.File multimediaRsp = new entities.File();
+            multimediaRsp.setName(multimedia.getName());
+            multimediaRsp.setLocation(multimedia.getLocation());
+            return Response.status(Response.Status.OK).entity(multimediaRsp).build();
         } catch (Exception e) {
             e.printStackTrace();
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(new ErrorRsp(e.getMessage())).build();
