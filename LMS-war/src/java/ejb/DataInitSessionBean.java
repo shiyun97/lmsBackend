@@ -5,6 +5,7 @@
  */
 package ejb;
 
+import entities.Attendance;
 import entities.ConsultationTimeslot;
 import entities.Module;
 import entities.Schedule;
@@ -270,6 +271,21 @@ public class DataInitSessionBean {
         em.flush();
         m1.getConsultationList().add(c1);
 
+        em.flush();
+        
+        Attendance a1 = new Attendance();
+        a1.setDuration(5);
+        a1.setEndTs(new Timestamp(2020-1900, 4, 29, 13,11, 0, 0));
+        a1.setModule(m1);
+        m1.getAttandanceList().add(a1);
+        a1.setSemester(1);
+        a1.setStartTs(new Timestamp(2020-1900, 4, 29, 13,10, 0, 0));
+        a1.setTotal(20);
+        a1.setTutorial(t1);
+        t1.setAttendance(a1);
+        a1.setAttendees(m1.getStudentList());
+        a1.setAttendedNumber(1);
+        em.persist(a1);
         em.flush();
     }
 

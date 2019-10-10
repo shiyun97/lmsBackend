@@ -5,9 +5,8 @@
  */
 package entities;
 
-import unusedEntities.Student;
 import java.io.Serializable;
-import java.sql.Timestamp;
+import java.util.Date;
 import java.util.List;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -16,32 +15,16 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
-import javax.persistence.Table;
-import javax.xml.bind.annotation.XmlRootElement;
+import javax.persistence.OneToOne;
 
 /**
  *
  * @author Vixson
  */
 @Entity
-@Table(name = "ATTENDANCE")
-@XmlRootElement
 public class Attendance implements Serializable {
 
-    public Attendance(Integer total, Integer attendedNumber, Integer semester, Timestamp createTs, Timestamp updateTs, Module module, List<User> attendees) {
-        this.total = total;
-        this.attendedNumber = attendedNumber;
-        this.semester = semester;
-        this.createTs = createTs;
-        this.updateTs = updateTs;
-        this.module = module;
-        this.attendees = attendees;
-    }
-
-    public Attendance() {
-    }
-
-    private static long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long attendanceId;
@@ -52,21 +35,52 @@ public class Attendance implements Serializable {
     @Column
     private Integer semester;
     @Column
-    private Timestamp createTs;
+    private Date startTs;
     @Column
-    private Timestamp updateTs;
+    private Date endTs;
+    @Column
+    private Integer duration;
     @ManyToOne
     private Module module;
     @OneToMany
     private List<User> attendees;
-            
+    @OneToOne
+    private Tutorial tutorial;
 
+    public Attendance(Long attendanceId, Integer total, Integer attendedNumber, Integer semester, Date startTs, Date endTs, Integer duration, Module module, List<User> attendees) {
+        this.attendanceId = attendanceId;
+        this.total = total;
+        this.attendedNumber = attendedNumber;
+        this.semester = semester;
+        this.startTs = startTs;
+        this.endTs = endTs;
+        this.duration = duration;
+        this.module = module;
+        this.attendees = attendees;
+    }
+
+    public Attendance(Long attendanceId, Integer total, Integer attendedNumber, Integer semester, Date startTs, Date endTs, Integer duration, Module module, List<User> attendees, Tutorial tutorial) {
+        this.attendanceId = attendanceId;
+        this.total = total;
+        this.attendedNumber = attendedNumber;
+        this.semester = semester;
+        this.startTs = startTs;
+        this.endTs = endTs;
+        this.duration = duration;
+        this.module = module;
+        this.attendees = attendees;
+        this.tutorial = tutorial;
+    }
+
+    public Attendance() {
+    }
+    
     public Long getAttendanceId() {
         return attendanceId;
     }
 
-    public void setAttendanceId(Long attendanceId) {
-        this.attendanceId = attendanceId;
+    public void setAttendanceId(Long id) {
+        this.attendanceId = id;
     }
 
     @Override
@@ -78,7 +92,7 @@ public class Attendance implements Serializable {
 
     @Override
     public boolean equals(Object object) {
-        // TODO: Warning - this method won't work in the case the attendanceId fields are not set
+        // TODO: Warning - this method won't work in the case the id fields are not set
         if (!(object instanceof Attendance)) {
             return false;
         }
@@ -91,7 +105,7 @@ public class Attendance implements Serializable {
 
     @Override
     public String toString() {
-        return "entities.studentAttendance[ Id=" + attendanceId + " ]";
+        return "entities.Attendance[ id=" + attendanceId + " ]";
     }
 
     public Integer getTotal() {
@@ -118,20 +132,28 @@ public class Attendance implements Serializable {
         this.semester = semester;
     }
 
-    public Timestamp getCreateTs() {
-        return createTs;
+    public Date getStartTs() {
+        return startTs;
     }
 
-    public void setCreateTs(Timestamp createTs) {
-        this.createTs = createTs;
+    public void setStartTs(Date startTs) {
+        this.startTs = startTs;
     }
 
-    public Timestamp getUpdateTs() {
-        return updateTs;
+    public Date getEndTs() {
+        return endTs;
     }
 
-    public void setUpdateTs(Timestamp updateTs) {
-        this.updateTs = updateTs;
+    public void setEndTs(Date endTs) {
+        this.endTs = endTs;
+    }
+
+    public Integer getDuration() {
+        return duration;
+    }
+
+    public void setDuration(Integer duration) {
+        this.duration = duration;
     }
 
     public Module getModule() {
@@ -148,6 +170,14 @@ public class Attendance implements Serializable {
 
     public void setAttendees(List<User> attendees) {
         this.attendees = attendees;
+    }
+
+    public Tutorial getTutorial() {
+        return tutorial;
+    }
+
+    public void setTutorial(Tutorial tutorial) {
+        this.tutorial = tutorial;
     }
     
 }

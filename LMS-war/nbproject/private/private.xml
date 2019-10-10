@@ -12,8 +12,14 @@
     </editor-bookmarks>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/C:/Users/Vixson/Documents/GitHub/lmsBackend/LMS-war/src/java/rest/GroupManagementResource.java</file>
-            <file>file:/C:/Users/Vixson/Documents/GitHub/lmsBackend/LMS-war/src/java/rest/ModuleMountingResource.java</file>
+            <file>file:/C:/Users/Vixson/Documents/GitHub/lmsBackend/LMS-war/src/java/rest/AttendanceResource.java</file>
+            <file>file:/C:/Users/Vixson/Documents/GitHub/lmsBackend/LMS-war/src/java/entities/Coursepack.java</file>
+            <file>file:/C:/Users/Vixson/Documents/GitHub/lmsBackend/LMS-war/src/java/entities/Venue.java</file>
+            <file>file:/C:/Users/Vixson/Documents/GitHub/lmsBackend/LMS-war/src/java/entities/Module.java</file>
+            <file>file:/C:/Users/Vixson/Documents/GitHub/lmsBackend/LMS-war/src/java/entities/Annoucement.java</file>
+            <file>file:/C:/Users/Vixson/Documents/GitHub/lmsBackend/LMS-war/src/java/entities/Attendance.java</file>
+            <file>file:/C:/Users/Vixson/Documents/GitHub/lmsBackend/LMS-war/src/java/entities/Tutorial.java</file>
+            <file>file:/C:/Users/Vixson/Documents/GitHub/lmsBackend/LMS-war/src/java/entities/User.java</file>
         </group>
     </open-files>
 </project-private>

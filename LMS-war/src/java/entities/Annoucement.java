@@ -52,17 +52,7 @@ public class Annoucement implements Serializable {
     private Module module;
     @ManyToOne
     private User owner;
-    
-   /** 
-    public Annoucement(String title, String description, String owner, Timestamp createTs, Timestamp updateTs, Boolean systemWide){
-        this.title = title;
-        this.description = description;
-        this.owner = owner;
-        this.createTs = createTs;
-        this.updateTs = updateTs;
-        this.systemWide = systemWide;
-    }
-**/
+   
     public Annoucement(){
         
     }
