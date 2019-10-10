@@ -23,6 +23,8 @@
     <class>entities.SurveyAttempt</class>
     <class>entities.User</class>
     <class>entities.Tutorial</class>
+    <class>entities.Schedule</class>
+    <class>entities.Appeal</class>
     <class>entities.BiddingRound</class>
     <class>entities.Announcement</class>
     <exclude-unlisted-classes>true</exclude-unlisted-classes>

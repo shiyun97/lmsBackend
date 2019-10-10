@@ -7,10 +7,10 @@ import javax.ws.rs.core.Application;
 
 @javax.ws.rs.ApplicationPath("webresources")
 
-public class ApplicationConfig extends Application 
+public class ApplicationConfig extends Application
 {
     @Override
-    public Set<Class<?>> getClasses() 
+    public Set<Class<?>> getClasses()
     {
         Set<Class<?>> resources = new java.util.HashSet<>();
         addRestResourceClasses(resources);
@@ -20,8 +20,10 @@ public class ApplicationConfig extends Application
     private void addRestResourceClasses(Set<Class<?>> resources) {
         resources.add(rest.AnnouncementResource.class);
         resources.add(rest.FeedbackResource.class);
+        resources.add(rest.GroupManagementResource.class);
+        resources.add(rest.ModuleMountingResource.class);
         resources.add(rest.ModuleResource.class);
         resources.add(rest.StudentEnrollmentResource.class);
-    }
+        resources.add(rest.UserResource.class);
 }
-
+}

@@ -23,11 +23,10 @@ import javax.persistence.ManyToOne;
 @Entity
 public class ClassGroupList implements Serializable {
 
-    public ClassGroupList(String name, Timestamp startTs, Timestamp closeTs, List<ClassGroup> classGroup, Module module) {
+    public ClassGroupList(String name, Timestamp startTs, Timestamp closeTs, Module module) {
         this.name = name;
         this.startTs = startTs;
         this.closeTs = closeTs;
-        this.classGroup = classGroup;
         this.module = module;
     }
 
@@ -44,8 +43,6 @@ public class ClassGroupList implements Serializable {
     private Timestamp startTs;
     @Column
     private Timestamp closeTs;
-    @OneToMany(mappedBy = "classGroupList")
-    private List<ClassGroup> classGroup;
     @ManyToOne
     private Module module;
     
@@ -105,14 +102,6 @@ public class ClassGroupList implements Serializable {
 
     public void setCloseTs(Timestamp closeTs) {
         this.closeTs = closeTs;
-    }
-
-    public List<ClassGroup> getClassGroup() {
-        return classGroup;
-    }
-
-    public void setClassGroup(List<ClassGroup> classGroup) {
-        this.classGroup = classGroup;
     }
     
     public Module getModule() {
