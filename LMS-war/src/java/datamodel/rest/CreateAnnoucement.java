@@ -3,48 +3,33 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package entities;
+package datamodel.rest;
 
-import java.io.Serializable;
+import entities.Annoucement;
+import entities.Module;
+import entities.User;
 import java.util.Date;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.Column;
-import javax.persistence.ManyToOne;
 
 /**
  *
  * @author Vixson
  */
-@Entity
-public class Annoucement implements Serializable {
-
-    private static final long serialVersionUID = 1L;
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+public class CreateAnnoucement {
+    private Annoucement annoucement;
     private Long annoucementId;
-    @Column
     private String title;
-    @Column
     private String description;
-    @Column
     private Date createTs;
-    @Column
     private Date updateTs;
-    @Column
     private Boolean systemWide;
-    @ManyToOne
     private Module module;
-    @ManyToOne
     private User owner;
-   
-    public Annoucement(){
-        
+
+    public CreateAnnoucement() {
     }
 
-    public Annoucement(Long annoucementId, String title, String description, Date createTs, Date updateTs, Boolean systemWide, Module module, User owner) {
+    public CreateAnnoucement(Annoucement annoucement, Long annoucementId, String title, String description, Date createTs, Date updateTs, Boolean systemWide, Module module, User owner) {
+        this.annoucement = annoucement;
         this.annoucementId = annoucementId;
         this.title = title;
         this.description = description;
@@ -54,38 +39,21 @@ public class Annoucement implements Serializable {
         this.module = module;
         this.owner = owner;
     }
-    
+
+    public Annoucement getAnnoucement() {
+        return annoucement;
+    }
+
+    public void setAnnoucement(Annoucement annoucement) {
+        this.annoucement = annoucement;
+    }
+
     public Long getAnnoucementId() {
         return annoucementId;
     }
 
     public void setAnnoucementId(Long annoucementId) {
         this.annoucementId = annoucementId;
-    }
-
-    @Override
-    public int hashCode() {
-        int hash = 0;
-        hash += (annoucementId != null ? annoucementId.hashCode() : 0);
-        return hash;
-    }
-
-    @Override
-    public boolean equals(Object object) {
-        // TODO: Warning - this method won't work in the case the annoucementId fields are not set
-        if (!(object instanceof Annoucement)) {
-            return false;
-        }
-        Annoucement other = (Annoucement) object;
-        if ((this.annoucementId == null && other.annoucementId != null) || (this.annoucementId != null && !this.annoucementId.equals(other.annoucementId))) {
-            return false;
-        }
-        return true;
-    }
-
-    @Override
-    public String toString() {
-        return "entity.annoucement[ Id=" + annoucementId + " ]";
     }
 
     public String getTitle() {
@@ -143,5 +111,6 @@ public class Annoucement implements Serializable {
     public void setOwner(User owner) {
         this.owner = owner;
     }
+    
     
 }

@@ -62,6 +62,9 @@ public class AttendanceResource {
             attendance.setModule(module);
             attendance.setSemester(createAttendance.getSemester());
             attendance.setTotal(createAttendance.getTotal());
+            em.persist(attendance);
+            em.flush();
+            module.getAttandanceList().add(attendance);
             Attendance attendanceCopy = new Attendance(attendance.getAttendanceId(), attendance.getTotal(), attendance.getAttendedNumber(),
                     attendance.getSemester(), attendance.getStartTs(), attendance.getEndTs(),
                     attendance.getDuration(), null, null);
@@ -117,6 +120,7 @@ public class AttendanceResource {
             attendance.setTutorial(tutorial);
             em.persist(attendance);
             em.flush();
+            tutorial.setAttendance(attendance);
             Attendance attendanceCopy = new Attendance(attendance.getAttendanceId(), attendance.getTotal(), attendance.getAttendedNumber(),
                     attendance.getSemester(), attendance.getStartTs(), attendance.getEndTs(),
                     attendance.getDuration(), null, null, tutorial);
