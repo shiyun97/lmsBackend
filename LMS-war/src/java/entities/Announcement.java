@@ -24,7 +24,8 @@ import javax.xml.bind.annotation.XmlRootElement;
 @XmlRootElement
 public class Announcement implements Serializable {
 
-    public Announcement(String title, String description, Timestamp createTs, Timestamp updateTs, Boolean systemWide, Module module, User owner) {
+    public Announcement(Long announcementId, String title, String description, Timestamp createTs, Timestamp updateTs, Boolean systemWide, Module module, User owner) {
+        this.annoucementId= announcementId;
         this.title = title;
         this.description = description;
         this.createTs = createTs;

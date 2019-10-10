@@ -5,19 +5,17 @@
         <group>
             <file>file:/C:/Users/Jasmine/Documents/GitHub/lmsBackend/LMS-war/src/java/rest/AnnouncementResource.java</file>
             <file>file:/C:/Users/Jasmine/Documents/GitHub/lmsBackend/LMS-war/src/java/rest/FeedbackResource.java</file>
-            <file>file:/C:/Users/Jasmine/Documents/GitHub/lmsBackend/LMS-war/src/conf/persistence.xml</file>
+            <file>file:/C:/Users/Jasmine/Documents/GitHub/lmsBackend/LMS-war/src/java/ejb/AcademicYearSessionBean.java</file>
+            <file>file:/C:/Users/Jasmine/Documents/GitHub/lmsBackend/LMS-war/src/java/entities/Module.java</file>
             <file>file:/C:/Users/Jasmine/Documents/GitHub/lmsBackend/LMS-war/src/java/datamodel/rest/RetrieveEnrolledStudentModulesRsp.java</file>
-            <file>file:/C:/Users/Jasmine/Documents/GitHub/lmsBackend/LMS-war/src/java/datamodel/rest/RetrieveStudentEnrollmentSessionStatusRsp.java</file>
             <file>file:/C:/Users/Jasmine/Documents/GitHub/lmsBackend/LMS-war/src/java/entities/Announcement.java</file>
             <file>file:/C:/Users/Jasmine/Documents/GitHub/lmsBackend/LMS-war/src/java/rest/ApplicationConfig.java</file>
+            <file>file:/C:/Users/Jasmine/Documents/GitHub/lmsBackend/LMS-war/src/java/entities/Tutorial.java</file>
             <file>file:/C:/Users/Jasmine/Documents/GitHub/lmsBackend/LMS-war/src/java/datamodel/rest/RetrieveAnnouncement.java</file>
-            <file>file:/C:/Users/Jasmine/Documents/GitHub/lmsBackend/LMS-war/src/java/entities/File.java</file>
             <file>file:/C:/Users/Jasmine/Documents/GitHub/lmsBackend/LMS-war/src/java/rest/ModuleResource.java</file>
-            <file>file:/C:/Users/Jasmine/Documents/GitHub/lmsBackend/LMS-war/src/java/datamodel/rest/RetrieveEnrolledStudentTutorialsRsp.java</file>
-            <file>file:/C:/Users/Jasmine/Documents/GitHub/lmsBackend/LMS-war/src/java/entities/User.java</file>
             <file>file:/C:/Users/Jasmine/Documents/GitHub/lmsBackend/LMS-war/setup/glassfish-resources.xml</file>
+            <file>file:/C:/Users/Jasmine/Documents/GitHub/lmsBackend/LMS-war/src/java/entities/User.java</file>
             <file>file:/C:/Users/Jasmine/Documents/GitHub/lmsBackend/LMS-war/src/java/ejb/DataInitSessionBean.java</file>
-            <file>file:/C:/Users/Jasmine/Documents/GitHub/lmsBackend/LMS-war/src/java/datamodel/rest/RetrieveModule.java</file>
             <file>file:/C:/Users/Jasmine/Documents/GitHub/lmsBackend/LMS-war/src/java/rest/StudentEnrollmentResource.java</file>
         </group>
     </open-files>

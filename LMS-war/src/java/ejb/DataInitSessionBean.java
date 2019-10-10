@@ -5,6 +5,7 @@
  */
 package ejb;
 
+import entities.Announcement;
 import entities.Module;
 import entities.Tutorial;
 import entities.User;
@@ -115,6 +116,7 @@ public class DataInitSessionBean {
         teacher.getTeacherModuleList().add(m2);
         em.persist(m2);
         em.flush();
+        
         
         Module m3 = new Module();
         m3.setCode("IS4103");
@@ -230,6 +232,18 @@ public class DataInitSessionBean {
         m3.getTutorials().add(t9);
         em.persist(t9);
         em.flush();
+        
+        Announcement a1 = new Announcement();
+        a1.setCreateTs(new Timestamp(2020-1900, 4, 29, 13, 0, 0, 0));
+        a1.setDescription("No tutorial this week");
+        a1.setModule(m4);
+        a1.setOwner(teacher);
+        a1.setSystemWide(Boolean.TRUE);
+        a1.setTitle("Week 1 Announcement");
+        a1.setUpdateTs(new Timestamp(2020-1900, 4, 29, 13, 0, 0, 0));
+        
+        
+
     }
 
     public void persist(Object object) {
