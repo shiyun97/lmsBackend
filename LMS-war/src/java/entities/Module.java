@@ -65,7 +65,7 @@ public class Module implements Serializable {
     @OneToMany(mappedBy = "module")
     private List<Folder> folderList;
     @OneToMany(mappedBy = "module")
-    private List<Announcement> annoucementList;
+    private List<Annoucement> annoucementList;
     @OneToMany(mappedBy = "module")
     private List<ForumPost> forumPostList;
     @OneToMany(mappedBy = "module")
@@ -112,7 +112,7 @@ public class Module implements Serializable {
         this.studentList = studentList;
         this.publicUserList = publicUserList;
         this.folderList = folderList;
-        this.annoucementList = annoucementList;
+        this.annoucementList = this.annoucementList;
         this.forumPostList = forumPostList;
         this.quizList = quizList;
         this.gradeItemList = gradeItemList;
@@ -234,11 +234,11 @@ public class Module implements Serializable {
         this.folderList = folderList;
     }
 
-    public List<Announcement> getAnnoucementList() {
+    public List<Annoucement> getAnnoucementList() {
         return annoucementList;
     }
 
-    public void setAnnoucementList(List<Announcement> annoucementList) {
+    public void setAnnoucementList(List<Annoucement> annoucementList) {
         this.annoucementList = annoucementList;
     }
 

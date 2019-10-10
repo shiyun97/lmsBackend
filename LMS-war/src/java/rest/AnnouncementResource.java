@@ -7,7 +7,7 @@ package rest;
 
 import datamodel.rest.ErrorRsp;
 import datamodel.rest.RetrieveAnnouncement;
-import entities.Announcement;
+import entities.Annoucement;
 import entities.User;
 import java.util.ArrayList;
 import java.util.List;
@@ -43,19 +43,18 @@ public class AnnouncementResource {
         
         try{
             Query query = em.createQuery("SELECT a FROM Announcement a ");
-            List<Announcement> announcements = query.getResultList();
+            List<Annoucement> announcements = query.getResultList();
             RetrieveAnnouncement re = new RetrieveAnnouncement();
             re.setAnnouncements(new ArrayList<>());
             if(announcements.isEmpty()|| announcements.get(0) == null){
                 return Response.status(Status.NOT_FOUND).entity(new ErrorRsp("No available announcements")).build();
             } else {
-                for (Announcement a: announcements){
+                for (Annoucement a: announcements){
                     User student = a.getOwner();
                     User studentCopy = new User(student.getFirstName(), student.getLastName(), student.getEmail(),
                             student.getUsername(), null, student.getGender(), student.getAccessRight(),
                             null, null, null, null, null, null, null);
-                    re.getAnnouncements().add(
-                            new Announcement(a.getAnnoucementId(), a.getTitle(), a.getDescription(), 
+                    re.getAnnouncements().add(new Annoucement(a.getAnnoucementId(), a.getTitle(), a.getDescription(), 
                                         a.getCreateTs(), a.getUpdateTs(), a.getSystemWide(), a.getModule(), studentCopy));
                 }
                 return Response.status(Status.OK).entity(re).build();
@@ -83,18 +82,17 @@ public class AnnouncementResource {
         try{
             Query query = em.createQuery("SELECT a FROM Announcement a WHERE a.owner.userId= :userId ");
             query.setParameter("userId", userId);
-            List<Announcement> announcements = query.getResultList();
+            List<Annoucement> announcements = query.getResultList();
             RetrieveAnnouncement re = new RetrieveAnnouncement(new ArrayList<>());
             if(announcements.isEmpty()|| announcements.get(0) == null){
                 return Response.status(Status.NOT_FOUND).entity(new ErrorRsp("User has no announcement")).build();
             } else {
-                for (Announcement a: announcements){
+                for (Annoucement a: announcements){
                     User student = a.getOwner();
                     User studentCopy = new User(student.getFirstName(), student.getLastName(), student.getEmail(),
                             student.getUsername(), null, student.getGender(), student.getAccessRight(),
                             null, null, null, null, null, null, null);
-                    re.getAnnouncements().add(
-                            new Announcement(a.getAnnoucementId(), a.getTitle(), a.getDescription(), 
+                    re.getAnnouncements().add(new Annoucement(a.getAnnoucementId(), a.getTitle(), a.getDescription(), 
                                         a.getCreateTs(), a.getUpdateTs(), a.getSystemWide(), a.getModule(), studentCopy));
                 }
                 return Response.status(Status.OK).entity(re).build();

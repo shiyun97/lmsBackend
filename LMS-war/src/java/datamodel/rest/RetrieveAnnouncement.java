@@ -5,7 +5,7 @@
  */
 package datamodel.rest;
 
-import entities.Announcement;
+import entities.Annoucement;
 import java.util.List;
 
 /**
@@ -14,21 +14,21 @@ import java.util.List;
  */
 public class RetrieveAnnouncement {
     
-    List<Announcement> announcements;
+    List<Annoucement> announcements;
     
     
-     public RetrieveAnnouncement(List<Announcement> announcements) {
+     public RetrieveAnnouncement(List<Annoucement> announcements) {
         this.announcements = announcements;
     }
     
     public RetrieveAnnouncement() {
     }
 
-    public List<Announcement> getAnnouncements() {
+    public List<Annoucement> getAnnouncements() {
         return announcements;
     }
 
-    public void setAnnouncements(List<Announcement> announcements) {
+    public void setAnnouncements(List<Annoucement> announcements) {
         this.announcements = announcements;
     }
     
