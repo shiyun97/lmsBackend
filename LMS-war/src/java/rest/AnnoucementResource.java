@@ -8,6 +8,7 @@ package rest;
 import datamodel.rest.CreateAnnoucement;
 import datamodel.rest.ErrorRsp;
 import datamodel.rest.GetAnnoucementRsp;
+import datamodel.rest.UpdateAnnoucement;
 import entities.Annoucement;
 import java.util.ArrayList;
 import java.util.List;
@@ -102,6 +103,33 @@ public class AnnoucementResource {
                     annoucement.getDescription(), annoucement.getCreateTs(), annoucement.getUpdateTs(),
                     annoucement.getSystemWide(), null, null);
 
+            return Response.status(Response.Status.OK).entity(annoucementCopy).build();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(new ErrorRsp(ex.getMessage())).build();
+        }
+    }
+
+    @PUT
+    @Path(value = "updateAttendance")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response updateAttendance(UpdateAnnoucement updateAnnoucement, @QueryParam("annoucementId") Long annoucementId) {
+        try {
+            Annoucement annoucement = em.find(Annoucement.class, annoucementId);
+            if (annoucement == null) {
+                return Response.status(Response.Status.NOT_FOUND).entity("No annoucement found").build();
+            }
+            annoucement.setDescription(updateAnnoucement.getDescription());
+            annoucement.setOwner(updateAnnoucement.getOwner());
+            annoucement.setTitle(updateAnnoucement.getTitle());
+            annoucement.setUpdateTs(updateAnnoucement.getUpdateTs());
+            annoucement.setSystemWide(updateAnnoucement.getSystemWide());
+            annoucement.setModule(updateAnnoucement.getModule());
+            em.merge(annoucement);
+            Annoucement annoucementCopy = new Annoucement(annoucement.getAnnoucementId(),
+                    annoucement.getTitle(), annoucement.getDescription(), annoucement.getCreateTs(),
+                    annoucement.getUpdateTs(), annoucement.getSystemWide(), null, null);
             return Response.status(Response.Status.OK).entity(annoucementCopy).build();
         } catch (Exception ex) {
             ex.printStackTrace();
