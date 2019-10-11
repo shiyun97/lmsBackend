@@ -111,10 +111,10 @@ public class AnnoucementResource {
     }
 
     @PUT
-    @Path(value = "updateAttendance")
+    @Path(value = "updateAnnoucement")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response updateAttendance(UpdateAnnoucement updateAnnoucement, @QueryParam("annoucementId") Long annoucementId) {
+    public Response updateAnnoucement(UpdateAnnoucement updateAnnoucement, @QueryParam("annoucementId") Long annoucementId) {
         try {
             Annoucement annoucement = em.find(Annoucement.class, annoucementId);
             if (annoucement == null) {
