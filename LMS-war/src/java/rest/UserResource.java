@@ -27,6 +27,8 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import util.AccessRightEnum;
+import util.GenderEnum;
 //import util.CryptographicHelper;
 //import util.exception.InvalidLoginCredentialException;
 
@@ -95,10 +97,11 @@ public class UserResource {
                 user.setGender(createUser.getGender());
                 user.setAccessRight(createUser.getAccessRight());
                 user.setUsername(createUser.getUsername());
-                
                 em.persist(user);
                 em.flush();
-                
+                /*User userCopy = new User(user.getFirstName(),user.getLastName(),user.getEmail(),
+                        user.getUsername(),user.getPassword(),user.getGender(),user.getAccessRight(),
+                        null,null,null,null,null,null,null);*/
                 return Response.status(Response.Status.OK).entity(user).build();
             } catch (Exception ex) {
                 return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
@@ -122,7 +125,7 @@ public class UserResource {
             } else {                
                 for (User u : userList) {
                     rsp.getUserList().add(
-                            new User(u.getTutorials(), u.getId(), u.getFirstName(), u.getLastName(),
+                            new User(null, u.getId(), u.getFirstName(), u.getLastName(),
                                     u.getEmail(), u.getUsername(), u.getPassword(), u.getGender(),
                                     u.getAccessRight(), null, null, null,
                                     null, null, null, null));
@@ -145,7 +148,7 @@ public class UserResource {
                 return Response.status(Response.Status.BAD_REQUEST).entity("User does not exist").build();
             }
             
-            User userCopy = new User(user.getTutorials(), user.getId(), user.getFirstName(), user.getLastName(),
+            User userCopy = new User(null, user.getId(), user.getFirstName(), user.getLastName(),
                     user.getEmail(), user.getUsername(), user.getPassword(), user.getGender(),
                     user.getAccessRight(), null, null, null, null, null, null, null);
             
@@ -183,12 +186,10 @@ public class UserResource {
     @Produces(MediaType.APPLICATION_JSON)
     public Response updateUser(UpdateUser updateUser) {
         
-        //if (updateUser.getUser().getAccessRight() == Admin) {
-            
+        //if (updateUser.getUser().getAccessRight() == Admin) {            
             try {
                 Long userId = updateUser.getUserId();
-                User user = em.find(User.class, userId);
-                
+                User user = em.find(User.class, userId);               
                 if (user != null) {
                     user.setAccessRight(updateUser.getAccessRight());
                     user.setClassGroupList(updateUser.getClassGroupList());
@@ -203,11 +204,14 @@ public class UserResource {
                     user.setQuizAttemptList(updateUser.getQuizAttemptList());
                     user.setStudentModuleList(updateUser.getStudentModuleList());
                     user.setSurveyAttemptList(updateUser.getSurveyAttemptList());
-                    user.setTeacherModuleList(updateUser.getTeacherModuleList());
-                    
+                    user.setTeacherModuleList(updateUser.getTeacherModuleList());                    
                     em.merge(user);
-                    em.flush();
+                    em.flush();   
                     
+                    /*User userCopy = new User(null,user.getId(),user.getFirstName(),user.getLastName(),
+                            user.getEmail(),user.getUsername(),user.getPassword(),
+                            user.getGender(),user.getAccessRight(),null,null,
+                            null,null,null,null,null);*/
                     return Response.status(Response.Status.OK).entity(user).build();
                 }
                 return Response.status(Response.Status.NOT_FOUND).entity("User does not exist").build();
@@ -232,9 +236,12 @@ public class UserResource {
             if (!user.getPassword().equals(password)) {
                 return Response.status(Response.Status.UNAUTHORIZED).entity("Invalid password").build();
             }
-            return Response.status(Response.Status.OK).entity(new CheckUserLogin(user)).build();
+            
+            User newU = new User(null, user.getId(), user.getFirstName(), user.getLastName(), user.getEmail(), user.getUsername(), null, user.getGender(), user.getAccessRight(), null, null, null, null, null, null, null);
+            return Response.status(Response.Status.OK).entity(new CheckUserLogin(newU)).build();
             
         } catch (Exception ex) {
+            ex.printStackTrace();
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
         }
     }

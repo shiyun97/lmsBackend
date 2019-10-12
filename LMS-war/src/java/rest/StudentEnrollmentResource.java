@@ -5,6 +5,7 @@
  */
 package rest;
 
+import datamodel.rest.AppealRoundRsp;
 import datamodel.rest.CreateAppealRqst;
 import datamodel.rest.ErrorRsp;
 import datamodel.rest.RetrieveAppealsRsp;
@@ -135,7 +136,7 @@ public class StudentEnrollmentResource {
             return Response.status(Status.INTERNAL_SERVER_ERROR).entity(new ErrorRsp(e.getMessage())).build();
         }
     }
-    
+     
     @Path("updateSchedule")
     @POST
     @Produces(MediaType.APPLICATION_JSON)
@@ -441,6 +442,12 @@ public class StudentEnrollmentResource {
         }
         
         // Check the number of credits the student has registered for
+        int mc = 0;
+        for(Module m: user.getStudentModuleList()){
+            if(m.getYearOffered().equals(AcademicYearSessionBean.getYear()) && m.getSemesterOffered() == AcademicYearSessionBean.getSemester()){
+                mc += m.getCreditUnit();
+            }
+        }
         
         try {
             Module module = em.find(Module.class, moduleId);
@@ -451,9 +458,11 @@ public class StudentEnrollmentResource {
             } else if(!module.getYearOffered().equals(AcademicYearSessionBean.getYear())
                     || module.getSemesterOffered() != AcademicYearSessionBean.getSemester()){
                 return Response.status(Status.BAD_REQUEST).entity(new ErrorRsp("Module isn't offered this semester")).build();
-            }else if(module.getMaxEnrollment() <= module.getStudentList().size()){
+            } else if(module.getMaxEnrollment() <= module.getStudentList().size()){
                 return Response.status(Status.BAD_REQUEST).entity(new ErrorRsp("Module already full")).build();
-            } else {
+            } else if(module.getCreditUnit() + mc > 24){
+                return Response.status(Status.BAD_REQUEST).entity(new ErrorRsp("Student can only take 24MC per semester")).build();
+            }else {
                 module.getStudentList().add(user);
                 user.getStudentModuleList().add(module);
                 em.flush();
@@ -469,9 +478,9 @@ public class StudentEnrollmentResource {
     @Produces(MediaType.APPLICATION_JSON)
     public Response enrollModule(@QueryParam("userId") Long userId, @QueryParam("moduleId") Long moduleId, @QueryParam("adminId") Long adminId){
         // Check session open or not
-        if(!isModuleRoundOpen()){
-            return Response.status(Status.BAD_REQUEST).entity(new ErrorRsp("Module enrollment is closed")).build();
-        }
+//        if(!isModuleRoundOpen()){
+//            return Response.status(Status.BAD_REQUEST).entity(new ErrorRsp("Module enrollment is closed")).build();
+//        }
         
         // Verify user
         User user = em.find(User.class, userId);
@@ -583,11 +592,11 @@ public class StudentEnrollmentResource {
                             null, null, null, null, null, null, null);
                     resp.getModules().add(
                             new Module(m.getModuleId(),m.getCode(), m.getTitle(), m.getDescription(),
-                                    m.getFeedback(), m.getSemesterOffered(), m.getYearOffered(),
+                                    m.getSemesterOffered(), m.getYearOffered(),
                                     m.getCreditUnit(), m.getGrade(), m.getMaxEnrollment(), 
                                     null, null, null, null, null, null, null, null, null, null,
                                     teacherCopy, null, null, null, m.isHasExam(), m.getExamTime(), m.getExamVenue(),
-                                    m.getLectureDetails()));
+                                    m.getLectureDetails(), m.getDepartment(), m.getFaculty()));
                 }
                 return Response.status(Status.OK).entity(resp).build();
             }
@@ -620,11 +629,11 @@ public class StudentEnrollmentResource {
                             null, null, null, null, null, null, null);
                     resp.getModules().add(
                             new Module(m.getModuleId(),m.getCode(), m.getTitle(), m.getDescription(),
-                                    m.getFeedback(), m.getSemesterOffered(), m.getYearOffered(),
+                                    m.getSemesterOffered(), m.getYearOffered(),
                                     m.getCreditUnit(), m.getGrade(), m.getMaxEnrollment(), 
                                     null, null, null, null, null, null, null, null, null, null,
                                     teacherCopy, null, null, null, m.isHasExam(), m.getExamTime(), m.getExamVenue(),
-                                    m.getLectureDetails()));
+                                    m.getLectureDetails(), m.getDepartment(), m.getFaculty()));
                 }
                 return Response.status(Status.OK).entity(resp).build();
             }
@@ -686,11 +695,11 @@ public class StudentEnrollmentResource {
                 em.flush();
                 Module m = tutorial.getModule();
                 Module mCopy = new Module(m.getModuleId(),m.getCode(), m.getTitle(), m.getDescription(),
-                                    m.getFeedback(), m.getSemesterOffered(), m.getYearOffered(),
+                                    m.getSemesterOffered(), m.getYearOffered(),
                                     m.getCreditUnit(), m.getGrade(), m.getMaxEnrollment(), 
                                     null, null, null, null, null, null, null, null, null, null,
                                     null, null, null, null, m.isHasExam(), m.getExamTime(), m.getExamVenue(),
-                                    m.getLectureDetails());
+                                    m.getLectureDetails(), m.getDepartment(), m.getFaculty());
                 Tutorial t = new Tutorial(tutorial.getTutorialId(), tutorial.getMaxEnrollment(), tutorial.getVenue(), tutorial.getTiming(), null, mCopy);
                 return Response.status(Status.OK).entity(t).build();
             } else {
@@ -750,11 +759,11 @@ public class StudentEnrollmentResource {
                         && t.getModule().getSemesterOffered() == AcademicYearSessionBean.getSemester()){
                     Module m = t.getModule();
                     Module mCopy = new Module(m.getModuleId(),m.getCode(), m.getTitle(), m.getDescription(),
-                                    m.getFeedback(), m.getSemesterOffered(), m.getYearOffered(),
+                                    m.getSemesterOffered(), m.getYearOffered(),
                                     m.getCreditUnit(), m.getGrade(), m.getMaxEnrollment(), 
                                     null, null, null, null, null, null, null, null, null, null,
                                     null, null, null, null, m.isHasExam(), m.getExamTime(), m.getExamVenue(),
-                                    m.getLectureDetails());
+                                    m.getLectureDetails(), m.getDepartment(), m.getFaculty());
                     Tutorial tCopy = new Tutorial(t.getTutorialId(), t.getMaxEnrollment(), t.getVenue(), t.getTiming(), null, mCopy);
                     resp.getTutorials().add(tCopy);
                 } 
@@ -785,11 +794,11 @@ public class StudentEnrollmentResource {
             RetrieveEnrolledStudentTutorialsRsp resp = new RetrieveEnrolledStudentTutorialsRsp(new ArrayList<>());
             for(Module m: user.getStudentModuleList()){
                 Module mCopy = new Module(m.getModuleId(),m.getCode(), m.getTitle(), m.getDescription(),
-                                        m.getFeedback(), m.getSemesterOffered(), m.getYearOffered(),
-                                        m.getCreditUnit(), m.getGrade(), m.getMaxEnrollment(), 
-                                        null, null, null, null, null, null, null, null, null, null,
-                                        null, null, null, null, m.isHasExam(), m.getExamTime(), m.getExamVenue(),
-                                        m.getLectureDetails());
+                                    m.getSemesterOffered(), m.getYearOffered(),
+                                    m.getCreditUnit(), m.getGrade(), m.getMaxEnrollment(), 
+                                    null, null, null, null, null, null, null, null, null, null,
+                                    null, null, null, null, m.isHasExam(), m.getExamTime(), m.getExamVenue(),
+                                    m.getLectureDetails(), m.getDepartment(), m.getFaculty());
                 if(m.getYearOffered().equals(AcademicYearSessionBean.getYear()) && m.getSemesterOffered() == AcademicYearSessionBean.getSemester()){
                     for(Tutorial t: m.getTutorials()){
 
@@ -834,15 +843,19 @@ public class StudentEnrollmentResource {
                         || m.getSemesterOffered() != AcademicYearSessionBean.getSemester()){
                     return Response.status(Status.NOT_FOUND).entity(new ErrorRsp("Module is not found or not offered in this semester!")).build();
                 }
+                
+                if(m.getStudentList().contains(user)){
+                    return Response.status(Status.BAD_REQUEST).entity(new ErrorRsp("Student already enrolled in the module")).build();
+                }
                 appeal.setModule(m);
                 appeal.setType(AppealTypeEnum.Module);
                 
                 Module mCopy = new Module(m.getModuleId(),m.getCode(), m.getTitle(), m.getDescription(),
-                                    m.getFeedback(), m.getSemesterOffered(), m.getYearOffered(),
+                                    m.getSemesterOffered(), m.getYearOffered(),
                                     m.getCreditUnit(), m.getGrade(), m.getMaxEnrollment(), 
                                     null, null, null, null, null, null, null, null, null, null,
                                     null, null, null, null, m.isHasExam(), m.getExamTime(), m.getExamVenue(),
-                                    m.getLectureDetails());
+                                    m.getLectureDetails(), m.getDepartment(), m.getFaculty());
             
                 resp = new Appeal(appeal.getAppealId(), appeal.getType(), appeal.getReason(), appeal.getCreateDate(), appeal.getStatus(), mCopy, null, null, null, null, appeal.getResultDetails());
             } else if(rqst.getType().toLowerCase().contains("tutorial")){
@@ -855,7 +868,9 @@ public class StudentEnrollmentResource {
                     return Response.status(Status.NOT_FOUND).entity(new ErrorRsp("New tutorial and old tutorial are from different modules!")).build();
                 } else if(!old.getStudentList().contains(user)){
                     return Response.status(Status.BAD_REQUEST).entity(new ErrorRsp("Student isn't enrolled in the old tutorial.")).build();
-                } else {
+                } else if(newT.getStudentList().contains(user)){
+                    return Response.status(Status.BAD_REQUEST).entity(new ErrorRsp("Student is already enrolled in the new tutorial")).build();
+                } else{
                     Module m = old.getModule();
                     if(m == null || !m.getYearOffered().equals(AcademicYearSessionBean.getYear()) 
                         || m.getSemesterOffered() != AcademicYearSessionBean.getSemester()){
@@ -863,11 +878,11 @@ public class StudentEnrollmentResource {
                     }
                     
                     Module mCopy = new Module(m.getModuleId(),m.getCode(), m.getTitle(), m.getDescription(),
-                                    m.getFeedback(), m.getSemesterOffered(), m.getYearOffered(),
+                                    m.getSemesterOffered(), m.getYearOffered(),
                                     m.getCreditUnit(), m.getGrade(), m.getMaxEnrollment(), 
                                     null, null, null, null, null, null, null, null, null, null,
                                     null, null, null, null, m.isHasExam(), m.getExamTime(), m.getExamVenue(),
-                                    m.getLectureDetails());
+                                    m.getLectureDetails(), m.getDepartment(), m.getFaculty());
                     appeal.setOldTutorial(old);
                     appeal.setNewTutorial(newT);
                     appeal.setType(AppealTypeEnum.Tutorial);
@@ -948,11 +963,11 @@ public class StudentEnrollmentResource {
             
             Module m = appeal.getModule();
             Module mCopy = new Module(m.getModuleId(),m.getCode(), m.getTitle(), m.getDescription(),
-                            m.getFeedback(), m.getSemesterOffered(), m.getYearOffered(),
-                            m.getCreditUnit(), m.getGrade(), m.getMaxEnrollment(), 
-                            null, null, null, null, null, null, null, null, null, null,
-                            null, null, null, null, m.isHasExam(), m.getExamTime(), m.getExamVenue(),
-                            m.getLectureDetails());
+                                    m.getSemesterOffered(), m.getYearOffered(),
+                                    m.getCreditUnit(), m.getGrade(), m.getMaxEnrollment(), 
+                                    null, null, null, null, null, null, null, null, null, null,
+                                    null, null, null, null, m.isHasExam(), m.getExamTime(), m.getExamVenue(),
+                                    m.getLectureDetails(), m.getDepartment(), m.getFaculty());
 
             resp = new Appeal(appeal.getAppealId(), appeal.getType(),
                     appeal.getReason(), appeal.getCreateDate(), appeal.getStatus(),
@@ -963,11 +978,11 @@ public class StudentEnrollmentResource {
 
             Module m = old.getModule();
             Module mCopy = new Module(m.getModuleId(),m.getCode(), m.getTitle(), m.getDescription(),
-                            m.getFeedback(), m.getSemesterOffered(), m.getYearOffered(),
-                            m.getCreditUnit(), m.getGrade(), m.getMaxEnrollment(), 
-                            null, null, null, null, null, null, null, null, null, null,
-                            null, null, null, null, m.isHasExam(), m.getExamTime(), m.getExamVenue(),
-                            m.getLectureDetails());
+                                    m.getSemesterOffered(), m.getYearOffered(),
+                                    m.getCreditUnit(), m.getGrade(), m.getMaxEnrollment(), 
+                                    null, null, null, null, null, null, null, null, null, null,
+                                    null, null, null, null, m.isHasExam(), m.getExamTime(), m.getExamVenue(),
+                                    m.getLectureDetails(), m.getDepartment(), m.getFaculty());
 
             Tutorial oldR = new Tutorial(old.getTutorialId(), old.getMaxEnrollment(), old.getVenue(), old.getTiming(), null, mCopy);
             Tutorial newR = new Tutorial(newT.getTutorialId(), newT.getMaxEnrollment(), newT.getVenue(), newT.getTiming(), null, mCopy);
@@ -1025,11 +1040,11 @@ public class StudentEnrollmentResource {
                         && appeal.getModule().getSemesterOffered() == AcademicYearSessionBean.getSemester()){
                     Module m = appeal.getModule();
                     Module mCopy = new Module(m.getModuleId(),m.getCode(), m.getTitle(), m.getDescription(),
-                                    m.getFeedback(), m.getSemesterOffered(), m.getYearOffered(),
+                                    m.getSemesterOffered(), m.getYearOffered(),
                                     m.getCreditUnit(), m.getGrade(), m.getMaxEnrollment(), 
                                     null, null, null, null, null, null, null, null, null, null,
                                     null, null, null, null, m.isHasExam(), m.getExamTime(), m.getExamVenue(),
-                                    m.getLectureDetails());
+                                    m.getLectureDetails(), m.getDepartment(), m.getFaculty());
             
                     resp.getAppeals().add(new Appeal(appeal.getAppealId(), appeal.getType(),
                             appeal.getReason(), appeal.getCreateDate(), appeal.getStatus(),
@@ -1041,11 +1056,11 @@ public class StudentEnrollmentResource {
                     
                     Module m = old.getModule();
                     Module mCopy = new Module(m.getModuleId(),m.getCode(), m.getTitle(), m.getDescription(),
-                                    m.getFeedback(), m.getSemesterOffered(), m.getYearOffered(),
+                                    m.getSemesterOffered(), m.getYearOffered(),
                                     m.getCreditUnit(), m.getGrade(), m.getMaxEnrollment(), 
                                     null, null, null, null, null, null, null, null, null, null,
                                     null, null, null, null, m.isHasExam(), m.getExamTime(), m.getExamVenue(),
-                                    m.getLectureDetails());
+                                    m.getLectureDetails(), m.getDepartment(), m.getFaculty());
                     
                     Tutorial oldR = new Tutorial(old.getTutorialId(), old.getMaxEnrollment(), old.getVenue(), old.getTiming(), null, mCopy);
                     Tutorial newR = new Tutorial(newT.getTutorialId(), newT.getMaxEnrollment(), newT.getVenue(), newT.getTiming(), null, mCopy);
@@ -1107,11 +1122,11 @@ public class StudentEnrollmentResource {
                         && appeal.getModule().getSemesterOffered() == AcademicYearSessionBean.getSemester()){
                     Module m = appeal.getModule();
                     Module mCopy = new Module(m.getModuleId(),m.getCode(), m.getTitle(), m.getDescription(),
-                                    m.getFeedback(), m.getSemesterOffered(), m.getYearOffered(),
+                                    m.getSemesterOffered(), m.getYearOffered(),
                                     m.getCreditUnit(), m.getGrade(), m.getMaxEnrollment(), 
                                     null, null, null, null, null, null, null, null, null, null,
                                     null, null, null, null, m.isHasExam(), m.getExamTime(), m.getExamVenue(),
-                                    m.getLectureDetails());
+                                    m.getLectureDetails(), m.getDepartment(), m.getFaculty());
             
                     resp.getAppeals().add(new Appeal(appeal.getAppealId(), appeal.getType(),
                             appeal.getReason(), appeal.getCreateDate(), appeal.getStatus(),
@@ -1123,11 +1138,11 @@ public class StudentEnrollmentResource {
                     
                     Module m = old.getModule();
                     Module mCopy = new Module(m.getModuleId(),m.getCode(), m.getTitle(), m.getDescription(),
-                                    m.getFeedback(), m.getSemesterOffered(), m.getYearOffered(),
+                                    m.getSemesterOffered(), m.getYearOffered(),
                                     m.getCreditUnit(), m.getGrade(), m.getMaxEnrollment(), 
                                     null, null, null, null, null, null, null, null, null, null,
                                     null, null, null, null, m.isHasExam(), m.getExamTime(), m.getExamVenue(),
-                                    m.getLectureDetails());
+                                    m.getLectureDetails(), m.getDepartment(), m.getFaculty());
                     
                     Tutorial oldR = new Tutorial(old.getTutorialId(), old.getMaxEnrollment(), old.getVenue(), old.getTiming(), null, mCopy);
                     Tutorial newR = new Tutorial(newT.getTutorialId(), newT.getMaxEnrollment(), newT.getVenue(), newT.getTiming(), null, mCopy);
@@ -1189,11 +1204,11 @@ public class StudentEnrollmentResource {
                         && appeal.getModule().getSemesterOffered() == AcademicYearSessionBean.getSemester()){
                     Module m = appeal.getModule();
                     Module mCopy = new Module(m.getModuleId(),m.getCode(), m.getTitle(), m.getDescription(),
-                                    m.getFeedback(), m.getSemesterOffered(), m.getYearOffered(),
+                                    m.getSemesterOffered(), m.getYearOffered(),
                                     m.getCreditUnit(), m.getGrade(), m.getMaxEnrollment(), 
                                     null, null, null, null, null, null, null, null, null, null,
                                     null, null, null, null, m.isHasExam(), m.getExamTime(), m.getExamVenue(),
-                                    m.getLectureDetails());
+                                    m.getLectureDetails(), m.getDepartment(), m.getFaculty());
             
                     resp.getAppeals().add(new Appeal(appeal.getAppealId(), appeal.getType(),
                             appeal.getReason(), appeal.getCreateDate(), appeal.getStatus(),
@@ -1205,11 +1220,11 @@ public class StudentEnrollmentResource {
                     
                     Module m = old.getModule();
                     Module mCopy = new Module(m.getModuleId(),m.getCode(), m.getTitle(), m.getDescription(),
-                                    m.getFeedback(), m.getSemesterOffered(), m.getYearOffered(),
+                                    m.getSemesterOffered(), m.getYearOffered(),
                                     m.getCreditUnit(), m.getGrade(), m.getMaxEnrollment(), 
                                     null, null, null, null, null, null, null, null, null, null,
                                     null, null, null, null, m.isHasExam(), m.getExamTime(), m.getExamVenue(),
-                                    m.getLectureDetails());
+                                    m.getLectureDetails(), m.getDepartment(), m.getFaculty());
                     
                     Tutorial oldR = new Tutorial(old.getTutorialId(), old.getMaxEnrollment(), old.getVenue(), old.getTiming(), null, mCopy);
                     Tutorial newR = new Tutorial(newT.getTutorialId(), newT.getMaxEnrollment(), newT.getVenue(), newT.getTiming(), null, mCopy);
@@ -1223,5 +1238,88 @@ public class StudentEnrollmentResource {
         } catch (Exception e){
             return Response.status(Status.INTERNAL_SERVER_ERROR).entity(new ErrorRsp(e.getMessage())).build(); 
         }
+    }
+    
+    @Path("isAppealOpen")
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response isAppealOpen(){
+        try{
+            Query q = em.createQuery("SELECT s FROM Schedule s WHERE s.semester=:semester AND s.year=:year");
+            q.setParameter("semester", AcademicYearSessionBean.getSemester());
+            q.setParameter("year", AcademicYearSessionBean.getYear());
+            Schedule sched = (Schedule) q.getSingleResult();
+            
+            Date date = sched.getTutorialRound2EndDate();
+            date = new Date(date.getTime() + 2*7*24*3600000);
+            Boolean resp = new Date().before(date);
+            System.out.println(resp);
+            return Response.status(Status.OK).entity(resp.toString()).build();
+        } catch (NoResultException n){
+            return Response.status(Status.NOT_FOUND).entity(new ErrorRsp("No schedule exists with the given year and semester")).build();
+        } catch (Exception e){
+            e.printStackTrace();
+            return Response.status(Status.INTERNAL_SERVER_ERROR).entity(new ErrorRsp(e.getMessage())).build();
+        }
+    }
+    
+    @Path("getAppealById/{appealId}")
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getAppealById(@PathParam("appealId") Long appealId){
+        Appeal appeal = em.find(Appeal.class, appealId);
+        
+        if(appeal == null){
+            return Response.status(Status.NOT_FOUND).entity(new ErrorRsp("Appeal with the given ID is not found")).build();
+        }
+        Appeal resp = null;
+        
+        User stu = appeal.getStudent();
+        User stuCopy = new User(null, stu.getId(), stu.getFirstName(), stu.getLastName(), stu.getEmail(),
+                    stu.getUsername(), null, stu.getGender(), stu.getAccessRight(),
+                    null, null, null, null, null, null, null);
+
+        User admin = appeal.getAdmin();
+        User adminCopy = null;
+        if(admin != null){
+            adminCopy = new User(null, admin.getId(), admin.getFirstName(), admin.getLastName(), admin.getEmail(),
+                    admin.getUsername(), null, admin.getGender(), admin.getAccessRight(),
+                    null, null, null, null, null, null, null);
+        }
+        
+        if(appeal.getType() == AppealTypeEnum.Module){
+            Module m = appeal.getModule();
+            Module mCopy = new Module(m.getModuleId(),m.getCode(), m.getTitle(), m.getDescription(),
+                            m.getSemesterOffered(), m.getYearOffered(),
+                            m.getCreditUnit(), m.getGrade(), m.getMaxEnrollment(), 
+                            null, null, null, null, null, null, null, null, null, null,
+                            null, null, null, null, m.isHasExam(), m.getExamTime(), m.getExamVenue(),
+                            m.getLectureDetails(), m.getDepartment(), m.getFaculty());
+
+            resp = new Appeal(appeal.getAppealId(), appeal.getType(),
+                    appeal.getReason(), appeal.getCreateDate(), appeal.getStatus(),
+                    mCopy, null, null, stuCopy, adminCopy, appeal.getResultDetails());
+        } else if(appeal.getOldTutorial().getModule().getYearOffered().equals(AcademicYearSessionBean.getYear()) 
+                && appeal.getOldTutorial().getModule().getSemesterOffered() == AcademicYearSessionBean.getSemester()) {
+            Tutorial old = appeal.getOldTutorial();
+            Tutorial newT = appeal.getNewTutorial();
+
+            Module m = old.getModule();
+            Module mCopy = new Module(m.getModuleId(),m.getCode(), m.getTitle(), m.getDescription(),
+                            m.getSemesterOffered(), m.getYearOffered(),
+                            m.getCreditUnit(), m.getGrade(), m.getMaxEnrollment(), 
+                            null, null, null, null, null, null, null, null, null, null,
+                            null, null, null, null, m.isHasExam(), m.getExamTime(), m.getExamVenue(),
+                            m.getLectureDetails(), m.getDepartment(), m.getFaculty());
+
+            Tutorial oldR = new Tutorial(old.getTutorialId(), old.getMaxEnrollment(), old.getVenue(), old.getTiming(), null, mCopy);
+            Tutorial newR = new Tutorial(newT.getTutorialId(), newT.getMaxEnrollment(), newT.getVenue(), newT.getTiming(), null, mCopy);
+            resp = new Appeal(appeal.getAppealId(), appeal.getType(),
+                    appeal.getReason(), appeal.getCreateDate(), appeal.getStatus(),
+                    null, oldR, newR, stuCopy, adminCopy, appeal.getResultDetails());
+        }
+        
+        return Response.status(Status.OK).entity(resp).build();
+        
     }
 }

@@ -22,14 +22,25 @@ import javax.persistence.ManyToOne;
 @Entity
 public class ConsultationTimeslot implements Serializable {
 
-    public ConsultationTimeslot(LocalTime startTs, LocalTime endTs, LocalDate startD, LocalDate endD, Module module, User booker) {
+    public ConsultationTimeslot(LocalTime startTs, LocalTime endTs, LocalDate startD, Module module, User booker) {
         this.startTs = startTs;
         this.endTs = endTs;
-        this.endD = endD;
+        //this.endD = endD;
         this.startD = startD;
         this.module = module;
         this.booker = booker;
     }
+
+    public ConsultationTimeslot(Long consultationTsId, LocalTime startTs, LocalTime endTs, LocalDate startD, Module module, User booker) {
+        this.consultationTsId = consultationTsId;
+        this.startTs = startTs;
+        this.endTs = endTs;
+        this.startD = startD;
+        this.module = module;
+        this.booker = booker;
+    }
+    
+    
 
     public ConsultationTimeslot() {
     }
@@ -42,8 +53,8 @@ public class ConsultationTimeslot implements Serializable {
     private LocalTime startTs;
     @Column 
     private LocalTime endTs;
-    @Column 
-    private LocalDate endD;
+    //@Column 
+    //private LocalDate endD;
     @Column 
     private LocalDate startD;
     //@Column
@@ -127,13 +138,13 @@ public class ConsultationTimeslot implements Serializable {
         this.endTs = endTs;
     }
     
-      public LocalDate getEndD() {
+    /*  public LocalDate getEndD() {
         return endD;
     }
 
     public void setEndD(LocalDate endD) {
         this.endD = endD;
-    }
+    } */
 
     public LocalDate getStartD() {
         return startD;

@@ -61,11 +61,11 @@ public class ModuleResource {
                             null, null, null, null, null, null, null);
                     resp.getModules().add(
                             new Module(m.getModuleId(),m.getCode(), m.getTitle(), m.getDescription(),
-                                    m.getFeedback(), m.getSemesterOffered(), m.getYearOffered(),
+                                    m.getSemesterOffered(), m.getYearOffered(),
                                     m.getCreditUnit(), m.getGrade(), m.getMaxEnrollment(), 
                                     null, null, null, null, null, null, null, null, null, null,
                                     teacherCopy, null, null, null, m.isHasExam(), m.getExamTime(), m.getExamVenue(),
-                                    m.getLectureDetails()));
+                                    m.getLectureDetails(), m.getDepartment(), m.getFaculty()));
                 }
                 return Response.status(Status.OK).entity(resp).build();
             }
@@ -103,11 +103,11 @@ public class ModuleResource {
                             null, null, null, null, null, null, null);
                     resp.getModules().add(
                             new Module(m.getModuleId(),m.getCode(), m.getTitle(), m.getDescription(),
-                                    m.getFeedback(), m.getSemesterOffered(), m.getYearOffered(),
+                                    m.getSemesterOffered(), m.getYearOffered(),
                                     m.getCreditUnit(), m.getGrade(), m.getMaxEnrollment(), 
                                     null, null, null, null, null, null, null, null, null, null,
                                     teacherCopy, null, null, null, m.isHasExam(), m.getExamTime(), m.getExamVenue(),
-                                    m.getLectureDetails()));
+                                    m.getLectureDetails(), m.getDepartment(), m.getFaculty()));
                 }
                 return Response.status(Status.OK).entity(resp).build();
             }
