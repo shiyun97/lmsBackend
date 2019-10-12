@@ -12,17 +12,10 @@
     </editor-bookmarks>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/C:/Users/Jasmine/Documents/GitHub/lmsBackend/LMS-war/src/java/rest/AnnouncementResource.java</file>
-            <file>file:/C:/Users/Jasmine/Documents/GitHub/lmsBackend/LMS-war/src/java/rest/ApplicationConfig.java</file>
-            <file>file:/C:/Users/Jasmine/Documents/GitHub/lmsBackend/LMS-war/src/java/entities/Annoucement.java</file>
-            <file>file:/C:/Users/Jasmine/Documents/GitHub/lmsBackend/LMS-war/src/java/datamodel/rest/RetrieveAnnouncement.java</file>
             <file>file:/C:/Users/Jasmine/Documents/GitHub/lmsBackend/LMS-war/src/java/entities/Module.java</file>
-            <file>file:/C:/Users/Jasmine/Documents/GitHub/lmsBackend/LMS-war/src/java/rest/ModuleResource.java</file>
             <file>file:/C:/Users/Jasmine/Documents/GitHub/lmsBackend/LMS-war/setup/glassfish-resources.xml</file>
-            <file>file:/C:/Users/Jasmine/Documents/GitHub/lmsBackend/LMS-war/src/java/entities/SurveyAttempt.java</file>
             <file>file:/C:/Users/Jasmine/Documents/GitHub/lmsBackend/LMS-war/src/java/rest/ModuleMountingResource.java</file>
-            <file>file:/C:/Users/Jasmine/Documents/GitHub/lmsBackend/LMS-war/src/java/ejb/DataInitSessionBean.java</file>
-            <file>file:/C:/Users/Jasmine/Documents/GitHub/lmsBackend/LMS-war/src/java/rest/StudentEnrollmentResource.java</file>
+            <file>file:/C:/Users/Jasmine/Documents/GitHub/lmsBackend/LMS-war/src/java/entities/Coursepack.java</file>
         </group>
     </open-files>
 </project-private>

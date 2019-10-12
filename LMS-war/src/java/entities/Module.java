@@ -112,7 +112,7 @@ public class Module implements Serializable {
         this.studentList = studentList;
         this.publicUserList = publicUserList;
         this.folderList = folderList;
-        this.annoucementList = this.annoucementList;
+        this.annoucementList = annoucementList;
         this.forumPostList = forumPostList;
         this.quizList = quizList;
         this.gradeItemList = gradeItemList;
