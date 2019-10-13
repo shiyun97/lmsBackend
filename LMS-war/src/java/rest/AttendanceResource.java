@@ -202,7 +202,10 @@ public class AttendanceResource {
                         null, module.isHasExam(), null, null, null, null, null);
                 List<Tutorial> tutorialList = module.getTutorials();
                 if (tutorialList == null || tutorialList.isEmpty()) {
-                    continue;
+                    rsp.getAttendanceList().add(new Attendance(
+                            a.getAttendanceId(), a.getTotal(), a.getAttendedNumber(),
+                            a.getSemester(), null, null, null, moduleCopy,
+                            null, null, null));
                 } else {
                     //GetTutorialRsp rspTutorial = new GetTutorialRsp(new ArrayList<>());
                     for (Tutorial t : tutorialList) {
@@ -222,10 +225,6 @@ public class AttendanceResource {
                 Tutorial tutorialCopy = new Tutorial(tutorial.getTutorialId(), tutorial.getMaxEnrollment(),
                         tutorial.getVenue(), tutorial.getTiming(), null, null);*/
                 }
-                rsp.getAttendanceList().add(new Attendance(
-                        a.getAttendanceId(), a.getTotal(), a.getAttendedNumber(),
-                        a.getSemester(), null, null, null, moduleCopy,
-                        null, null, null));
             }
             return Response.status(Response.Status.OK).entity(rsp).build();
         } catch (Exception ex) {
