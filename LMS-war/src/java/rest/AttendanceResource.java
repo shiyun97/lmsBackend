@@ -74,7 +74,7 @@ public class AttendanceResource {
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(new ErrorRsp(ex.getMessage())).build();
         }
     }
-    
+
     /*@POST
     @Path(value = "createAttendance")
     @Consumes(MediaType.APPLICATION_JSON)
@@ -99,7 +99,6 @@ public class AttendanceResource {
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(new ErrorRsp(ex.getMessage())).build();
         }
     }*/
-    
     @POST
     @Path(value = "createTutorialAttendance")
     @Consumes(MediaType.APPLICATION_JSON)
@@ -156,7 +155,7 @@ public class AttendanceResource {
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(new ErrorRsp(ex.getMessage())).build();
         }
     }
-    
+
     @GET
     @Path("getAllTutorialAttendance")
     @Produces(MediaType.APPLICATION_JSON)
@@ -171,10 +170,44 @@ public class AttendanceResource {
                 return Response.status(Response.Status.BAD_REQUEST).entity("Tutorial has no attendance").build();
             } else {
                 Attendance attendanceCopy = new Attendance(attendance.getAttendanceId(), attendance.getTotal(), attendance.getAttendedNumber(),
-                    attendance.getSemester(), attendance.getStartTs(), attendance.getEndTs(),
-                    attendance.getDuration(), null, null, null);
-            return Response.status(Response.Status.OK).entity(attendanceCopy).build();
+                        attendance.getSemester(), attendance.getStartTs(), attendance.getEndTs(),
+                        attendance.getDuration(), null, null, null);
+                return Response.status(Response.Status.OK).entity(attendanceCopy).build();
             }
+        } catch (Exception ex) {
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(new ErrorRsp(ex.getMessage())).build();
+        }
+    }
+
+    @GET
+    @Path("getStudentAttandance")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getStudentAttandance(@QueryParam("userId") Long userId) {
+        try {
+            User user = em.find(User.class, userId);
+            if (user == null) {
+                return Response.status(Response.Status.NOT_FOUND).entity("User does not exist").build();
+            }
+            List<Attendance> attendanceList = user.getAttendanceList();
+            if (attendanceList == null || attendanceList.isEmpty()) {
+                return Response.status(Response.Status.NOT_FOUND).entity("Student has no attendance").build();
+            }
+            GetAttendanceRsp rsp = new GetAttendanceRsp(new ArrayList<>());
+            for (Attendance a : attendanceList) {
+                Module module = a.getModule();
+                Module moduleCopy = new Module(module.getModuleId(), module.getCode(), module.getTitle(),
+                        null, module.getSemesterOffered(), module.getYearOffered(), module.getCreditUnit(),
+                        null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
+                        null, module.isHasExam(), null, null, null, null, null);
+                Tutorial tutorial = a.getTutorial();
+                Tutorial tutorialCopy = new Tutorial(tutorial.getTutorialId(), tutorial.getMaxEnrollment(),
+                        tutorial.getVenue(), tutorial.getTiming(), null, null);
+                rsp.getAttendanceList().add(new Attendance(
+                        a.getAttendanceId(), a.getTotal(), a.getAttendedNumber(),
+                        a.getSemester(), null, null, null, moduleCopy,
+                        null, tutorialCopy, null));
+            }
+            return Response.status(Response.Status.OK).entity(rsp).build();
         } catch (Exception ex) {
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(new ErrorRsp(ex.getMessage())).build();
         }
@@ -237,14 +270,14 @@ public class AttendanceResource {
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(new ErrorRsp(ex.getMessage())).build();
         }
     }
-    
+
     @PUT
     @Path(value = "updateTutorialAttendance")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public Response updateTutorialAttendance(UpdateAttendance updateAttendance, @QueryParam("tutorialId") Long tutorialId, @QueryParam("attendanceId") Long attendanceId) {
         try {
-            Tutorial tutorial = em.find(Tutorial.class, tutorialId);            
+            Tutorial tutorial = em.find(Tutorial.class, tutorialId);
             Attendance attendance = em.find(Attendance.class, attendanceId);
             if (tutorial == null) {
                 return Response.status(Response.Status.NOT_FOUND).entity("Tutorial does not exist").build();
@@ -347,7 +380,7 @@ public class AttendanceResource {
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(new ErrorRsp(ex.getMessage())).build();
         }
     }
-    
+
     @PUT
     @Path(value = "addTutorialListOfAttendees")
     @Consumes(MediaType.APPLICATION_JSON)
@@ -408,12 +441,12 @@ public class AttendanceResource {
             if (user == null) {
                 return Response.status(Response.Status.BAD_REQUEST).entity("User does not exist").build();
             }
-            GetAttendeesRsp rsp = new GetAttendeesRsp(new ArrayList<>());          
+            GetAttendeesRsp rsp = new GetAttendeesRsp(new ArrayList<>());
             if (attendees.contains(user)) {
                 attendees.remove(user);
                 //user.getAttendance.remove(attendance);                
                 for (User u : attendees) {
-                rsp.getAttendees().add(new User(
+                    rsp.getAttendees().add(new User(
                             u.getFirstName(), u.getLastName(), u.getEmail(), u.getUsername(),
                             null, u.getGender(), null, null, null, null,
                             null, null, null, null));
@@ -443,7 +476,7 @@ public class AttendanceResource {
             if (user == null) {
                 return Response.status(Response.Status.NOT_FOUND).entity("User does not exist").build();
             }
-            if(!module.getStudentList().contains(user)){
+            if (!module.getStudentList().contains(user)) {
                 return Response.status(Response.Status.NOT_ACCEPTABLE).entity("User does not belong to module").build();
             }
             if (attendance.getAttendees().contains(user)) {
@@ -456,7 +489,7 @@ public class AttendanceResource {
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(new ErrorRsp(ex.getMessage())).build();
         }
     }
-    
+
     @POST
     @Path(value = "signTutorialAttendance")
     @Consumes(MediaType.APPLICATION_JSON)
@@ -475,7 +508,7 @@ public class AttendanceResource {
             if (user == null) {
                 return Response.status(Response.Status.NOT_FOUND).entity("User does not exist").build();
             }
-            if(!tutorial.getStudentList().contains(user)){
+            if (!tutorial.getStudentList().contains(user)) {
                 return Response.status(Response.Status.NOT_ACCEPTABLE).entity("User does not belong to tutorial").build();
             }
             if (attendance.getAttendees().contains(user)) {
@@ -513,7 +546,7 @@ public class AttendanceResource {
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(new ErrorRsp(ex.getMessage())).build();
         }
     }
-    
+
     @Path(value = "deleteTutorialAttendance")
     @DELETE
     @Produces(MediaType.APPLICATION_JSON)

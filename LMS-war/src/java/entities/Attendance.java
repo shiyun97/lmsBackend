@@ -46,6 +46,8 @@ public class Attendance implements Serializable {
     private List<User> attendees;
     @OneToOne
     private Tutorial tutorial;
+    @ManyToOne
+    private User student;
 
     public Attendance(Long attendanceId, Integer total, Integer attendedNumber, Integer semester, Date startTs, Date endTs, Integer duration, Module module, List<User> attendees) {
         this.attendanceId = attendanceId;
@@ -70,6 +72,20 @@ public class Attendance implements Serializable {
         this.module = module;
         this.attendees = attendees;
         this.tutorial = tutorial;
+    }
+
+    public Attendance(Long attendanceId, Integer total, Integer attendedNumber, Integer semester, Date startTs, Date endTs, Integer duration, Module module, List<User> attendees, Tutorial tutorial, User student) {
+        this.attendanceId = attendanceId;
+        this.total = total;
+        this.attendedNumber = attendedNumber;
+        this.semester = semester;
+        this.startTs = startTs;
+        this.endTs = endTs;
+        this.duration = duration;
+        this.module = module;
+        this.attendees = attendees;
+        this.tutorial = tutorial;
+        this.student = student;
     }
 
     public Attendance() {
@@ -178,6 +194,14 @@ public class Attendance implements Serializable {
 
     public void setTutorial(Tutorial tutorial) {
         this.tutorial = tutorial;
+    }
+
+    public User getStudent() {
+        return student;
+    }
+
+    public void setStudent(User student) {
+        this.student = student;
     }
     
 }
