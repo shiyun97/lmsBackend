@@ -9,6 +9,7 @@ import datamodel.rest.CreateAttendance;
 import datamodel.rest.ErrorRsp;
 import datamodel.rest.GetAttendanceRsp;
 import datamodel.rest.GetAttendeesRsp;
+import datamodel.rest.GetTutorialRsp;
 import datamodel.rest.UpdateAttendance;
 import entities.Attendance;
 import entities.Module;
@@ -199,13 +200,32 @@ public class AttendanceResource {
                         null, module.getSemesterOffered(), module.getYearOffered(), module.getCreditUnit(),
                         null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
                         null, module.isHasExam(), null, null, null, null, null);
-                Tutorial tutorial = a.getTutorial();
+                List<Tutorial> tutorialList = module.getTutorials();
+                if (tutorialList == null || tutorialList.isEmpty()) {
+                    continue;
+                } else {
+                    //GetTutorialRsp rspTutorial = new GetTutorialRsp(new ArrayList<>());
+                    for (Tutorial t : tutorialList) {
+                        if (a.getTutorial().equals(t)) {
+                            Tutorial tutorialCopy = new Tutorial(t.getTutorialId(), t.getMaxEnrollment(),
+                                    t.getVenue(), t.getTiming(), null, null);
+                            rsp.getAttendanceList().add(new Attendance(
+                                    a.getAttendanceId(), a.getTotal(), a.getAttendedNumber(),
+                                    a.getSemester(), null, null, null, moduleCopy,
+                                    null, tutorialCopy, null));
+                            /*rspTutorial.getTutorials().add(new Tutorial(
+                                    t.getTutorialId(), t.getMaxEnrollment(),
+                                    t.getVenue(), t.getTiming(), null, null));*/
+                        }
+                    }
+                    /*Tutorial tutorial = a.getTutorial();
                 Tutorial tutorialCopy = new Tutorial(tutorial.getTutorialId(), tutorial.getMaxEnrollment(),
-                        tutorial.getVenue(), tutorial.getTiming(), null, null);
+                        tutorial.getVenue(), tutorial.getTiming(), null, null);*/
+                }
                 rsp.getAttendanceList().add(new Attendance(
                         a.getAttendanceId(), a.getTotal(), a.getAttendedNumber(),
                         a.getSemester(), null, null, null, moduleCopy,
-                        null, tutorialCopy, null));
+                        null, null, null));
             }
             return Response.status(Response.Status.OK).entity(rsp).build();
         } catch (Exception ex) {
