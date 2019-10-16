@@ -245,14 +245,14 @@ public class AttendanceResource {
             if (attendees == null || attendees.isEmpty()) {
                 return Response.status(Response.Status.BAD_REQUEST).entity("No students attended").build();
             }
-            List<User> attendeesCopy = new ArrayList<>();
+            GetAttendeesRsp rsp = new GetAttendeesRsp(new ArrayList<>());
             for (User u : attendees) {
-                attendeesCopy.add(new User(
+                rsp.getAttendees().add(new User(
                         u.getFirstName(), u.getLastName(), u.getEmail(),
                         u.getUsername(), null, u.getGender(), null,
                         null, null, null, null, null, null, null));
             }
-            return Response.status(Response.Status.OK).entity(attendeesCopy).build();
+            return Response.status(Response.Status.OK).entity(rsp).build();
         } catch (Exception ex) {
             ex.printStackTrace();
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(new ErrorRsp(ex.getMessage())).build();
