@@ -248,9 +248,10 @@ public class AttendanceResource {
             GetAttendeesRsp rsp = new GetAttendeesRsp(new ArrayList<>());
             for (User u : attendees) {
                 rsp.getAttendees().add(new User(
-                        u.getFirstName(), u.getLastName(), u.getEmail(),
-                        u.getUsername(), null, u.getGender(), null,
-                        null, null, null, null, null, null, null));
+                        null, u.getId(), u.getFirstName(), u.getLastName(),
+                        u.getEmail(), u.getUsername(), u.getPassword(), u.getGender(),
+                        u.getAccessRight(), null, null, null,
+                        null, null, null, null));
             }
             return Response.status(Response.Status.OK).entity(rsp).build();
         } catch (Exception ex) {
