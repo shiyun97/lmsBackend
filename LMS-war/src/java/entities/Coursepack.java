@@ -6,6 +6,7 @@
 package entities;
 
 import java.io.Serializable;
+import java.sql.Timestamp;
 import java.util.Date;
 import java.util.List;
 import javax.persistence.Column;
@@ -43,7 +44,7 @@ public class Coursepack implements Serializable {
     @Column
     private Double price;
     @Column 
-    private Date startDate;
+    private Timestamp startDate;
     @Column
     private Double rating;
     @Column
@@ -51,20 +52,27 @@ public class Coursepack implements Serializable {
 
     @ManyToMany
     private List<User> publicUserList;
-    @OneToMany(mappedBy = "coursepack")
-    private List<Folder> folderList;
+    //@OneToMany(mappedBy = "coursepack")
+    //private List<Folder> folderList;
     @OneToMany(mappedBy = "coursepack")
     private List<ForumPost> forumPostList;
-    @OneToMany(mappedBy = "coursepack")
-    private List<Quiz> quizList;
+    //@OneToMany(mappedBy = "coursepack")
+    //private List<Quiz> quizList;
     @OneToMany(mappedBy = "coursepack")
     private List<GradeItem> gradeItemList;
     @ManyToOne
     private User assignedTeacher;
     @OneToMany
     private List<Feedback> feedbackList;
+    
+    @OneToMany
+    private List<Outlines> outlineList;
+     
+    @OneToMany
+    private List<LessonOrder> lessonOrderList;
+    
 
-    public Coursepack(Long coursepackId, String code, String title, String description, String category, Double price, Date startDate, Double rating, String teacherBackground, List<User> publicUserList, List<Folder> folderList, List<ForumPost> forumPostList, List<Quiz> quizList, List<GradeItem> gradeItemList, User assignedTeacher, List<Feedback> feedbackList) {
+    public Coursepack(Long coursepackId, String code, String title, String description, String category, Double price, Timestamp startDate, Double rating, String teacherBackground, List<User> publicUserList, List<ForumPost> forumPostList, List<GradeItem> gradeItemList, User assignedTeacher, List<Feedback> feedbackList, List<Outlines> outlineList, List<LessonOrder> lessonOrderList) {
         this.coursepackId = coursepackId;
         this.code = code;
         this.title = title;
@@ -75,12 +83,14 @@ public class Coursepack implements Serializable {
         this.rating = rating;
         this.teacherBackground = teacherBackground;
         this.publicUserList = publicUserList;
-        this.folderList = folderList;
+        //this.folderList = folderList;
         this.forumPostList = forumPostList;
-        this.quizList = quizList;
+        //this.quizList = quizList;
         this.gradeItemList = gradeItemList;
         this.assignedTeacher = assignedTeacher;
         this.feedbackList = feedbackList;
+        this.outlineList = outlineList;
+        this.lessonOrderList = lessonOrderList;
     }
 
     @Override
@@ -156,11 +166,11 @@ public class Coursepack implements Serializable {
         this.price = price;
     }
 
-    public Date getStartDate() {
+    public Timestamp getStartDate() {
         return startDate;
     }
 
-    public void setStartDate(Date startDate) {
+    public void setStartDate(Timestamp startDate) {
         this.startDate = startDate;
     }
 
@@ -188,13 +198,13 @@ public class Coursepack implements Serializable {
         this.publicUserList = publicUserList;
     }
 
-    public List<Folder> getFolderList() {
+    /*public List<Folder> getFolderList() {
         return folderList;
     }
 
     public void setFolderList(List<Folder> folderList) {
         this.folderList = folderList;
-    }
+    }*/
 
     public List<ForumPost> getForumPostList() {
         return forumPostList;
@@ -204,13 +214,13 @@ public class Coursepack implements Serializable {
         this.forumPostList = forumPostList;
     }
 
-    public List<Quiz> getQuizList() {
+    /*public List<Quiz> getQuizList() {
         return quizList;
     }
 
     public void setQuizList(List<Quiz> quizList) {
         this.quizList = quizList;
-    }
+    }*/
 
     public List<GradeItem> getGradeItemList() {
         return gradeItemList;
@@ -235,5 +245,24 @@ public class Coursepack implements Serializable {
     public void setFeedbackList(List<Feedback> feedbackList) {
         this.feedbackList = feedbackList;
     }
+
+    public List<Outlines> getOutlineList() {
+        return outlineList;
+    }
+
+    public void setOutlineList(List<Outlines> outlineList) {
+        this.outlineList = outlineList;
+    }
+
+    public List<LessonOrder> getLessonOrderList() {
+        return lessonOrderList;
+    }
+
+    public void setLessonOrderList(List<LessonOrder> lessonOrderList) {
+        this.lessonOrderList = lessonOrderList;
+    }
+    
+    
+    
     
 }

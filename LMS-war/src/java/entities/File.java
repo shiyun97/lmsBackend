@@ -20,11 +20,12 @@ import javax.persistence.ManyToOne;
 @Entity
 public class File implements Serializable {
 
-    public File(String name, String type, String location, Folder folder) {
+    public File(String name, String type, String location, Folder folder, LessonOrder lessonOrder) {
         this.name = name;
         this.type = type;
         this.location = location;
         this.folder = folder;
+        this.lessonOrder = lessonOrder;
     }
 
     public File() {
@@ -42,7 +43,19 @@ public class File implements Serializable {
     private String location;
     @ManyToOne
     private Folder folder;
+    
+    @ManyToOne
+    private LessonOrder lessonOrder;
 
+    public LessonOrder getLessonOrder() {
+        return lessonOrder;
+    }
+
+    public void setLessonOrder(LessonOrder lessonOrder) {
+        this.lessonOrder = lessonOrder;
+    }
+    
+    
 
     public Long getFileId() {
         return fileId;

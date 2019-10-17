@@ -6,6 +6,7 @@
 package datamodel.rest;
 import entities.Coursepack;
 import entities.User;
+import java.sql.Timestamp;
 import java.util.Date;
 
 /**
@@ -21,7 +22,7 @@ public class UpdateCoursepack {
     private String description;
     private String category;
     private Double price;
-    private Date startDate;
+    private Timestamp startDate;
     private Double rating;
     private String teacherBackground;
     
@@ -35,7 +36,7 @@ public class UpdateCoursepack {
         
     }
     
-    public UpdateCoursepack(Coursepack coursepack, Long coursepackId, String code, String title, String description, String category, Double price, Date startDate, Double rating, String teacherBackground,User user, Long userId, String email, String password ) {
+    public UpdateCoursepack(Coursepack coursepack, Long coursepackId, String code, String title, String description, String category, Double price, Timestamp startDate, Double rating, String teacherBackground,User user, Long userId, String email, String password ) {
         this.coursepack = coursepack;
         this.coursepackId = coursepackId;
         this.code = code;
@@ -108,11 +109,11 @@ public class UpdateCoursepack {
         this.price = price;
     }
 
-    public Date getStartDate() {
+    public Timestamp getStartDate() {
         return startDate;
     }
 
-    public void setStartDate(Date startDate) {
+    public void setStartDate(Timestamp startDate) {
         this.startDate = startDate;
     }
 

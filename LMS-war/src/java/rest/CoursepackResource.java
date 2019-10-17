@@ -11,6 +11,7 @@ import datamodel.rest.UpdateCoursepack;
 import datamodel.rest.GetUserRsp;
 import entities.Coursepack;
 import entities.User;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -69,7 +70,7 @@ public class CoursepackResource {
     @Path(value = "createCoursepack")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response createCoursepark(CreateCoursepack createCoursepack){
+    public Response createCoursepack(CreateCoursepack createCoursepack){
         try{
             Coursepack coursepack = new Coursepack();
             coursepack.setCode(createCoursepack.getCode());
@@ -217,6 +218,7 @@ public class CoursepackResource {
             if(coursepack == null){
                 return Response.status(Response.Status.NOT_FOUND).entity("Coursepack does not exist").build();
             }
+           
             
             Coursepack coursepackCopy = new Coursepack(coursepack.getCoursepackId(), coursepack.getCode(), coursepack.getTitle(),
                         coursepack.getDescription(), coursepack.getCategory(), coursepack.getPrice(), coursepack.getStartDate(), null, 

@@ -27,6 +27,9 @@
     <class>entities.Appeal</class>
     <class>entities.BiddingRound</class>
     <class>entities.Annoucement</class>
+    <class>entities.Coursepack</class>
+    <class>entities.LessonOrder</class>
+    <class>entities.Outlines</class>
     <exclude-unlisted-classes>true</exclude-unlisted-classes>
     <properties>
       <property name="javax.persistence.schema-generation.database.action" value="create"/>
