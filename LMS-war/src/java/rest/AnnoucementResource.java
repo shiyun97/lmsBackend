@@ -177,8 +177,9 @@ public class AnnoucementResource {
             if (annoucementList == null || annoucementList.isEmpty()) {
                 return Response.status(Response.Status.NOT_FOUND).entity("Module does not have annoucement").build();
             }
+            LocalDateTime timeNow = LocalDateTime.now();
             for (Annoucement a : annoucementList) {
-                if (a.getEndDate().isBefore(LocalDateTime.now())) {
+                if (a.getEndDate().isBefore(timeNow)) {
                     rsp.getAnnoucementList().add(
                             new Annoucement(a.getAnnoucementId(), a.getTitle(),
                             a.getContent(), a.getCreatedDate(), a.getLastUpdatedDate(),
