@@ -85,6 +85,42 @@ public class AnnoucementResource {
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(new ErrorRsp(ex.getMessage())).build();
         }
     }
+    
+    @POST
+    @Path(value = "createSystemAnnoucement")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response createSystemAnnoucement(CreateAnnoucement createAnnoucement) {
+        try {
+            LocalDateTime createdDate = LocalDateTime.parse(createAnnoucement.getCreatedDate(), formatter);
+            LocalDateTime lastUpdatedDate = LocalDateTime.parse(createAnnoucement.getLastUpdatedDate(), formatter);
+            LocalDateTime startDate = LocalDateTime.parse(createAnnoucement.getStartDate(), formatter);
+            LocalDateTime endDate = LocalDateTime.parse(createAnnoucement.getEndDate(), formatter);
+            
+            Annoucement annoucement = new Annoucement();
+            annoucement.setTitle(createAnnoucement.getTitle());
+            annoucement.setContent(createAnnoucement.getContent());
+            annoucement.setCreatedDate(createdDate);
+            annoucement.setLastUpdatedDate(createdDate);
+            annoucement.setStartDate(startDate);
+            annoucement.setEndDate(endDate);
+            annoucement.setPublish(createAnnoucement.getPublish());
+            annoucement.setEmailNotification(createAnnoucement.getEmailNotification());
+            //annoucement.setModule(createAnnoucement.getModule());
+            //annoucement.setModule(module);
+            annoucement.setOwner(createAnnoucement.getOwner());
+            em.persist(annoucement);
+            em.flush();
+            Annoucement annoucementCopy = new Annoucement(annoucement.getAnnoucementId(), annoucement.getTitle(),
+                    annoucement.getContent(), createdDate, lastUpdatedDate, startDate, endDate,
+                    annoucement.getPublish(), annoucement.getEmailNotification(), null, null);
+            return Response.status(Response.Status.OK).entity(annoucementCopy).build();
+            //EmailSessionBean.sendEmail(annoucement.getOwner().getEmail(), annoucement.getTitle(), annoucement.getOwner().getUsername());
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(new ErrorRsp(ex.getMessage())).build();
+        }
+    }
 
     @GET
     @Path("getAllAnnoucement")
