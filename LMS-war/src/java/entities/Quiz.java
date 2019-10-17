@@ -74,8 +74,8 @@ public class Quiz implements Serializable {
     private Double maxMarks;
     @Column
     private boolean publish;
-//    @Column
-//    private boolean publishAnswer;
+    @Column
+    private boolean publishAnswer;
     @Column
     private Integer maxTimeToFinish;
     @ManyToOne
@@ -223,12 +223,12 @@ public class Quiz implements Serializable {
         this.maxTimeToFinish = maxTimeToFinish;
     }
 
-//    public boolean isPublishAnswer() {
-//        return publishAnswer;
-//    }
-//
-//    public void setPublishAnswer(boolean publishAnswer) {
-//        this.publishAnswer = publishAnswer;
-//    }
+    public boolean isPublishAnswer() {
+        return publishAnswer;
+    }
+
+    public void setPublishAnswer(boolean publishAnswer) {
+        this.publishAnswer = publishAnswer;
+    }
     
 }

@@ -248,6 +248,34 @@ public class AssessmentResource {
         }
     }
     
+    @POST
+    @Path("publishQuizAnswer")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response publishQuizAnswer(@QueryParam("userId") Long userId, @QueryParam("quizId") Long quizId){
+        User user = em.find(User.class, userId);
+        if(user == null || user.getAccessRight() != AccessRightEnum.Teacher){
+            return Response.status(Status.FORBIDDEN)
+                    .entity(new ErrorRsp("User doesn't have access to this function"))
+                    .build();
+        }
+        
+        Quiz quiz = em.find(Quiz.class, quizId);
+        if(quiz == null){
+            return Response.status(Status.NOT_FOUND).entity(new ErrorRsp("Quiz with the given ID doesn't exist")).build();
+        }
+        
+        quiz.setPublishAnswer(true);
+        
+        return Response.status(Status.OK).build();
+    }
+    
+    @DELETE
+    @Path("deleteModuleQuiz")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response deleteModuleQuiz(@QueryParam("userId") Long userId, @QueryParam("quizId") Long quizId){
+        return null;
+    }
+    
     @GET
     @Path("retrieveAllModuleQuiz/{moduleId}")
     @Produces(MediaType.APPLICATION_JSON)
@@ -287,6 +315,7 @@ public class AssessmentResource {
                     newQ.setPublish(q.isPublish());
                     newQ.setNoOfAttempts(q.getNoOfAttempts());
                     newQ.setQuestionsOrder(q.getQuestionsOrder());
+                    newQ.setPublishAnswer(q.isPublishAnswer());
                     quizzes.add(newQ);
                 }
             }
@@ -330,6 +359,7 @@ public class AssessmentResource {
             newQ.setPublish(q.isPublish());
             newQ.setNoOfAttempts(q.getNoOfAttempts());
             newQ.setQuestionsOrder(q.getQuestionsOrder());
+            newQ.setPublishAnswer(q.isPublishAnswer());
             newQ.getPages().add(new PageModel(q.getQuestionList(), "page1"));
             
             return Response.status(Status.OK).entity(newQ).build();
@@ -621,10 +651,25 @@ public class AssessmentResource {
             return Response.status(Status.NOT_FOUND).entity(new ErrorRsp("GradeEntry is not found")).build();
         }
         
-        gradeEntry.setMarks(rqst.getMarks());
-        gradeEntry.setRemarks(rqst.getRemarks());
-        
-        return Response.status(Status.OK).build();
+        try{
+            Query q = em.createQuery("SELECT gi FROM User u join u.teacherModuleList m join m.gradeItemList gi join gi.gradeEntries ge WHERE ge.gradeEntryId=:id");
+       
+            q.setParameter("id", rqst.getGradeEntryId());
+
+            GradeItem gi = (GradeItem) q.getSingleResult();
+
+            if(gi.getMaxMarks() < rqst.getMarks()){
+                return Response.status(Status.BAD_REQUEST).entity(new ErrorRsp("Marks given is bigger than maxMarks of the grade item")).build();
+            }
+            
+            gradeEntry.setMarks(rqst.getMarks());
+            gradeEntry.setRemarks(rqst.getRemarks());
+
+            return Response.status(Status.OK).build();
+        } catch (Exception e){
+            e.printStackTrace();
+            return Response.status(Status.INTERNAL_SERVER_ERROR).entity(new ErrorRsp(e.getMessage())).build();
+        }
     }
     
     @POST

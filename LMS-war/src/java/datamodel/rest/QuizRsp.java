@@ -31,6 +31,7 @@ public class QuizRsp {
     private String closingDate;
     private Integer noOfAttempts;
     private boolean publish;
+    private boolean publishAnswer;
     private Integer maxTimeToFinish;
     private Long moduleId;
     private List<PageModel> pages = new ArrayList<>();
@@ -173,4 +174,13 @@ public class QuizRsp {
     public void setModuleId(Long moduleId) {
         this.moduleId = moduleId;
     }
+
+    public boolean isPublishAnswer() {
+        return publishAnswer;
+    }
+
+    public void setPublishAnswer(boolean publishAnswer) {
+        this.publishAnswer = publishAnswer;
+    }
+    
 }
