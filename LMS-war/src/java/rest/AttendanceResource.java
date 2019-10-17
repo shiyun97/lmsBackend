@@ -119,8 +119,8 @@ public class AttendanceResource {
             attendance.setTotal(createAttendance.getTotal());
             attendance.setTutorial(tutorial);
             em.persist(attendance);
-            tutorial.setAttendance(attendance);
             em.flush();
+            tutorial.getAttendanceList().add(attendance);
             Attendance attendanceCopy = new Attendance(attendance.getAttendanceId(), attendance.getTotal(), attendance.getAttendedNumber(),
                     attendance.getSemester(), attendance.getStartTs(), attendance.getEndTs(),
                     attendance.getDuration(), null, null, null);
@@ -166,14 +166,17 @@ public class AttendanceResource {
             if (tutorial == null) {
                 return Response.status(Response.Status.NOT_FOUND).entity("Tutorial does not exist").build();
             }
-            Attendance attendance = tutorial.getAttendance();
-            if (attendance == null) {
+            List<Attendance> attendanceList = tutorial.getAttendanceList();
+            if (attendanceList == null || attendanceList.isEmpty()) {
                 return Response.status(Response.Status.BAD_REQUEST).entity("Tutorial has no attendance").build();
             } else {
-                Attendance attendanceCopy = new Attendance(attendance.getAttendanceId(), attendance.getTotal(), attendance.getAttendedNumber(),
-                        attendance.getSemester(), attendance.getStartTs(), attendance.getEndTs(),
-                        attendance.getDuration(), null, null, null);
-                return Response.status(Response.Status.OK).entity(attendanceCopy).build();
+                GetAttendanceRsp rsp = new GetAttendanceRsp(new ArrayList<>());
+                for (Attendance a : attendanceList) {
+                    rsp.getAttendanceList().add(
+                            new Attendance(a.getAttendanceId(), a.getTotal(), a.getAttendedNumber(), a.getSemester(),
+                                    a.getStartTs(), a.getEndTs(), a.getDuration(), null, a.getAttendees()));
+                }
+                return Response.status(Response.Status.OK).entity(rsp).build();
             }
         } catch (Exception ex) {
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(new ErrorRsp(ex.getMessage())).build();
@@ -522,7 +525,7 @@ public class AttendanceResource {
             if (tutorial == null) {
                 return Response.status(Response.Status.NOT_FOUND).entity("Tutorial does not exist").build();
             }
-            if (attendance == null || tutorial.getAttendance() == null) {
+            if (attendance == null || tutorial.getAttendanceList().isEmpty()) {
                 return Response.status(Response.Status.NOT_FOUND).entity("Attendance not found").build();
             }
             if (user == null) {
@@ -584,7 +587,7 @@ public class AttendanceResource {
             for(User u : attendees){
                 u.getAttendance.remove(attendance);
             }*/
-            tutorial.setAttendance(null);
+            tutorial.getAttendanceList().remove(attendance);
             em.remove(attendance);
             return Response.status(Response.Status.OK).entity("Attendance deleted").build();
         } catch (Exception ex) {
