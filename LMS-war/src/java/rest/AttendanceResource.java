@@ -119,11 +119,11 @@ public class AttendanceResource {
             attendance.setTotal(createAttendance.getTotal());
             attendance.setTutorial(tutorial);
             em.persist(attendance);
-            em.flush();
             tutorial.setAttendance(attendance);
+            em.flush();
             Attendance attendanceCopy = new Attendance(attendance.getAttendanceId(), attendance.getTotal(), attendance.getAttendedNumber(),
                     attendance.getSemester(), attendance.getStartTs(), attendance.getEndTs(),
-                    attendance.getDuration(), null, null, tutorial);
+                    attendance.getDuration(), null, null, null);
             return Response.status(Response.Status.OK).entity(attendanceCopy).build();
         } catch (Exception ex) {
             ex.printStackTrace();

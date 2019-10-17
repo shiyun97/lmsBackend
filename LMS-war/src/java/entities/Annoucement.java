@@ -6,6 +6,7 @@
 package entities;
 
 import java.io.Serializable;
+import java.time.LocalDateTime;
 import java.util.Date;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -28,13 +29,19 @@ public class Annoucement implements Serializable {
     @Column
     private String title;
     @Column
-    private String description;
+    private String content;
     @Column
-    private Date createTs;
+    private LocalDateTime createdDate;
     @Column
-    private Date updateTs;
+    private LocalDateTime lastUpdatedDate;
     @Column
-    private Boolean systemWide;
+    private LocalDateTime startDate;
+    @Column
+    private LocalDateTime endDate;
+    @Column
+    private Boolean publish;
+    @Column
+    private Boolean emailNotification;
     @ManyToOne
     private Module module;
     @ManyToOne
@@ -44,13 +51,16 @@ public class Annoucement implements Serializable {
         
     }
 
-    public Annoucement(Long annoucementId, String title, String description, Date createTs, Date updateTs, Boolean systemWide, Module module, User owner) {
+    public Annoucement(Long annoucementId, String title, String content, LocalDateTime createdDate, LocalDateTime lastUpdatedDate, LocalDateTime startDate, LocalDateTime endDate, Boolean publish, Boolean emailNotification, Module module, User owner) {
         this.annoucementId = annoucementId;
         this.title = title;
-        this.description = description;
-        this.createTs = createTs;
-        this.updateTs = updateTs;
-        this.systemWide = systemWide;
+        this.content = content;
+        this.createdDate = createdDate;
+        this.lastUpdatedDate = lastUpdatedDate;
+        this.startDate = startDate;
+        this.endDate = endDate;
+        this.publish = publish;
+        this.emailNotification = emailNotification;
         this.module = module;
         this.owner = owner;
     }
@@ -96,36 +106,60 @@ public class Annoucement implements Serializable {
         this.title = title;
     }
 
-    public String getDescription() {
-        return description;
+    public String getContent() {
+        return content;
     }
 
-    public void setDescription(String description) {
-        this.description = description;
+    public void setContent(String content) {
+        this.content = content;
     }
 
-    public Date getCreateTs() {
-        return createTs;
+    public LocalDateTime getCreatedDate() {
+        return createdDate;
     }
 
-    public void setCreateTs(Date createTs) {
-        this.createTs = createTs;
+    public void setCreatedDate(LocalDateTime createdDate) {
+        this.createdDate = createdDate;
     }
 
-    public Date getUpdateTs() {
-        return updateTs;
+    public LocalDateTime getLastUpdatedDate() {
+        return lastUpdatedDate;
     }
 
-    public void setUpdateTs(Date updateTs) {
-        this.updateTs = updateTs;
+    public void setLastUpdatedDate(LocalDateTime lastUpdatedDate) {
+        this.lastUpdatedDate = lastUpdatedDate;
     }
 
-    public Boolean getSystemWide() {
-        return systemWide;
+    public LocalDateTime getStartDate() {
+        return startDate;
     }
 
-    public void setSystemWide(Boolean systemWide) {
-        this.systemWide = systemWide;
+    public void setStartDate(LocalDateTime startDate) {
+        this.startDate = startDate;
+    }
+
+    public LocalDateTime getEndDate() {
+        return endDate;
+    }
+
+    public void setEndDate(LocalDateTime endDate) {
+        this.endDate = endDate;
+    }
+
+    public Boolean getPublish() {
+        return publish;
+    }
+
+    public void setPublish(Boolean publish) {
+        this.publish = publish;
+    }
+
+    public Boolean getEmailNotification() {
+        return emailNotification;
+    }
+
+    public void setEmailNotification(Boolean emailNotification) {
+        this.emailNotification = emailNotification;
     }
 
     public Module getModule() {
@@ -143,5 +177,4 @@ public class Annoucement implements Serializable {
     public void setOwner(User owner) {
         this.owner = owner;
     }
-    
 }
