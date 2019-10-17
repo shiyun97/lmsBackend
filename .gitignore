@@ -2,23 +2,6 @@
 /build/
 /LMS-war/dist/
 /dist/
-/lmsBackend/LMS-war/build/
-/lmsBackend/LMS-war/dist/
-/lmsBackend/LMS-war/build/
-/LMS-war/nbproject/ant-deploy.xml
-/LMS-war/nbproject/build-impl.xml
-/LMS-war/nbproject/genfiles.properties
-/LMS-war/nbproject/private
-/lmsBackend/LMS-war/nbproject/ant-deploy.xml
-/lmsBackend/LMS-war/nbproject/build-impl.xml
-/lmsBackend/LMS-war/nbproject/genfiles.properties
-/lmsBackend/LMS-war/nbproject/private
-/lmsBackend/LMS-war/nbroject/ant-deploy.xml
-/lmsBackend/LMS-war/nbproject/build-impl.xml
-/lmsBackend/LMS-war/nbproject/genfiles.properties
-/lmsBackend/LMS-war/nbproject/private/private.properties
-LMS-war/nbproject/private/private.properties
-/lmsBackend/LMS-war/web/WEB-INF/web.xml
 
 #Provided by GitHub
 # Compiled class file
