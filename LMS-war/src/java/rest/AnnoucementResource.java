@@ -142,6 +142,7 @@ public class AnnoucementResource {
     @Produces(MediaType.APPLICATION_JSON)
     public Response getAllActiveAnnoucements(@QueryParam("moduleId") Long moduleId) {
         Date currDate = new Date();
+        System.out.println(currDate);
         try {
             Module module = em.find(Module.class, moduleId);
             if (module == null) {
@@ -174,6 +175,7 @@ public class AnnoucementResource {
     @Produces(MediaType.APPLICATION_JSON)
     public Response getAllExpiredAnnoucements(@QueryParam("moduleId") Long moduleId) {
         Date currDate = new Date();
+        System.out.println(currDate);
         try {
             Module module = em.find(Module.class, moduleId);
             if (module == null) {
