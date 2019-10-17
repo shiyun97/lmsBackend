@@ -12,9 +12,11 @@ import datamodel.rest.UpdateAnnoucement;
 import ejb.EmailSessionBean;
 import entities.Annoucement;
 import entities.Module;
+import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
@@ -42,8 +44,7 @@ public class AnnoucementResource {
 
     @PersistenceContext(unitName = "LMS-warPU")
     private EntityManager em;
-
-    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-uuuu HH:mm:ss");
+    public SimpleDateFormat dateFormatter = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
 
     public AnnoucementResource() {
     }
@@ -54,10 +55,14 @@ public class AnnoucementResource {
     @Produces(MediaType.APPLICATION_JSON)
     public Response createAnnoucement(CreateAnnoucement createAnnoucement, @PathParam("id") Long moduleId) {
         try {
-            LocalDateTime createdDate = LocalDateTime.parse(createAnnoucement.getCreatedDate(), formatter);
-            LocalDateTime lastUpdatedDate = LocalDateTime.parse(createAnnoucement.getLastUpdatedDate(), formatter);
-            LocalDateTime startDate = LocalDateTime.parse(createAnnoucement.getStartDate(), formatter);
-            LocalDateTime endDate = LocalDateTime.parse(createAnnoucement.getEndDate(), formatter);
+            Date createdDate = dateFormatter.parse(createAnnoucement.getCreatedDate());
+            Date lastUpdatedDate = dateFormatter.parse(createAnnoucement.getLastUpdatedDate());
+            Date startDate = dateFormatter.parse(createAnnoucement.getStartDate());
+            Date endDate = dateFormatter.parse(createAnnoucement.getEndDate());
+            // LocalDateTime createdDate = LocalDateTime.parse(createAnnoucement.getCreatedDate(), formatter);
+            // LocalDateTime lastUpdatedDate = LocalDateTime.parse(createAnnoucement.getLastUpdatedDate(), formatter);
+            // LocalDateTime startDate = LocalDateTime.parse(createAnnoucement.getStartDate(), formatter);
+            // LocalDateTime endDate = LocalDateTime.parse(createAnnoucement.getEndDate(), formatter);
 
             Module module = em.find(Module.class, moduleId);
 
@@ -136,6 +141,7 @@ public class AnnoucementResource {
     @Path("getAllActiveAnnoucements")
     @Produces(MediaType.APPLICATION_JSON)
     public Response getAllActiveAnnoucements(@QueryParam("moduleId") Long moduleId) {
+        Date currDate = new Date();
         try {
             Module module = em.find(Module.class, moduleId);
             if (module == null) {
@@ -147,7 +153,7 @@ public class AnnoucementResource {
                 return Response.status(Response.Status.NOT_FOUND).entity("Module does not have annoucement").build();
             }
             for (Annoucement a : annoucementList) {
-                if (a.getEndDate().isAfter(LocalDateTime.now())) {
+                if (a.getEndDate().after(currDate)) {
                     rsp.getAnnoucementList().add(
                             new Annoucement(a.getAnnoucementId(), a.getTitle(),
                             a.getContent(), a.getCreatedDate(), a.getLastUpdatedDate(),
@@ -167,6 +173,7 @@ public class AnnoucementResource {
     @Path("getAllExpiredAnnoucements")
     @Produces(MediaType.APPLICATION_JSON)
     public Response getAllExpiredAnnoucements(@QueryParam("moduleId") Long moduleId) {
+        Date currDate = new Date();
         try {
             Module module = em.find(Module.class, moduleId);
             if (module == null) {
@@ -177,9 +184,9 @@ public class AnnoucementResource {
             if (annoucementList == null || annoucementList.isEmpty()) {
                 return Response.status(Response.Status.NOT_FOUND).entity("Module does not have annoucement").build();
             }
-            LocalDateTime timeNow = LocalDateTime.now();
+//            LocalDateTime timeNow = LocalDateTime.now();
             for (Annoucement a : annoucementList) {
-                if (a.getEndDate().isBefore(timeNow)) {
+                if (a.getEndDate().before(currDate)) {
                     rsp.getAnnoucementList().add(
                             new Annoucement(a.getAnnoucementId(), a.getTitle(),
                             a.getContent(), a.getCreatedDate(), a.getLastUpdatedDate(),
@@ -205,10 +212,14 @@ public class AnnoucementResource {
             if (annoucement == null) {
                 return Response.status(Response.Status.NOT_FOUND).entity("No annoucement found").build();
             }
-            LocalDateTime createdDate = LocalDateTime.parse(updateAnnoucement.getCreatedDate(), formatter);
-            LocalDateTime lastUpdatedDate = LocalDateTime.parse(updateAnnoucement.getLastUpdatedDate(), formatter);
-            LocalDateTime startDate = LocalDateTime.parse(updateAnnoucement.getStartDate(), formatter);
-            LocalDateTime endDate = LocalDateTime.parse(updateAnnoucement.getEndDate(), formatter);
+            Date createdDate = dateFormatter.parse(updateAnnoucement.getCreatedDate());
+            Date lastUpdatedDate = dateFormatter.parse(updateAnnoucement.getLastUpdatedDate());
+            Date startDate = dateFormatter.parse(updateAnnoucement.getStartDate());
+            Date endDate = dateFormatter.parse(updateAnnoucement.getEndDate());
+//            LocalDateTime createdDate = LocalDateTime.parse(updateAnnoucement.getCreatedDate(), formatter);
+//            LocalDateTime lastUpdatedDate = LocalDateTime.parse(updateAnnoucement.getLastUpdatedDate(), formatter);
+//            LocalDateTime startDate = LocalDateTime.parse(updateAnnoucement.getStartDate(), formatter);
+//            LocalDateTime endDate = LocalDateTime.parse(updateAnnoucement.getEndDate(), formatter);
 
             annoucement.setTitle(updateAnnoucement.getTitle());
             annoucement.setContent(updateAnnoucement.getContent());
