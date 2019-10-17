@@ -65,7 +65,7 @@ public class AnnoucementResource {
             annoucement.setTitle(createAnnoucement.getTitle());
             annoucement.setContent(createAnnoucement.getContent());
             annoucement.setCreatedDate(createdDate);
-            annoucement.setLastUpdatedDate(lastUpdatedDate);
+            annoucement.setLastUpdatedDate(createdDate);
             annoucement.setStartDate(startDate);
             annoucement.setEndDate(endDate);
             annoucement.setPublish(createAnnoucement.getPublish());
@@ -211,7 +211,7 @@ public class AnnoucementResource {
 
             annoucement.setTitle(updateAnnoucement.getTitle());
             annoucement.setContent(updateAnnoucement.getContent());
-            annoucement.setCreatedDate(createdDate);
+            //annoucement.setCreatedDate(createdDate);
             annoucement.setLastUpdatedDate(lastUpdatedDate);
             annoucement.setStartDate(startDate);
             annoucement.setEndDate(endDate);
