@@ -233,14 +233,6 @@ public class DataInitSessionBean {
         em.persist(t9);
         em.flush();
         
-        Annoucement a1 = new Annoucement();
-        a1.setCreateTs(new Timestamp(2020-1900, 4, 29, 13, 0, 0, 0));
-        a1.setDescription("No tutorial this week");
-        a1.setModule(m4);
-        a1.setOwner(teacher);
-        a1.setSystemWide(Boolean.TRUE);
-        a1.setTitle("Week 1 Announcement");
-        a1.setUpdateTs(new Timestamp(2020-1900, 4, 29, 13, 0, 0, 0));
         
         
 
