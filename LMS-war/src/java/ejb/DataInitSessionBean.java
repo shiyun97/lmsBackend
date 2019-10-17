@@ -282,7 +282,7 @@ public class DataInitSessionBean {
         a1.setStartTs(new Timestamp(2020-1900, 4, 29, 13,10, 0, 0));
         a1.setTotal(20);
         a1.setTutorial(t1);
-        t1.setAttendance(a1);
+        t1.getAttendanceList().add(a1);
         a1.setAttendees(m1.getStudentList());
         a1.setAttendedNumber(1);
         em.persist(a1);

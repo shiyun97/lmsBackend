@@ -347,7 +347,7 @@ public class AttendanceResource {
                 return Response.status(Response.Status.CONFLICT).entity("Student is already in attendance").build();
             }
             attendees.add(user);
-            //user.setAttendance(attendance);
+            user.getAttendanceList().add(attendance);
             GetAttendeesRsp rsp = new GetAttendeesRsp(new ArrayList<>());
             for (User u : attendees) {
                 rsp.getAttendees().add(new User(
@@ -388,7 +388,7 @@ public class AttendanceResource {
             for (User u : studentList) {
                 if (!attendees.contains(u) && module.getStudentList().contains(u)) {
                     attendees.add(u);
-                    //user.setAttendance(attendance);
+                    u.getAttendanceList().add(attendance);
                 }
             }
             GetAttendeesRsp rsp = new GetAttendeesRsp(new ArrayList<>());
@@ -430,7 +430,7 @@ public class AttendanceResource {
             for (User u : studentList) {
                 if (!attendees.contains(u) && tutorial.getStudentList().contains(u)) {
                     attendees.add(u);
-                    //user.setAttendance(attendance);
+                    u.getAttendanceList().add(attendance);
                 }
             }
             GetAttendeesRsp rsp = new GetAttendeesRsp(new ArrayList<>());
@@ -467,7 +467,7 @@ public class AttendanceResource {
             GetAttendeesRsp rsp = new GetAttendeesRsp(new ArrayList<>());
             if (attendees.contains(user)) {
                 attendees.remove(user);
-                //user.getAttendance.remove(attendance);                
+                user.getAttendanceList().remove(attendance);                
                 for (User u : attendees) {
                     rsp.getAttendees().add(new User(
                             u.getFirstName(), u.getLastName(), u.getEmail(), u.getUsername(),
@@ -506,7 +506,7 @@ public class AttendanceResource {
                 return Response.status(Response.Status.CONFLICT).entity("Attendance is already recorded").build();
             }
             attendance.getAttendees().add(user);
-            //user.setAttendance(attendance);
+            user.getAttendanceList().add(attendance);
             return Response.status(Response.Status.OK).build();
         } catch (Exception ex) {
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(new ErrorRsp(ex.getMessage())).build();
@@ -538,7 +538,7 @@ public class AttendanceResource {
                 return Response.status(Response.Status.CONFLICT).entity("Attendance is already recorded").build();
             }
             attendance.getAttendees().add(user);
-            //user.setAttendance(attendance);
+            user.getAttendanceList().add(attendance);
             return Response.status(Response.Status.OK).build();
         } catch (Exception ex) {
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(new ErrorRsp(ex.getMessage())).build();
@@ -558,10 +558,10 @@ public class AttendanceResource {
             if (attendance == null) {
                 return Response.status(Response.Status.NOT_FOUND).entity("Attendance not found").build();
             }
-            /*List<User> attendees = attendance.getAttendees();
-            for(User u : attendees){
-                u.getAttendance.remove(attendance);
-            }*/
+            List<User> attendees = attendance.getAttendees();
+            for (User u : attendees) {
+                u.getAttendanceList().remove(attendance);
+            }
             module.getAttandanceList().remove(attendance);
             em.remove(attendance);
             return Response.status(Response.Status.OK).entity("Attendance deleted").build();
@@ -583,10 +583,10 @@ public class AttendanceResource {
             if (attendance == null) {
                 return Response.status(Response.Status.NOT_FOUND).entity("Attendance not found").build();
             }
-            /*List<User> attendees = attendance.getAttendees();
-            for(User u : attendees){
-                u.getAttendance.remove(attendance);
-            }*/
+            List<User> attendees = attendance.getAttendees();
+            for (User u : attendees) {
+                u.getAttendanceList().remove(attendance);
+            }
             tutorial.getAttendanceList().remove(attendance);
             em.remove(attendance);
             return Response.status(Response.Status.OK).entity("Attendance deleted").build();
