@@ -4,10 +4,8 @@
     <jta-data-source>jdbc/lmsDatasource</jta-data-source>
     <class>entities.Module</class>
     <class>entities.Annoucement</class>
-    <class>entities.Attendance</class>
     <class>entities.Badge</class>
     <class>entities.ClassGroup</class>
-    <class>entities.ClassGroupList</class>
     <class>entities.Consultation</class>
     <class>entities.ConsultationTimeslot</class>
     <class>entities.Feedback</class>
@@ -27,6 +25,8 @@
     <class>entities.Schedule</class>
     <class>entities.Appeal</class>
     <class>entities.BiddingRound</class>
+    <class>entities.Attendance</class>
+    <class>entities.Venue</class>
     <exclude-unlisted-classes>true</exclude-unlisted-classes>
     <properties>
       <property name="javax.persistence.schema-generation.database.action" value="create"/>

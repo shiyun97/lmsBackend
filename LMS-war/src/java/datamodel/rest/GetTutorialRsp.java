@@ -20,6 +20,10 @@ public class GetTutorialRsp {
     public GetTutorialRsp() {
     }
 
+    public GetTutorialRsp(List<Tutorial> tutorials) {
+        this.tutorials = tutorials;
+    }
+
     public GetTutorialRsp(List<Tutorial> tutorials, List<Integer> currentEnrollment) {
         this.tutorials = tutorials;
         this.currentEnrollment = currentEnrollment;

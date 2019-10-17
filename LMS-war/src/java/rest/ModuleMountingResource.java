@@ -8,7 +8,6 @@ package rest;
 import datamodel.rest.MountModuleReq;
 import datamodel.rest.UpdateModule;
 import datamodel.rest.CheckUserLogin;
-import datamodel.rest.ErrorRsp;
 import datamodel.rest.GetModuleRsp;
 import datamodel.rest.GetTutorialRsp;
 import datamodel.rest.GetUserRsp;
@@ -157,7 +156,7 @@ public class ModuleMountingResource {
             Module module = em.find(Module.class, moduleId);
 
             if (module == null) {
-                return Response.status(Response.Status.NOT_FOUND).entity(new ErrorRsp("Module does not exist")).build();
+                return Response.status(Response.Status.NOT_FOUND).entity("Module does not exist").build();
             }
 
             User teacher = module.getAssignedTeacher();
@@ -198,7 +197,7 @@ public class ModuleMountingResource {
             return Response.status(Response.Status.OK).entity(moduleCopy).build();
 
         } catch (Exception ex) {
-            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(new ErrorRsp(ex.getMessage())).build();
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
         }
     }
 
@@ -467,7 +466,7 @@ public class ModuleMountingResource {
             Module module = em.find(Module.class, moduleId);
 
             if (module == null) {
-                return Response.status(Response.Status.NOT_FOUND).entity(new ErrorRsp("Module does not exist")).build();
+                return Response.status(Response.Status.NOT_FOUND).entity("Module does not exist").build();
             }
 
             module.setDescription(description);
@@ -479,7 +478,7 @@ public class ModuleMountingResource {
 
         } catch (Exception ex) {
             ex.printStackTrace();
-            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(new ErrorRsp(ex.getMessage())).build();
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(ex.getMessage()).build();
         }
     }
 
@@ -587,7 +586,7 @@ public class ModuleMountingResource {
         try {
             Module module = em.find(Module.class, moduleId);
             if (module == null) {
-                return Response.status(Response.Status.NOT_FOUND).entity(new ErrorRsp("No module found")).build();
+                return Response.status(Response.Status.NOT_FOUND).entity("No module found").build();
             }
             /*Query query = em.createQuery("select t from Tutorial t where t.module = :moduleId");
             query.setParameter("moduleId", moduleId);
@@ -595,7 +594,7 @@ public class ModuleMountingResource {
             GetTutorialRsp rsp = new GetTutorialRsp(new ArrayList<>(), new ArrayList<>());
             List<Tutorial> tutorials = module.getTutorials();
             if (tutorials == null && tutorials.isEmpty()) {
-                return Response.status(Response.Status.NOT_FOUND).entity(new ErrorRsp("No tutorial found")).build();
+                return Response.status(Response.Status.NOT_FOUND).entity("No tutorial found").build();
             } else {
                 for (Tutorial tutorial : tutorials) {
                     Tutorial temp = em.find(Tutorial.class, tutorial.getTutorialId());
@@ -628,7 +627,7 @@ public class ModuleMountingResource {
             return Response.status(Response.Status.OK).entity(rsp).build();
         } catch (Exception ex) {
             ex.printStackTrace();
-            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(new ErrorRsp(ex.getMessage())).build();
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
         }
     }
 
@@ -639,12 +638,12 @@ public class ModuleMountingResource {
         try {
             Module module = em.find(Module.class, moduleId);
             if (module == null) {
-                return Response.status(Response.Status.NOT_FOUND).entity(new ErrorRsp("No module found")).build();
+                return Response.status(Response.Status.NOT_FOUND).entity("No module found").build();
             }
             GetUserRsp rsp = new GetUserRsp(new ArrayList<>());
             List<User> students = module.getStudentList();
             if (students == null && students.isEmpty()) {
-                return Response.status(Response.Status.NOT_FOUND).entity(new ErrorRsp("No students found")).build();
+                return Response.status(Response.Status.NOT_FOUND).entity("No students found").build();
             }
             for (User s : students) {
                 rsp.getUserList().add(
@@ -658,7 +657,7 @@ public class ModuleMountingResource {
             return Response.status(Response.Status.OK).entity(rsp).build();
         } catch (Exception ex) {
             ex.printStackTrace();
-            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(new ErrorRsp(ex.getMessage())).build();
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
         }
     }
     

@@ -6,33 +6,21 @@
 package entities;
 
 import java.io.Serializable;
-import java.sql.Timestamp;
+import java.time.LocalDateTime;
+import java.util.Date;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Column;
 import javax.persistence.ManyToOne;
-import javax.persistence.Table;
-import javax.xml.bind.annotation.XmlRootElement;
+
 /**
  *
  * @author Vixson
  */
 @Entity
-@Table(name = "ANNOUCEMENT")
-@XmlRootElement
 public class Annoucement implements Serializable {
-
-    public Annoucement(String title, String description, Timestamp createTs, Timestamp updateTs, Boolean systemWide, Module module, User owner) {
-        this.title = title;
-        this.description = description;
-        this.createTs = createTs;
-        this.updateTs = updateTs;
-        this.systemWide = systemWide;
-        this.module = module;
-        this.owner = owner;
-    }
 
     private static final long serialVersionUID = 1L;
     @Id
@@ -41,30 +29,40 @@ public class Annoucement implements Serializable {
     @Column
     private String title;
     @Column
-    private String description;
+    private String content;
     @Column
-    private Timestamp createTs;
+    private LocalDateTime createdDate;
     @Column
-    private Timestamp updateTs;
+    private LocalDateTime lastUpdatedDate;
     @Column
-    private Boolean systemWide;
+    private LocalDateTime startDate;
+    @Column
+    private LocalDateTime endDate;
+    @Column
+    private Boolean publish;
+    @Column
+    private Boolean emailNotification;
     @ManyToOne
     private Module module;
     @ManyToOne
     private User owner;
-    
-   /** 
-    public Annoucement(String title, String description, String owner, Timestamp createTs, Timestamp updateTs, Boolean systemWide){
-        this.title = title;
-        this.description = description;
-        this.owner = owner;
-        this.createTs = createTs;
-        this.updateTs = updateTs;
-        this.systemWide = systemWide;
-    }
-**/
+   
     public Annoucement(){
         
+    }
+
+    public Annoucement(Long annoucementId, String title, String content, LocalDateTime createdDate, LocalDateTime lastUpdatedDate, LocalDateTime startDate, LocalDateTime endDate, Boolean publish, Boolean emailNotification, Module module, User owner) {
+        this.annoucementId = annoucementId;
+        this.title = title;
+        this.content = content;
+        this.createdDate = createdDate;
+        this.lastUpdatedDate = lastUpdatedDate;
+        this.startDate = startDate;
+        this.endDate = endDate;
+        this.publish = publish;
+        this.emailNotification = emailNotification;
+        this.module = module;
+        this.owner = owner;
     }
     
     public Long getAnnoucementId() {
@@ -108,36 +106,60 @@ public class Annoucement implements Serializable {
         this.title = title;
     }
 
-    public String getDescription() {
-        return description;
+    public String getContent() {
+        return content;
     }
 
-    public void setDescription(String description) {
-        this.description = description;
+    public void setContent(String content) {
+        this.content = content;
     }
 
-    public Timestamp getCreateTs() {
-        return createTs;
+    public LocalDateTime getCreatedDate() {
+        return createdDate;
     }
 
-    public void setCreateTs(Timestamp createTs) {
-        this.createTs = createTs;
+    public void setCreatedDate(LocalDateTime createdDate) {
+        this.createdDate = createdDate;
     }
 
-    public Timestamp getUpdateTs() {
-        return updateTs;
+    public LocalDateTime getLastUpdatedDate() {
+        return lastUpdatedDate;
     }
 
-    public void setUpdateTs(Timestamp updateTs) {
-        this.updateTs = updateTs;
+    public void setLastUpdatedDate(LocalDateTime lastUpdatedDate) {
+        this.lastUpdatedDate = lastUpdatedDate;
     }
 
-    public Boolean getSystemWide() {
-        return systemWide;
+    public LocalDateTime getStartDate() {
+        return startDate;
     }
 
-    public void setSystemWide(Boolean systemWide) {
-        this.systemWide = systemWide;
+    public void setStartDate(LocalDateTime startDate) {
+        this.startDate = startDate;
+    }
+
+    public LocalDateTime getEndDate() {
+        return endDate;
+    }
+
+    public void setEndDate(LocalDateTime endDate) {
+        this.endDate = endDate;
+    }
+
+    public Boolean getPublish() {
+        return publish;
+    }
+
+    public void setPublish(Boolean publish) {
+        this.publish = publish;
+    }
+
+    public Boolean getEmailNotification() {
+        return emailNotification;
+    }
+
+    public void setEmailNotification(Boolean emailNotification) {
+        this.emailNotification = emailNotification;
     }
 
     public Module getModule() {
@@ -155,5 +177,4 @@ public class Annoucement implements Serializable {
     public void setOwner(User owner) {
         this.owner = owner;
     }
-    
 }

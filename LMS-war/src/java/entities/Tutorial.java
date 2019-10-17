@@ -14,6 +14,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToOne;
 
 /**
  *
@@ -36,6 +37,8 @@ public class Tutorial implements Serializable {
     private List<User> studentList;
     @ManyToOne
     private Module module;
+    @OneToOne(mappedBy = "tutorial")
+    private Attendance attendance;
 
     public Tutorial(Long tutorialId, int maxEnrollment, String venue, String timing, List<User> studentList, Module module) {
         this.tutorialId = tutorialId;
@@ -44,6 +47,16 @@ public class Tutorial implements Serializable {
         this.timing = timing;
         this.studentList = studentList;
         this.module = module;
+    }
+
+    public Tutorial(Long tutorialId, int maxEnrollment, String venue, String timing, List<User> studentList, Module module, Attendance attendance) {
+        this.tutorialId = tutorialId;
+        this.maxEnrollment = maxEnrollment;
+        this.venue = venue;
+        this.timing = timing;
+        this.studentList = studentList;
+        this.module = module;
+        this.attendance = attendance;
     }
 
     public Tutorial() {
@@ -120,6 +133,14 @@ public class Tutorial implements Serializable {
     @Override
     public String toString() {
         return "entities.Tutorial[ id=" + tutorialId + " ]";
+    }
+
+    public Attendance getAttendance() {
+        return attendance;
+    }
+
+    public void setAttendance(Attendance attendance) {
+        this.attendance = attendance;
     }
     
 }
