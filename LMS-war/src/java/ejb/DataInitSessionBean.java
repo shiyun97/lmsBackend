@@ -14,7 +14,9 @@ import entities.User;
 import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import javax.annotation.PostConstruct;
 import javax.ejb.Singleton;
 import javax.ejb.LocalBean;
@@ -65,6 +67,33 @@ public class DataInitSessionBean {
         student.setUsername("student");
         em.persist(student);
         em.flush();
+        
+        User student2 = new User();
+        student2.setFirstName("Bob");
+        student2.setLastName("Lim");
+        student2.setEmail("student2@gmail.com");
+        student2.setPassword("password");
+        student2.setGender(GenderEnum.Male);
+        student2.setAccessRight(AccessRightEnum.Student);
+        student2.setUsername("student2");
+        em.persist(student2);
+        em.flush();
+        
+        User student3 = new User();
+        student3.setFirstName("Mary");
+        student3.setLastName("Lee");
+        student3.setEmail("student3@gmail.com");
+        student3.setPassword("password");
+        student3.setGender(GenderEnum.Female);
+        student3.setAccessRight(AccessRightEnum.Student);
+        student3.setUsername("student3");
+        em.persist(student3);
+        em.flush();
+        
+        List<User> studentList = new ArrayList<>();
+        studentList.add(student);
+        studentList.add(student2);
+        studentList.add(student3);
 
         User teacher = new User();
         teacher.setFirstName("Alice");
@@ -101,7 +130,13 @@ public class DataInitSessionBean {
         m1.setSemesterOffered(1);
         m1.setLectureDetails("Monday 12:00 - 14:00");
         m1.setAssignedTeacher(teacher);
+        m1.setStudentList(studentList);
+        //m1.getStudentList().add(student2);
+        //m1.getStudentList().add(student3);
         teacher.getTeacherModuleList().add(m1);
+        student.getStudentModuleList().add(m1);
+        student2.getStudentModuleList().add(m1);
+        student3.getStudentModuleList().add(m1);
         em.persist(m1);
         em.flush();
 
@@ -161,6 +196,14 @@ public class DataInitSessionBean {
         t1.setMaxEnrollment(10);
         t1.setVenue("SR1");
         t1.setTiming("Thursday 12:00 - 13:00");
+        t1.setModule(m1);
+        t1.setStudentList(studentList);
+        //t1.getStudentList().add(student);
+        //t1.getStudentList().add(student2);
+        //t1.getStudentList().add(student3);
+        student.getTutorials().add(t1);
+        student2.getTutorials().add(t1);
+        student3.getTutorials().add(t1);
         m1.getTutorials().add(t1);
         em.persist(t1);
         em.flush();
