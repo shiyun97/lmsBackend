@@ -50,8 +50,8 @@ public class Question implements Serializable {
     private Boolean isRequired;
     @ElementCollection
     private List<String> choices;
-    @ManyToOne
-    private Survey survey;
+    @Column
+    private String html;
 
     public Long getQuestionId() {
         return questionId;
@@ -158,12 +158,12 @@ public class Question implements Serializable {
         this.choices = choices;
     }
 
-    public Survey getSurvey() {
-        return survey;
+    public String getHtml() {
+        return html;
     }
 
-    public void setSurvey(Survey survey) {
-        this.survey = survey;
+    public void setHtml(String html) {
+        this.html = html;
     }
     
 }
