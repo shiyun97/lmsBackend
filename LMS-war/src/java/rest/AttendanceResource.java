@@ -10,6 +10,7 @@ import datamodel.rest.ErrorRsp;
 import datamodel.rest.GetAttendanceRsp;
 import datamodel.rest.GetAttendeesRsp;
 import datamodel.rest.GetTutorialRsp;
+import datamodel.rest.GetUserRsp;
 import datamodel.rest.UpdateAttendance;
 import entities.Attendance;
 import entities.Module;
@@ -145,14 +146,29 @@ public class AttendanceResource {
                 return Response.status(Response.Status.BAD_REQUEST).entity("Module has no attendance").build();
             } else {
                 GetAttendanceRsp rsp = new GetAttendanceRsp(new ArrayList<>());
+                //GetUserRsp userRsp = new GetUserRsp(new ArrayList<>());
                 for (Attendance a : attendanceList) {
-                    rsp.getAttendanceList().add(
-                            new Attendance(a.getAttendanceId(), a.getTotal(), a.getAttendedNumber(), a.getSemester(),
-                                    a.getStartTs(), a.getEndTs(), a.getDuration(), null, a.getAttendees()));
+                    List<User> attendees = a.getAttendees();
+                    List<User> attendeesCopy = new ArrayList<>();
+                    if (attendees != null || !attendees.isEmpty()) {
+                        for (User u : attendees) {
+                            attendeesCopy.add(
+                                    new User(u.getUserId(), u.getFirstName(),
+                                            u.getLastName(), u.getEmail(), u.getUsername(),
+                                            null, u.getGender(), null, null, null, null, null,
+                                            null, null, null, null, null));
+                        }
+                        rsp.getAttendanceList().add(
+                                new Attendance(a.getAttendanceId(), a.getTotal(),
+                                        a.getAttendedNumber(), a.getSemester(),
+                                        a.getStartTs(), a.getEndTs(), a.getDuration(),
+                                        null, attendeesCopy));
+                    }
                 }
                 return Response.status(Response.Status.OK).entity(rsp).build();
             }
         } catch (Exception ex) {
+            ex.printStackTrace();
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(new ErrorRsp(ex.getMessage())).build();
         }
     }
@@ -172,9 +188,22 @@ public class AttendanceResource {
             } else {
                 GetAttendanceRsp rsp = new GetAttendanceRsp(new ArrayList<>());
                 for (Attendance a : attendanceList) {
-                    rsp.getAttendanceList().add(
-                            new Attendance(a.getAttendanceId(), a.getTotal(), a.getAttendedNumber(), a.getSemester(),
-                                    a.getStartTs(), a.getEndTs(), a.getDuration(), null, a.getAttendees()));
+                    List<User> attendees = a.getAttendees();
+                    List<User> attendeesCopy = new ArrayList<>();
+                    if (attendees != null || !attendees.isEmpty()) {
+                        for (User u : attendees) {
+                            attendeesCopy.add(
+                                    new User(u.getUserId(), u.getFirstName(),
+                                            u.getLastName(), u.getEmail(), u.getUsername(),
+                                            null, u.getGender(), null, null, null, null, null,
+                                            null, null, null, null, null));
+                        }
+                        rsp.getAttendanceList().add(
+                                new Attendance(a.getAttendanceId(), a.getTotal(),
+                                        a.getAttendedNumber(), a.getSemester(),
+                                        a.getStartTs(), a.getEndTs(), a.getDuration(),
+                                        null, attendeesCopy));
+                    }
                 }
                 return Response.status(Response.Status.OK).entity(rsp).build();
             }
@@ -467,7 +496,7 @@ public class AttendanceResource {
             GetAttendeesRsp rsp = new GetAttendeesRsp(new ArrayList<>());
             if (attendees.contains(user)) {
                 attendees.remove(user);
-                user.getAttendanceList().remove(attendance);                
+                user.getAttendanceList().remove(attendance);
                 for (User u : attendees) {
                     rsp.getAttendees().add(new User(
                             u.getFirstName(), u.getLastName(), u.getEmail(), u.getUsername(),

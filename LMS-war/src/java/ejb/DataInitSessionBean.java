@@ -353,6 +353,9 @@ public class DataInitSessionBean {
         a1.setAttendees(m1.getStudentList());
         a1.setAttendedNumber(1);
         em.persist(a1);
+        student.getAttendanceList().add(a1);
+        student2.getAttendanceList().add(a1);
+        student3.getAttendanceList().add(a1);
         em.flush();
     }
 
