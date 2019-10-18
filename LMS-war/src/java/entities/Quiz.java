@@ -15,6 +15,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.xml.bind.annotation.XmlRootElement;
 
@@ -27,7 +28,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 @XmlRootElement
 public class Quiz implements Serializable {
 
-    public Quiz(String title, String description, Timestamp startDate, Timestamp endDate, Timestamp createTs, Timestamp updateTs, Integer maxNoOfAttempt, Double maxMarks, String owner, Module module, List<Question> questionList, List<QuizAttempt> quizAttemptList) {
+    public Quiz(String title, String description, Timestamp startDate, Timestamp endDate, Timestamp createTs, Timestamp updateTs, Integer maxNoOfAttempt, Double maxMarks, String owner, Module module, List<Question> questionList, List<QuizAttempt> quizAttemptList, LessonOrder lessonOrder) {
         this.title = title;
         this.description = description;
         this.startDate = startDate;
@@ -40,6 +41,7 @@ public class Quiz implements Serializable {
         this.module = module;
         this.questionList = questionList;
         this.quizAttemptList = quizAttemptList;
+        this.lessonOrder = lessonOrder; 
     }
 
     public Quiz() {
@@ -73,7 +75,19 @@ public class Quiz implements Serializable {
     private List<Question> questionList;
     @OneToMany(mappedBy = "quiz")
     private List<QuizAttempt> quizAttemptList;
+    
+    @OneToOne
+    private LessonOrder lessonOrder;
 
+    public LessonOrder getLessonOrder() {
+        return lessonOrder;
+    }
+
+    public void setLessonOrder(LessonOrder lessonOrder) {
+        this.lessonOrder = lessonOrder;
+    }
+    
+    
 
     public Long getQuizId() {
         return quizId;
