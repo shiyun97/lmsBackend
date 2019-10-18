@@ -6,7 +6,6 @@
 package entities;
 
 import java.io.Serializable;
-import java.time.LocalDateTime;
 import java.util.Date;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -31,13 +30,13 @@ public class Annoucement implements Serializable {
     @Column
     private String content;
     @Column
-    private LocalDateTime createdDate;
+    private Date createdDate;
     @Column
-    private LocalDateTime lastUpdatedDate;
+    private Date lastUpdatedDate;
     @Column
-    private LocalDateTime startDate;
+    private Date startDate;
     @Column
-    private LocalDateTime endDate;
+    private Date endDate;
     @Column
     private Boolean publish;
     @Column
@@ -51,7 +50,7 @@ public class Annoucement implements Serializable {
         
     }
 
-    public Annoucement(Long annoucementId, String title, String content, LocalDateTime createdDate, LocalDateTime lastUpdatedDate, LocalDateTime startDate, LocalDateTime endDate, Boolean publish, Boolean emailNotification, Module module, User owner) {
+    public Annoucement(Long annoucementId, String title, String content, Date createdDate, Date lastUpdatedDate, Date startDate, Date endDate, Boolean publish, Boolean emailNotification, Module module, User owner) {
         this.annoucementId = annoucementId;
         this.title = title;
         this.content = content;
@@ -114,35 +113,34 @@ public class Annoucement implements Serializable {
         this.content = content;
     }
 
-    public LocalDateTime getCreatedDate() {
+    public Date getCreatedDate() {
         return createdDate;
     }
 
-    public void setCreatedDate(LocalDateTime createdDate) {
+    public void setCreatedDate(Date createdDate) {
         this.createdDate = createdDate;
     }
 
-    public LocalDateTime getLastUpdatedDate() {
+    public Date getLastUpdatedDate() {
         return lastUpdatedDate;
     }
 
-    public void setLastUpdatedDate(LocalDateTime lastUpdatedDate) {
+    public void setLastUpdatedDate(Date lastUpdatedDate) {
         this.lastUpdatedDate = lastUpdatedDate;
     }
-
-    public LocalDateTime getStartDate() {
+    public Date getStartDate() {
         return startDate;
     }
 
-    public void setStartDate(LocalDateTime startDate) {
+    public void setStartDate(Date startDate) {
         this.startDate = startDate;
     }
 
-    public LocalDateTime getEndDate() {
+    public Date getEndDate() {
         return endDate;
     }
 
-    public void setEndDate(LocalDateTime endDate) {
+    public void setEndDate(Date endDate) {
         this.endDate = endDate;
     }
 
