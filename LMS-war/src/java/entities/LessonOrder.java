@@ -26,15 +26,16 @@ public class LessonOrder implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long lessonOrderId;
-    private boolean order;
+    private int order;
+    private String name;
+    private Boolean type;
     
-    @ManyToOne
-    private Coursepack coursepack;
-    @OneToMany (mappedBy = "lessonOrder")
-    private List<File> fileList;
-    @OneToMany (mappedBy = "lessonOrder")
-    private List<Quiz> quizList;
+
     @OneToOne
+    private File file;
+    @OneToOne
+    private Quiz quiz;
+    @ManyToOne
     private Outlines outlines; 
 
     public LessonOrder(){
@@ -42,12 +43,13 @@ public class LessonOrder implements Serializable {
     }
     
     
-    public LessonOrder(Long lessonOrderId, boolean order, Coursepack coursepack, List<File> fileList, List<Quiz> quizList, Outlines outlines) {
+    public LessonOrder(Long lessonOrderId, int order, String name, Boolean type, File file, Quiz quiz, Outlines outlines) {
         this.lessonOrderId = lessonOrderId;
         this.order = order;
-        this.coursepack = coursepack;
-        this.fileList = fileList;
-        this.quizList = quizList;
+        this.name = name;
+        this.type = type; 
+        this.file = file;
+        this.quiz = quiz;
         this.outlines = outlines;
     }
     
@@ -87,37 +89,25 @@ public class LessonOrder implements Serializable {
         return "entities.LessonOrder[ id=" + lessonOrderId + " ]";
     }
 
-    public boolean isOrder() {
-        return order;
+
+    public File getFile() {
+        return file;
     }
 
-    public void setOrder(boolean order) {
-        this.order = order;
+    public void setFile(File file) {
+        this.file = file;
     }
 
-    public Coursepack getCoursepack() {
-        return coursepack;
+    public Quiz getQuiz() {
+        return quiz;
     }
 
-    public void setCoursepack(Coursepack coursepack) {
-        this.coursepack = coursepack;
+    public void setQuiz(Quiz quiz) {
+        this.quiz = quiz;
     }
 
-    public List<File> getFileList() {
-        return fileList;
-    }
 
-    public void setFileList(List<File> fileList) {
-        this.fileList = fileList;
-    }
-
-    public List<Quiz> getQuizList() {
-        return quizList;
-    }
-
-    public void setQuizList(List<Quiz> quizList) {
-        this.quizList = quizList;
-    }
+   
 
     public Outlines getOutlines() {
         return outlines;
@@ -125,6 +115,30 @@ public class LessonOrder implements Serializable {
 
     public void setOutlines(Outlines outlines) {
         this.outlines = outlines;
+    }
+
+    public int getOrder() {
+        return order;
+    }
+
+    public void setOrder(int order) {
+        this.order = order;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public Boolean getType() {
+        return type;
+    }
+
+    public void setType(Boolean type) {
+        this.type = type;
     }
     
     

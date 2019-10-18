@@ -249,18 +249,33 @@ public class DataInitSessionBean {
         em.flush();
         
         Coursepack cp2 = new Coursepack();
-        cp1.setAssignedTeacher(teacher);
-        cp1.setCategory("Business Management");
-        cp1.setCode("BM1000");
-        cp1.setDescription("Master the essentials of managing a successful business");
-        cp1.setPrice(300.00);
-        cp1.setRating(4.00);
-        cp1.setStartDate(new Timestamp(2020-1900, 12, 1, 9, 0, 0, 0));
-        cp1.setTeacherBackground("With more than 20 years of teaching experiences");
-        cp1.setTitle("Operations Management");
+        cp2.setAssignedTeacher(teacher);
+        cp2.setCategory("Business Management");
+        cp2.setCode("BM1000");
+        cp2.setDescription("Master the essentials of managing a successful business");
+        cp2.setPrice(300.00);
+        cp2.setRating(4.00);
+        cp2.setStartDate(new Timestamp(2020-1900, 12, 1, 9, 0, 0, 0));
+        cp2.setTeacherBackground("With more than 20 years of teaching experiences");
+        cp2.setTitle("Operations Management");
         teacher.getTeacherCoursepackList().add(cp2);
         em.persist(cp2);
         em.flush();
+        
+        Coursepack cp3 = new Coursepack();
+        cp3.setAssignedTeacher(teacher);
+        cp3.setCategory("Engineering");
+        cp3.setCode("EG1000");
+        cp3.setDescription("This course will introduce you to the Design Thinking process and illustrate best practices for each step along the way.");
+        cp3.setPrice(200.00);
+        cp3.setRating(5.00);
+        cp3.setStartDate(new Timestamp(2020-1900, 12, 1, 9, 0, 0, 0));
+        cp3.setTeacherBackground("Microsoft developer");
+        cp3.setTitle("Introduction to Design Thinking");
+        teacher.getTeacherCoursepackList().add(cp3);
+        em.persist(cp3);
+        em.flush();
+        
         
     
         

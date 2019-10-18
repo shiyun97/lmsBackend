@@ -15,6 +15,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.xml.bind.annotation.XmlRootElement;
 
@@ -75,7 +76,7 @@ public class Quiz implements Serializable {
     @OneToMany(mappedBy = "quiz")
     private List<QuizAttempt> quizAttemptList;
     
-    @ManyToOne
+    @OneToOne
     private LessonOrder lessonOrder;
 
     public LessonOrder getLessonOrder() {

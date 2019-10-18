@@ -12,6 +12,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToOne;
 
 /**
  *
@@ -44,7 +45,7 @@ public class File implements Serializable {
     @ManyToOne
     private Folder folder;
     
-    @ManyToOne
+    @OneToOne
     private LessonOrder lessonOrder;
 
     public LessonOrder getLessonOrder() {

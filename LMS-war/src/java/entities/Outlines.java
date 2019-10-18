@@ -6,11 +6,13 @@
 package entities;
 
 import java.io.Serializable;
+import java.util.List;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 
 /**
@@ -24,20 +26,22 @@ public class Outlines implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long outlineId;
+    private String name;
 
     @ManyToOne
     private Coursepack coursepack;
-    @OneToOne
-    private LessonOrder lessonOrder; 
+    @OneToMany(mappedBy = "outlines")
+    private List<LessonOrder> lessonOrder; 
 
     public Outlines(){
         
     }
     
-    public Outlines(Long outlineId, Coursepack coursepack, LessonOrder lessonOrder) {
+    public Outlines(Long outlineId, Coursepack coursepack, List<LessonOrder> lessonOrder, String name) {
         this.outlineId = outlineId;
         this.coursepack = coursepack;
         this.lessonOrder = lessonOrder;
+        this.name = name;
     }
     
     
@@ -84,12 +88,20 @@ public class Outlines implements Serializable {
         this.coursepack = coursepack;
     }
 
-    public LessonOrder getLessonOrder() {
+    public List<LessonOrder> getLessonOrder() {
         return lessonOrder;
     }
 
-    public void setLessonOrder(LessonOrder lessonOrder) {
+    public void setLessonOrder(List<LessonOrder> lessonOrder) {
         this.lessonOrder = lessonOrder;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
     
     

@@ -8,7 +8,7 @@ package datamodel.rest;
 import entities.Coursepack;
 import entities.User;
 import java.sql.Timestamp;
-import java.util.Date;
+import java.util.List;
 
 /**
  *
@@ -25,18 +25,27 @@ public class CreateCoursepack {
     private Double price;
     private Timestamp startDate;
     private String teacherBackground;
+    private List<String> outlines;
     
     private User user; 
     private Long userId;
     private String email;
     private String password;
 
+    public List<String> getOutlines() {
+        return outlines;
+    }
+
+    public void setOutlines(List<String> outlines) {
+        this.outlines = outlines;
+    }
+
 
     public CreateCoursepack(){
         
     }
 
-    public CreateCoursepack(Coursepack coursepack, Long coursepackId, String code, String title, String description, String category, Double price, Timestamp startDate, String teacherBackground, User user, Long userId, String email, String password) {
+    public CreateCoursepack(Coursepack coursepack, Long coursepackId, String code, String title, String description, String category, Double price, Timestamp startDate, String teacherBackground, List<String> outlines, User user, Long userId, String email, String password) {
         this.coursepack = coursepack;
         this.coursepackId = coursepackId;
         this.code = code;
@@ -46,6 +55,7 @@ public class CreateCoursepack {
         this.price = price;
         this.startDate = startDate;
         this.teacherBackground = teacherBackground;
+        this.outlines = outlines;
         this.user = user;
         this.userId = userId;
         this.email = email;

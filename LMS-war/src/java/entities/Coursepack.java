@@ -68,11 +68,9 @@ public class Coursepack implements Serializable {
     @OneToMany
     private List<Outlines> outlineList;
      
-    @OneToMany
-    private List<LessonOrder> lessonOrderList;
     
 
-    public Coursepack(Long coursepackId, String code, String title, String description, String category, Double price, Timestamp startDate, Double rating, String teacherBackground, List<User> publicUserList, List<ForumPost> forumPostList, List<GradeItem> gradeItemList, User assignedTeacher, List<Feedback> feedbackList, List<Outlines> outlineList, List<LessonOrder> lessonOrderList) {
+    public Coursepack(Long coursepackId, String code, String title, String description, String category, Double price, Timestamp startDate, Double rating, String teacherBackground, List<User> publicUserList, List<ForumPost> forumPostList, List<GradeItem> gradeItemList, User assignedTeacher, List<Feedback> feedbackList, List<Outlines> outlineList) {
         this.coursepackId = coursepackId;
         this.code = code;
         this.title = title;
@@ -90,7 +88,6 @@ public class Coursepack implements Serializable {
         this.assignedTeacher = assignedTeacher;
         this.feedbackList = feedbackList;
         this.outlineList = outlineList;
-        this.lessonOrderList = lessonOrderList;
     }
 
     @Override
@@ -254,14 +251,6 @@ public class Coursepack implements Serializable {
         this.outlineList = outlineList;
     }
 
-    public List<LessonOrder> getLessonOrderList() {
-        return lessonOrderList;
-    }
-
-    public void setLessonOrderList(List<LessonOrder> lessonOrderList) {
-        this.lessonOrderList = lessonOrderList;
-    }
-    
     
     
     

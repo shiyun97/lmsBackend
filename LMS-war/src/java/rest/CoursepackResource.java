@@ -5,17 +5,16 @@
  */
 package rest;
 
+import com.sun.tools.xjc.outline.Outline;
 import datamodel.rest.CreateCoursepack;
 import datamodel.rest.GetCoursepackRsp;
 import datamodel.rest.UpdateCoursepack;
 import datamodel.rest.GetUserRsp;
 import entities.Coursepack;
+import entities.Outlines;
 import entities.User;
-import java.sql.Timestamp;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -80,8 +79,32 @@ public class CoursepackResource {
             coursepack.setPrice(createCoursepack.getPrice());
             coursepack.setStartDate(createCoursepack.getStartDate());
             coursepack.setTeacherBackground(createCoursepack.getTeacherBackground());
+            coursepack.setAssignedTeacher(createCoursepack.getUser());
+            coursepack.setOutlineList(new ArrayList<>());
             em.persist(coursepack);
             em.flush();
+            
+            /*for(String outline: createCoursepack.getOutlines()){
+                Outlines newOut = new Outlines();
+                newOut.setName(outline);
+                coursepack.getOutlineList().add(newOut);
+                newOut.setCoursepack(coursepack);
+                em.persist(newOut);
+                
+            }*/
+            /*List<Outlines> outlines = new ArrayList<>();
+            for(Outlines o : outlines){
+                o.getCoursepack();
+                o.getLessonOrder();
+                o.getName();
+         
+                
+                outlines.add(o);
+            }*/
+
+            Coursepack coursepackCopy = new Coursepack(coursepack.getCoursepackId(), coursepack.getCode(), coursepack.getTitle(),
+                        coursepack.getDescription(), coursepack.getCategory(), coursepack.getPrice(), coursepack.getStartDate(), null, 
+                        coursepack.getTeacherBackground(), null, null, null, null, null, null);
             
             return Response.status(Response.Status.OK).entity(coursepack).build();
         } catch (Exception ex) {
@@ -146,11 +169,17 @@ public class CoursepackResource {
                 coursepack.setPrice(updateCoursepack.getPrice());
                 coursepack.setStartDate(updateCoursepack.getStartDate());
                 coursepack.setTeacherBackground(updateCoursepack.getTeacherBackground());
+                coursepack.setAssignedTeacher(updateCoursepack.getUser());
                 
                 em.merge(coursepack);
                 em.flush();
                 
-                return Response.status(Response.Status.OK).entity(coursepack).build();
+                Coursepack coursepackCopy = new Coursepack(coursepack.getCoursepackId(), coursepack.getCode(), coursepack.getTitle(),
+                        coursepack.getDescription(), coursepack.getCategory(), coursepack.getPrice(), coursepack.getStartDate(), null, 
+                        coursepack.getTeacherBackground(), null, null, null, null, null, null);
+                
+                
+                return Response.status(Response.Status.OK).entity(coursepackCopy).build();
 
             }
             return Response.status(Response.Status.NOT_FOUND).entity("Coursepack does not exist").build();
@@ -222,7 +251,7 @@ public class CoursepackResource {
             
             Coursepack coursepackCopy = new Coursepack(coursepack.getCoursepackId(), coursepack.getCode(), coursepack.getTitle(),
                         coursepack.getDescription(), coursepack.getCategory(), coursepack.getPrice(), coursepack.getStartDate(), null, 
-                        coursepack.getTeacherBackground(), null, null, null, null, null, null, null);
+                        coursepack.getTeacherBackground(),null, null, null, null,null, null);
             
             return Response.status(Response.Status.OK).entity(coursepackCopy).build();
 
@@ -246,7 +275,7 @@ public class CoursepackResource {
             
             Coursepack coursepackCopy = new Coursepack(coursepack.getCoursepackId(), coursepack.getCode(), coursepack.getTitle(),
                         coursepack.getDescription(), coursepack.getCategory(), coursepack.getPrice(), coursepack.getStartDate(), null, 
-                        coursepack.getTeacherBackground(), null, null, null, null, null, null, null);
+                        coursepack.getTeacherBackground(), null, null, null, null, null, null);
             
             return Response.status(Response.Status.OK).entity(coursepackCopy).build();
 
@@ -270,10 +299,11 @@ public class CoursepackResource {
                 return Response.status(Response.Status.NOT_FOUND).entity("No coursepack found").build();
             }else{
                 for(Coursepack coursepack : coursepackList){
+                    
                     rsp.getCoursepack().add(
                             new Coursepack(coursepack.getCoursepackId(), coursepack.getCode(), coursepack.getTitle(),
                                     coursepack.getDescription(), coursepack.getCategory(), coursepack.getPrice(), coursepack.getStartDate(), null, 
-                                    coursepack.getTeacherBackground(), null, null, null, null, null, null, null));
+                                    coursepack.getTeacherBackground(),null, null, null, null, null, null));
                 }
                 return Response.status(Response.Status.OK).entity(rsp).build();
             }
