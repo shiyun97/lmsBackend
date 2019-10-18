@@ -3,20 +3,13 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/C:/Users/yaosh/Documents/IS4103/lmsBackend/LMS-war/src/java/datamodel/rest/CreateFolderRqst.java</file>
-            <file>file:/C:/Users/yaosh/Documents/IS4103/lmsBackend/LMS-war/src/java/rest/UserResource.java</file>
-            <file>file:/C:/Users/yaosh/Documents/IS4103/lmsBackend/LMS-war/src/java/rest/CorsFilter.java</file>
-            <file>file:/C:/Users/yaosh/Documents/IS4103/lmsBackend/LMS-war/src/java/rest/FileResource.java</file>
-            <file>file:/C:/Users/yaosh/Documents/IS4103/lmsBackend/LMS-war/src/java/entities/Folder.java</file>
-            <file>file:/C:/Users/yaosh/Documents/IS4103/lmsBackend/LMS-war/src/java/datamodel/rest/RetrieveFilesRsp.java</file>
-            <file>file:/C:/Users/yaosh/Documents/IS4103/lmsBackend/LMS-war/src/java/entities/File.java</file>
-            <file>file:/C:/Users/yaosh/Documents/IS4103/lmsBackend/LMS-war/src/java/datamodel/rest/GetClassGroupRsp.java</file>
-            <file>file:/C:/Users/yaosh/Documents/IS4103/lmsBackend/LMS-war/src/java/entities/Module.java</file>
-            <file>file:/C:/Users/yaosh/Documents/IS4103/lmsBackend/LMS-war/src/java/util/AccessRightEnum.java</file>
-            <file>file:/C:/Users/yaosh/Documents/IS4103/lmsBackend/LMS-war/src/java/entities/ClassGroup.java</file>
-            <file>file:/C:/Users/yaosh/Documents/IS4103/lmsBackend/LMS-war/src/java/rest/StudentEnrollmentResource.java</file>
-            <file>file:/C:/Users/yaosh/Documents/IS4103/lmsBackend/LMS-war/src/java/rest/GroupManagementResource.java</file>
-            <file>file:/C:/Users/yaosh/Documents/IS4103/lmsBackend/LMS-war/src/java/rest/FeedbackResource.java</file>
+            <file>file:/C:/Users/mingfong/Desktop/lmsBackend/LMS-war/setup/glassfish-resources.xml</file>
+            <file>file:/C:/Users/mingfong/Desktop/lmsBackend/LMS-war/web/WEB-INF/glassfish-web.xml</file>
+            <file>file:/C:/Users/mingfong/Desktop/lmsBackend/LMS-war/src/java/rest/ForumResource.java</file>
+            <file>file:/C:/Users/mingfong/Desktop/lmsBackend/LMS-war/src/java/rest/ConsultationResource.java</file>
+            <file>file:/C:/Users/mingfong/Desktop/lmsBackend/LMS-war/src/java/entities/ForumPost.java</file>
+            <file>file:/C:/Users/mingfong/Desktop/lmsBackend/LMS-war/src/java/datamodel/rest/CreateThreadReq.java</file>
+            <file>file:/C:/Users/mingfong/Desktop/lmsBackend/LMS-war/src/java/rest/UserResource.java</file>
         </group>
     </open-files>
 </project-private>

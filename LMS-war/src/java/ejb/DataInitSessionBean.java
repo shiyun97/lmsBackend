@@ -279,18 +279,18 @@ public class DataInitSessionBean {
         
         ConsultationTimeslot c1 = new ConsultationTimeslot();
         c1.setBooker(student2);
-        c1.setEndTs(LocalTime.parse("11:30:00"));
+        c1.setEndTs(LocalTime.parse("11:00:00"));
         c1.setModule(m4);
         c1.setStartD(LocalDate.parse("2019-10-28"));
-        c1.setStartTs(LocalTime.parse("10:30:00"));
+        c1.setStartTs(LocalTime.parse("10:00:00"));
         em.persist(c1);
         em.flush();
         
         ConsultationTimeslot c2 = new ConsultationTimeslot();
-        c1.setEndTs(LocalTime.parse("11:30:00"));
+        c1.setEndTs(LocalTime.parse("11:00:00"));
         c1.setModule(m4);
         c1.setStartD(LocalDate.parse("2019-09-29"));
-        c1.setStartTs(LocalTime.parse("10:30:00"));
+        c1.setStartTs(LocalTime.parse("10:00:00"));
         em.persist(c2);
         em.flush();
         m1.getConsultationList().add(c1);

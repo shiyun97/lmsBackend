@@ -69,7 +69,7 @@ public class Module implements Serializable {
     @OneToMany(mappedBy = "module")
     private List<Annoucement> annoucementList;
     @OneToMany(mappedBy = "module")
-    private List<ForumPost> forumPostList;
+    private List<ForumTopic> forumTopicList;
     @OneToMany(mappedBy = "module")
     private List<Quiz> quizList;
     @OneToMany(mappedBy = "module")
@@ -101,7 +101,7 @@ public class Module implements Serializable {
     @Column
     private String faculty;
 
-    public Module(Long moduleId, String code, String title, String description, Integer semesterOffered, String yearOffered, Integer creditUnit, String grade, Integer maxEnrollment, List<User> studentList, List<User> publicUserList, List<Folder> folderList, List<Annoucement> annoucementList, List<ForumPost> forumPostList, List<Quiz> quizList, List<GradeItem> gradeItemList, List<Attendance> attandanceList, List<ConsultationTimeslot> consultationList, List<LessonPlan> lessonPlanList, User assignedTeacher, List<ClassGroup> classGroupList, List<Feedback> feedbackList, List<Tutorial> tutorials, boolean hasExam, Timestamp examTime, String examVenue, String lectureDetails, String department, String faculty) {
+    public Module(Long moduleId, String code, String title, String description, Integer semesterOffered, String yearOffered, Integer creditUnit, String grade, Integer maxEnrollment, List<User> studentList, List<User> publicUserList, List<Folder> folderList, List<Annoucement> annoucementList, List<ForumTopic> forumTopicList, List<Quiz> quizList, List<GradeItem> gradeItemList, List<Attendance> attandanceList, List<ConsultationTimeslot> consultationList, List<LessonPlan> lessonPlanList, User assignedTeacher, List<ClassGroup> classGroupList, List<Feedback> feedbackList, List<Tutorial> tutorials, boolean hasExam, Timestamp examTime, String examVenue, String lectureDetails, String department, String faculty) {
         this.moduleId = moduleId;
         this.code = code;
         this.title = title;
@@ -115,7 +115,7 @@ public class Module implements Serializable {
         this.publicUserList = publicUserList;
         this.folderList = folderList;
         this.annoucementList = annoucementList;
-        this.forumPostList = forumPostList;
+        this.forumTopicList = forumTopicList;
         this.quizList = quizList;
         this.gradeItemList = gradeItemList;
         this.attandanceList = attandanceList;
@@ -133,7 +133,7 @@ public class Module implements Serializable {
         this.faculty = faculty;
     }
     
-    public Module(Long moduleId, String code, String title, String description, Integer semesterOffered, String yearOffered, Integer creditUnit, String grade, Integer maxEnrollment, List<User> studentList, List<User> publicUserList, List<Folder> folderList, List<File> multimediaList, List<Annoucement> annoucementList, List<ForumPost> forumPostList, List<Quiz> quizList, List<GradeItem> gradeItemList, List<Attendance> attandanceList, List<ConsultationTimeslot> consultationList, List<LessonPlan> lessonPlanList, User assignedTeacher, List<ClassGroup> classGroupList, List<Feedback> feedbackList, List<Tutorial> tutorials, boolean hasExam, Timestamp examTime, String examVenue, String lectureDetails, String department, String faculty) {
+    public Module(Long moduleId, String code, String title, String description, Integer semesterOffered, String yearOffered, Integer creditUnit, String grade, Integer maxEnrollment, List<User> studentList, List<User> publicUserList, List<Folder> folderList, List<File> multimediaList, List<Annoucement> annoucementList, List<ForumTopic> forumTopicList, List<Quiz> quizList, List<GradeItem> gradeItemList, List<Attendance> attandanceList, List<ConsultationTimeslot> consultationList, List<LessonPlan> lessonPlanList, User assignedTeacher, List<ClassGroup> classGroupList, List<Feedback> feedbackList, List<Tutorial> tutorials, boolean hasExam, Timestamp examTime, String examVenue, String lectureDetails, String department, String faculty) {
         this.moduleId = moduleId;
         this.code = code;
         this.title = title;
@@ -148,7 +148,7 @@ public class Module implements Serializable {
         this.folderList = folderList;
         this.multimediaList = multimediaList;
         this.annoucementList = annoucementList;
-        this.forumPostList = forumPostList;
+        this.forumTopicList = forumTopicList;
         this.quizList = quizList;
         this.gradeItemList = gradeItemList;
         this.attandanceList = attandanceList;
@@ -275,12 +275,12 @@ public class Module implements Serializable {
         this.annoucementList = annoucementList;
     }
 
-    public List<ForumPost> getForumPostList() {
-        return forumPostList;
+    public List<ForumTopic> getForumTopicList() {
+        return forumTopicList;
     }
 
-    public void setForumPostList(List<ForumPost> forumPostList) {
-        this.forumPostList = forumPostList;
+    public void setForumTopicList(List<ForumTopic> forumTopicList) {
+        this.forumTopicList = forumTopicList;
     }
 
     public List<Quiz> getQuizList() {

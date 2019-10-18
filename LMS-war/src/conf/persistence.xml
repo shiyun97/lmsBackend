@@ -27,6 +27,7 @@
     <class>entities.Schedule</class>
     <class>entities.Appeal</class>
     <class>entities.BiddingRound</class>
+    <class>entities.ForumTopic</class>
     <exclude-unlisted-classes>true</exclude-unlisted-classes>
     <properties>
       <property name="javax.persistence.schema-generation.database.action" value="create"/>
