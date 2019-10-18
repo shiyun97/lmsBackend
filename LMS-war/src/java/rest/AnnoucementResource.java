@@ -76,9 +76,14 @@ public class AnnoucementResource {
             em.persist(annoucement);
             em.flush();
             module.getAnnoucementList().add(annoucement);
+
+            Module moduleCopy = new Module(module.getModuleId(), module.getCode(), module.getTitle(), module.getDescription(),
+                    null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
+                    module.isHasExam(), module.getExamTime(), module.getExamVenue(), module.getLectureDetails(), module.getDepartment(),
+                    module.getFaculty());
             Annoucement annoucementCopy = new Annoucement(annoucement.getAnnoucementId(), annoucement.getTitle(),
                     annoucement.getContent(), createdDate, lastUpdatedDate, startDate, endDate,
-                    annoucement.getPublish(), annoucement.getEmailNotification(), null, null);
+                    annoucement.getPublish(), annoucement.getEmailNotification(), moduleCopy, null);
             return Response.status(Response.Status.OK).entity(annoucementCopy).build();
             //EmailSessionBean.sendEmail(annoucement.getOwner().getEmail(), annoucement.getTitle(), annoucement.getOwner().getUsername());
         } catch (Exception ex) {
@@ -135,6 +140,18 @@ public class AnnoucementResource {
             }
             GetAnnoucementRsp rsp = new GetAnnoucementRsp(new ArrayList<>());
             for (Annoucement a : annoucementList) {
+                Module module = a.getModule();
+                if (module != null) {
+                    Module moduleCopy = new Module(module.getModuleId(), module.getCode(), module.getTitle(), module.getDescription(),
+                            null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
+                            module.isHasExam(), module.getExamTime(), module.getExamVenue(), module.getLectureDetails(), module.getDepartment(),
+                            module.getFaculty());
+                    rsp.getAnnoucementList().add(
+                            new Annoucement(a.getAnnoucementId(), a.getTitle(),
+                                    a.getContent(), a.getCreatedDate(), a.getLastUpdatedDate(),
+                                    a.getStartDate(), a.getEndDate(), a.getPublish(), a.getEmailNotification(),
+                                    moduleCopy, null));
+                }
                 rsp.getAnnoucementList().add(
                         new Annoucement(a.getAnnoucementId(), a.getTitle(),
                                 a.getContent(), a.getCreatedDate(), a.getLastUpdatedDate(),
@@ -156,6 +173,19 @@ public class AnnoucementResource {
             Annoucement annoucement = em.find(Annoucement.class, annoucementId);
             if (annoucement == null) {
                 return Response.status(Response.Status.NOT_FOUND).entity("No annoucement found").build();
+            }
+            Module module = annoucement.getModule();
+            if (module != null) {
+                Module moduleCopy = new Module(module.getModuleId(), module.getCode(), module.getTitle(), module.getDescription(),
+                        null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
+                        module.isHasExam(), module.getExamTime(), module.getExamVenue(), module.getLectureDetails(), module.getDepartment(),
+                        module.getFaculty());
+                Annoucement annoucementCopy = new Annoucement(annoucement.getAnnoucementId(), annoucement.getTitle(),
+                        annoucement.getContent(), annoucement.getCreatedDate(), annoucement.getLastUpdatedDate(),
+                        annoucement.getStartDate(), annoucement.getEndDate(), annoucement.getPublish(),
+                        annoucement.getEmailNotification(),
+                        moduleCopy, null);
+                return Response.status(Response.Status.OK).entity(annoucementCopy).build();
             }
             Annoucement annoucementCopy = new Annoucement(annoucement.getAnnoucementId(), annoucement.getTitle(),
                     annoucement.getContent(), annoucement.getCreatedDate(), annoucement.getLastUpdatedDate(),
@@ -183,6 +213,10 @@ public class AnnoucementResource {
             if (annoucementList == null || annoucementList.isEmpty()) {
                 return Response.status(Response.Status.NOT_FOUND).entity("Module does not have annoucement").build();
             }
+            Module moduleCopy = new Module(module.getModuleId(), module.getCode(), module.getTitle(), module.getDescription(),
+                    null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
+                    module.isHasExam(), module.getExamTime(), module.getExamVenue(), module.getLectureDetails(), module.getDepartment(),
+                    module.getFaculty());
             Date now = new Date();
             for (Annoucement a : annoucementList) {
                 if (a.getEndDate().after(now)) {
@@ -191,7 +225,7 @@ public class AnnoucementResource {
                                     a.getContent(), a.getCreatedDate(), a.getLastUpdatedDate(),
                                     a.getStartDate(), a.getEndDate(), a.getPublish(),
                                     a.getEmailNotification(),
-                                    null, null));
+                                    moduleCopy, null));
                 }
             }
             return Response.status(Response.Status.OK).entity(rsp).build();
@@ -243,6 +277,10 @@ public class AnnoucementResource {
             if (annoucementList == null || annoucementList.isEmpty()) {
                 return Response.status(Response.Status.NOT_FOUND).entity("Module does not have annoucement").build();
             }
+            Module moduleCopy = new Module(module.getModuleId(), module.getCode(), module.getTitle(), module.getDescription(),
+                    null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
+                    module.isHasExam(), module.getExamTime(), module.getExamVenue(), module.getLectureDetails(), module.getDepartment(),
+                    module.getFaculty());
             Date now = new Date();
             for (Annoucement a : annoucementList) {
                 if (a.getEndDate().before(now)) {
@@ -251,7 +289,7 @@ public class AnnoucementResource {
                                     a.getContent(), a.getCreatedDate(), a.getLastUpdatedDate(),
                                     a.getStartDate(), a.getEndDate(), a.getPublish(),
                                     a.getEmailNotification(),
-                                    null, null));
+                                    moduleCopy, null));
                 }
             }
             return Response.status(Response.Status.OK).entity(rsp).build();
@@ -260,7 +298,7 @@ public class AnnoucementResource {
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(new ErrorRsp(ex.getMessage())).build();
         }
     }
-    
+
     @GET
     @Path("getAllExpiredSystemAnnoucement")
     @Produces(MediaType.APPLICATION_JSON)
@@ -288,7 +326,7 @@ public class AnnoucementResource {
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(new ErrorRsp(ex.getMessage())).build();
         }
     }
-    
+
     @GET
     @Path("getAllUpcomingAnnoucements")
     @Produces(MediaType.APPLICATION_JSON)
@@ -303,6 +341,10 @@ public class AnnoucementResource {
             if (annoucementList == null || annoucementList.isEmpty()) {
                 return Response.status(Response.Status.NOT_FOUND).entity("Module does not have annoucement").build();
             }
+            Module moduleCopy = new Module(module.getModuleId(), module.getCode(), module.getTitle(), module.getDescription(),
+                    null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
+                    module.isHasExam(), module.getExamTime(), module.getExamVenue(), module.getLectureDetails(), module.getDepartment(),
+                    module.getFaculty());
             Date now = new Date();
             for (Annoucement a : annoucementList) {
                 if (a.getStartDate().after(now)) {
@@ -311,7 +353,7 @@ public class AnnoucementResource {
                                     a.getContent(), a.getCreatedDate(), a.getLastUpdatedDate(),
                                     a.getStartDate(), a.getEndDate(), a.getPublish(),
                                     a.getEmailNotification(),
-                                    null, null));
+                                    moduleCopy, null));
                 }
             }
             return Response.status(Response.Status.OK).entity(rsp).build();
@@ -320,7 +362,7 @@ public class AnnoucementResource {
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(new ErrorRsp(ex.getMessage())).build();
         }
     }
-    
+
     @GET
     @Path("getAllUpcomingSystemAnnoucement")
     @Produces(MediaType.APPLICATION_JSON)
@@ -372,13 +414,56 @@ public class AnnoucementResource {
             annoucement.setEndDate(endDate);
             annoucement.setPublish(updateAnnoucement.getPublish());
             annoucement.setEmailNotification(updateAnnoucement.getEmailNotification());
-            annoucement.setModule(updateAnnoucement.getModule());
+            //annoucement.setModule(updateAnnoucement.getModule());
             annoucement.setOwner(updateAnnoucement.getOwner());
             em.merge(annoucement);
             em.flush();
             Annoucement annoucementCopy = new Annoucement(annoucement.getAnnoucementId(), annoucement.getTitle(),
                     annoucement.getContent(), createdDate, lastUpdatedDate, startDate, endDate,
                     annoucement.getPublish(), annoucement.getEmailNotification(), null, null);
+            return Response.status(Response.Status.OK).entity(annoucementCopy).build();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(new ErrorRsp(ex.getMessage())).build();
+        }
+    }
+
+    @PUT
+    @Path(value = "updateModuleAnnoucement")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response updateModuleAnnoucement(UpdateAnnoucement updateAnnoucement, @QueryParam("annoucementId") Long annoucementId) {
+        try {
+            Annoucement annoucement = em.find(Annoucement.class, annoucementId);
+            if (annoucement == null) {
+                return Response.status(Response.Status.NOT_FOUND).entity("No annoucement found").build();
+            }
+            Date createdDate = formatter.parse(updateAnnoucement.getCreatedDate());
+            Date lastUpdatedDate = formatter.parse(updateAnnoucement.getLastUpdatedDate());
+            Date startDate = formatter.parse(updateAnnoucement.getStartDate());
+            Date endDate = formatter.parse(updateAnnoucement.getEndDate());
+
+            annoucement.setTitle(updateAnnoucement.getTitle());
+            annoucement.setContent(updateAnnoucement.getContent());
+            //annoucement.setCreatedDate(createdDate);
+            annoucement.setLastUpdatedDate(lastUpdatedDate);
+            annoucement.setStartDate(startDate);
+            annoucement.setEndDate(endDate);
+            annoucement.setPublish(updateAnnoucement.getPublish());
+            annoucement.setEmailNotification(updateAnnoucement.getEmailNotification());
+            annoucement.setModule(updateAnnoucement.getModule());
+            annoucement.setOwner(updateAnnoucement.getOwner());
+            em.merge(annoucement);
+            em.flush();
+
+            Module module = annoucement.getModule();
+            Module moduleCopy = new Module(module.getModuleId(), module.getCode(), module.getTitle(), module.getDescription(),
+                    null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
+                    module.isHasExam(), module.getExamTime(), module.getExamVenue(), module.getLectureDetails(), module.getDepartment(),
+                    module.getFaculty());
+            Annoucement annoucementCopy = new Annoucement(annoucement.getAnnoucementId(), annoucement.getTitle(),
+                    annoucement.getContent(), createdDate, lastUpdatedDate, startDate, endDate,
+                    annoucement.getPublish(), annoucement.getEmailNotification(), moduleCopy, null);
             return Response.status(Response.Status.OK).entity(annoucementCopy).build();
         } catch (Exception ex) {
             ex.printStackTrace();
