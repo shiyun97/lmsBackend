@@ -22,6 +22,7 @@ public class QuestionModel {
     private Double points;
     private Integer level;
     private Boolean isRequired;
+    private Boolean updated;
     private List<ChoiceModel> choices;
 
     public Long getQuestionId() {
@@ -102,6 +103,14 @@ public class QuestionModel {
 
     public void setChoices(List<ChoiceModel> choices) {
         this.choices = choices;
+    }
+
+    public Boolean getUpdated() {
+        return updated;
+    }
+
+    public void setUpdated(Boolean updated) {
+        this.updated = updated;
     }
     
 }

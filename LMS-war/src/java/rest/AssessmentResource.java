@@ -7,20 +7,26 @@ package rest;
 
 import datamodel.rest.ChoiceModel;
 import datamodel.rest.CreateGradeItemRqst;
+import datamodel.rest.CreateQuizAttemptRqst;
 import datamodel.rest.EnterMarksRqst;
 import datamodel.rest.ErrorRsp;
 import datamodel.rest.PageModel;
+import datamodel.rest.QuestionAttemptModel;
 import datamodel.rest.QuestionModel;
 import datamodel.rest.QuizRqst;
 import datamodel.rest.QuizRsp;
 import datamodel.rest.RetrieveGradeEntriesRsp;
 import datamodel.rest.RetrieveGradeItemsRsp;
+import datamodel.rest.RetrieveQuestionAttemptsRsp;
+import datamodel.rest.RetrieveQuizAttemptsRsp;
 import datamodel.rest.RetrieveQuizzesResp;
 import entities.GradeEntry;
 import entities.GradeItem;
 import entities.Module;
 import entities.Question;
+import entities.QuestionAttempt;
 import entities.Quiz;
+import entities.QuizAttempt;
 import entities.User;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -168,9 +174,16 @@ public class AssessmentResource {
             return Response.status(Status.NOT_FOUND).entity(new ErrorRsp("Quiz with the given ID doesn't exist")).build();
         }
         
+        if(quiz.getModule().getAssignedTeacher() != user){
+            return Response.status(Status.FORBIDDEN)
+                    .entity(new ErrorRsp("User doesn't have access to this function"))
+                    .build();
+        }
+        
         boolean attempted = !quiz.getQuizAttemptList().isEmpty();
         
         try{
+            // Basic Config
             quiz.setTitle(rqst.getTitle());
             quiz.setDescription(rqst.getDescription());
             quiz.setQuizType(rqst.getQuizType());
@@ -195,17 +208,24 @@ public class AssessmentResource {
             int count = 1;
             for(QuestionModel qm: questionsRqst){
                 
-                // Search if question has been created before
-                Question question = em.find(Question.class, qm.getQuestionId());
+                Question question = null;
                 
-                if(question == null){
+                // No ID means it's a new question
+                if(qm.getQuestionId() == null){
                     question = new Question();
                 } else { 
-// If not updated, skip
-//                    continue;
+
+                    question = em.find(Question.class, qm.getQuestionId());
                     
-                    // IF updated remove old question from quiz
-                    quiz.getQuestionList().remove(question);
+                    if(em == null){
+                        return Response.status(Status.NOT_FOUND).entity(new ErrorRsp()).build();
+                    }
+                    
+                    // IF updated remove old question from quiz and create a new copy of question entity
+                    if(qm.getUpdated() && attempted){
+                        quiz.getQuestionList().remove(question);
+                        question = new Question();
+                    }
                 }
                 
                 
@@ -214,6 +234,8 @@ public class AssessmentResource {
                 total += qm.getPoints();
                 
                 question.setNumber(count++);
+                question.setTitle(qm.getTitle());
+                question.setLevel(qm.getLevel());
                 question.setPoints(qm.getPoints());
                 question.setExplanation(qm.getExplanation());
                 question.setType(qm.getType());
@@ -242,6 +264,79 @@ public class AssessmentResource {
         } catch (ParseException pe){
             pe.printStackTrace();
             return Response.status(Status.BAD_REQUEST).entity(new ErrorRsp("Opening or closing date isn't in proper format")).build();
+        } catch (Exception e){
+            e.printStackTrace();
+            return Response.status(Status.INTERNAL_SERVER_ERROR).entity(new ErrorRsp(e.getMessage())).build();
+        }
+    }
+    
+    @POST
+    @Path("createQuizAttempt")
+    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_JSON)
+    public Response createQuizAttempt(@QueryParam("userId") Long userId, CreateQuizAttemptRqst rqst){
+        Date now = new Date();
+        
+        User user = em.find(User.class, userId);
+        if(user == null || user.getAccessRight() != AccessRightEnum.Student){
+            return Response.status(Status.FORBIDDEN)
+                    .entity(new ErrorRsp("User doesn't have access to this function"))
+                    .build();
+        }
+        
+        Quiz quiz = em.find(Quiz.class, rqst.getQuizId());
+        if(quiz == null){
+            return Response.status(Status.NOT_FOUND).entity(new ErrorRsp("Quiz with the given ID doesn't exist")).build();
+        }
+        
+        if(quiz.getClosingDate().before(now)){
+            return Response.status(Status.BAD_REQUEST).entity(new ErrorRsp("Quiz has been closed")).build();
+        }
+        
+        // Check attempts
+        int count = 0;
+        for(QuizAttempt qa: quiz.getQuizAttemptList()){
+            if(qa.getQuizTaker() == user){
+                if(++count >= quiz.getNoOfAttempts()){
+                    return Response.status(Status.BAD_REQUEST).entity("Student has reached the maximum number of attempts").build();
+                }
+            }
+        }
+        
+        try {
+            QuizAttempt qa = new QuizAttempt();
+            qa.setCreateTs(now);
+            qa.setQuiz(quiz);
+            qa.setQuizTaker(user);
+            quiz.getQuizAttemptList().add(qa);
+            
+            double totalMarks = 0.0;
+            for (QuestionAttemptModel queA: rqst.getQuestionAttempts()){
+                Question que = em.find(Question.class, queA.getQuestionId());
+                if(que == null){
+                    return Response.status(Status.NOT_FOUND).entity(new ErrorRsp("Question not found")).build();
+                }
+                
+                QuestionAttempt queAToPersist = new QuestionAttempt();
+                queAToPersist.setAnswer(queA.getAnswer());
+                queAToPersist.setQuestion(que);
+                if(que.getType() == QuestionTypeEnum.radiogroup && queA.getAnswer().equals(que.getCorrectAnswer())){
+                    queAToPersist.setMarks(que.getPoints());
+                    totalMarks += que.getPoints();
+                } else {
+                    queAToPersist.setMarks(0.0);
+                }
+                
+                em.persist(queAToPersist);
+                qa.getQuestionAttemptList().add(queAToPersist);
+                
+            }
+            qa.setTotalMarks(totalMarks);
+            
+            em.persist(qa);
+            em.flush();
+            
+            return Response.status(Status.OK).build();
         } catch (Exception e){
             e.printStackTrace();
             return Response.status(Status.INTERNAL_SERVER_ERROR).entity(new ErrorRsp(e.getMessage())).build();
@@ -347,6 +442,15 @@ public class AssessmentResource {
                 return Response.status(Status.NOT_FOUND).entity(new ErrorRsp("Quiz with the given ID is not found")).build();
             }
             
+            Module module = q.getModule();
+            if(module == null){
+                return Response.status(Status.BAD_REQUEST).entity(new ErrorRsp("Module doesn't exist")).build();
+            } else if (module.getAssignedTeacher() != user && !user.getStudentModuleList().contains(module)){
+                return Response.status(Status.FORBIDDEN)
+                        .entity(new ErrorRsp("User doesn't have access to this module"))
+                        .build();
+            }
+            
             QuizRsp newQ = new QuizRsp();
             newQ.setQuizId(q.getQuizId());
             newQ.setOpeningDate(dateFormatter.format(q.getOpeningDate()));
@@ -368,6 +472,102 @@ public class AssessmentResource {
             return Response.status(Status.INTERNAL_SERVER_ERROR).entity(new ErrorRsp(e.getMessage())).build();
         }
         
+    }
+    
+    @GET
+    @Path("retrieveAllQuizAttempts")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response retrieveAllQuizAttempts(@QueryParam("userId") Long userId, @QueryParam("quizId") Long quizId){
+        User user = em.find(User.class, userId);
+        if(user == null || user.getAccessRight() == AccessRightEnum.Admin || user.getAccessRight() == AccessRightEnum.Public){
+            return Response.status(Status.FORBIDDEN)
+                    .entity(new ErrorRsp("User doesn't have access to this function"))
+                    .build();
+        }
+        
+        AccessRightEnum ar = user.getAccessRight();
+        
+        Quiz q = em.find(Quiz.class, quizId);   
+        if(q == null){
+            return Response.status(Status.NOT_FOUND).entity(new ErrorRsp("Quiz with the given ID is not found")).build();
+        }
+        
+        if (q.getQuizAttemptList().isEmpty()){
+            return Response.status(Status.NOT_FOUND).entity(new ErrorRsp("No attempts yet for this quiz")).build();
+        }
+        
+        RetrieveQuizAttemptsRsp resp = new RetrieveQuizAttemptsRsp(new ArrayList<>());
+        
+        for(QuizAttempt qa: q.getQuizAttemptList()){
+            if(ar == AccessRightEnum.Teacher || qa.getQuizTaker() == user){
+                QuizAttempt qaToReturn = new QuizAttempt();
+                qaToReturn.setCreateTs(qa.getCreateTs());
+                qaToReturn.setQuizAttemptId(qa.getQuizAttemptId());
+                qaToReturn.setTotalMarks(qa.getTotalMarks());
+                qaToReturn.setQuestionAttemptList(qa.getQuestionAttemptList());
+
+                User stu = new User();
+                stu.setUserId(qa.getQuizTaker().getUserId());
+                stu.setFirstName(qa.getQuizTaker().getFirstName());
+                stu.setLastName(qa.getQuizTaker().getLastName());
+                stu.setUsername(qa.getQuizTaker().getUsername());
+
+                resp.getQuizAttempts().add(qaToReturn);
+            }
+        }
+        
+        if(resp.getQuizAttempts().isEmpty()){
+            return Response.status(Status.NOT_FOUND).entity(new ErrorRsp("No attempts yet for this quiz")).build();
+        }
+        
+        return Response.status(Status.OK).entity(resp).build();
+    }
+    
+    @GET
+    @Path("retrieveQuestionAttempts")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response retrieveQuestionAttempts(@QueryParam("userId") Long userId, @QueryParam("quizAttemptId") Long quizAttemptId){
+        User user = em.find(User.class, userId);
+        if(user == null || user.getAccessRight() == AccessRightEnum.Admin || user.getAccessRight() == AccessRightEnum.Public){
+            return Response.status(Status.FORBIDDEN)
+                    .entity(new ErrorRsp("User doesn't have access to this function"))
+                    .build();
+        }
+        
+        AccessRightEnum ar = user.getAccessRight();
+        
+        QuizAttempt qa = em.find(QuizAttempt.class, quizAttemptId);
+        if(qa == null || (ar == AccessRightEnum.Student && qa.getQuizTaker() != user)){
+            return Response.status(Status.NOT_FOUND).entity(new ErrorRsp("QuizAttempt is not found")).build();
+        }
+        
+        return Response.status(Status.OK).entity(new RetrieveQuestionAttemptsRsp(qa.getQuestionAttemptList())).build();
+    }
+    
+    @POST
+    @Path("enterQuestionMarks")
+    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_JSON)
+    public Response enterQuestionMarks(@QueryParam("userId") Long userId, @QueryParam("questionAttemptId") Long questionAttemptId, @QueryParam("marks") Double marks){
+        User user = em.find(User.class, userId);
+        if(user == null || user.getAccessRight() != AccessRightEnum.Teacher){
+            return Response.status(Status.FORBIDDEN)
+                    .entity(new ErrorRsp("User doesn't have access to this function"))
+                    .build();
+        }
+        
+        QuestionAttempt queA = em.find(QuestionAttempt.class, questionAttemptId);
+        if(queA == null){
+            return Response.status(Status.NOT_FOUND).entity(new ErrorRsp("QuestionAttempt is not found")).build();
+        }
+        
+        if(queA.getQuestion().getPoints() < marks){
+            return Response.status(Status.BAD_REQUEST).entity(new ErrorRsp("Marks given exceeds the maximum point for the question")).build();
+        }
+        
+        queA.setMarks(marks);
+        
+        return Response.status(Status.OK).build();
     }
     
     @POST

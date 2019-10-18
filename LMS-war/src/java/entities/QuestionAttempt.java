@@ -29,7 +29,7 @@ public class QuestionAttempt implements Serializable {
     @Lob
     private String answer;
     @Column
-    private String marks;
+    private Double marks;
     @ManyToOne
     private Question question;
 
@@ -74,11 +74,11 @@ public class QuestionAttempt implements Serializable {
         this.answer = answer;
     }
 
-    public String getMarks() {
+    public Double getMarks() {
         return marks;
     }
 
-    public void setMarks(String marks) {
+    public void setMarks(Double marks) {
         this.marks = marks;
     }
 
