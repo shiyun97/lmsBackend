@@ -46,7 +46,7 @@ public class ForumResource {
 
     public SimpleDateFormat dateFormatter = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
 
-    @Path("viewAllForumTopic")
+    @Path("viewAllForumTopics")
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     public Response retrieveAllForumTopics(@QueryParam("moduleId") Long moduleId) {
