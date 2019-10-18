@@ -158,12 +158,12 @@ public class AttendanceResource {
                                             null, u.getGender(), null, null, null, null, null,
                                             null, null, null, null, null));
                         }
-                        rsp.getAttendanceList().add(
-                                new Attendance(a.getAttendanceId(), a.getTotal(),
-                                        a.getAttendedNumber(), a.getSemester(),
-                                        a.getStartTs(), a.getEndTs(), a.getDuration(),
-                                        null, attendeesCopy));
                     }
+                    rsp.getAttendanceList().add(
+                            new Attendance(a.getAttendanceId(), a.getTotal(),
+                                    a.getAttendedNumber(), a.getSemester(),
+                                    a.getStartTs(), a.getEndTs(), a.getDuration(),
+                                    null, attendeesCopy));
                 }
                 return Response.status(Response.Status.OK).entity(rsp).build();
             }
@@ -198,12 +198,12 @@ public class AttendanceResource {
                                             null, u.getGender(), null, null, null, null, null,
                                             null, null, null, null, null));
                         }
-                        rsp.getAttendanceList().add(
-                                new Attendance(a.getAttendanceId(), a.getTotal(),
-                                        a.getAttendedNumber(), a.getSemester(),
-                                        a.getStartTs(), a.getEndTs(), a.getDuration(),
-                                        null, attendeesCopy));
                     }
+                    rsp.getAttendanceList().add(
+                            new Attendance(a.getAttendanceId(), a.getTotal(),
+                                    a.getAttendedNumber(), a.getSemester(),
+                                    a.getStartTs(), a.getEndTs(), a.getDuration(),
+                                    null, attendeesCopy));
                 }
                 return Response.status(Response.Status.OK).entity(rsp).build();
             }
@@ -409,7 +409,7 @@ public class AttendanceResource {
             /*if (attendees == null && attendees.isEmpty()) {
                 return Response.status(Response.Status.BAD_REQUEST).entity("No students found").build();
             }*/
-            Query query = em.createQuery("select u from User u");
+            Query query = em.createQuery("select u from User u where u.accessRight = Student");
             List<User> studentList = query.getResultList();
             if (studentList == null && studentList.isEmpty()) {
                 return Response.status(Response.Status.BAD_REQUEST).entity("No students found").build();
@@ -451,7 +451,7 @@ public class AttendanceResource {
             /*if (attendees == null && attendees.isEmpty()) {
                 return Response.status(Response.Status.BAD_REQUEST).entity("No students found").build();
             }*/
-            Query query = em.createQuery("select u from User u");
+            Query query = em.createQuery("select u from User u where u.accessRight = Student");
             List<User> studentList = query.getResultList();
             if (studentList == null && studentList.isEmpty()) {
                 return Response.status(Response.Status.BAD_REQUEST).entity("No students found").build();
