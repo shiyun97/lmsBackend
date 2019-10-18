@@ -34,7 +34,6 @@ public class QuizAttempt implements Serializable {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long quizAttemptId;
     @Column
-    @Temporal(javax.persistence.TemporalType.DATE)
     private Date createTs;
     @Column
     private Double totalMarks;

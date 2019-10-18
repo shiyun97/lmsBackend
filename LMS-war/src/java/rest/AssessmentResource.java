@@ -309,6 +309,8 @@ public class AssessmentResource {
             qa.setQuiz(quiz);
             qa.setQuizTaker(user);
             quiz.getQuizAttemptList().add(qa);
+            qa.setQuestionAttemptList(new ArrayList<>());
+            em.persist(qa);
             
             double totalMarks = 0.0;
             for (QuestionAttemptModel queA: rqst.getQuestionAttempts()){
@@ -328,12 +330,11 @@ public class AssessmentResource {
                 }
                 
                 em.persist(queAToPersist);
+                System.out.println(qa.getQuestionAttemptList());
                 qa.getQuestionAttemptList().add(queAToPersist);
                 
             }
             qa.setTotalMarks(totalMarks);
-            
-            em.persist(qa);
             em.flush();
             
             return Response.status(Status.OK).build();
@@ -565,9 +566,24 @@ public class AssessmentResource {
             return Response.status(Status.BAD_REQUEST).entity(new ErrorRsp("Marks given exceeds the maximum point for the question")).build();
         }
         
-        queA.setMarks(marks);
-        
-        return Response.status(Status.OK).build();
+        try{
+            queA.setMarks(marks);
+            
+            Query q = em.createQuery("SELECT qa FROM QuizAttempt qa join qa.questionAttemptList que WHERE que.questionAttemptId = :id");
+            q.setParameter("id", questionAttemptId);
+            QuizAttempt qa = (QuizAttempt) q.getSingleResult();
+            double total = 0.0;
+            for(QuestionAttempt que: qa.getQuestionAttemptList()){
+                total+=que.getMarks();
+            }
+            
+            qa.setTotalMarks(total);
+
+            return Response.status(Status.OK).build();
+        } catch (Exception e){
+            e.printStackTrace();
+            return Response.status(Status.INTERNAL_SERVER_ERROR).entity(new ErrorRsp(e.getMessage())).build();
+        }
     }
     
     @POST

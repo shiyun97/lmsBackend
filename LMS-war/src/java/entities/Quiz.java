@@ -63,10 +63,8 @@ public class Quiz implements Serializable {
     @Column
     private QuestionOrderEnum questionsOrder;
     @Column
-    @Temporal(javax.persistence.TemporalType.DATE)
     private Date openingDate;
     @Column
-    @Temporal(javax.persistence.TemporalType.DATE)
     private Date closingDate;
     @Column
     private Integer noOfAttempts;
