@@ -289,8 +289,8 @@ public class AssessmentResource {
             return Response.status(Status.NOT_FOUND).entity(new ErrorRsp("Quiz with the given ID doesn't exist")).build();
         }
         
-        if(quiz.getClosingDate().before(now)){
-            return Response.status(Status.BAD_REQUEST).entity(new ErrorRsp("Quiz has been closed")).build();
+        if(quiz.getClosingDate().before(now) || quiz.getOpeningDate().after(now)){
+            return Response.status(Status.BAD_REQUEST).entity(new ErrorRsp("Quiz is closed")).build();
         }
         
         // Check attempts
