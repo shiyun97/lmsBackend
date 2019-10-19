@@ -37,22 +37,25 @@ public class ForumTopic {
     private List<ForumPost> threads;
     @ManyToOne
     private Module module;
+    @ManyToOne 
+    private Coursepack coursepack;
 
-
-    public ForumTopic(String title, String description, List<ForumPost> threads, Module module) {
+    public ForumTopic(String title, String description, List<ForumPost> threads, Module module, Coursepack coursepack ) {
         this.title = title;
         this.description = description;
         this.threads = new ArrayList<>();
         this.module = module;
+        this.coursepack = coursepack;
         
     }
 
-    public ForumTopic(Long forumTopicId, String title, String description, List<ForumPost> threads, Module module) {
+    public ForumTopic(Long forumTopicId, String title, String description, List<ForumPost> threads, Module module, Coursepack coursepack) {
         this.forumTopicId = forumTopicId;
         this.title = title;
         this.description = description;
         this.threads = new ArrayList<>();
         this.module = module;
+        this.coursepack = coursepack;
     }
 
     public ForumTopic() {
@@ -121,5 +124,13 @@ public class ForumTopic {
 
     public void setModule(Module module) {
         this.module = module;
+    }
+    
+       public Coursepack getCoursepack() {
+        return coursepack;
+    }
+
+    public void setCoursepack(Coursepack coursepack) {
+        this.coursepack = coursepack;
     }
 }
