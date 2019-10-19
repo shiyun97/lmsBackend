@@ -14,6 +14,8 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
@@ -66,6 +68,7 @@ public class ForumPost implements Serializable {
     private Long forumPostId;
     @Column
     private String title;
+    @Lob
     @Column
     private String message;
     @Column
@@ -83,10 +86,14 @@ public class ForumPost implements Serializable {
     private User owner;
     @ManyToOne
     private ForumTopic topic;
-    @OneToMany
-    private List<ForumPost> replies;
-    @OneToMany
-    private List<ForumPost> comments;
+    @OneToMany(mappedBy="parentOfReply")
+    private List<ForumPost> replies = new ArrayList<>();
+    @OneToMany(mappedBy="parentOfComments")
+    private List<ForumPost> comments = new ArrayList<>();
+    @ManyToOne
+    private ForumPost parentOfReply;
+    @ManyToOne
+    private ForumPost parentOfComments;
 
     @Override
     public int hashCode() {
@@ -220,6 +227,22 @@ public class ForumPost implements Serializable {
 
     public void setType(String type) {
         this.type = type;
+    }
+
+    public ForumPost getParentOfReply() {
+        return parentOfReply;
+    }
+
+    public void setParentOfReply(ForumPost parentOfReply) {
+        this.parentOfReply = parentOfReply;
+    }
+
+    public ForumPost getParentOfComments() {
+        return parentOfComments;
+    }
+
+    public void setParentOfComments(ForumPost parentOfComments) {
+        this.parentOfComments = parentOfComments;
     }
 
 }

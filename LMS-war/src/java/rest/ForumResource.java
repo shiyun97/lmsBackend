@@ -61,7 +61,14 @@ public class ForumResource {
 
                 if (forumTopics != null && !forumTopics.isEmpty()) {
                     for (ForumTopic ft : forumTopics) {
-                        rsp.getForumTopics().add(new ForumTopic(ft.getForumTopicId(), ft.getTitle(), ft.getDescription(), null, null, null));
+                        List<ForumPost> threads = ft.getThreads();
+                        List<ForumPost> rspThreads = new ArrayList<>();
+                        for (ForumPost fp : threads) {
+                            ForumPost temp = new ForumPost();
+                            temp.setForumPostId(fp.getForumPostId());
+                            rspThreads.add(temp);
+                        }
+                        rsp.getForumTopics().add(new ForumTopic(ft.getForumTopicId(), ft.getTitle(), ft.getDescription(), rspThreads, null, null));
                     }
                     return Response.status(Response.Status.OK).entity(rsp).build();
                 } else {
@@ -89,13 +96,78 @@ public class ForumResource {
 
                 if (threads != null && !threads.isEmpty()) {
                     for (ForumPost fp : threads) {
-                        rsp.getPosts().add(new ForumPost(fp.getTitle(), fp.getMessage(),
-                                fp.getCreateTs(), fp.getUpdateTs(), null, fp.getOwner(), null, null));
+                        User owner = new User();
+                        owner.setFirstName(fp.getOwner().getFirstName());
+                        owner.setLastName(fp.getOwner().getLastName());
+                        List<ForumPost> replies = fp.getReplies();
+                        List<ForumPost> repliesRsp = new ArrayList<>();
+                        for (ForumPost reply : replies) {
+                            ForumPost temp = new ForumPost();
+                            temp.setForumPostId(reply.getForumPostId());
+                            repliesRsp.add(temp);
+                        }
+                        rsp.getPosts().add(new ForumPost(fp.getForumPostId(), fp.getTitle(), fp.getMessage(),
+                                fp.getCreateTs(), fp.getUpdateTs(), fp.getThreadStarter(), owner, null, repliesRsp, null, null));
                     }
                     return Response.status(Response.Status.OK).entity(rsp).build();
                 } else {
                     return Response.status(Response.Status.NOT_FOUND).entity("No thread for this topic").build();
                 }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(new ErrorRsp(e.getMessage())).build();
+        }
+    }
+    
+    @Path("viewThreadDetails")
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response retrieveThreadDetails(@QueryParam("forumThreadId") Long forumThreadId) {
+        try {
+            ForumPost thread = em.find(ForumPost.class, forumThreadId);
+            if (thread == null) {
+                return Response.status(Response.Status.BAD_REQUEST).entity(new ErrorRsp("Thread does not exist!")).build();
+            } else {
+                User owner = new User();
+                owner.setFirstName(thread.getOwner().getFirstName());
+                owner.setLastName(thread.getOwner().getLastName());
+                ForumPost rsp = new ForumPost(thread.getTitle(), thread.getMessage(), thread.getCreateTs(), thread.getUpdateTs(), thread.getThreadStarter(),
+                        owner, null, thread.getType());
+                rsp.setForumPostId(thread.getForumPostId());
+                List<ForumPost> repliesRsp = new ArrayList<>();
+                for (ForumPost reply : thread.getReplies()) {
+                    User replyOwner = new User();
+                    replyOwner.setFirstName(reply.getOwner().getFirstName());
+                    replyOwner.setLastName(reply.getOwner().getLastName());
+                    ForumPost tempReply = new ForumPost(reply.getTitle(), reply.getMessage(), reply.getCreateTs(), reply.getUpdateTs(), reply.getThreadStarter(), replyOwner, null, reply.getType());
+                    tempReply.setForumPostId(reply.getForumPostId());
+                    List<ForumPost> tempReplyComments = new ArrayList<>();
+                    for (ForumPost comment : reply.getComments()) {
+                        User commentOwner = new User();
+                        commentOwner.setFirstName(comment.getOwner().getFirstName());
+                        commentOwner.setLastName(comment.getOwner().getLastName());
+                        ForumPost tempComment = new ForumPost(comment.getTitle(), comment.getMessage(), comment.getCreateTs(), comment.getUpdateTs(), comment.getThreadStarter(), commentOwner, null, comment.getType());
+                        tempComment.setForumPostId(comment.getForumPostId());
+                        tempReplyComments.add(tempComment);
+                    }
+                    tempReply.setComments(tempReplyComments);
+                    repliesRsp.add(tempReply);
+                }
+                rsp.setReplies(repliesRsp);
+                
+                List<ForumPost> tempComments = new ArrayList<>();
+                for (ForumPost comment : thread.getComments()) {
+                        User commentOwner = new User();
+                        commentOwner.setFirstName(comment.getOwner().getFirstName());
+                        commentOwner.setLastName(comment.getOwner().getLastName());
+                        ForumPost tempComment = new ForumPost(comment.getTitle(), comment.getMessage(), comment.getCreateTs(), comment.getUpdateTs(), comment.getThreadStarter(), commentOwner, null, comment.getType());
+                        tempComment.setForumPostId(comment.getForumPostId());
+                        tempComments.add(tempComment);
+                    }
+                rsp.setComments(tempComments);
+                return Response.status(Response.Status.OK).entity(rsp).build();
+                
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -264,14 +336,14 @@ public class ForumResource {
             } else if (parentPost == null) {
                 return Response.status(Response.Status.BAD_REQUEST).entity(new ErrorRsp("Parent Post Not Exist!")).build();
             } else {
-                if (parentPost.getThreadStarter().equals(Boolean.FALSE)) { // reply 
-                    if (!parentPost.getReplies().isEmpty()) {
+                if (createThreadReq.getType().equalsIgnoreCase("comment")) { // creating a comment 
+                    /*if (!parentPost.getReplies().isEmpty()) {
                         for (ForumPost fp : parentPost.getReplies()) {
                             if (fp.getMessage().equalsIgnoreCase(createThreadReq.getMessage())) {
                                 return Response.status(Response.Status.BAD_REQUEST).entity(new ErrorRsp("Message has already been posted!")).build();
                             }
                         }
-                    }
+                    }*/
 
                     ForumPost newPost = new ForumPost();
                     newPost.setCreateTs(LocalDateTime.now());
@@ -281,13 +353,14 @@ public class ForumResource {
                     newPost.setTitle(createThreadReq.getTitle());
                     newPost.setThreadStarter(Boolean.FALSE);
                     newPost.setType(createThreadReq.getType().toLowerCase());
+                    newPost.setParentOfComments(parentPost);
 
                     parentPost.getComments().add(newPost);
                     em.persist(newPost);
                     em.flush();
                     return Response.status(Response.Status.OK).build();
 
-                } else { //thread
+                } else { // creating a reply 
                     if (!parentPost.getReplies().isEmpty()) {
                         for (ForumPost fp : parentPost.getReplies()) {
                             if (fp.getMessage().equalsIgnoreCase(createThreadReq.getMessage())) {
@@ -309,12 +382,17 @@ public class ForumResource {
                     newPost.setTitle(createThreadReq.getTitle());
                     newPost.setThreadStarter(Boolean.FALSE);
                     newPost.setType(createThreadReq.getType().toLowerCase());
+                    newPost.setComments(new ArrayList<>());
+                    newPost.setReplies(new ArrayList<>());
+                    newPost.setParentOfReply(parentPost);
+                    parentPost.getReplies().add(newPost);
 
-                    if (createThreadReq.getType().equalsIgnoreCase("reply")) {
+                    /*if (createThreadReq.getType().equalsIgnoreCase("reply")) {
                         parentPost.getReplies().add(newPost);
                     } else {
                         parentPost.getComments().add(newPost);
-                    }
+                    }*/
+                    em.merge(parentPost);
                     em.persist(newPost);
                     em.flush();
                     return Response.status(Response.Status.OK).build();
