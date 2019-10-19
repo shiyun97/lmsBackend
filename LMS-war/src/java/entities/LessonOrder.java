@@ -7,6 +7,7 @@ package entities;
 
 import java.io.Serializable;
 import java.util.List;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -26,8 +27,11 @@ public class LessonOrder implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long lessonOrderId;
-    private int order;
+    @Column
+    private int number;
+    @Column
     private String name;
+    @Column
     private Boolean type;
     
 
@@ -45,7 +49,7 @@ public class LessonOrder implements Serializable {
     
     public LessonOrder(Long lessonOrderId, int order, String name, Boolean type, File file, Quiz quiz, Outlines outlines) {
         this.lessonOrderId = lessonOrderId;
-        this.order = order;
+        this.number = order;
         this.name = name;
         this.type = type; 
         this.file = file;
@@ -117,12 +121,12 @@ public class LessonOrder implements Serializable {
         this.outlines = outlines;
     }
 
-    public int getOrder() {
-        return order;
+    public int getNumber() {
+        return number;
     }
 
-    public void setOrder(int order) {
-        this.order = order;
+    public void setNumber(int number) {
+        this.number = number;
     }
 
     public String getName() {
