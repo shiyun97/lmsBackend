@@ -119,11 +119,6 @@ public class User implements Serializable {
     
     public User() {
     }
-    @OneToMany(mappedBy = "assignedTeacher")
-    private List<Coursepack> teacherCoursepackList;
-    @ManyToMany(mappedBy = "publicUserList")
-    private List<Coursepack> publicUserCoursepackList;
-
     public Long getId() {
         return userId;
     }
@@ -292,21 +287,5 @@ public class User implements Serializable {
     public void setAttendanceList(List<Attendance> attendanceList) {
         this.attendanceList = attendanceList;
     }
-    public List<Coursepack> getTeacherCoursepackList() {
-        return teacherCoursepackList;
-    }
-
-    public void setTeacherCoursepackList(List<Coursepack> teacherCoursepackList) {
-        this.teacherCoursepackList = teacherCoursepackList;
-    }
-
-    public List<Coursepack> getPublicUserCoursepackList() {
-        return publicUserCoursepackList;
-    }
-
-    public void setPublicUserCoursepackList(List<Coursepack> publicUserCoursepackList) {
-        this.publicUserCoursepackList = publicUserCoursepackList;
-    }
-    
     
 }

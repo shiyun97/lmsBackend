@@ -47,7 +47,6 @@ public class Quiz implements Serializable {
         this.module = module;
         this.questionList = questionList;
         this.quizAttemptList = quizAttemptList;
-        this.lessonOrder = lessonOrder; 
     }
 
     public Quiz() {
@@ -86,12 +85,6 @@ public class Quiz implements Serializable {
     @OneToMany(mappedBy = "quiz")
     private List<QuizAttempt> quizAttemptList;
     
-    @OneToOne
-    private LessonOrder lessonOrder;
-
-    public LessonOrder getLessonOrder() {
-        return lessonOrder;
-    }
 
     public boolean isPublish() {
         return publish;
@@ -101,10 +94,6 @@ public class Quiz implements Serializable {
         this.publish = publish;
     }
 
-    public void setLessonOrder(LessonOrder lessonOrder) {
-        this.lessonOrder = lessonOrder;
-    }
-    
     
 
     public Long getQuizId() {

@@ -66,17 +66,7 @@ public class File implements Serializable {
     private Module module; // for multimedia files
     @ManyToOne
     private User uploader;
-    
-    @OneToOne
-    private LessonOrder lessonOrder;
-
-    public LessonOrder getLessonOrder() {
-        return lessonOrder;
-    }
-
-    public void setLessonOrder(LessonOrder lessonOrder) {
-        this.lessonOrder = lessonOrder;
-    }
+  
     
     
 
