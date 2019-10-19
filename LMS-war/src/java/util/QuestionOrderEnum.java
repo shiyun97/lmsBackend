@@ -9,6 +9,6 @@ package util;
  *
  * @author Asus
  */
-public enum QuestionTypeEnum {
-    radiogroup, text
+public enum QuestionOrderEnum {
+    random, initial
 }

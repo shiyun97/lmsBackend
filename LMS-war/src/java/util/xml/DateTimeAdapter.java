@@ -17,7 +17,7 @@ import javax.xml.bind.annotation.adapters.XmlAdapter;
 public class DateTimeAdapter extends XmlAdapter<String, Date>
 {
 
-    private final DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+    private final DateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
     
     @Override
     public Date unmarshal(String v) throws Exception {        

@@ -13,8 +13,6 @@ import ejb.EmailSessionBean;
 import entities.Annoucement;
 import entities.Module;
 import java.text.SimpleDateFormat;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -44,7 +42,8 @@ public class AnnoucementResource {
 
     @PersistenceContext(unitName = "LMS-warPU")
     private EntityManager em;
-    public SimpleDateFormat dateFormatter = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
+
+    SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
 
     public AnnoucementResource() {
     }
@@ -55,14 +54,10 @@ public class AnnoucementResource {
     @Produces(MediaType.APPLICATION_JSON)
     public Response createAnnoucement(CreateAnnoucement createAnnoucement, @PathParam("id") Long moduleId) {
         try {
-            Date createdDate = dateFormatter.parse(createAnnoucement.getCreatedDate());
-            Date lastUpdatedDate = dateFormatter.parse(createAnnoucement.getLastUpdatedDate());
-            Date startDate = dateFormatter.parse(createAnnoucement.getStartDate());
-            Date endDate = dateFormatter.parse(createAnnoucement.getEndDate());
-            // LocalDateTime createdDate = LocalDateTime.parse(createAnnoucement.getCreatedDate(), formatter);
-            // LocalDateTime lastUpdatedDate = LocalDateTime.parse(createAnnoucement.getLastUpdatedDate(), formatter);
-            // LocalDateTime startDate = LocalDateTime.parse(createAnnoucement.getStartDate(), formatter);
-            // LocalDateTime endDate = LocalDateTime.parse(createAnnoucement.getEndDate(), formatter);
+            Date createdDate = formatter.parse(createAnnoucement.getCreatedDate());
+            Date lastUpdatedDate = formatter.parse(createAnnoucement.getLastUpdatedDate());
+            Date startDate = formatter.parse(createAnnoucement.getStartDate());
+            Date endDate = formatter.parse(createAnnoucement.getEndDate());
 
             Module module = em.find(Module.class, moduleId);
 
@@ -77,6 +72,43 @@ public class AnnoucementResource {
             annoucement.setEmailNotification(createAnnoucement.getEmailNotification());
             //annoucement.setModule(createAnnoucement.getModule());
             annoucement.setModule(module);
+            annoucement.setOwner(createAnnoucement.getOwner());
+            em.persist(annoucement);
+            em.flush();
+            module.getAnnoucementList().add(annoucement);
+            Annoucement annoucementCopy = new Annoucement(annoucement.getAnnoucementId(), annoucement.getTitle(),
+                    annoucement.getContent(), createdDate, lastUpdatedDate, startDate, endDate,
+                    annoucement.getPublish(), annoucement.getEmailNotification(), null, null);
+            return Response.status(Response.Status.OK).entity(annoucementCopy).build();
+            //EmailSessionBean.sendEmail(annoucement.getOwner().getEmail(), annoucement.getTitle(), annoucement.getOwner().getUsername());
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(new ErrorRsp(ex.getMessage())).build();
+        }
+    }
+
+    @POST
+    @Path(value = "createSystemAnnoucement")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response createSystemAnnoucement(CreateAnnoucement createAnnoucement) {
+        try {
+            Date createdDate = formatter.parse(createAnnoucement.getCreatedDate());
+            Date lastUpdatedDate = formatter.parse(createAnnoucement.getLastUpdatedDate());
+            Date startDate = formatter.parse(createAnnoucement.getStartDate());
+            Date endDate = formatter.parse(createAnnoucement.getEndDate());
+
+            Annoucement annoucement = new Annoucement();
+            annoucement.setTitle(createAnnoucement.getTitle());
+            annoucement.setContent(createAnnoucement.getContent());
+            annoucement.setCreatedDate(createdDate);
+            annoucement.setLastUpdatedDate(createdDate);
+            annoucement.setStartDate(startDate);
+            annoucement.setEndDate(endDate);
+            annoucement.setPublish(createAnnoucement.getPublish());
+            annoucement.setEmailNotification(createAnnoucement.getEmailNotification());
+            //annoucement.setModule(createAnnoucement.getModule());
+            //annoucement.setModule(module);
             annoucement.setOwner(createAnnoucement.getOwner());
             em.persist(annoucement);
             em.flush();
@@ -141,8 +173,6 @@ public class AnnoucementResource {
     @Path("getAllActiveAnnoucements")
     @Produces(MediaType.APPLICATION_JSON)
     public Response getAllActiveAnnoucements(@QueryParam("moduleId") Long moduleId) {
-        Date currDate = new Date();
-        System.out.println(currDate);
         try {
             Module module = em.find(Module.class, moduleId);
             if (module == null) {
@@ -153,14 +183,75 @@ public class AnnoucementResource {
             if (annoucementList == null || annoucementList.isEmpty()) {
                 return Response.status(Response.Status.NOT_FOUND).entity("Module does not have annoucement").build();
             }
+            Date now = new Date();
             for (Annoucement a : annoucementList) {
-                if (a.getEndDate().after(currDate)) {
+                if (a.getEndDate().after(now)) {
                     rsp.getAnnoucementList().add(
                             new Annoucement(a.getAnnoucementId(), a.getTitle(),
-                            a.getContent(), a.getCreatedDate(), a.getLastUpdatedDate(),
-                            a.getStartDate(), a.getEndDate(), a.getPublish(),
-                            a.getEmailNotification(),
-                            null, null));
+                                    a.getContent(), a.getCreatedDate(), a.getLastUpdatedDate(),
+                                    a.getStartDate(), a.getEndDate(), a.getPublish(),
+                                    a.getEmailNotification(),
+                                    null, null));
+                }
+            }
+            return Response.status(Response.Status.OK).entity(rsp).build();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(new ErrorRsp(ex.getMessage())).build();
+        }
+    }
+
+    @GET
+    @Path("getAllActiveSystemAnnoucement")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getAllActiveSystemAnnoucement() {
+        try {
+            Query query = em.createQuery("select a from Annoucement a");
+            List<Annoucement> annoucementList = query.getResultList();
+            if (annoucementList == null || annoucementList.isEmpty()) {
+                return Response.status(Response.Status.NOT_FOUND).entity("No annoucement found").build();
+            }
+            GetAnnoucementRsp rsp = new GetAnnoucementRsp(new ArrayList<>());
+            Date now = new Date();
+            for (Annoucement a : annoucementList) {
+                if (a.getEndDate().after(now)) {
+                    rsp.getAnnoucementList().add(
+                            new Annoucement(a.getAnnoucementId(), a.getTitle(),
+                                    a.getContent(), a.getCreatedDate(), a.getLastUpdatedDate(),
+                                    a.getStartDate(), a.getEndDate(), a.getPublish(), a.getEmailNotification(),
+                                    null, null));
+                }
+            }
+            return Response.status(Response.Status.OK).entity(rsp).build();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(new ErrorRsp(ex.getMessage())).build();
+        }
+    }
+
+    @GET
+    @Path("getAllExpiredAnnoucements")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getAllExpiredAnnoucements(@QueryParam("moduleId") Long moduleId) {
+        try {
+            Module module = em.find(Module.class, moduleId);
+            if (module == null) {
+                return Response.status(Response.Status.NOT_FOUND).entity("Module does not exist").build();
+            }
+            GetAnnoucementRsp rsp = new GetAnnoucementRsp(new ArrayList<>());
+            List<Annoucement> annoucementList = module.getAnnoucementList();
+            if (annoucementList == null || annoucementList.isEmpty()) {
+                return Response.status(Response.Status.NOT_FOUND).entity("Module does not have annoucement").build();
+            }
+            Date now = new Date();
+            for (Annoucement a : annoucementList) {
+                if (a.getEndDate().before(now)) {
+                    rsp.getAnnoucementList().add(
+                            new Annoucement(a.getAnnoucementId(), a.getTitle(),
+                                    a.getContent(), a.getCreatedDate(), a.getLastUpdatedDate(),
+                                    a.getStartDate(), a.getEndDate(), a.getPublish(),
+                                    a.getEmailNotification(),
+                                    null, null));
                 }
             }
             return Response.status(Response.Status.OK).entity(rsp).build();
@@ -171,11 +262,37 @@ public class AnnoucementResource {
     }
     
     @GET
-    @Path("getAllExpiredAnnoucements")
+    @Path("getAllExpiredSystemAnnoucement")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response getAllExpiredAnnoucements(@QueryParam("moduleId") Long moduleId) {
-        Date currDate = new Date();
-        System.out.println(currDate);
+    public Response getAllExpiredSystemAnnoucement() {
+        try {
+            Query query = em.createQuery("select a from Annoucement a");
+            List<Annoucement> annoucementList = query.getResultList();
+            if (annoucementList == null || annoucementList.isEmpty()) {
+                return Response.status(Response.Status.NOT_FOUND).entity("No annoucement found").build();
+            }
+            GetAnnoucementRsp rsp = new GetAnnoucementRsp(new ArrayList<>());
+            Date now = new Date();
+            for (Annoucement a : annoucementList) {
+                if (a.getEndDate().before(now)) {
+                    rsp.getAnnoucementList().add(
+                            new Annoucement(a.getAnnoucementId(), a.getTitle(),
+                                    a.getContent(), a.getCreatedDate(), a.getLastUpdatedDate(),
+                                    a.getStartDate(), a.getEndDate(), a.getPublish(), a.getEmailNotification(),
+                                    null, null));
+                }
+            }
+            return Response.status(Response.Status.OK).entity(rsp).build();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(new ErrorRsp(ex.getMessage())).build();
+        }
+    }
+    
+    @GET
+    @Path("getAllUpcomingAnnoucements")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getAllUpcomingAnnoucements(@QueryParam("moduleId") Long moduleId) {
         try {
             Module module = em.find(Module.class, moduleId);
             if (module == null) {
@@ -186,15 +303,43 @@ public class AnnoucementResource {
             if (annoucementList == null || annoucementList.isEmpty()) {
                 return Response.status(Response.Status.NOT_FOUND).entity("Module does not have annoucement").build();
             }
-//            LocalDateTime timeNow = LocalDateTime.now();
+            Date now = new Date();
             for (Annoucement a : annoucementList) {
-                if (a.getEndDate().before(currDate)) {
+                if (a.getStartDate().after(now)) {
                     rsp.getAnnoucementList().add(
                             new Annoucement(a.getAnnoucementId(), a.getTitle(),
-                            a.getContent(), a.getCreatedDate(), a.getLastUpdatedDate(),
-                            a.getStartDate(), a.getEndDate(), a.getPublish(),
-                            a.getEmailNotification(),
-                            null, null));
+                                    a.getContent(), a.getCreatedDate(), a.getLastUpdatedDate(),
+                                    a.getStartDate(), a.getEndDate(), a.getPublish(),
+                                    a.getEmailNotification(),
+                                    null, null));
+                }
+            }
+            return Response.status(Response.Status.OK).entity(rsp).build();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(new ErrorRsp(ex.getMessage())).build();
+        }
+    }
+    
+    @GET
+    @Path("getAllUpcomingSystemAnnoucement")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getAllUpcomingSystemAnnoucement() {
+        try {
+            Query query = em.createQuery("select a from Annoucement a");
+            List<Annoucement> annoucementList = query.getResultList();
+            if (annoucementList == null || annoucementList.isEmpty()) {
+                return Response.status(Response.Status.NOT_FOUND).entity("No annoucement found").build();
+            }
+            GetAnnoucementRsp rsp = new GetAnnoucementRsp(new ArrayList<>());
+            Date now = new Date();
+            for (Annoucement a : annoucementList) {
+                if (a.getStartDate().after(now)) {
+                    rsp.getAnnoucementList().add(
+                            new Annoucement(a.getAnnoucementId(), a.getTitle(),
+                                    a.getContent(), a.getCreatedDate(), a.getLastUpdatedDate(),
+                                    a.getStartDate(), a.getEndDate(), a.getPublish(), a.getEmailNotification(),
+                                    null, null));
                 }
             }
             return Response.status(Response.Status.OK).entity(rsp).build();
@@ -214,14 +359,10 @@ public class AnnoucementResource {
             if (annoucement == null) {
                 return Response.status(Response.Status.NOT_FOUND).entity("No annoucement found").build();
             }
-            Date createdDate = dateFormatter.parse(updateAnnoucement.getCreatedDate());
-            Date lastUpdatedDate = dateFormatter.parse(updateAnnoucement.getLastUpdatedDate());
-            Date startDate = dateFormatter.parse(updateAnnoucement.getStartDate());
-            Date endDate = dateFormatter.parse(updateAnnoucement.getEndDate());
-//            LocalDateTime createdDate = LocalDateTime.parse(updateAnnoucement.getCreatedDate(), formatter);
-//            LocalDateTime lastUpdatedDate = LocalDateTime.parse(updateAnnoucement.getLastUpdatedDate(), formatter);
-//            LocalDateTime startDate = LocalDateTime.parse(updateAnnoucement.getStartDate(), formatter);
-//            LocalDateTime endDate = LocalDateTime.parse(updateAnnoucement.getEndDate(), formatter);
+            Date createdDate = formatter.parse(updateAnnoucement.getCreatedDate());
+            Date lastUpdatedDate = formatter.parse(updateAnnoucement.getLastUpdatedDate());
+            Date startDate = formatter.parse(updateAnnoucement.getStartDate());
+            Date endDate = formatter.parse(updateAnnoucement.getEndDate());
 
             annoucement.setTitle(updateAnnoucement.getTitle());
             annoucement.setContent(updateAnnoucement.getContent());

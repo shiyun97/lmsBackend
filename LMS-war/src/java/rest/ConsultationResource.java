@@ -32,6 +32,7 @@ import util.AccessRightEnum;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
 
 @Stateless
 @Path("Consultation")
@@ -171,55 +172,6 @@ public class ConsultationResource {
         }
     }
     
-    @Path("createConsultation")
-    @PUT
-    @Consumes(MediaType.APPLICATION_JSON)
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response createConsultation(ConsultationTimeReq consultationTimeReq, @QueryParam("userId") Long userId, @QueryParam("moduleId") Long moduleId) {
-        try {
-            User user = em.find(User.class, userId);
-            Module mod = em.find(Module.class, moduleId);
-            
-            LocalTime startTime = LocalTime.parse(consultationTimeReq.getStartTime(), timeFormatter);
-            LocalTime endTime = LocalTime.parse(consultationTimeReq.getEndTime(), timeFormatter);
-            LocalDate startDate = LocalDate.parse(consultationTimeReq.getStartDate(), dateFormatter);
-            
-            if (mod == null) {
-                return Response.status(Response.Status.BAD_REQUEST).entity(new ErrorRsp("Module do not exist !")).build();
-            } else if (user.getAccessRight() != AccessRightEnum.Teacher) {
-                return Response.status(Response.Status.BAD_REQUEST).entity(new ErrorRsp("You do not have rights to create consultation!")).build();
-            } else if (startTime.compareTo(LocalTime.now()) < 0 && startDate.compareTo(LocalDate.now()) < 0) {
-                return Response.status(Response.Status.BAD_REQUEST).entity(new ErrorRsp("Timeslot is invalid!")).build();
-            } else {
-                Query q = em.createQuery("Select c from ConsultationTimeslot c WHERE c.startD=:startDate AND c.startTs=:startTime AND c.endTs=:endTime");
-                q.setParameter("startDate", startDate);
-                q.setParameter("startTime", startTime);
-                q.setParameter("endTime", endTime);
-                
-                List<ConsultationTimeslot> cList = q.getResultList();
-                for (ConsultationTimeslot c : cList) {
-                    if (c.getStartTs().equals(startTime) && (c.getEndTs().equals(endTime) && (c.getStartD().equals(startDate)))) {
-                        return Response.status(Response.Status.BAD_REQUEST).entity(new ErrorRsp("Timeslot has already been created!")).build();
-                    }
-                }
-                ConsultationTimeslot newTimeslot = new ConsultationTimeslot();
-                newTimeslot.setStartD(startDate);
-                newTimeslot.setStartTs(startTime);
-                newTimeslot.setEndTs(endTime);
-                newTimeslot.setModule(mod);
-                
-                mod.getConsultationList().add(newTimeslot);
-                em.persist(newTimeslot);
-                em.flush();
-                return Response.status(Response.Status.OK).build();
-                
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(new ErrorRsp(e.getMessage())).build();
-        }
-    }
-    
     @Path("deleteConsultation")
     @DELETE
     @Produces(MediaType.APPLICATION_JSON)
@@ -273,6 +225,72 @@ public class ConsultationResource {
                 }
             }
         } catch (Exception e) {
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(new ErrorRsp(e.getMessage())).build();
+        }
+    }
+	
+	@Path("createConsultation")
+    @PUT
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response createConsultation(ConsultationTimeReq consultationTimeReq, @QueryParam("userId") Long userId, @QueryParam("moduleId") Long moduleId) {
+        try {
+            User user = em.find(User.class, userId);
+            Module mod = em.find(Module.class, moduleId);
+
+            LocalTime startTime = LocalTime.parse(consultationTimeReq.getStartTime(), timeFormatter);
+            LocalTime endTime = LocalTime.parse(consultationTimeReq.getEndTime(), timeFormatter);
+            LocalDate startDate = LocalDate.parse(consultationTimeReq.getStartDate(), dateFormatter);
+
+            if (mod == null) {
+                return Response.status(Response.Status.BAD_REQUEST).entity(new ErrorRsp("Module do not exist !")).build();
+            } else if (user.getAccessRight() != AccessRightEnum.Teacher) {
+                return Response.status(Response.Status.BAD_REQUEST).entity(new ErrorRsp("You do not have rights to create consultation!")).build();
+            } else if (startTime.compareTo(LocalTime.now()) < 0 && startDate.compareTo(LocalDate.now()) < 0) {
+                return Response.status(Response.Status.BAD_REQUEST).entity(new ErrorRsp("Timeslot is invalid!")).build();
+            } else if (ChronoUnit.MINUTES.between(startTime, endTime) % 60 != 0) {
+                return Response.status(Response.Status.BAD_REQUEST).entity(new ErrorRsp("Invalid input!")).build();
+            } else {
+                List<ConsultationTimeslot> createdSlot = new ArrayList<>();
+                Long numberOfHours = ChronoUnit.HOURS.between(startTime, endTime);
+                int noOfHours = Math.toIntExact(numberOfHours);
+                Boolean exist = false;
+                
+                for (int i = 0; i < noOfHours; i++) {
+                    LocalTime newStartTime = startTime.plusHours(i);
+                    LocalTime newEndTime = newStartTime.plusHours(1);
+                    System.out.println(newStartTime.toString());
+                    System.out.println(newEndTime.toString());
+
+                    List<ConsultationTimeslot> allSlots = mod.getConsultationList();
+                    for (ConsultationTimeslot c : allSlots) {
+                    if (c.getStartTs().equals(newStartTime) && (c.getEndTs().equals(newEndTime) && (c.getStartD().equals(startDate)))) {
+                        exist = true;
+                    }
+                    }
+                    if (exist == false) {
+                        System.out.println("is empty");
+                        ConsultationTimeslot newTimeslot = new ConsultationTimeslot();
+                        newTimeslot.setStartD(startDate);
+                        newTimeslot.setStartTs(newStartTime);
+                        newTimeslot.setEndTs(newEndTime);
+                        newTimeslot.setModule(mod);
+
+                        mod.getConsultationList().add(newTimeslot);
+                        createdSlot.add(newTimeslot);
+                        em.persist(newTimeslot);
+                        em.flush();
+                    }
+                    exist = false;
+                }
+                if (!createdSlot.isEmpty()) {
+                    return Response.status(Response.Status.OK).build();
+                } else {
+                    return Response.status(Response.Status.BAD_REQUEST).entity(new ErrorRsp("No new slot is created!")).build();
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(new ErrorRsp(e.getMessage())).build();
         }
     }

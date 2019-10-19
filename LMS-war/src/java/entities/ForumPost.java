@@ -28,7 +28,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 @XmlRootElement
 public class ForumPost implements Serializable {
 
-    public ForumPost(String title, String description, Integer numberOfReply, Timestamp createTs, Timestamp updateTs, Boolean threadStarter, String owner, Module module) {
+    public ForumPost(String title, String description, Integer numberOfReply, Timestamp createTs, Timestamp updateTs, Boolean threadStarter, String owner, Module module, Coursepack coursepack) {
         this.title = title;
         this.description = description;
         this.numberOfReply = numberOfReply;
@@ -38,6 +38,7 @@ public class ForumPost implements Serializable {
         this.owner = owner;
         this.module = module;
         this.replies = new ArrayList<>();
+        this.coursepack = coursepack;
     }
 
     public ForumPost() {
@@ -69,6 +70,8 @@ public class ForumPost implements Serializable {
     private Module module;
     @OneToMany
     private List<ForumPost> replies;
+    @ManyToOne
+    private Coursepack coursepack;
     
 
 
@@ -184,4 +187,14 @@ public class ForumPost implements Serializable {
     public void setReplies(List<ForumPost> replies) {
         this.replies = replies;
     }
+
+    public Coursepack getCoursepack() {
+        return coursepack;
+    }
+
+    public void setCoursepack(Coursepack coursepack) {
+        this.coursepack = coursepack;
+    }
+    
+    
 }

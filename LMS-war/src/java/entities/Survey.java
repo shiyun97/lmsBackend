@@ -6,7 +6,7 @@
 package entities;
 
 import java.io.Serializable;
-import java.sql.Timestamp;
+import java.util.Date;
 import java.util.List;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -23,17 +23,6 @@ import javax.persistence.OneToMany;
 @Entity
 public class Survey implements Serializable {
 
-    public Survey(String title, String description, Timestamp createTs, Timestamp updateTs, Timestamp startDate, Timestamp endDate, List<Question> questionList, Module module) {
-        this.title = title;
-        this.description = description;
-        this.createTs = createTs;
-        this.updateTs = updateTs;
-        this.startDate = startDate;
-        this.endDate = endDate;
-        this.questionList = questionList;
-        this.module = module;
-    }
-
     public Survey() {
     }
 
@@ -46,17 +35,15 @@ public class Survey implements Serializable {
     @Column
     private String description;
     @Column
-    private Timestamp createTs;
+    private Date openingDate;
     @Column
-    private Timestamp updateTs;
-    @Column
-    private Timestamp startDate;
-    @Column
-    private Timestamp endDate;
-    @OneToMany(mappedBy = "survey")
+    private Date closingDate;
+    @OneToMany
     private List<Question> questionList;
     @ManyToOne
     private Module module;
+    @OneToMany(mappedBy = "survey")
+    private List<SurveyAttempt> surveyAttemptList;
     
     
     public Long getSurveyId() {
@@ -108,38 +95,6 @@ public class Survey implements Serializable {
         this.description = description;
     }
 
-    public Timestamp getCreateTs() {
-        return createTs;
-    }
-
-    public void setCreateTs(Timestamp createTs) {
-        this.createTs = createTs;
-    }
-
-    public Timestamp getUpdateTs() {
-        return updateTs;
-    }
-
-    public void setUpdateTs(Timestamp updateTs) {
-        this.updateTs = updateTs;
-    }
-
-    public Timestamp getStartDate() {
-        return startDate;
-    }
-
-    public void setStartDate(Timestamp startDate) {
-        this.startDate = startDate;
-    }
-
-    public Timestamp getEndDate() {
-        return endDate;
-    }
-
-    public void setEndDate(Timestamp endDate) {
-        this.endDate = endDate;
-    }
-
     public List<Question> getQuestionList() {
         return questionList;
     }
@@ -155,5 +110,28 @@ public class Survey implements Serializable {
     public void setModule(Module module) {
         this.module = module;
     }
-    
+
+    public Date getOpeningDate() {
+        return openingDate;
+    }
+
+    public void setOpeningDate(Date openingDate) {
+        this.openingDate = openingDate;
+    }
+
+    public Date getClosingDate() {
+        return closingDate;
+    }
+
+    public void setClosingDate(Date closingDate) {
+        this.closingDate = closingDate;
+    }
+
+    public List<SurveyAttempt> getSurveyAttemptList() {
+        return surveyAttemptList;
+    }
+
+    public void setSurveyAttemptList(List<SurveyAttempt> surveyAttemptList) {
+        this.surveyAttemptList = surveyAttemptList;
+    }
 }
