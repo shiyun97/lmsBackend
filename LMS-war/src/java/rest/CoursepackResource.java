@@ -80,16 +80,16 @@ public class CoursepackResource {
             coursepack.setStartDate(createCoursepack.getStartDate());
             coursepack.setTeacherBackground(createCoursepack.getTeacherBackground());
             coursepack.setAssignedTeacher(createCoursepack.getUser());
-            coursepack.setOutlineList(new ArrayList<>());
+            //coursepack.setOutlineList(new ArrayList<>());
             em.persist(coursepack);
             em.flush();
-            /*Outlines outlines = new Outlines();
+            Outlines outlines = new Outlines();
             outlines.setCoursepack(createCoursepack.getCoursepack());
-            outlines.setLessonOrder(createCoursepack.get);
-            outlines.setName(createCoursepack.get);
+            outlines.setLessonOrder(createCoursepack.getLessonOrderList());
+            outlines.setName(createCoursepack.getOutlineName());
             em.persist(outlines);
             em.flush();
-            coursepack.getOutlineList().add(outlines);*/
+            coursepack.getOutlineList().add(outlines);
 
            
             /*for(String outline: createCoursepack.getOutlines()){
@@ -99,7 +99,7 @@ public class CoursepackResource {
                 newOut.setCoursepack(coursepack);
                 em.persist(newOut);
                 
-            }*/
+            }
             
             List<Outlines> outlines = new ArrayList<>();
             for(Outlines o : outlines){
@@ -109,12 +109,10 @@ public class CoursepackResource {
 
                 outlines.add(o);
             }
-            
-            
 
             Coursepack coursepackCopy = new Coursepack(coursepack.getCoursepackId(), coursepack.getCode(), coursepack.getTitle(),
                         coursepack.getDescription(), coursepack.getCategory(), coursepack.getPrice(), coursepack.getStartDate(), null, 
-                        coursepack.getTeacherBackground(), null, null, null, null, null, outlines);
+                        coursepack.getTeacherBackground(), null, null, null, null, null, outlines);*/
             
             return Response.status(Response.Status.OK).entity(coursepack).build();
         } catch (Exception ex) {

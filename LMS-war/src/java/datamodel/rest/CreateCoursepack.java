@@ -6,6 +6,8 @@
 package datamodel.rest;
 
 import entities.Coursepack;
+import entities.LessonOrder;
+import entities.Outlines;
 import entities.User;
 import java.sql.Timestamp;
 import java.util.List;
@@ -25,27 +27,24 @@ public class CreateCoursepack {
     private Double price;
     private Timestamp startDate;
     private String teacherBackground;
-    private List<String> outlines;
+    //private List<String> outlines;
+    
+    private Outlines outlineList;
+    private Long outlineId;
+    private List<LessonOrder> lessonOrderList;
+    private String outlineName;
+    
     
     private User user; 
     private Long userId;
     private String email;
     private String password;
 
-    public List<String> getOutlines() {
-        return outlines;
-    }
-
-    public void setOutlines(List<String> outlines) {
-        this.outlines = outlines;
-    }
-
-
     public CreateCoursepack(){
         
     }
 
-    public CreateCoursepack(Coursepack coursepack, Long coursepackId, String code, String title, String description, String category, Double price, Timestamp startDate, String teacherBackground, List<String> outlines, User user, Long userId, String email, String password) {
+    public CreateCoursepack(Coursepack coursepack, Long coursepackId, String code, String title, String description, String category, Double price, Timestamp startDate, String teacherBackground,Outlines outlineList, Long outlineId, List<LessonOrder> lessonOrderList, String outlineName, User user, Long userId, String email, String password) {
         this.coursepack = coursepack;
         this.coursepackId = coursepackId;
         this.code = code;
@@ -55,7 +54,13 @@ public class CreateCoursepack {
         this.price = price;
         this.startDate = startDate;
         this.teacherBackground = teacherBackground;
-        this.outlines = outlines;
+        //this.outlines = outlines;
+        
+        this.outlineList = outlineList;
+        this.outlineId = outlineId;
+        this.lessonOrderList = lessonOrderList;
+        this.outlineName = outlineName;
+        
         this.user = user;
         this.userId = userId;
         this.email = email;
@@ -165,8 +170,45 @@ public class CreateCoursepack {
     public void setPassword(String password) {
         this.password = password;
     }
-    
-    
-    
-    
+
+    public Outlines getOutlineList() {
+        return outlineList;
+    }
+
+    public void setOutlineList(Outlines outlineList) {
+        this.outlineList = outlineList;
+    }
+
+    public Long getOutlineId() {
+        return outlineId;
+    }
+
+    public void setOutlineId(Long outlineId) {
+        this.outlineId = outlineId;
+    }
+
+    public List<LessonOrder> getLessonOrderList() {
+        return lessonOrderList;
+    }
+
+    public void setLessonOrderList(List<LessonOrder> lessonOrderList) {
+        this.lessonOrderList = lessonOrderList;
+    }
+
+    public String getOutlineName() {
+        return outlineName;
+    }
+
+    public void setOutlineName(String outlineName) {
+        this.outlineName = outlineName;
+    }
+
+    /*public List<String> getOutlines() {
+        return outlines;
+    }
+
+    public void setOutlines(List<String> outlines) {
+        this.outlines = outlines;
+    }*/
+
 }

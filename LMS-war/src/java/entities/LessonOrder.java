@@ -7,6 +7,7 @@ package entities;
 
 import java.io.Serializable;
 import java.util.List;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -26,8 +27,11 @@ public class LessonOrder implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long lessonOrderId;
-    private int order;
+    @Column
+    private int number;
+    @Column
     private String name;
+    @Column
     private Boolean type;
     
 
@@ -37,20 +41,24 @@ public class LessonOrder implements Serializable {
     private Quiz quiz;
     @ManyToOne
     private Outlines outlines; 
+    @OneToMany(mappedBy = "lessonOrder")
+    private List<User> publicUserList;
+    
 
     public LessonOrder(){
         
     }
     
     
-    public LessonOrder(Long lessonOrderId, int order, String name, Boolean type, File file, Quiz quiz, Outlines outlines) {
+    public LessonOrder(Long lessonOrderId, int number, String name, Boolean type, File file, Quiz quiz, Outlines outlines, List<User> publicUserList) {
         this.lessonOrderId = lessonOrderId;
-        this.order = order;
+        this.number = number;
         this.name = name;
         this.type = type; 
         this.file = file;
         this.quiz = quiz;
         this.outlines = outlines;
+        this.publicUserList = publicUserList;
     }
     
     
@@ -117,12 +125,12 @@ public class LessonOrder implements Serializable {
         this.outlines = outlines;
     }
 
-    public int getOrder() {
-        return order;
+    public int getNumber() {
+        return number;
     }
 
-    public void setOrder(int order) {
-        this.order = order;
+    public void setNumber(int number) {
+        this.number = number;
     }
 
     public String getName() {
@@ -139,6 +147,14 @@ public class LessonOrder implements Serializable {
 
     public void setType(Boolean type) {
         this.type = type;
+    }
+
+    public List<User> getPublicUserList() {
+        return publicUserList;
+    }
+
+    public void setPublicUserList(List<User> publicUserList) {
+        this.publicUserList = publicUserList;
     }
     
     
