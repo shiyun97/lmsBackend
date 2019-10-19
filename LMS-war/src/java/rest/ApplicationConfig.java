@@ -21,6 +21,7 @@ public class ApplicationConfig extends Application
 
     private void addRestResourceClasses(Set<Class<?>> resources) {
         resources.add(rest.ConsultationResource.class);
+        resources.add(rest.CorsFilter.class);
         resources.add(rest.FeedbackResource.class);
         resources.add(rest.FileResource.class);
         resources.add(rest.ForumResource.class);
