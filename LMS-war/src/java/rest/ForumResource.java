@@ -61,7 +61,7 @@ public class ForumResource {
 
                 if (forumTopics != null && !forumTopics.isEmpty()) {
                     for (ForumTopic ft : forumTopics) {
-                        rsp.getForumTopics().add(new ForumTopic(ft.getForumTopicId(), ft.getTitle(), ft.getDescription(), null, null));
+                        rsp.getForumTopics().add(new ForumTopic(ft.getForumTopicId(), ft.getTitle(), ft.getDescription(), null, null, null));
                     }
                     return Response.status(Response.Status.OK).entity(rsp).build();
                 } else {
@@ -220,11 +220,11 @@ public class ForumResource {
             } else if (topic == null) {
                 return Response.status(Response.Status.BAD_REQUEST).entity(new ErrorRsp("Topic Not Exist!")).build();
             } else {
-                List <ForumPost> threads = topic.getThreads();
+                List<ForumPost> threads = topic.getThreads();
                 Boolean sameMessage = false;
-                
-                for(ForumPost fp : threads){
-                    if(fp.getMessage().equalsIgnoreCase(createThreadReq.getMessage()) && fp.getTitle().equalsIgnoreCase(createThreadReq.getTitle())){
+
+                for (ForumPost fp : threads) {
+                    if (fp.getMessage().equalsIgnoreCase(createThreadReq.getMessage()) && fp.getTitle().equalsIgnoreCase(createThreadReq.getTitle())) {
                         sameMessage = true;
                     }
                 }
@@ -255,42 +255,69 @@ public class ForumResource {
     @Path("createPost")
     @PUT
     @Produces(MediaType.APPLICATION_JSON)
-    public Response createPost(@QueryParam("message") String message, @QueryParam("title") String title, @QueryParam("type") String type, @QueryParam("userId") Long userId, @QueryParam("threadId") Long threadId) {
+    public Response createPost(CreateThreadReq createThreadReq, @QueryParam("userId") Long userId, @QueryParam("parentPostId") Long parentPostId) {
         try {
             User user = em.find(User.class, userId);
-            ForumPost parentThread = em.find(ForumPost.class, threadId);
+            ForumPost parentPost = em.find(ForumPost.class, parentPostId);
             if (user == null) {
                 return Response.status(Response.Status.BAD_REQUEST).entity(new ErrorRsp("User Not Exist!")).build();
-            } else if (parentThread == null) {
+            } else if (parentPost == null) {
                 return Response.status(Response.Status.BAD_REQUEST).entity(new ErrorRsp("Parent Post Not Exist!")).build();
             } else {
-                Query q = em.createQuery("Select fp FROM ForumPost fp WHERE fp.message = :message");
-                q.setParameter("message", message);
+                if (parentPost.getThreadStarter().equals(Boolean.FALSE)) { // reply 
+                    if (!parentPost.getReplies().isEmpty()) {
+                        for (ForumPost fp : parentPost.getReplies()) {
+                            if (fp.getMessage().equalsIgnoreCase(createThreadReq.getMessage())) {
+                                return Response.status(Response.Status.BAD_REQUEST).entity(new ErrorRsp("Message has already been posted!")).build();
+                            }
+                        }
+                    }
 
-                if (q.getResultList().isEmpty()) {
                     ForumPost newPost = new ForumPost();
                     newPost.setCreateTs(LocalDateTime.now());
                     newPost.setUpdateTs(LocalDateTime.now());
-                    newPost.setMessage(message);
+                    newPost.setMessage(createThreadReq.getMessage());
                     newPost.setOwner(user);
-                    newPost.setTitle(title);
+                    newPost.setTitle(createThreadReq.getTitle());
                     newPost.setThreadStarter(Boolean.FALSE);
+                    newPost.setType(createThreadReq.getType().toLowerCase());
 
-                    if (parentThread.getThreadStarter().equals(Boolean.TRUE)) { 
-                        if (type.toLowerCase().equals("reply")) {
-                            parentThread.getReplies().add(newPost);
-                        } else {
-                            parentThread.getComments().add(newPost);
-                        }
-                    } else { //reply
-                        parentThread.getComments().add(newPost);
-                    }
-
+                    parentPost.getComments().add(newPost);
                     em.persist(newPost);
                     em.flush();
                     return Response.status(Response.Status.OK).build();
-                } else {
-                    return Response.status(Response.Status.BAD_REQUEST).entity(new ErrorRsp("Message has already been posted!")).build();
+
+                } else { //thread
+                    if (!parentPost.getReplies().isEmpty()) {
+                        for (ForumPost fp : parentPost.getReplies()) {
+                            if (fp.getMessage().equalsIgnoreCase(createThreadReq.getMessage())) {
+                                return Response.status(Response.Status.BAD_REQUEST).entity(new ErrorRsp("Message has already been posted!")).build();
+                            }
+                        }
+                    } else if (!parentPost.getComments().isEmpty()) {
+                        for (ForumPost fp : parentPost.getComments()) {
+                            if (fp.getMessage().equalsIgnoreCase(createThreadReq.getMessage())) {
+                                return Response.status(Response.Status.BAD_REQUEST).entity(new ErrorRsp("Message has already been posted!")).build();
+                            }
+                        }
+                    }
+                    ForumPost newPost = new ForumPost();
+                    newPost.setCreateTs(LocalDateTime.now());
+                    newPost.setUpdateTs(LocalDateTime.now());
+                    newPost.setMessage(createThreadReq.getMessage());
+                    newPost.setOwner(user);
+                    newPost.setTitle(createThreadReq.getTitle());
+                    newPost.setThreadStarter(Boolean.FALSE);
+                    newPost.setType(createThreadReq.getType().toLowerCase());
+
+                    if (createThreadReq.getType().equalsIgnoreCase("reply")) {
+                        parentPost.getReplies().add(newPost);
+                    } else {
+                        parentPost.getComments().add(newPost);
+                    }
+                    em.persist(newPost);
+                    em.flush();
+                    return Response.status(Response.Status.OK).build();
                 }
             }
 
@@ -303,23 +330,26 @@ public class ForumResource {
     @Path("deleteTopic")
     @DELETE
     @Produces(MediaType.APPLICATION_JSON)
-    public Response deleteTopic(@QueryParam("forumTopicId") Long forumTopicId, @QueryParam("userId") Long userId, @QueryParam("moduleId") Long moduleId) {
+    public Response deleteTopic(@QueryParam("forumTopicId") Long forumTopicId, @QueryParam("userId") Long userId) {
         try {
             ForumTopic forumTopic = em.find(ForumTopic.class, forumTopicId);
             User user = em.find(User.class, userId);
-            Module mod = em.find(Module.class, moduleId);
-            if (mod == null) {
-                return Response.status(Response.Status.BAD_REQUEST).entity(new ErrorRsp("Module Not Exist!")).build();
-            } else if (forumTopic == null) {
+
+            if (forumTopic == null) {
                 return Response.status(Response.Status.BAD_REQUEST).entity(new ErrorRsp("Topic Not Exist!")).build();
             } else if (user.getAccessRight() != AccessRightEnum.Teacher) {
                 return Response.status(Response.Status.BAD_REQUEST).entity(new ErrorRsp("You do not have the rights to delete topic!")).build();
             } else if (!forumTopic.getThreads().isEmpty()) {
                 return Response.status(Response.Status.BAD_REQUEST).entity(new ErrorRsp("You cannot delete the topic!")).build();
             } else {
-                mod.getForumTopicList().remove(forumTopic);
-                em.remove(forumTopic);
-                return Response.status(Response.Status.OK).build();
+                Module mod = forumTopic.getModule();
+                if (mod == null) {
+                    return Response.status(Response.Status.BAD_REQUEST).entity(new ErrorRsp("Module Not Exist!")).build();
+                } else {
+                    mod.getForumTopicList().remove(forumTopic);
+                    em.remove(forumTopic);
+                    return Response.status(Response.Status.OK).build();
+                }
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -340,7 +370,7 @@ public class ForumResource {
             } else if (post == null) {
                 return Response.status(Response.Status.BAD_REQUEST).entity(new ErrorRsp("Post Not Exist!")).build();
             } else {
-                if (post.getThreadStarter().equals(Boolean.TRUE)) {
+                if (post.getThreadStarter().equals(Boolean.TRUE)) {//thread
                     if (post.getReplies().isEmpty() && post.getComments().isEmpty()) {
                         post.getTopic().getThreads().remove(post);
                         em.remove(post);
@@ -349,20 +379,20 @@ public class ForumResource {
                         return Response.status(Response.Status.BAD_REQUEST).entity(new ErrorRsp("You cannot delete the Thread!")).build();
                     }
                 } else {//not threadstarter
-                    if (post.getType().equals("reply")) {
+                    if (post.getType().equalsIgnoreCase("reply")) {
                         Query q = em.createQuery("Select p FROM ForumPost p WHERE p.replies=:post");
                         q.setParameter("post", post);
 
-                        ForumPost thread = (ForumPost) q.getResultList();
-                        if (thread != null) {
-                            thread.getReplies().remove(post);
+                        ForumPost parentPost = (ForumPost) q.getResultList();
+                        if (parentPost != null) {
+                            parentPost.getReplies().remove(post);
                             em.remove(post);
                             return Response.status(Response.Status.OK).build();
                         } else {
                             return Response.status(Response.Status.BAD_REQUEST).entity(new ErrorRsp("Thread does not exist!")).build();
                         }
 
-                    } else {
+                    } else { //comment 
                         Query q = em.createQuery("Select p FROM ForumPost p WHERE p.comments=:post");
                         q.setParameter("post", post);
 
@@ -386,7 +416,7 @@ public class ForumResource {
     @Path("editTopic")
     @PUT
     @Produces(MediaType.APPLICATION_JSON)
-    public Response editTopic(@QueryParam("forumTopicId") Long forumTopicId, @QueryParam("userId") Long userId, @QueryParam("description") String description, @QueryParam("title") String title) {
+    public Response editTopic(@QueryParam("forumTopicId") Long forumTopicId, @QueryParam("userId") Long userId,CreateThreadReq createThreadReq) {
         try {
             ForumTopic forumTopic = em.find(ForumTopic.class, forumTopicId);
             User user = em.find(User.class, userId);
@@ -400,8 +430,8 @@ public class ForumResource {
             } else if (!forumTopic.getThreads().isEmpty()) {
                 return Response.status(Response.Status.BAD_REQUEST).entity(new ErrorRsp("You cannot edit this topic!")).build();
             } else {
-                forumTopic.setDescription(description);
-                forumTopic.setTitle(title);
+                forumTopic.setDescription(createThreadReq.getMessage());
+                forumTopic.setTitle(createThreadReq.getTitle());
                 return Response.status(Response.Status.OK).build();
             }
         } catch (Exception e) {

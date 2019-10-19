@@ -13,7 +13,7 @@ public class CreateThreadReq {
 
     private String title;
     private String message;
-    //private String type;
+    private String type;
 
     public CreateThreadReq() {
     }
@@ -22,6 +22,12 @@ public class CreateThreadReq {
         this.title = title;
         this.message = message;
         //this.type = type;
+    }
+    
+    public CreateThreadReq(String title, String message, String type) {
+        this.title = title;
+        this.message = message;
+        this.type = type;
     }
     
     public String getTitle() {
@@ -40,12 +46,12 @@ public class CreateThreadReq {
         this.message = message;
     }
     
-    /*public String getType() {
+    public String getType() {
         return type;
     }
 
     public void setType(String type) {
         this.type = type;
-    }*/
+    }
 
 }
