@@ -9,6 +9,7 @@ import datamodel.rest.CreateThreadReq;
 import datamodel.rest.ErrorRsp;
 import datamodel.rest.GetForumPostRsp;
 import datamodel.rest.GetForumTopicRsp;
+import entities.Coursepack;
 import entities.ForumPost;
 import entities.ForumTopic;
 import entities.Module;
@@ -44,8 +45,6 @@ public class ForumResource {
     @PersistenceContext(unitName = "LMS-warPU")
     private EntityManager em;
 
-    public SimpleDateFormat dateFormatter = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
-
     @Path("viewAllForumTopics")
     @GET
     @Produces(MediaType.APPLICATION_JSON)
@@ -55,8 +54,35 @@ public class ForumResource {
             if (mod == null) {
                 return Response.status(Response.Status.BAD_REQUEST).entity(new ErrorRsp("Module Not Exists!")).build();
             } else {
-                System.out.println("here");
                 List<ForumTopic> forumTopics = mod.getForumTopicList();
+                GetForumTopicRsp rsp = new GetForumTopicRsp(new ArrayList<>());
+
+                if (forumTopics != null && !forumTopics.isEmpty()) {
+                    for (ForumTopic ft : forumTopics) {
+                        rsp.getForumTopics().add(new ForumTopic(ft.getForumTopicId(), ft.getTitle(), ft.getDescription(), null, null, null));
+                    }
+                    return Response.status(Response.Status.OK).entity(rsp).build();
+                } else {
+                    return Response.status(Response.Status.BAD_REQUEST).entity(new ErrorRsp("No topic has been created!")).build();
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(new ErrorRsp(e.getMessage())).build();
+        }
+    }
+
+    @Path("viewAllForumTopicsForCoursepack")
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response retrieveAllForumTopicsForCoursepack(@QueryParam("coursepackId") Long coursepackId) {
+        try {
+            Coursepack coursepack = em.find(Coursepack.class, coursepackId);
+
+            if (coursepack == null) {
+                return Response.status(Response.Status.BAD_REQUEST).entity(new ErrorRsp("Coursepack Not Exists!")).build();
+            } else {
+                List<ForumTopic> forumTopics = coursepack.getForumTopicList();
                 GetForumTopicRsp rsp = new GetForumTopicRsp(new ArrayList<>());
 
                 if (forumTopics != null && !forumTopics.isEmpty()) {
@@ -207,6 +233,51 @@ public class ForumResource {
         }
     }
 
+    @Path("createTopicForCoursepack")
+    @POST
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response createTopicForCoursepack(CreateThreadReq createTopic, @QueryParam("coursepackId") Long coursepackId, @QueryParam("userId") Long userId) {
+        try {
+            Coursepack coursepack = em.find(Coursepack.class, coursepackId);
+            User user = em.find(User.class, userId);
+
+            if (coursepack == null) {
+                return Response.status(Response.Status.BAD_REQUEST).entity(new ErrorRsp("Module Not Exist!")).build();
+            } else if (user == null) {
+                return Response.status(Response.Status.BAD_REQUEST).entity(new ErrorRsp("User Not Exist!")).build();
+            } else {
+                if (user.getAccessRight() != AccessRightEnum.Teacher) {
+                    return Response.status(Response.Status.BAD_REQUEST).entity(new ErrorRsp("You do not have rights to create topic!")).build();
+                } else {
+                    List<ForumTopic> currentTopics = coursepack.getForumTopicList();
+                    Boolean sameTitle = false;
+
+                    for (ForumTopic ft : currentTopics) {
+                        if (ft.getTitle().equalsIgnoreCase(createTopic.getTitle())) {
+                            sameTitle = true;
+                        }
+                    }
+                    if (sameTitle) {
+                        return Response.status(Response.Status.BAD_REQUEST).entity(new ErrorRsp("Title Already Exist!")).build();
+                    } else {
+                        ForumTopic newTopic = new ForumTopic();
+                        newTopic.setTitle(createTopic.getTitle());
+                        newTopic.setDescription(createTopic.getMessage());
+                        newTopic.setCoursepack(coursepack);
+
+                        coursepack.getForumTopicList().add(newTopic);
+                        em.persist(newTopic);
+                        em.flush();
+                        return Response.status(Response.Status.OK).build();
+                    }
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(new ErrorRsp(e.getMessage())).build();
+        }
+    }
+
     @Path("createThread")
     @PUT
     @Consumes(MediaType.APPLICATION_JSON)
@@ -259,6 +330,7 @@ public class ForumResource {
         try {
             User user = em.find(User.class, userId);
             ForumPost parentPost = em.find(ForumPost.class, parentPostId);
+            System.out.println("TESTTESTTEST");
             if (user == null) {
                 return Response.status(Response.Status.BAD_REQUEST).entity(new ErrorRsp("User Not Exist!")).build();
             } else if (parentPost == null) {
@@ -357,6 +429,36 @@ public class ForumResource {
         }
     }
 
+    @Path("deleteTopicForCoursepack")
+    @DELETE
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response deleteTopicForCoursepack(@QueryParam("forumTopicId") Long forumTopicId, @QueryParam("userId") Long userId) {
+        try {
+            ForumTopic forumTopic = em.find(ForumTopic.class, forumTopicId);
+            User user = em.find(User.class, userId);
+
+            if (forumTopic == null) {
+                return Response.status(Response.Status.BAD_REQUEST).entity(new ErrorRsp("Topic Not Exist!")).build();
+            } else if (user.getAccessRight() != AccessRightEnum.Teacher) {
+                return Response.status(Response.Status.BAD_REQUEST).entity(new ErrorRsp("You do not have the rights to delete topic!")).build();
+            } else if (!forumTopic.getThreads().isEmpty()) {
+                return Response.status(Response.Status.BAD_REQUEST).entity(new ErrorRsp("You cannot delete the topic!")).build();
+            } else {
+                Coursepack coursepack = forumTopic.getCoursepack();
+                if (coursepack == null) {
+                    return Response.status(Response.Status.BAD_REQUEST).entity(new ErrorRsp("Module Not Exist!")).build();
+                } else {
+                    coursepack.getForumTopicList().remove(forumTopic);
+                    em.remove(forumTopic);
+                    return Response.status(Response.Status.OK).build();
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(new ErrorRsp(e.getMessage())).build();
+        }
+    }
+
     @Path("deletePost")
     @DELETE
     @Produces(MediaType.APPLICATION_JSON)
@@ -416,7 +518,7 @@ public class ForumResource {
     @Path("editTopic")
     @PUT
     @Produces(MediaType.APPLICATION_JSON)
-    public Response editTopic(@QueryParam("forumTopicId") Long forumTopicId, @QueryParam("userId") Long userId,CreateThreadReq createThreadReq) {
+    public Response editTopic(@QueryParam("forumTopicId") Long forumTopicId, @QueryParam("userId") Long userId, CreateThreadReq createThreadReq) {
         try {
             ForumTopic forumTopic = em.find(ForumTopic.class, forumTopicId);
             User user = em.find(User.class, userId);
