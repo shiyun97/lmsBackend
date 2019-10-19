@@ -43,7 +43,7 @@ public class ForumTopic {
     public ForumTopic(String title, String description, List<ForumPost> threads, Module module, Coursepack coursepack ) {
         this.title = title;
         this.description = description;
-        this.threads = new ArrayList<>();
+        this.threads = threads;
         this.module = module;
         this.coursepack = coursepack;
         
@@ -53,7 +53,7 @@ public class ForumTopic {
         this.forumTopicId = forumTopicId;
         this.title = title;
         this.description = description;
-        this.threads = new ArrayList<>();
+        this.threads = threads;
         this.module = module;
         this.coursepack = coursepack;
     }
