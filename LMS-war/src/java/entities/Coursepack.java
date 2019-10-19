@@ -67,6 +67,8 @@ public class Coursepack implements Serializable {
     
     @OneToMany
     private List<Outlines> outlineList;
+    @OneToMany
+    private List<Rating> ratingList;
      
     
 
@@ -249,6 +251,14 @@ public class Coursepack implements Serializable {
 
     public void setOutlineList(List<Outlines> outlineList) {
         this.outlineList = outlineList;
+    }
+
+    public List<Rating> getRatingList() {
+        return ratingList;
+    }
+
+    public void setRatingList(List<Rating> ratingList) {
+        this.ratingList = ratingList;
     }
 
     

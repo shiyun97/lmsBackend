@@ -7,17 +7,21 @@ package rest;
 
 import datamodel.rest.CreateNewFeedback;
 import datamodel.rest.CreateQuizAttemptRqst;
+import datamodel.rest.CreateRatingRqst;
 import datamodel.rest.CreateSurveyAttemptRqst;
 import datamodel.rest.ErrorRsp;
 import datamodel.rest.QuestionAttemptModel;
 import datamodel.rest.RetrieveAllFeedbacksForModuleRsp;
+import datamodel.rest.RetrieveRatingsRsp;
 import datamodel.rest.RetrieveSurveys;
+import entities.Coursepack;
 import entities.Feedback;
 import entities.Module;
 import entities.Question;
 import entities.QuestionAttempt;
 import entities.Quiz;
 import entities.QuizAttempt;
+import entities.Rating;
 import entities.Survey;
 import entities.SurveyAttempt;
 import entities.User;
@@ -256,5 +260,70 @@ public class FeedbackResource {
             e.printStackTrace();
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(new ErrorRsp(e.getMessage())).build();
         }
+    }
+    
+    @POST
+    @Path("createRating")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response createRating(CreateRatingRqst rqst){
+        User user = em.find(User.class, rqst.getUserId());
+        if(user == null || (user.getAccessRight() != AccessRightEnum.Student && user.getAccessRight() != AccessRightEnum.Public)){
+            return Response.status(Response.Status.FORBIDDEN)
+                    .entity(new ErrorRsp("User doesn't have access to this function"))
+                    .build();
+        }
+        
+        Coursepack cp = em.find(Coursepack.class, rqst.getCoursepackId());
+        if(cp == null){
+            return Response.status(Response.Status.NOT_FOUND).entity(new ErrorRsp("Coursepack with the given ID not found!")).build();
+        } else if (!cp.getPublicUserList().contains(user)){
+            return Response.status(Response.Status.FORBIDDEN).entity(new ErrorRsp("User is not a student of this coursepack")).build();
+        }
+        
+        try {
+            Rating rating = new Rating();
+            rating.setRating(rqst.getRating());
+            rating.setComment(rqst.getComment());
+            
+            em.persist(rating);
+            cp.getRatingList().add(rating);
+            
+            cp.setRating(cp.getRating() + rating.getRating() / cp.getRatingList().size());
+            em.flush();
+            
+            return Response.status(Response.Status.OK).build();
+        } catch (Exception e){
+            e.printStackTrace();
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(new ErrorRsp(e.getMessage())).build();
+        }
+    }
+    
+    @GET
+    @Path("retrieveAllRatings")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response retrieveAllRatings(@QueryParam("coursepackId") Long coursepackId){
+        Coursepack cp = em.find(Coursepack.class, coursepackId);
+        if(cp == null){
+            return Response.status(Response.Status.NOT_FOUND).entity(new ErrorRsp("Coursepack with the given ID not found!")).build();
+        }
+        
+        if(cp.getRatingList().isEmpty()){
+            return Response.status(Response.Status.NOT_FOUND).entity(new ErrorRsp("No ratings yet for this coursepack")).build();
+        }
+        
+        return Response.status(Response.Status.OK).entity(new RetrieveRatingsRsp(cp.getRatingList())).build();
+    }
+    
+    @GET
+    @Path("retrieveRating")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response retrieveRating(@QueryParam("ratingId") Long ratingId){
+        Rating rating = em.find(Rating.class, ratingId);
+        if(rating == null){
+            return Response.status(Response.Status.NOT_FOUND).entity(new ErrorRsp("Rating with the given ID not found!")).build();
+        }
+        
+        return Response.status(Response.Status.OK).entity(rating).build();
     }
 }

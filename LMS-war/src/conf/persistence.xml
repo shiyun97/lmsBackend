@@ -26,11 +26,11 @@
     <class>entities.Schedule</class>
     <class>entities.Appeal</class>
     <class>entities.BiddingRound</class>
-    <class>entities.QuestionAttempt</class>
     <class>entities.Annoucement</class>
     <class>entities.Coursepack</class>
     <class>entities.LessonOrder</class>
     <class>entities.Outlines</class>
+    <class>entities.QuestionAttempt</class>
     <exclude-unlisted-classes>true</exclude-unlisted-classes>
     <properties>
       <property name="javax.persistence.schema-generation.database.action" value="create"/>
