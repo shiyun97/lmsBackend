@@ -145,7 +145,7 @@ public class ForumResource {
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(new ErrorRsp(e.getMessage())).build();
         }
     }
-    
+
     @Path("viewThreadDetails")
     @GET
     @Produces(MediaType.APPLICATION_JSON)
@@ -161,7 +161,9 @@ public class ForumResource {
                 ForumPost rsp = new ForumPost(thread.getTitle(), thread.getMessage(), thread.getCreateTs(), thread.getUpdateTs(), thread.getThreadStarter(),
                         owner, null, thread.getType());
                 rsp.setForumPostId(thread.getForumPostId());
+
                 List<ForumPost> repliesRsp = new ArrayList<>();
+
                 for (ForumPost reply : thread.getReplies()) {
                     User replyOwner = new User();
                     replyOwner.setFirstName(reply.getOwner().getFirstName());
@@ -169,6 +171,7 @@ public class ForumResource {
                     ForumPost tempReply = new ForumPost(reply.getTitle(), reply.getMessage(), reply.getCreateTs(), reply.getUpdateTs(), reply.getThreadStarter(), replyOwner, null, reply.getType());
                     tempReply.setForumPostId(reply.getForumPostId());
                     List<ForumPost> tempReplyComments = new ArrayList<>();
+
                     for (ForumPost comment : reply.getComments()) {
                         User commentOwner = new User();
                         commentOwner.setFirstName(comment.getOwner().getFirstName());
@@ -181,19 +184,19 @@ public class ForumResource {
                     repliesRsp.add(tempReply);
                 }
                 rsp.setReplies(repliesRsp);
-                
+
                 List<ForumPost> tempComments = new ArrayList<>();
                 for (ForumPost comment : thread.getComments()) {
-                        User commentOwner = new User();
-                        commentOwner.setFirstName(comment.getOwner().getFirstName());
-                        commentOwner.setLastName(comment.getOwner().getLastName());
-                        ForumPost tempComment = new ForumPost(comment.getTitle(), comment.getMessage(), comment.getCreateTs(), comment.getUpdateTs(), comment.getThreadStarter(), commentOwner, null, comment.getType());
-                        tempComment.setForumPostId(comment.getForumPostId());
-                        tempComments.add(tempComment);
-                    }
+                    User commentOwner = new User();
+                    commentOwner.setFirstName(comment.getOwner().getFirstName());
+                    commentOwner.setLastName(comment.getOwner().getLastName());
+                    ForumPost tempComment = new ForumPost(comment.getTitle(), comment.getMessage(), comment.getCreateTs(), comment.getUpdateTs(), comment.getThreadStarter(), commentOwner, null, comment.getType());
+                    tempComment.setForumPostId(comment.getForumPostId());
+                    tempComments.add(tempComment);
+                }
                 rsp.setComments(tempComments);
                 return Response.status(Response.Status.OK).entity(rsp).build();
-                
+
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -402,7 +405,6 @@ public class ForumResource {
         try {
             User user = em.find(User.class, userId);
             ForumPost parentPost = em.find(ForumPost.class, parentPostId);
-            System.out.println("TESTTESTTEST");
             if (user == null) {
                 return Response.status(Response.Status.BAD_REQUEST).entity(new ErrorRsp("User Not Exist!")).build();
             } else if (parentPost == null) {
@@ -552,38 +554,28 @@ public class ForumResource {
             } else {
                 if (post.getThreadStarter().equals(Boolean.TRUE)) {//thread
                     if (post.getReplies().isEmpty() && post.getComments().isEmpty()) {
-                        post.getTopic().getThreads().remove(post);
+                        ForumTopic topic = post.getTopic();
+                        topic.getThreads().remove(post);
                         em.remove(post);
                         return Response.status(Response.Status.OK).build();
                     } else {
                         return Response.status(Response.Status.BAD_REQUEST).entity(new ErrorRsp("You cannot delete the Thread!")).build();
                     }
                 } else {//not threadstarter
-                    if (post.getType().equalsIgnoreCase("reply")) {
-                        Query q = em.createQuery("Select p FROM ForumPost p WHERE p.replies=:post");
-                        q.setParameter("post", post);
-
-                        ForumPost parentPost = (ForumPost) q.getResultList();
-                        if (parentPost != null) {
+                    if (post.getType().equalsIgnoreCase("reply")) { //reply
+                        if (post.getComments().isEmpty()) {
+                            ForumPost parentPost = post.getParentOfReply();
                             parentPost.getReplies().remove(post);
                             em.remove(post);
                             return Response.status(Response.Status.OK).build();
                         } else {
-                            return Response.status(Response.Status.BAD_REQUEST).entity(new ErrorRsp("Thread does not exist!")).build();
+                            return Response.status(Response.Status.BAD_REQUEST).entity(new ErrorRsp("You cannot delete the Post!")).build();
                         }
-
-                    } else { //comment 
-                        Query q = em.createQuery("Select p FROM ForumPost p WHERE p.comments=:post");
-                        q.setParameter("post", post);
-
-                        ForumPost thread = (ForumPost) q.getResultList();
-                        if (thread != null) {
-                            thread.getComments().remove(post);
-                            em.remove(post);
-                            return Response.status(Response.Status.OK).build();
-                        } else {
-                            return Response.status(Response.Status.BAD_REQUEST).entity(new ErrorRsp("Thread does not exist!")).build();
-                        }
+                    } else { // comment
+                        ForumPost parentPost = post.getParentOfComments();
+                        parentPost.getComments().remove(post);
+                        em.remove(post);
+                        return Response.status(Response.Status.OK).build();
                     }
                 }
             }
@@ -623,21 +615,24 @@ public class ForumResource {
     @Path("editPost")
     @PUT
     @Produces(MediaType.APPLICATION_JSON)
-    public Response editPost(@QueryParam("userId") Long userId, @QueryParam("forumPostId") Long forumPostId, @QueryParam("message") String message) {
+    public Response editPost(CreateThreadReq createThreadReq, @QueryParam("userId") Long userId, @QueryParam("forumPostId") Long forumPostId) {
         try {
             User user = em.find(User.class, userId);
             ForumPost forumPost = em.find(ForumPost.class, forumPostId);
+
             if (user == null) {
                 return Response.status(Response.Status.BAD_REQUEST).entity(new ErrorRsp("User Not Exist!")).build();
             } else if (forumPost == null) {
                 return Response.status(Response.Status.BAD_REQUEST).entity(new ErrorRsp("Post Not Exist!")).build();
-            } else if (!forumPost.getReplies().isEmpty()) {
+            } else if (!forumPost.getComments().isEmpty()) {
                 return Response.status(Response.Status.BAD_REQUEST).entity(new ErrorRsp("You cannot edit the post!")).build();
             } else if (!user.equals(forumPost.getOwner())) {
                 return Response.status(Response.Status.BAD_REQUEST).entity(new ErrorRsp("You are not authorise to edit the post!")).build();
             } else {
-                forumPost.setMessage(message);
+
+                forumPost.setMessage(createThreadReq.getMessage());
                 forumPost.setUpdateTs(LocalDateTime.now());
+                em.persist(forumPost);
                 return Response.status(Response.Status.OK).build();
             }
         } catch (Exception e) {
