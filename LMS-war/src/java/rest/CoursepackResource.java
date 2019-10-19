@@ -83,7 +83,15 @@ public class CoursepackResource {
             coursepack.setOutlineList(new ArrayList<>());
             em.persist(coursepack);
             em.flush();
-            
+            /*Outlines outlines = new Outlines();
+            outlines.setCoursepack(createCoursepack.getCoursepack());
+            outlines.setLessonOrder(createCoursepack.get);
+            outlines.setName(createCoursepack.get);
+            em.persist(outlines);
+            em.flush();
+            coursepack.getOutlineList().add(outlines);*/
+
+           
             /*for(String outline: createCoursepack.getOutlines()){
                 Outlines newOut = new Outlines();
                 newOut.setName(outline);
@@ -92,19 +100,21 @@ public class CoursepackResource {
                 em.persist(newOut);
                 
             }*/
-            /*List<Outlines> outlines = new ArrayList<>();
+            
+            List<Outlines> outlines = new ArrayList<>();
             for(Outlines o : outlines){
                 o.getCoursepack();
                 o.getLessonOrder();
                 o.getName();
-         
-                
+
                 outlines.add(o);
-            }*/
+            }
+            
+            
 
             Coursepack coursepackCopy = new Coursepack(coursepack.getCoursepackId(), coursepack.getCode(), coursepack.getTitle(),
                         coursepack.getDescription(), coursepack.getCategory(), coursepack.getPrice(), coursepack.getStartDate(), null, 
-                        coursepack.getTeacherBackground(), null, null, null, null, null, null);
+                        coursepack.getTeacherBackground(), null, null, null, null, null, outlines);
             
             return Response.status(Response.Status.OK).entity(coursepack).build();
         } catch (Exception ex) {
