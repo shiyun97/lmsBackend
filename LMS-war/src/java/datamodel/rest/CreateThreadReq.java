@@ -21,13 +21,16 @@ public class CreateThreadReq {
     public CreateThreadReq(String title, String message) {
         this.title = title;
         this.message = message;
-        //this.type = type;
     }
     
     public CreateThreadReq(String title, String message, String type) {
         this.title = title;
         this.message = message;
         this.type = type;
+    }
+    
+    public CreateThreadReq(String message){
+        this.message = message;
     }
     
     public String getTitle() {
