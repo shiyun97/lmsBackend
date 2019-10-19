@@ -15,6 +15,12 @@
             <file>file:/C:/NETBEANS/lms-time-fix/LMS-war/src/java/entities/Annoucement.java</file>
             <file>file:/C:/NETBEANS/lms-time-fix/LMS-war/src/java/rest/StudentEnrollmentResource.java</file>
             <file>file:/C:/NETBEANS/lms-time-fix/LMS-war/src/java/rest/AnnoucementResource.java</file>
+            <file>file:/C:/Users/Vixson/Documents/GitHub/lmsBackend/LMS-war/src/java/rest/AttendanceResource.java</file>
+            <file>file:/C:/Users/Vixson/Documents/GitHub/lmsBackend/LMS-war/src/java/ejb/EmailServlet.java</file>
+            <file>file:/C:/Users/Vixson/Documents/GitHub/lmsBackend/LMS-war/src/java/entities/Attendance.java</file>
+            <file>file:/C:/Users/Vixson/Documents/GitHub/lmsBackend/LMS-war/src/java/ejb/EmailSessionBean.java</file>
+            <file>file:/C:/Users/Vixson/Documents/GitHub/lmsBackend/LMS-war/src/java/entities/Tutorial.java</file>
+            <file>file:/C:/Users/Vixson/Documents/GitHub/lmsBackend/LMS-war/src/java/ejb/DataInitSessionBean.java</file>
         </group>
     </open-files>
 </project-private>

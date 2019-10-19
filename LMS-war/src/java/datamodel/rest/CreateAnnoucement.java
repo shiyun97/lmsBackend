@@ -8,7 +8,6 @@ package datamodel.rest;
 import entities.Annoucement;
 import entities.Module;
 import entities.User;
-import java.time.LocalDateTime;
 import java.util.Date;
 
 /**
