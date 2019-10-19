@@ -369,7 +369,29 @@ public class AssessmentResource {
     @Path("deleteModuleQuiz")
     @Produces(MediaType.APPLICATION_JSON)
     public Response deleteModuleQuiz(@QueryParam("userId") Long userId, @QueryParam("quizId") Long quizId){
-        return null;
+        User user = em.find(User.class, userId);
+        if(user == null || user.getAccessRight() != AccessRightEnum.Teacher){
+            return Response.status(Status.FORBIDDEN)
+                    .entity(new ErrorRsp("User doesn't have access to this function"))
+                    .build();
+        }
+        
+        Quiz quiz = em.find(Quiz.class, quizId);
+        if(quiz == null){
+            return Response.status(Status.NOT_FOUND).entity(new ErrorRsp("Quiz with the given ID doesn't exist")).build();
+        }
+        
+        if(quiz.getModule() == null){
+            return Response.status(Status.BAD_REQUEST).entity(new ErrorRsp("Quiz is not for a module")).build();
+        }
+        
+        if(quiz.getQuizAttemptList().isEmpty()){
+            quiz.getModule().getQuizList().remove(quiz);
+            em.remove(quiz);
+            return Response.status(Status.OK).build();
+        } else {
+            return Response.status(Status.BAD_REQUEST).entity(new ErrorRsp("Quiz has been attempted before, can't be deleted.")).build();
+        }
     }
     
     @GET
@@ -930,5 +952,60 @@ public class AssessmentResource {
         return Response.status(Status.OK).build();
     }
     
-    
+    @POST
+    @Path("createGradeItemFromQuiz")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response createGradeItemFromQuiz(@QueryParam("userId") Long userId, @QueryParam("quizId") Long quizId, CreateGradeItemRqst rqst){
+        User user = em.find(User.class, userId);
+        if(user == null || user.getAccessRight() != AccessRightEnum.Teacher){
+            return Response.status(Status.FORBIDDEN)
+                    .entity(new ErrorRsp("User doesn't have access to this function"))
+                    .build();
+        }
+        
+        Module module = em.find(Module.class, rqst.getModuleId());
+        if(module == null){
+            return Response.status(Status.BAD_REQUEST).entity(new ErrorRsp("Module doesn't exist")).build();
+        } else if (module.getAssignedTeacher() != user){
+            return Response.status(Status.FORBIDDEN)
+                    .entity(new ErrorRsp("User doesn't have access to this module"))
+                    .build();
+        }
+        
+        Quiz quiz = em.find(Quiz.class, quizId);
+        if(quiz == null){
+            return Response.status(Status.NOT_FOUND).entity(new ErrorRsp("Quiz is not found")).build();
+        }
+        
+        if(!module.getQuizList().contains(quiz)){
+            return Response.status(Status.BAD_REQUEST).entity(new ErrorRsp("Quiz is not part of the module")).build();
+        }
+        
+        try {
+            GradeItem gradeItem = new GradeItem();
+            gradeItem.setTitle(rqst.getTitle());
+            gradeItem.setDescription(rqst.getDescription());
+            gradeItem.setModule(module);
+            gradeItem.setMaxMarks(quiz.getMaxMarks());
+            gradeItem.setGradeEntries(new ArrayList<>());
+            module.getGradeItemList().add(gradeItem);
+            em.persist(gradeItem);
+            
+            for (QuizAttempt qa: quiz.getQuizAttemptList()){
+                GradeEntry gradeEntry = new GradeEntry();
+                gradeEntry.setGradeItem(gradeItem);
+                gradeEntry.setStudent(qa.getQuizTaker());
+                gradeEntry.setMarks(qa.getTotalMarks());
+                gradeItem.getGradeEntries().add(gradeEntry);
+                
+                em.persist(gradeEntry);
+                em.flush();
+            }
+            
+            return Response.status(Status.OK).build();
+        } catch (Exception e){
+            e.printStackTrace();
+            return Response.status(Status.INTERNAL_SERVER_ERROR).entity(new ErrorRsp(e.getMessage())).build();
+        }
+    }
 }

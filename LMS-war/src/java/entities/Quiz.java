@@ -8,6 +8,7 @@ package entities;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -80,7 +81,7 @@ public class Quiz implements Serializable {
     private Integer maxTimeToFinish;
     @ManyToOne
     private Module module;
-    @OneToMany
+    @OneToMany(cascade = CascadeType.REMOVE)
     private List<Question> questionList;
     @OneToMany(mappedBy = "quiz")
     private List<QuizAttempt> quizAttemptList;
