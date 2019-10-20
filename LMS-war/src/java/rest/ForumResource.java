@@ -624,15 +624,14 @@ public class ForumResource {
                 return Response.status(Response.Status.BAD_REQUEST).entity(new ErrorRsp("User Not Exist!")).build();
             } else if (forumPost == null) {
                 return Response.status(Response.Status.BAD_REQUEST).entity(new ErrorRsp("Post Not Exist!")).build();
-            } else if (!forumPost.getComments().isEmpty()) {
-                return Response.status(Response.Status.BAD_REQUEST).entity(new ErrorRsp("You cannot edit the post!")).build();
-            } else if (!user.equals(forumPost.getOwner())) {
-                return Response.status(Response.Status.BAD_REQUEST).entity(new ErrorRsp("You are not authorise to edit the post!")).build();
+            } else if(!forumPost.getComments().isEmpty() || !forumPost.getReplies().isEmpty()){
+                return Response.status(Response.Status.BAD_REQUEST).entity(new ErrorRsp("You cannot edit this post!")).build();
+            }else if (!user.equals(forumPost.getOwner())) {
+                return Response.status(Response.Status.BAD_REQUEST).entity(new ErrorRsp("You do not have rights to edit the post!")).build();
             } else {
-
                 forumPost.setMessage(createThreadReq.getMessage());
                 forumPost.setUpdateTs(LocalDateTime.now());
-                em.persist(forumPost);
+                em.merge(forumPost);
                 return Response.status(Response.Status.OK).build();
             }
         } catch (Exception e) {
