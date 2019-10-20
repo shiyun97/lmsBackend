@@ -32,6 +32,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
@@ -954,10 +955,15 @@ public class AssessmentResource {
         return Response.status(Status.OK).build();
     }
     
+    
+    // There are different types on converting a quiz results to gradeItem.
+    // 1. best : by best marks
+    // 2. first : first attempt
+    // 3. last : last attempt
     @POST
     @Path("createGradeItemFromQuiz")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response createGradeItemFromQuiz(@QueryParam("userId") Long userId, @QueryParam("quizId") Long quizId, CreateGradeItemRqst rqst){
+    public Response createGradeItemFromQuiz(@QueryParam("userId") Long userId, @QueryParam("quizId") Long quizId, CreateGradeItemRqst rqst, @QueryParam("type") String type){
         User user = em.find(User.class, userId);
         if(user == null || user.getAccessRight() != AccessRightEnum.Teacher){
             return Response.status(Status.FORBIDDEN)
@@ -983,6 +989,10 @@ public class AssessmentResource {
             return Response.status(Status.BAD_REQUEST).entity(new ErrorRsp("Quiz is not part of the module")).build();
         }
         
+        if(quiz.getClosingDate().after(new Date())){
+            return Response.status(Status.BAD_REQUEST).entity(new ErrorRsp("Quiz hasn't closed yet!")).build();
+        }
+        
         try {
             GradeItem gradeItem = new GradeItem();
             gradeItem.setTitle(rqst.getTitle());
@@ -993,11 +1003,36 @@ public class AssessmentResource {
             module.getGradeItemList().add(gradeItem);
             em.persist(gradeItem);
             
+            HashMap<User, Double> marks = new HashMap<>();
+            if(type.toLowerCase().contains("best")){
+                for(QuizAttempt qa: quiz.getQuizAttemptList()){
+                    if(!marks.containsKey(qa.getQuizTaker()) || marks.get(qa.getQuizTaker()) < qa.getTotalMarks()){
+                        marks.put(qa.getQuizTaker(), qa.getTotalMarks());
+                    }
+                }
+            } else if(type.toLowerCase().contains("last")){
+                HashMap<User, Date> times = new HashMap<>();
+                for(QuizAttempt qa: quiz.getQuizAttemptList()){
+                    if(!marks.containsKey(qa.getQuizTaker()) || times.get(qa.getQuizTaker()).before(qa.getCreateTs())){
+                        times.put(user, qa.getCreateTs());
+                        marks.put(qa.getQuizTaker(), qa.getTotalMarks());
+                    }
+                }
+            } else if(type.toLowerCase().contains("first")){
+                HashMap<User, Date> times = new HashMap<>();
+                for(QuizAttempt qa: quiz.getQuizAttemptList()){
+                    if(!marks.containsKey(qa.getQuizTaker()) || times.get(qa.getQuizTaker()).after(qa.getCreateTs())){
+                        times.put(user, qa.getCreateTs());
+                        marks.put(qa.getQuizTaker(), qa.getTotalMarks());
+                    }
+                }
+            }
+            
             for (QuizAttempt qa: quiz.getQuizAttemptList()){
                 GradeEntry gradeEntry = new GradeEntry();
                 gradeEntry.setGradeItem(gradeItem);
                 gradeEntry.setStudent(qa.getQuizTaker());
-                gradeEntry.setMarks(qa.getTotalMarks());
+                gradeEntry.setMarks(marks.getOrDefault(qa.getQuizTaker(), 0.0));
                 gradeItem.getGradeEntries().add(gradeEntry);
                 
                 em.persist(gradeEntry);
