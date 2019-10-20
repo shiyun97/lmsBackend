@@ -416,6 +416,8 @@ public class DataInitSessionBean {
         comment2.setCreateTs(LocalDateTime.now());
         comment2.setUpdateTs(LocalDateTime.now());
         comment2.setOwner(extStu);
+        comment2.setType("comment");
+        comment2.setThreadStarter(Boolean.FALSE);
         em.persist(comment2);
         em.flush();
     }
