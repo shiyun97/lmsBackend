@@ -99,8 +99,12 @@ public class ConsultationResource {
                 if (timeslots != null && !timeslots.isEmpty()) {
                     //List<ConsultationTimeslot> timeslotsCopy = new ArrayList<>();
                     for (ConsultationTimeslot ct : timeslots) {
+                        User booker = new User();
+                        booker.setFirstName(ct.getBooker().getFirstName());
+                        booker.setLastName(ct.getBooker().getLastName());
+                        
                         rsp.getConsultationTimeslots().add(new ConsultationTimeslot(
-                                ct.getconsultationTsId(), ct.getStartTs(), ct.getEndTs(), ct.getStartD(), null, null));
+                                ct.getconsultationTsId(), ct.getStartTs(), ct.getEndTs(), ct.getStartD(), null, booker));
                     }
                     return Response.status(Response.Status.OK).entity(rsp).build();
                 } else {
