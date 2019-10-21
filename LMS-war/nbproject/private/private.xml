@@ -12,8 +12,12 @@
     </editor-bookmarks>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/C:/NETBEANS/lms-assessment/LMS-war/src/java/rest/AttendanceResource.java</file>
             <file>file:/C:/NETBEANS/lms-assessment/LMS-war/src/java/rest/AssessmentResource.java</file>
+            <file>file:/C:/Users/Vixson/Documents/GitHub/lmsBackend/LMS-war/src/java/rest/AttendanceResource.java</file>
+            <file>file:/C:/Users/Vixson/Documents/GitHub/lmsBackend/LMS-war/src/java/ejb/Emailtest.java</file>
+            <file>file:/C:/Users/Vixson/Documents/GitHub/lmsBackend/LMS-war/src/java/rest/AnnoucementResource.java</file>
+            <file>file:/C:/Users/Vixson/Documents/GitHub/lmsBackend/LMS-war/src/java/entities/Attendance.java</file>
+            <file>file:/C:/Users/Vixson/Documents/GitHub/lmsBackend/LMS-war/src/java/ejb/SendMailSSL.java</file>
         </group>
     </open-files>
 </project-private>

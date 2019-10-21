@@ -50,8 +50,8 @@ public class DataInitSessionBean {
         User admin = new User();
         admin.setFirstName("Admin");
         admin.setLastName("Admin");
-        admin.setEmail("admin@gmail.com");
-        admin.setPassword("password");
+        admin.setEmail("ykwvix@gmail.com");
+        admin.setPassword("password!23$");
         admin.setGender(GenderEnum.Male);
         admin.setAccessRight(AccessRightEnum.Admin);
         admin.setUsername("admin");
