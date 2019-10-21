@@ -33,6 +33,7 @@ public class QuizRsp {
     private boolean publish;
     private boolean publishAnswer;
     private Integer maxTimeToFinish;
+    private boolean reachedMaxAttempt;
     private Long moduleId;
     private List<PageModel> pages = new ArrayList<>();
 
@@ -181,6 +182,14 @@ public class QuizRsp {
 
     public void setPublishAnswer(boolean publishAnswer) {
         this.publishAnswer = publishAnswer;
+    }
+
+    public boolean isReachedMaxAttempt() {
+        return reachedMaxAttempt;
+    }
+
+    public void setReachedMaxAttempt(boolean reachedMaxAttempt) {
+        this.reachedMaxAttempt = reachedMaxAttempt;
     }
     
 }

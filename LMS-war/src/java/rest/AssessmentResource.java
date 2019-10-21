@@ -491,6 +491,16 @@ public class AssessmentResource {
             newQ.setQuestionsOrder(q.getQuestionsOrder());
             newQ.setPublishAnswer(q.isPublishAnswer());
             newQ.getPages().add(new PageModel(q.getQuestionList(), "page1"));
+            newQ.setReachedMaxAttempt(false);
+            int count = 0;
+            for(QuizAttempt qa: q.getQuizAttemptList()){
+                if(qa.getQuizTaker() == user){
+                    if(++count >= q.getNoOfAttempts()){
+                        newQ.setReachedMaxAttempt(true);
+                        break;
+                    }
+                }
+            }
             
             return Response.status(Status.OK).entity(newQ).build();
         } catch (Exception e){
