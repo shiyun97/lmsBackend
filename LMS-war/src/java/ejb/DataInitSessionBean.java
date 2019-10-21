@@ -352,11 +352,11 @@ public class DataInitSessionBean {
         t1.getAttendanceList().add(a1);
         a1.setAttendees(studentList);
         //a1.getAttendees().add(student);
-        a1.setAttendedNumber(3);
-        em.persist(a1);
+        a1.setAttendedNumber(3);       
         student.getAttendanceList().add(a1);
         student2.getAttendanceList().add(a1);
         student3.getAttendanceList().add(a1);
+        em.persist(a1);
         em.flush();
     }
 
