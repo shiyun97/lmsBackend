@@ -576,7 +576,7 @@ public class StudentEnrollmentResource {
         }
         
         try{
-            Query query = em.createQuery("SELECT m FROM Module m join m.studentList stu "
+            Query query = em.createQuery("SELECT DISTINCT m FROM User u join u. "
                     + "WHERE m.semesterOffered = :semester AND m.yearOffered = :year");
             query.setParameter("semester", AcademicYearSessionBean.getSemester());
             query.setParameter("year", AcademicYearSessionBean.getYear());
