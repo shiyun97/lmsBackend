@@ -6,6 +6,7 @@
 package datamodel.rest;
 
 import entities.ForumTopic;
+import entities.User;
 import java.util.List;
 
 /**
@@ -15,6 +16,7 @@ import java.util.List;
 public class GetForumTopicRsp {
 
     private List<ForumTopic> forumTopics;
+    private User owner;
 
     public GetForumTopicRsp() {
     }
@@ -23,12 +25,25 @@ public class GetForumTopicRsp {
         this.forumTopics = forumTopics;
     }
 
+    public GetForumTopicRsp(List<ForumTopic> forumTopics, User owner) {
+        this.forumTopics = forumTopics;
+        this.owner = owner;
+    }
+    
     public List<ForumTopic> getForumTopics() {
         return forumTopics;
     }
 
     public void setForumTopics(List<ForumTopic> forumTopics) {
         this.forumTopics = forumTopics;
+    }
+
+    public User getOwner() {
+        return owner;
+    }
+
+    public void setOwner(User owner) {
+        this.owner = owner;
     }
 
 }

@@ -55,7 +55,9 @@ public class ForumResource {
                 return Response.status(Response.Status.BAD_REQUEST).entity(new ErrorRsp("Module Not Exists!")).build();
             } else {
                 List<ForumTopic> forumTopics = mod.getForumTopicList();
-                GetForumTopicRsp rsp = new GetForumTopicRsp(new ArrayList<>());
+                User owner = new User();
+                owner.setUserId(mod.getAssignedTeacher().getUserId());
+                GetForumTopicRsp rsp = new GetForumTopicRsp(new ArrayList<>(), owner);
 
                 if (forumTopics != null && !forumTopics.isEmpty()) {
                     for (ForumTopic ft : forumTopics) {
@@ -90,7 +92,9 @@ public class ForumResource {
                 return Response.status(Response.Status.BAD_REQUEST).entity(new ErrorRsp("Coursepack Not Exists!")).build();
             } else {
                 List<ForumTopic> forumTopics = coursepack.getForumTopicList();
-                GetForumTopicRsp rsp = new GetForumTopicRsp(new ArrayList<>());
+                User owner = new User();
+                //owner.setUserId(coursepack.getAssignedTeacher().getUserId());
+                GetForumTopicRsp rsp = new GetForumTopicRsp(new ArrayList<>(), owner);
 
                 if (forumTopics != null && !forumTopics.isEmpty()) {
                     for (ForumTopic ft : forumTopics) {
@@ -130,6 +134,7 @@ public class ForumResource {
                 if (threads != null && !threads.isEmpty()) {
                     for (ForumPost fp : threads) {
                         User owner = new User();
+                        owner.setUserId(fp.getOwner().getUserId());
                         owner.setFirstName(fp.getOwner().getFirstName());
                         owner.setLastName(fp.getOwner().getLastName());
                         List<ForumPost> replies = fp.getReplies();
@@ -165,6 +170,7 @@ public class ForumResource {
                 User owner = new User();
                 owner.setFirstName(thread.getOwner().getFirstName());
                 owner.setLastName(thread.getOwner().getLastName());
+                owner.setUserId(thread.getOwner().getUserId());
                 ForumPost rsp = new ForumPost(thread.getTitle(), thread.getMessage(), thread.getCreateTs(), thread.getUpdateTs(), thread.getThreadStarter(),
                         owner, null, thread.getType());
                 rsp.setForumPostId(thread.getForumPostId());
@@ -175,6 +181,7 @@ public class ForumResource {
                     User replyOwner = new User();
                     replyOwner.setFirstName(reply.getOwner().getFirstName());
                     replyOwner.setLastName(reply.getOwner().getLastName());
+                    replyOwner.setUserId(reply.getOwner().getUserId());
                     ForumPost tempReply = new ForumPost(reply.getTitle(), reply.getMessage(), reply.getCreateTs(), reply.getUpdateTs(), reply.getThreadStarter(), replyOwner, null, reply.getType());
                     tempReply.setForumPostId(reply.getForumPostId());
                     List<ForumPost> tempReplyComments = new ArrayList<>();
@@ -183,6 +190,7 @@ public class ForumResource {
                         User commentOwner = new User();
                         commentOwner.setFirstName(comment.getOwner().getFirstName());
                         commentOwner.setLastName(comment.getOwner().getLastName());
+                        commentOwner.setUserId(comment.getOwner().getUserId());
                         ForumPost tempComment = new ForumPost(comment.getTitle(), comment.getMessage(), comment.getCreateTs(), comment.getUpdateTs(), comment.getThreadStarter(), commentOwner, null, comment.getType());
                         tempComment.setForumPostId(comment.getForumPostId());
                         tempReplyComments.add(tempComment);
@@ -197,6 +205,7 @@ public class ForumResource {
                     User commentOwner = new User();
                     commentOwner.setFirstName(comment.getOwner().getFirstName());
                     commentOwner.setLastName(comment.getOwner().getLastName());
+                    commentOwner.setUserId(comment.getOwner().getUserId());
                     ForumPost tempComment = new ForumPost(comment.getTitle(), comment.getMessage(), comment.getCreateTs(), comment.getUpdateTs(), comment.getThreadStarter(), commentOwner, null, comment.getType());
                     tempComment.setForumPostId(comment.getForumPostId());
                     tempComments.add(tempComment);
