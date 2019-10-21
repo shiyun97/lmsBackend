@@ -41,7 +41,7 @@ public class ConsultationResource {
     @PersistenceContext(unitName = "LMS-warPU")
     private EntityManager em;
     
-    public DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("dd-MM-uuuu");
+    public DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
     public DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("HH:mm:ss");
     
     @Path("viewAllAvailableConsultation/{moduleId}")

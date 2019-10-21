@@ -62,7 +62,7 @@ public class AssessmentResource {
     @PersistenceContext(unitName = "LMS-warPU")
     private EntityManager em;
     
-    public SimpleDateFormat dateFormatter = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
+    public SimpleDateFormat dateFormatter = new SimpleDateFormat("dd-MM-yyyy'T'HH:mm:ss");
     
     @POST
     @Path("createModuleQuiz")
@@ -94,6 +94,7 @@ public class AssessmentResource {
             quiz.setMaxTimeToFinish(rqst.getMaxTimeToFinish());
             quiz.setNoOfAttempts(rqst.getNoOfAttempts());
             quiz.setModule(module);
+            quiz.setPublish(rqst.isPublish());
             quiz.setQuestionList(new ArrayList<Question>());
             // Parse Date
             Date openingDate = dateFormatter.parse(rqst.getOpeningDate());
@@ -190,6 +191,7 @@ public class AssessmentResource {
             quiz.setQuestionsOrder(rqst.getQuestionsOrder());
             quiz.setMaxTimeToFinish(rqst.getMaxTimeToFinish());
             quiz.setNoOfAttempts(rqst.getNoOfAttempts());
+            quiz.setPublish(rqst.isPublish());
             // Parse Date
             Date openingDate = dateFormatter.parse(rqst.getOpeningDate());
             Date closingDate = dateFormatter.parse(rqst.getClosingDate());

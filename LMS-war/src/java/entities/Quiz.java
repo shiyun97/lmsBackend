@@ -22,6 +22,8 @@ import javax.persistence.Temporal;
 import javax.xml.bind.annotation.XmlRootElement;
 import util.QuestionOrderEnum;
 import util.QuizTypeEnum;
+import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
+import util.xml.DateAdapter;
 
 /**
  *
@@ -145,6 +147,7 @@ public class Quiz implements Serializable {
         this.description = description;
     }
 
+    @XmlJavaTypeAdapter(DateAdapter.class)
     public Date getOpeningDate() {
         return openingDate;
     }
@@ -153,6 +156,7 @@ public class Quiz implements Serializable {
         this.openingDate = openingDate;
     }
 
+    @XmlJavaTypeAdapter(DateAdapter.class)
     public Date getClosingDate() {
         return closingDate;
     }

@@ -14,6 +14,9 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
+import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
+import util.xml.LocalDateAdapter;
+import util.xml.TimeAdapter;
 
 /**
  *
@@ -98,6 +101,7 @@ public class ConsultationTimeslot implements Serializable {
         return "entities.consultationTimeslot[ Id=" + consultationTsId + " ]";
     }
 
+    @XmlJavaTypeAdapter(TimeAdapter.class)
     public LocalTime getStartTs() {
         return startTs;
     }
@@ -130,6 +134,7 @@ public class ConsultationTimeslot implements Serializable {
         this.module = module;
     }
     
+    @XmlJavaTypeAdapter(TimeAdapter.class)
     public LocalTime getEndTs() {
         return endTs;
     }
@@ -146,6 +151,7 @@ public class ConsultationTimeslot implements Serializable {
         this.endD = endD;
     } */
 
+    @XmlJavaTypeAdapter(LocalDateAdapter.class)
     public LocalDate getStartD() {
         return startD;
     }
