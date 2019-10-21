@@ -94,7 +94,14 @@ public class ForumResource {
 
                 if (forumTopics != null && !forumTopics.isEmpty()) {
                     for (ForumTopic ft : forumTopics) {
-                        rsp.getForumTopics().add(new ForumTopic(ft.getForumTopicId(), ft.getTitle(), ft.getDescription(), null, null, null));
+                        List<ForumPost> threads = ft.getThreads();
+                        List<ForumPost> rspThreads = new ArrayList<>();
+                        for (ForumPost fp : threads) {
+                            ForumPost temp = new ForumPost();
+                            temp.setForumPostId(fp.getForumPostId());
+                            rspThreads.add(temp);
+                        }
+                        rsp.getForumTopics().add(new ForumTopic(ft.getForumTopicId(), ft.getTitle(), ft.getDescription(), rspThreads, null, null));
                     }
                     return Response.status(Response.Status.OK).entity(rsp).build();
                 } else {
@@ -557,6 +564,7 @@ public class ForumResource {
                         ForumTopic topic = post.getTopic();
                         topic.getThreads().remove(post);
                         em.remove(post);
+                        em.flush();
                         return Response.status(Response.Status.OK).build();
                     } else {
                         return Response.status(Response.Status.BAD_REQUEST).entity(new ErrorRsp("You cannot delete the Thread!")).build();
@@ -567,6 +575,7 @@ public class ForumResource {
                             ForumPost parentPost = post.getParentOfReply();
                             parentPost.getReplies().remove(post);
                             em.remove(post);
+                            em.flush();
                             return Response.status(Response.Status.OK).build();
                         } else {
                             return Response.status(Response.Status.BAD_REQUEST).entity(new ErrorRsp("You cannot delete the Post!")).build();
@@ -575,6 +584,7 @@ public class ForumResource {
                         ForumPost parentPost = post.getParentOfComments();
                         parentPost.getComments().remove(post);
                         em.remove(post);
+                        em.flush();
                         return Response.status(Response.Status.OK).build();
                     }
                 }
@@ -599,11 +609,13 @@ public class ForumResource {
                 return Response.status(Response.Status.BAD_REQUEST).entity(new ErrorRsp("User Not Exist!")).build();
             } else if (user.getAccessRight() != AccessRightEnum.Teacher) {
                 return Response.status(Response.Status.BAD_REQUEST).entity(new ErrorRsp("You have no rights to edit the topic!")).build();
-            } else if (!forumTopic.getThreads().isEmpty()) {
+            } /*else if (!forumTopic.getThreads().isEmpty()) {
                 return Response.status(Response.Status.BAD_REQUEST).entity(new ErrorRsp("You cannot edit this topic!")).build();
-            } else {
+            }*/ else {
                 forumTopic.setDescription(createThreadReq.getMessage());
                 forumTopic.setTitle(createThreadReq.getTitle());
+                em.merge(forumTopic);
+                em.flush();
                 return Response.status(Response.Status.OK).build();
             }
         } catch (Exception e) {
@@ -624,14 +636,16 @@ public class ForumResource {
                 return Response.status(Response.Status.BAD_REQUEST).entity(new ErrorRsp("User Not Exist!")).build();
             } else if (forumPost == null) {
                 return Response.status(Response.Status.BAD_REQUEST).entity(new ErrorRsp("Post Not Exist!")).build();
-            } else if(!forumPost.getComments().isEmpty() || !forumPost.getReplies().isEmpty()){
+            } /*else if(!forumPost.getComments().isEmpty() || !forumPost.getReplies().isEmpty()){
                 return Response.status(Response.Status.BAD_REQUEST).entity(new ErrorRsp("You cannot edit this post!")).build();
-            }else if (!user.equals(forumPost.getOwner())) {
+            }*/else if (!user.equals(forumPost.getOwner())) {
                 return Response.status(Response.Status.BAD_REQUEST).entity(new ErrorRsp("You do not have rights to edit the post!")).build();
             } else {
                 forumPost.setMessage(createThreadReq.getMessage());
                 forumPost.setUpdateTs(LocalDateTime.now());
+                
                 em.merge(forumPost);
+                em.flush();
                 return Response.status(Response.Status.OK).build();
             }
         } catch (Exception e) {
