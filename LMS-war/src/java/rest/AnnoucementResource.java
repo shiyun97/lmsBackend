@@ -88,7 +88,7 @@ public class AnnoucementResource {
                     annoucement.getContent(), createdDate, lastUpdatedDate, startDate, endDate,
                     annoucement.getPublish(), annoucement.getEmailNotification(), moduleCopy, null);
             
-            sendMail.send(annoucement.getOwner().getEmail(), annoucement.getOwner().getPassword(), "ykwvix@gmail.com", annoucement.getTitle(), annoucement.getContent());
+            //sendMail.send("ykwvix@gmail.com", "password!23$", "ykwvix@gmail.com", annoucement.getTitle(), annoucement.getContent());
             
             return Response.status(Response.Status.OK).entity(annoucementCopy).build();
             //EmailSessionBean.sendEmail(annoucement.getOwner().getEmail(), annoucement.getTitle(), annoucement.getOwner().getUsername());

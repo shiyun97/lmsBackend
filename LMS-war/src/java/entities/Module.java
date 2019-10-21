@@ -64,7 +64,7 @@ public class Module implements Serializable {
     private List<Folder> folderList;
     @OneToMany(mappedBy = "module")
     private List<File> multimediaList;
-    @OneToMany(mappedBy = "module")
+    @OneToMany(mappedBy = "module", orphanRemoval = true)
     private List<Annoucement> annoucementList;
     @OneToMany(mappedBy = "module")
     private List<ForumPost> forumPostList;

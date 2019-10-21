@@ -320,9 +320,9 @@ public class GroupManagementResource {
             }
             for (User s : students) {
                 rsp.getUserList().add(
-                        new User(s.getFirstName(), s.getLastName(), s.getEmail(),
+                        new User(s.getUserId(), s.getFirstName(), s.getLastName(), s.getEmail(),
                                 s.getUsername(), null, s.getGender(), s.getAccessRight(), null,
-                                null, null, null, null, null, null));
+                                null, null, null, null, null, null, null, null));
             }
             //}
             return Response.status(Response.Status.OK).entity(rsp).build();
