@@ -41,7 +41,7 @@ public class LessonOrder implements Serializable {
     private Quiz quiz;
     @ManyToOne
     private Outlines outlines; 
-    @OneToMany(mappedBy = "lessonOrder")
+    @OneToMany
     private List<User> publicUserList;
     
 

@@ -44,7 +44,7 @@ public class Coursepack implements Serializable {
     @Column
     private Double price;
     @Column 
-    private Timestamp startDate;
+    private Boolean published;
     @Column
     private Double rating;
     @Column
@@ -70,14 +70,13 @@ public class Coursepack implements Serializable {
      
     
 
-    public Coursepack(Long coursepackId, String code, String title, String description, String category, Double price, Timestamp startDate, Double rating, String teacherBackground, List<User> publicUserList, List<ForumPost> forumPostList, List<GradeItem> gradeItemList, User assignedTeacher, List<Feedback> feedbackList, List<Outlines> outlineList) {
+    public Coursepack(Long coursepackId, String code, String title, String description, String category, Double price, Boolean published, Double rating, String teacherBackground, List<User> publicUserList, List<ForumPost> forumPostList, List<GradeItem> gradeItemList, User assignedTeacher, List<Feedback> feedbackList, List<Outlines> outlineList) {
         this.coursepackId = coursepackId;
         this.code = code;
         this.title = title;
         this.description = description;
         this.category = category;
         this.price = price;
-        this.startDate = startDate;
         this.rating = rating;
         this.teacherBackground = teacherBackground;
         this.publicUserList = publicUserList;
@@ -88,6 +87,7 @@ public class Coursepack implements Serializable {
         this.assignedTeacher = assignedTeacher;
         this.feedbackList = feedbackList;
         this.outlineList = outlineList;
+        this.published = published;
     }
 
     @Override
@@ -161,14 +161,6 @@ public class Coursepack implements Serializable {
 
     public void setPrice(Double price) {
         this.price = price;
-    }
-
-    public Timestamp getStartDate() {
-        return startDate;
-    }
-
-    public void setStartDate(Timestamp startDate) {
-        this.startDate = startDate;
     }
 
     public Double getRating() {
@@ -249,6 +241,14 @@ public class Coursepack implements Serializable {
 
     public void setOutlineList(List<Outlines> outlineList) {
         this.outlineList = outlineList;
+    }
+
+    public Boolean getPublished() {
+        return published;
+    }
+
+    public void setPublished(Boolean published) {
+        this.published = published;
     }
 
     

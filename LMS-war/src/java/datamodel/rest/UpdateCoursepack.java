@@ -22,7 +22,7 @@ public class UpdateCoursepack {
     private String description;
     private String category;
     private Double price;
-    private Timestamp startDate;
+    private Boolean published;
     private Double rating;
     private String teacherBackground;
     
@@ -36,7 +36,7 @@ public class UpdateCoursepack {
         
     }
     
-    public UpdateCoursepack(Coursepack coursepack, Long coursepackId, String code, String title, String description, String category, Double price, Timestamp startDate, Double rating, String teacherBackground,User user, Long userId, String email, String password ) {
+    public UpdateCoursepack(Coursepack coursepack, Long coursepackId, String code, String title, String description, String category, Double price, Boolean published, Double rating, String teacherBackground,User user, Long userId, String email, String password ) {
         this.coursepack = coursepack;
         this.coursepackId = coursepackId;
         this.code = code;
@@ -44,7 +44,7 @@ public class UpdateCoursepack {
         this.description = description;
         this.category = category;
         this.price = price;
-        this.startDate = startDate;
+        this.published = published;
         this.rating = rating;
         this.teacherBackground = teacherBackground;
         this.user = user;
@@ -109,13 +109,15 @@ public class UpdateCoursepack {
         this.price = price;
     }
 
-    public Timestamp getStartDate() {
-        return startDate;
+    public Boolean getPublished() {
+        return published;
     }
 
-    public void setStartDate(Timestamp startDate) {
-        this.startDate = startDate;
+    public void setPublished(Boolean published) {
+        this.published = published;
     }
+
+   
 
     public Double getRating() {
         return rating;

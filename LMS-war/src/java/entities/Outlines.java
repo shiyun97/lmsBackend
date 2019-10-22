@@ -7,6 +7,8 @@ package entities;
 
 import java.io.Serializable;
 import java.util.List;
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -26,22 +28,34 @@ public class Outlines implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long outlineId;
+    @Column
     private String name;
+    @Column
+    private int number; 
+
+    public int getNumber() {
+        return number;
+    }
+
+    public void setNumber(int number) {
+        this.number = number;
+    }
 
     @ManyToOne
     private Coursepack coursepack;
-    @OneToMany(mappedBy = "outlines")
+    @OneToMany(mappedBy = "outlines", cascade = CascadeType.REMOVE)
     private List<LessonOrder> lessonOrder; 
 
     public Outlines(){
         
     }
     
-    public Outlines(Long outlineId, Coursepack coursepack, List<LessonOrder> lessonOrder, String name) {
+    public Outlines(Long outlineId, Coursepack coursepack, List<LessonOrder> lessonOrder, String name, int number) {
         this.outlineId = outlineId;
         this.coursepack = coursepack;
         this.lessonOrder = lessonOrder;
         this.name = name;
+        this.number = number; 
     }
     
     

@@ -104,9 +104,6 @@ public class User implements Serializable {
     @ManyToMany(mappedBy = "publicUserList")
     private List<Coursepack> publicUserCoursepackList;
     
-    @OneToOne
-    private LessonOrder lessonOrder;
-
     public Long getId() {
         return userId;
     }
@@ -284,13 +281,6 @@ public class User implements Serializable {
         this.publicUserCoursepackList = publicUserCoursepackList;
     }
 
-    public LessonOrder getLessonOrder() {
-        return lessonOrder;
-    }
-
-    public void setLessonOrder(LessonOrder lessonOrder) {
-        this.lessonOrder = lessonOrder;
-    }
     
     
     

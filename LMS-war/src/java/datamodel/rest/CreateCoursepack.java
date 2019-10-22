@@ -25,14 +25,14 @@ public class CreateCoursepack {
     private String description;
     private String category;
     private Double price;
-    private Timestamp startDate;
+    private Boolean published;
     private String teacherBackground;
-    //private List<String> outlines;
+    private List<String> outlines;
     
-    private Outlines outlineList;
+    /*private Outlines outlineList;
     private Long outlineId;
     private List<LessonOrder> lessonOrderList;
-    private String outlineName;
+    private String outlineName;*/
     
     
     private User user; 
@@ -44,7 +44,7 @@ public class CreateCoursepack {
         
     }
 
-    public CreateCoursepack(Coursepack coursepack, Long coursepackId, String code, String title, String description, String category, Double price, Timestamp startDate, String teacherBackground,Outlines outlineList, Long outlineId, List<LessonOrder> lessonOrderList, String outlineName, User user, Long userId, String email, String password) {
+    public CreateCoursepack(Coursepack coursepack, Long coursepackId, String code, String title, String description, String category, Double price, Boolean published, String teacherBackground,List<String> outlines, User user, Long userId, String email, String password) {
         this.coursepack = coursepack;
         this.coursepackId = coursepackId;
         this.code = code;
@@ -52,14 +52,14 @@ public class CreateCoursepack {
         this.description = description;
         this.category = category;
         this.price = price;
-        this.startDate = startDate;
+        this.published = published;
         this.teacherBackground = teacherBackground;
-        //this.outlines = outlines;
+        this.outlines = outlines;
         
-        this.outlineList = outlineList;
+        /*this.outlineList = outlineList;
         this.outlineId = outlineId;
         this.lessonOrderList = lessonOrderList;
-        this.outlineName = outlineName;
+        this.outlineName = outlineName;*/
         
         this.user = user;
         this.userId = userId;
@@ -123,13 +123,15 @@ public class CreateCoursepack {
         this.price = price;
     }
 
-    public Timestamp getStartDate() {
-        return startDate;
+    public Boolean getPublished() {
+        return published;
     }
 
-    public void setStartDate(Timestamp startDate) {
-        this.startDate = startDate;
+    public void setPublished(Boolean published) {
+        this.published = published;
     }
+
+    
 
     public String getTeacherBackground() {
         return teacherBackground;
@@ -171,7 +173,7 @@ public class CreateCoursepack {
         this.password = password;
     }
 
-    public Outlines getOutlineList() {
+    /*public Outlines getOutlineList() {
         return outlineList;
     }
 
@@ -201,14 +203,14 @@ public class CreateCoursepack {
 
     public void setOutlineName(String outlineName) {
         this.outlineName = outlineName;
-    }
+    }*/
 
-    /*public List<String> getOutlines() {
+    public List<String> getOutlines() {
         return outlines;
     }
 
     public void setOutlines(List<String> outlines) {
         this.outlines = outlines;
-    }*/
+    }
 
 }

@@ -241,7 +241,8 @@ public class DataInitSessionBean {
         cp1.setDescription("Learn C Programming and unlock doors to careers in computer engineering");
         cp1.setPrice(500.00);
         cp1.setRating(5.00);
-        cp1.setStartDate(new Timestamp(2019-1900, 11, 30, 9, 0, 0, 0));
+        //cp1.setStartDate(new Timestamp(2019-1900, 11, 30, 9, 0, 0, 0));
+        cp1.setPublished(false);
         cp1.setTeacherBackground("Graduated with Master degree in Computer Science from NUS");
         cp1.setTitle("C Programming");
         teacher.getTeacherCoursepackList().add(cp1);
@@ -255,7 +256,7 @@ public class DataInitSessionBean {
         cp2.setDescription("Master the essentials of managing a successful business");
         cp2.setPrice(300.00);
         cp2.setRating(4.00);
-        cp2.setStartDate(new Timestamp(2020-1900, 12, 1, 9, 0, 0, 0));
+        cp2.setPublished(false);
         cp2.setTeacherBackground("With more than 20 years of teaching experiences");
         cp2.setTitle("Operations Management");
         teacher.getTeacherCoursepackList().add(cp2);
@@ -269,7 +270,7 @@ public class DataInitSessionBean {
         cp3.setDescription("This course will introduce you to the Design Thinking process and illustrate best practices for each step along the way.");
         cp3.setPrice(200.00);
         cp3.setRating(5.00);
-        cp3.setStartDate(new Timestamp(2020-1900, 12, 1, 9, 0, 0, 0));
+        cp3.setPublished(false);
         cp3.setTeacherBackground("Microsoft developer");
         cp3.setTitle("Introduction to Design Thinking");
         teacher.getTeacherCoursepackList().add(cp3);
