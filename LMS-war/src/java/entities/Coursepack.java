@@ -67,6 +67,8 @@ public class Coursepack implements Serializable {
     
     @OneToMany
     private List<Outlines> outlineList;
+    @OneToMany(mappedBy = "coursepack")
+    private List<File> multimediaList;
      
     
 
@@ -88,6 +90,27 @@ public class Coursepack implements Serializable {
         this.assignedTeacher = assignedTeacher;
         this.feedbackList = feedbackList;
         this.outlineList = outlineList;
+    }
+    
+    public Coursepack(Long coursepackId, String code, String title, String description, String category, Double price, Timestamp startDate, Double rating, String teacherBackground, List<User> publicUserList, List<ForumTopic> forumTopicList, List<GradeItem> gradeItemList, User assignedTeacher, List<Feedback> feedbackList, List<Outlines> outlineList, List<File> multimediaList) {
+        this.coursepackId = coursepackId;
+        this.code = code;
+        this.title = title;
+        this.description = description;
+        this.category = category;
+        this.price = price;
+        this.startDate = startDate;
+        this.rating = rating;
+        this.teacherBackground = teacherBackground;
+        this.publicUserList = publicUserList;
+        //this.folderList = folderList;
+        this.forumTopicList = forumTopicList;
+        //this.quizList = quizList;
+        this.gradeItemList = gradeItemList;
+        this.assignedTeacher = assignedTeacher;
+        this.feedbackList = feedbackList;
+        this.outlineList = outlineList;
+        this.multimediaList = multimediaList;
     }
 
     @Override
@@ -250,5 +273,13 @@ public class Coursepack implements Serializable {
     public void setForumTopicList(List<ForumTopic> forumTopicList) {
         this.forumTopicList = forumTopicList;
     }  
+
+    public List<File> getMultimediaList() {
+        return multimediaList;
+    }
+
+    public void setMultimediaList(List<File> multimediaList) {
+        this.multimediaList = multimediaList;
+    }
     
 }
