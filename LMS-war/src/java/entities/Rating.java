@@ -11,6 +11,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.ManyToOne;
 
 /**
  *
@@ -24,9 +25,11 @@ public class Rating implements Serializable {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long ratingId;
     @Column
-    private Double rating;
+    private int rating;
     @Column
     private String comment;
+    @ManyToOne
+    private User user;
 
     public Long getRatingId() {
         return ratingId;
@@ -36,11 +39,11 @@ public class Rating implements Serializable {
         this.ratingId = ratingId;
     }
 
-    public Double getRating() {
+    public int getRating() {
         return rating;
     }
 
-    public void setRating(Double rating) {
+    public void setRating(int rating) {
         this.rating = rating;
     }
 
@@ -50,6 +53,14 @@ public class Rating implements Serializable {
 
     public void setComment(String comment) {
         this.comment = comment;
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
     }
 
     @Override

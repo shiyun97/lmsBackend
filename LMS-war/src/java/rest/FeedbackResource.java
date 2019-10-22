@@ -285,11 +285,12 @@ public class FeedbackResource {
             Rating rating = new Rating();
             rating.setRating(rqst.getRating());
             rating.setComment(rqst.getComment());
+            rating.setUser(user);
             
             em.persist(rating);
             cp.getRatingList().add(rating);
             
-            cp.setRating(cp.getRating() + rating.getRating() / cp.getRatingList().size());
+            cp.setRating(1.0 * cp.getRating() + rating.getRating() / cp.getRatingList().size());
             em.flush();
             
             return Response.status(Response.Status.OK).build();
@@ -312,18 +313,59 @@ public class FeedbackResource {
             return Response.status(Response.Status.NOT_FOUND).entity(new ErrorRsp("No ratings yet for this coursepack")).build();
         }
         
-        return Response.status(Response.Status.OK).entity(new RetrieveRatingsRsp(cp.getRatingList())).build();
+        RetrieveRatingsRsp rsp = new RetrieveRatingsRsp(new ArrayList<>());
+        for (Rating r: cp.getRatingList()){
+            Rating rCopy = new Rating();
+            rCopy.setRating(r.getRating());
+            rCopy.setRatingId(r.getRatingId());
+            rCopy.setComment(r.getComment());
+            
+            User uCopy = new User();
+            uCopy.setFirstName(r.getUser().getFirstName());
+            uCopy.setLastName(r.getUser().getLastName());
+            
+            rCopy.setUser(uCopy);
+            rsp.getRatings().add(rCopy);
+            
+            switch(r.getRating()){
+                case 1: rsp.setPer1(rsp.getPer1() + 1); break;
+                case 2: rsp.setPer2(rsp.getPer2() + 1); break;
+                case 3: rsp.setPer3(rsp.getPer3() + 1); break;
+                case 4: rsp.setPer4(rsp.getPer4() + 1); break;
+                case 5: rsp.setPer5(rsp.getPer5() + 1); break;
+            }
+        }
+        rsp.setPer1(100 * rsp.getPer1() / rsp.getRatings().size());
+        rsp.setPer2(100 * rsp.getPer2() / rsp.getRatings().size());
+        rsp.setPer3(100 * rsp.getPer3() / rsp.getRatings().size());
+        rsp.setPer4(100 * rsp.getPer4() / rsp.getRatings().size());
+        rsp.setPer5(100 * rsp.getPer5() / rsp.getRatings().size());
+        
+        rsp.setAvg(cp.getRating().intValue());
+        
+        return Response.status(Response.Status.OK).entity(rsp).build();
     }
     
     @GET
     @Path("retrieveRating")
     @Produces(MediaType.APPLICATION_JSON)
     public Response retrieveRating(@QueryParam("ratingId") Long ratingId){
-        Rating rating = em.find(Rating.class, ratingId);
-        if(rating == null){
+        Rating r = em.find(Rating.class, ratingId);
+        if(r == null){
             return Response.status(Response.Status.NOT_FOUND).entity(new ErrorRsp("Rating with the given ID not found!")).build();
         }
         
-        return Response.status(Response.Status.OK).entity(rating).build();
+        Rating rCopy = new Rating();
+        rCopy.setRating(r.getRating());
+        rCopy.setRatingId(r.getRatingId());
+        rCopy.setComment(r.getComment());
+
+        User uCopy = new User();
+        uCopy.setFirstName(r.getUser().getFirstName());
+        uCopy.setLastName(r.getUser().getLastName());
+
+        rCopy.setUser(uCopy);
+        
+        return Response.status(Response.Status.OK).entity(rCopy).build();
     }
 }

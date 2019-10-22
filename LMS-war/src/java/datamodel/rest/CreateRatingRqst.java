@@ -12,7 +12,7 @@ package datamodel.rest;
 public class CreateRatingRqst {
     private Long userId;
     private Long coursepackId;
-    private Double rating;
+    private int rating;
     private String comment;
 
     public Long getUserId() {
@@ -31,11 +31,11 @@ public class CreateRatingRqst {
         this.coursepackId = coursepackId;
     }
 
-    public Double getRating() {
+    public int getRating() {
         return rating;
     }
 
-    public void setRating(Double rating) {
+    public void setRating(int rating) {
         this.rating = rating;
     }
 
