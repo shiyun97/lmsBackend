@@ -13,6 +13,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToMany;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import util.AccessRightEnum;
 import util.GenderEnum;
@@ -116,7 +117,7 @@ public class User implements Serializable {
         this.tutorials = tutorials;
         this.attendanceList = attendanceList;
     }
-    
+ 
     public User() {
     }
 
@@ -288,5 +289,4 @@ public class User implements Serializable {
     public void setAttendanceList(List<Attendance> attendanceList) {
         this.attendanceList = attendanceList;
     }
-    
 }

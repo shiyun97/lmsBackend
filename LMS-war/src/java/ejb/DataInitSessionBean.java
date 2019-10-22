@@ -40,9 +40,9 @@ public class DataInitSessionBean {
     private EntityManager em;
 
     @PostConstruct
-    public void init(){
+    public void init() {
         Query q = em.createQuery("SELECT u FROM User u");
-        if(!q.getResultList().isEmpty()){
+        if (!q.getResultList().isEmpty()) {
             System.out.println("Data already initialized!");
             return;
         }
@@ -57,7 +57,7 @@ public class DataInitSessionBean {
         admin.setUsername("admin");
         em.persist(admin);
         em.flush();
-        
+
         //2
         User student = new User();
         student.setFirstName("John");
@@ -69,7 +69,7 @@ public class DataInitSessionBean {
         student.setUsername("student");
         em.persist(student);
         em.flush();
-        
+
         //3
         User student2 = new User();
         student2.setFirstName("Bob");
@@ -81,7 +81,7 @@ public class DataInitSessionBean {
         student2.setUsername("student2");
         em.persist(student2);
         em.flush();
-        
+
         //4
         User student3 = new User();
         student3.setFirstName("Mary");
@@ -93,7 +93,7 @@ public class DataInitSessionBean {
         student3.setUsername("student3");
         em.persist(student3);
         em.flush();
-        
+
         List<User> studentList = new ArrayList<>();
         studentList.add(student);
         studentList.add(student2);
@@ -127,7 +127,7 @@ public class DataInitSessionBean {
         Module m1 = new Module();
         m1.setCode("CS1010");
         m1.setDescription("CS1010 Mod Desc");
-        m1.setExamTime(new Timestamp(2019-1900, 11, 29, 9, 0, 0, 0));
+        m1.setExamTime(new Timestamp(2019 - 1900, 11, 29, 9, 0, 0, 0));
         m1.setHasExam(true);
         m1.setCreditUnit(4);
         m1.setExamVenue("MPSH 1");
@@ -151,7 +151,7 @@ public class DataInitSessionBean {
         Module m2 = new Module();
         m2.setCode("CS2040");
         m2.setDescription("CS2040 Mod Desc");
-        m2.setExamTime(new Timestamp(2019-1900, 11, 30, 9, 0, 0, 0));
+        m2.setExamTime(new Timestamp(2019 - 1900, 11, 30, 9, 0, 0, 0));
         m2.setHasExam(true);
         m2.setCreditUnit(4);
         m2.setExamVenue("MPSH 1");
@@ -169,7 +169,7 @@ public class DataInitSessionBean {
         Module m3 = new Module();
         m3.setCode("IS4103");
         m3.setDescription("IS4103 Mod Desc");
-        m3.setExamTime(new Timestamp(2020-1900, 4, 29, 13, 0, 0, 0));
+        m3.setExamTime(new Timestamp(2020 - 1900, 4, 29, 13, 0, 0, 0));
         m3.setHasExam(true);
         m3.setCreditUnit(8);
         m3.setExamVenue("MPSH 1");
@@ -187,7 +187,7 @@ public class DataInitSessionBean {
         Module m4 = new Module();
         m4.setCode("IS4103");
         m4.setDescription("IS4103 Mod Desc");
-        m4.setExamTime(new Timestamp(2020-1900, 12, 1, 9, 0, 0, 0));
+        m4.setExamTime(new Timestamp(2020 - 1900, 12, 1, 9, 0, 0, 0));
         m4.setHasExam(true);
         m4.setCreditUnit(8);
         m4.setExamVenue("MPSH 1");
@@ -239,7 +239,6 @@ public class DataInitSessionBean {
         em.persist(t3);
         em.flush();
 
-        
         //14
         Tutorial t4 = new Tutorial();
         t4.setModule(m2);
@@ -304,19 +303,19 @@ public class DataInitSessionBean {
         Schedule schedule = new Schedule();
         schedule.setSemester(1);
         schedule.setYear("2019/2020");
-        schedule.setModuleRound1StartDate(new Date(2019-1900, 8, 20));
-        schedule.setModuleRound1EndDate(new Date(2019-1900, 8, 25));
-        schedule.setModuleRound2StartDate(new Date(2019-1900, 8, 29));
-        schedule.setModuleRound2EndDate(new Date(2019-1900, 9, 5));
-        schedule.setModuleRound3StartDate(new Date(2019-1900, 9, 20));
-        schedule.setModuleRound3EndDate(new Date(2019-1900, 12, 5));
-        schedule.setTutorialRound1StartDate(new Date(2019-1900, 9, 1));
-        schedule.setTutorialRound1EndDate(new Date(2019-1900, 9, 8));
-        schedule.setTutorialRound2StartDate(new Date(2019-1900, 9, 20));
-        schedule.setTutorialRound2EndDate(new Date(2019-1900, 12, 1));
+        schedule.setModuleRound1StartDate(new Date(2019 - 1900, 8, 20));
+        schedule.setModuleRound1EndDate(new Date(2019 - 1900, 8, 25));
+        schedule.setModuleRound2StartDate(new Date(2019 - 1900, 8, 29));
+        schedule.setModuleRound2EndDate(new Date(2019 - 1900, 9, 5));
+        schedule.setModuleRound3StartDate(new Date(2019 - 1900, 9, 20));
+        schedule.setModuleRound3EndDate(new Date(2019 - 1900, 12, 5));
+        schedule.setTutorialRound1StartDate(new Date(2019 - 1900, 9, 1));
+        schedule.setTutorialRound1EndDate(new Date(2019 - 1900, 9, 8));
+        schedule.setTutorialRound2StartDate(new Date(2019 - 1900, 9, 20));
+        schedule.setTutorialRound2EndDate(new Date(2019 - 1900, 12, 1));
         em.persist(schedule);
         em.flush();
-        
+
         //21
         ConsultationTimeslot c1 = new ConsultationTimeslot();
         c1.setBooker(student);
@@ -326,7 +325,7 @@ public class DataInitSessionBean {
         c1.setStartTs(LocalTime.parse("10:30:00"));
         em.persist(c1);
         em.flush();
-        
+
         //22
         ConsultationTimeslot c2 = new ConsultationTimeslot();
         c1.setEndTs(LocalTime.parse("11:30:00"));
@@ -338,25 +337,52 @@ public class DataInitSessionBean {
         m1.getConsultationList().add(c1);
 
         em.flush();
-        
+
         //23
         Attendance a1 = new Attendance();
         a1.setDuration(5);
-        a1.setEndTs(new Timestamp(2020-1900, 4, 29, 13,11, 0, 0));
+        a1.setEndTs(new Timestamp(2020 - 1900, 4, 29, 13, 11, 0, 0));
         a1.setModule(m1);
-        m1.getAttandanceList().add(a1);
         a1.setSemester(1);
-        a1.setStartTs(new Timestamp(2020-1900, 4, 29, 13,10, 0, 0));
+        a1.setStartTs(new Timestamp(2020 - 1900, 4, 29, 13, 10, 0, 0));
         a1.setTotal(20);
-        a1.setTutorial(t1);
-        t1.getAttendanceList().add(a1);
+        //a1.setTutorial(t1);
+        //t1.getAttendanceList().add(a1);
         a1.setAttendees(studentList);
         //a1.getAttendees().add(student);
-        a1.setAttendedNumber(3);       
+        a1.setAttendedNumber(3);
         student.getAttendanceList().add(a1);
         student2.getAttendanceList().add(a1);
         student3.getAttendanceList().add(a1);
+        m1.getAttandanceList().add(a1);
         em.persist(a1);
+        em.flush();
+
+        Attendance a2 = new Attendance();
+        a2.setDuration(5);
+        a2.setEndTs(new Timestamp(2020 - 1900, 4, 29, 13, 11, 0, 0));
+        //a1.setModule(m1);
+        //m1.getAttandanceList().add(a1);
+        a2.setSemester(1);
+        a2.setStartTs(new Timestamp(2020 - 1900, 4, 29, 13, 10, 0, 0));
+        a2.setTotal(20);
+        a2.setTutorial(t1);
+        a2.setAttendees(studentList);
+        //a1.getAttendees().add(student);
+        a2.setAttendedNumber(3);
+        student.getAttendanceList().add(a2);
+        student2.getAttendanceList().add(a2);
+        student3.getAttendanceList().add(a2);
+        t1.getAttendanceList().add(a2);
+        em.persist(a2);
+        em.flush();
+
+        List<Attendance> attendanceList = new ArrayList<>();
+        attendanceList.add(a1);
+        attendanceList.add(a2);
+        //student.setAttendanceList(attendanceList);
+        //student2.setAttendanceList(attendanceList);
+        //student3.setAttendanceList(attendanceList);
         em.flush();
     }
 
