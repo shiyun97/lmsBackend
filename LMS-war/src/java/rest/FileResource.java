@@ -8,6 +8,7 @@ package rest;
 import datamodel.rest.ErrorRsp;
 import datamodel.rest.RetrieveFilesRsp;
 import datamodel.rest.CreateFolderRqst;
+import entities.Coursepack;
 import entities.Folder;
 import entities.Module;
 import entities.User;
@@ -63,20 +64,6 @@ public class FileResource {
     
     public FileResource() 
     {
-    }
-    
-    private void CreateNewFile(entities.File newFile, Long folderId) {
-        if (folderId != null) {
-            Folder folder = em.find(Folder.class, folderId);
-            if (folder != null) {
-                newFile.setFolder(folder);
-                folder.getFile().add(newFile);
-            }
-        }
-
-        em.persist(newFile);
-        em.flush();
-        return;
     }
     
     @POST
@@ -137,7 +124,6 @@ public class FileResource {
                 newFile.setCreatedDt(timestamp);
                 newFile.setIsDelete(false);
                 newFile.setUploader(user);
-                //CreateNewFile(newFile, folderId);
                 
                 if (folderId != null) {
                     Folder folder = em.find(Folder.class, folderId);
@@ -229,7 +215,6 @@ public class FileResource {
                 newFile.setCreatedDt(timestamp);
                 newFile.setIsDelete(false);
                 newFile.setUploader(user);
-                //CreateNewFile(newFile, folderId);
                 
                 if (folderId != null) {
                     Folder folder = em.find(Folder.class, folderId);
@@ -246,6 +231,81 @@ public class FileResource {
                     module.getMultimediaList().add(newFile);
                 }
 
+                em.persist(newFile);
+                em.flush();
+
+            }
+            return Response.status(Response.Status.OK).entity("ok").build();
+        }
+        catch(FileNotFoundException ex)
+        {
+            ex.printStackTrace();
+            
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(new ErrorRsp("File not found error")).build();
+        }
+        catch(IOException ex)
+        {
+            ex.printStackTrace();
+        
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(new ErrorRsp("File IO exception error")).build();
+        }
+    }
+    
+    @POST
+    @Path("uploadMultipleMultimediaForCoursepack")
+    @Consumes(MediaType.MULTIPART_FORM_DATA)
+    @Produces(MediaType.APPLICATION_JSON)
+    @Transactional
+    public Response uploadMultipleMultimediaForCoursepack(@FormDataParam("file") FormDataBodyPart body, @QueryParam("coursepackId") Long coursepackId, 
+            @QueryParam("userId") Long userId) {
+        User user = em.find(User.class, userId);
+        if (user == null) {
+            return Response.status(Response.Status.BAD_REQUEST).entity(new ErrorRsp("User does not exist!")).build();
+        }
+        Coursepack coursepack = em.find(Coursepack.class, coursepackId);
+        if (coursepack == null) {
+            return Response.status(Response.Status.BAD_REQUEST).entity(new ErrorRsp("Coursepack does not exist!")).build();
+        }
+        
+        try {
+            System.out.println(body);
+            for (BodyPart part : body.getParent().getBodyParts()) {
+                InputStream inputStream = part.getEntityAs(InputStream.class);
+                ContentDisposition meta = part.getContentDisposition();
+                Timestamp timestamp = new Timestamp(System.currentTimeMillis());
+                String outputFilePath = servletContext.getInitParameter("alternatedocroot_1") + System.getProperty("file.separator") + timestamp.getTime() + "_" + meta.getFileName();
+                // do upload
+                java.io.File file = new java.io.File(outputFilePath);
+                FileOutputStream fileOutputStream = new FileOutputStream(file);
+
+                int a;
+                int BUFFER_SIZE = 8192;
+                byte[] buffer = new byte[BUFFER_SIZE];
+
+                while (true) {
+                    a = inputStream.read(buffer);
+
+                    if (a < 0) {
+                        break;
+                    }
+
+                    fileOutputStream.write(buffer, 0, a);
+                    fileOutputStream.flush();
+                }
+                fileOutputStream.close();
+                inputStream.close();
+                
+                // create new file entity
+                entities.File newFile = new entities.File();
+                newFile.setName(meta.getFileName());
+                newFile.setType("multimedia");
+                newFile.setLocation(outputFilePath);
+                newFile.setCreatedDt(timestamp);
+                newFile.setIsDelete(false);
+                newFile.setUploader(user);
+                newFile.setCoursepack(coursepack);
+                coursepack.getMultimediaList().add(newFile);
+                
                 em.persist(newFile);
                 em.flush();
 
@@ -345,6 +405,34 @@ public class FileResource {
         }
         try {
             List<entities.File> multimediaList = module.getMultimediaList();
+            List<entities.File> multimediaRsp = new ArrayList<>();
+            for (entities.File f : multimediaList) {
+                if (f.getIsDelete() == false) {
+                    User u = new User();
+                    u.setUserId(f.getUploader().getUserId());
+                    u.setFirstName(f.getUploader().getFirstName());
+                    u.setLastName(f.getUploader().getLastName());
+                    entities.File temp = new entities.File(f.getFileId(), f.getName(), f.getType(), f.getLocation(), f.getCreatedDt(), f.getIsDelete(), null, null, u);
+                    multimediaRsp.add(temp);
+                }
+            }
+            return Response.status(Response.Status.OK).entity(new RetrieveFilesRsp(multimediaRsp, new ArrayList<>(), new Folder())).build();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(new ErrorRsp(e.getMessage())).build();
+        }
+    }
+    
+    @Path("retrieveAllMultimediaForCoursepack")
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response retrieveAllMultimediaForCoursepack(@QueryParam("coursepackId") Long coursepackId){
+        Coursepack coursepack = em.find(Coursepack.class, coursepackId);
+        if (coursepack == null) {
+            return Response.status(Response.Status.BAD_REQUEST).entity(new ErrorRsp("Coursepack does not exist!")).build();
+        }
+        try {
+            List<entities.File> multimediaList = coursepack.getMultimediaList();
             List<entities.File> multimediaRsp = new ArrayList<>();
             for (entities.File f : multimediaList) {
                 if (f.getIsDelete() == false) {

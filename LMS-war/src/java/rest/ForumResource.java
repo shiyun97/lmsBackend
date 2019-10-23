@@ -55,7 +55,9 @@ public class ForumResource {
                 return Response.status(Response.Status.BAD_REQUEST).entity(new ErrorRsp("Module Not Exists!")).build();
             } else {
                 List<ForumTopic> forumTopics = mod.getForumTopicList();
-                GetForumTopicRsp rsp = new GetForumTopicRsp(new ArrayList<>());
+                User owner = new User();
+                owner.setUserId(mod.getAssignedTeacher().getUserId());
+                GetForumTopicRsp rsp = new GetForumTopicRsp(new ArrayList<>(), owner);
 
                 if (forumTopics != null && !forumTopics.isEmpty()) {
                     for (ForumTopic ft : forumTopics) {
@@ -90,11 +92,20 @@ public class ForumResource {
                 return Response.status(Response.Status.BAD_REQUEST).entity(new ErrorRsp("Coursepack Not Exists!")).build();
             } else {
                 List<ForumTopic> forumTopics = coursepack.getForumTopicList();
-                GetForumTopicRsp rsp = new GetForumTopicRsp(new ArrayList<>());
+                User owner = new User();
+                //owner.setUserId(coursepack.getAssignedTeacher().getUserId());
+                GetForumTopicRsp rsp = new GetForumTopicRsp(new ArrayList<>(), owner);
 
                 if (forumTopics != null && !forumTopics.isEmpty()) {
                     for (ForumTopic ft : forumTopics) {
-                        rsp.getForumTopics().add(new ForumTopic(ft.getForumTopicId(), ft.getTitle(), ft.getDescription(), null, null, null));
+                        List<ForumPost> threads = ft.getThreads();
+                        List<ForumPost> rspThreads = new ArrayList<>();
+                        for (ForumPost fp : threads) {
+                            ForumPost temp = new ForumPost();
+                            temp.setForumPostId(fp.getForumPostId());
+                            rspThreads.add(temp);
+                        }
+                        rsp.getForumTopics().add(new ForumTopic(ft.getForumTopicId(), ft.getTitle(), ft.getDescription(), rspThreads, null, null));
                     }
                     return Response.status(Response.Status.OK).entity(rsp).build();
                 } else {
@@ -123,6 +134,7 @@ public class ForumResource {
                 if (threads != null && !threads.isEmpty()) {
                     for (ForumPost fp : threads) {
                         User owner = new User();
+                        owner.setUserId(fp.getOwner().getUserId());
                         owner.setFirstName(fp.getOwner().getFirstName());
                         owner.setLastName(fp.getOwner().getLastName());
                         List<ForumPost> replies = fp.getReplies();
@@ -158,6 +170,7 @@ public class ForumResource {
                 User owner = new User();
                 owner.setFirstName(thread.getOwner().getFirstName());
                 owner.setLastName(thread.getOwner().getLastName());
+                owner.setUserId(thread.getOwner().getUserId());
                 ForumPost rsp = new ForumPost(thread.getTitle(), thread.getMessage(), thread.getCreateTs(), thread.getUpdateTs(), thread.getThreadStarter(),
                         owner, null, thread.getType());
                 rsp.setForumPostId(thread.getForumPostId());
@@ -168,6 +181,7 @@ public class ForumResource {
                     User replyOwner = new User();
                     replyOwner.setFirstName(reply.getOwner().getFirstName());
                     replyOwner.setLastName(reply.getOwner().getLastName());
+                    replyOwner.setUserId(reply.getOwner().getUserId());
                     ForumPost tempReply = new ForumPost(reply.getTitle(), reply.getMessage(), reply.getCreateTs(), reply.getUpdateTs(), reply.getThreadStarter(), replyOwner, null, reply.getType());
                     tempReply.setForumPostId(reply.getForumPostId());
                     List<ForumPost> tempReplyComments = new ArrayList<>();
@@ -176,6 +190,7 @@ public class ForumResource {
                         User commentOwner = new User();
                         commentOwner.setFirstName(comment.getOwner().getFirstName());
                         commentOwner.setLastName(comment.getOwner().getLastName());
+                        commentOwner.setUserId(comment.getOwner().getUserId());
                         ForumPost tempComment = new ForumPost(comment.getTitle(), comment.getMessage(), comment.getCreateTs(), comment.getUpdateTs(), comment.getThreadStarter(), commentOwner, null, comment.getType());
                         tempComment.setForumPostId(comment.getForumPostId());
                         tempReplyComments.add(tempComment);
@@ -190,6 +205,7 @@ public class ForumResource {
                     User commentOwner = new User();
                     commentOwner.setFirstName(comment.getOwner().getFirstName());
                     commentOwner.setLastName(comment.getOwner().getLastName());
+                    commentOwner.setUserId(comment.getOwner().getUserId());
                     ForumPost tempComment = new ForumPost(comment.getTitle(), comment.getMessage(), comment.getCreateTs(), comment.getUpdateTs(), comment.getThreadStarter(), commentOwner, null, comment.getType());
                     tempComment.setForumPostId(comment.getForumPostId());
                     tempComments.add(tempComment);
@@ -557,6 +573,7 @@ public class ForumResource {
                         ForumTopic topic = post.getTopic();
                         topic.getThreads().remove(post);
                         em.remove(post);
+                        em.flush();
                         return Response.status(Response.Status.OK).build();
                     } else {
                         return Response.status(Response.Status.BAD_REQUEST).entity(new ErrorRsp("You cannot delete the Thread!")).build();
@@ -567,6 +584,7 @@ public class ForumResource {
                             ForumPost parentPost = post.getParentOfReply();
                             parentPost.getReplies().remove(post);
                             em.remove(post);
+                            em.flush();
                             return Response.status(Response.Status.OK).build();
                         } else {
                             return Response.status(Response.Status.BAD_REQUEST).entity(new ErrorRsp("You cannot delete the Post!")).build();
@@ -575,6 +593,7 @@ public class ForumResource {
                         ForumPost parentPost = post.getParentOfComments();
                         parentPost.getComments().remove(post);
                         em.remove(post);
+                        em.flush();
                         return Response.status(Response.Status.OK).build();
                     }
                 }
@@ -599,11 +618,13 @@ public class ForumResource {
                 return Response.status(Response.Status.BAD_REQUEST).entity(new ErrorRsp("User Not Exist!")).build();
             } else if (user.getAccessRight() != AccessRightEnum.Teacher) {
                 return Response.status(Response.Status.BAD_REQUEST).entity(new ErrorRsp("You have no rights to edit the topic!")).build();
-            } else if (!forumTopic.getThreads().isEmpty()) {
+            } /*else if (!forumTopic.getThreads().isEmpty()) {
                 return Response.status(Response.Status.BAD_REQUEST).entity(new ErrorRsp("You cannot edit this topic!")).build();
-            } else {
+            }*/ else {
                 forumTopic.setDescription(createThreadReq.getMessage());
                 forumTopic.setTitle(createThreadReq.getTitle());
+                em.merge(forumTopic);
+                em.flush();
                 return Response.status(Response.Status.OK).build();
             }
         } catch (Exception e) {
@@ -624,14 +645,16 @@ public class ForumResource {
                 return Response.status(Response.Status.BAD_REQUEST).entity(new ErrorRsp("User Not Exist!")).build();
             } else if (forumPost == null) {
                 return Response.status(Response.Status.BAD_REQUEST).entity(new ErrorRsp("Post Not Exist!")).build();
-            } else if(!forumPost.getComments().isEmpty() || !forumPost.getReplies().isEmpty()){
+            } /*else if(!forumPost.getComments().isEmpty() || !forumPost.getReplies().isEmpty()){
                 return Response.status(Response.Status.BAD_REQUEST).entity(new ErrorRsp("You cannot edit this post!")).build();
-            }else if (!user.equals(forumPost.getOwner())) {
+            }*/else if (!user.equals(forumPost.getOwner())) {
                 return Response.status(Response.Status.BAD_REQUEST).entity(new ErrorRsp("You do not have rights to edit the post!")).build();
             } else {
                 forumPost.setMessage(createThreadReq.getMessage());
                 forumPost.setUpdateTs(LocalDateTime.now());
+                
                 em.merge(forumPost);
+                em.flush();
                 return Response.status(Response.Status.OK).build();
             }
         } catch (Exception e) {
