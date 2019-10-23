@@ -79,11 +79,15 @@ public class AnnoucementResource {
             em.persist(annoucement);
             em.flush();
             module.getAnnoucementList().add(annoucement);
+            Module moduleCopy = new Module(module.getModuleId(), module.getCode(), module.getTitle(), module.getDescription(),
+                    null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
+                    module.isHasExam(), module.getExamTime(), module.getExamVenue(), module.getLectureDetails(), module.getDepartment(),
+                    module.getFaculty());
             Annoucement annoucementCopy = new Annoucement(annoucement.getAnnoucementId(), annoucement.getTitle(),
                     annoucement.getContent(), createdDate, lastUpdatedDate, startDate, endDate,
                     annoucement.getPublish(), annoucement.getEmailNotification(), moduleCopy, null);
             
-            sendMail.send(annoucement.getOwner().getEmail(), annoucement.getOwner().getPassword(), "ykwvix@gmail.com", annoucement.getTitle(), annoucement.getContent());
+//            sendMail.send(annoucement.getOwner().getEmail(), annoucement.getOwner().getPassword(), "ykwvix@gmail.com", annoucement.getTitle(), annoucement.getContent());
             
             return Response.status(Response.Status.OK).entity(annoucementCopy).build();
             //EmailSessionBean.sendEmail(annoucement.getOwner().getEmail(), annoucement.getTitle(), annoucement.getOwner().getUsername());

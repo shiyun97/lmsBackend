@@ -228,6 +228,7 @@ public class UserResource {
         try {
             Query query = em.createQuery("SELECT u FROM User u WHERE u.email = :email");
             query.setParameter("email", email);
+            System.out.println(email);
             User user = (User) query.getSingleResult();
             if (user == null) {
                 return Response.status(Response.Status.NOT_FOUND).entity("No such user").build();
