@@ -6,14 +6,19 @@
 package ejb;
 
 import entities.ConsultationTimeslot;
+import entities.Coursepack;
 import entities.Module;
+import entities.Question;
 import entities.Schedule;
+import entities.Survey;
 import entities.Tutorial;
 import entities.User;
 import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import javax.annotation.PostConstruct;
 import javax.ejb.Singleton;
 import javax.ejb.LocalBean;
@@ -23,6 +28,7 @@ import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 import util.AccessRightEnum;
 import util.GenderEnum;
+import util.QuestionTypeEnum;
 
 /**
  *
@@ -296,6 +302,235 @@ public class DataInitSessionBean {
         m1.getConsultationList().add(c1);
 
         em.flush();
+        
+        Coursepack cp1 = new Coursepack();
+        cp1.setAssignedTeacher(teacher);
+        cp1.setCategory("Computer Science");
+        cp1.setCode("CS1000");
+        cp1.setDescription("Learn C Programming and unlock doors to careers in computer engineering");
+        cp1.setPrice(500.00);
+        cp1.setRating(5.00);
+        cp1.setPublished(false);
+        cp1.setTeacherBackground("Graduated with Master degree in Computer Science from NUS");
+        cp1.setTitle("C Programming");
+        teacher.getTeacherCoursepackList().add(cp1);
+        em.persist(cp1);
+        em.flush();
+        
+        Coursepack cp2 = new Coursepack();
+        cp2.setAssignedTeacher(teacher);
+        cp2.setCategory("Business Management");
+        cp2.setCode("BM1000");
+        cp2.setDescription("Master the essentials of managing a successful business");
+        cp2.setPrice(300.00);
+        cp2.setRating(4.00);
+        cp2.setPublished(false);
+        cp2.setTeacherBackground("With more than 20 years of teaching experiences");
+        cp2.setTitle("Operations Management");
+        teacher.getTeacherCoursepackList().add(cp2);
+        em.persist(cp2);
+        em.flush();
+        
+        Coursepack cp3 = new Coursepack();
+        cp3.setAssignedTeacher(teacher);
+        cp3.setCategory("Engineering");
+        cp3.setCode("EG1000");
+        cp3.setDescription("This course will introduce you to the Design Thinking process and illustrate best practices for each step along the way.");
+        cp3.setPrice(200.00);
+        cp3.setRating(5.00);
+        cp3.setPublished(false);
+        cp3.setTeacherBackground("Microsoft developer");
+        cp3.setTitle("Introduction to Design Thinking");
+        teacher.getTeacherCoursepackList().add(cp3);
+        em.persist(cp3);
+        em.flush();
+        
+        createSurvey(m1);
+        createSurvey(m2);
+        createSurvey(m3);
+        createSurvey(m4);
+    }
+    
+    public void createSurvey(Module module){
+        Survey survey = new Survey();
+        survey.setTitle("End-of-Semester Evaluation");
+        survey.setDescription("Welcome to the feedback exercise. <br />Please take time to review your learning experience in the past semester and be honest in your replies. <br /><br />Please click on <b>'Next'</b> to proceed with the exercise.");
+        survey.setModule(module);
+        survey.setOpeningDate(new Date());
+        survey.setClosingDate(new Date(2019-1900, 12, 12));
+        survey.setQuestionList(new ArrayList<>());
+        em.persist(survey);
+        em.flush();
+        
+        Question sq1 = new Question();
+        sq1.setHtml("<h5>Quantitative on Content</h5>");
+        sq1.setType(QuestionTypeEnum.html);
+        em.persist(sq1);
+        em.flush();
+        survey.getQuestionList().add(sq1);
+        
+        List<String> choices = new ArrayList<>();
+        choices.add("Strongly Disagree");        
+        choices.add("Disagree");
+        choices.add("Neutral");
+        choices.add("Agree");
+        choices.add("Strongly Agree");
+        
+        Question sq2 = new Question();
+        sq2.setType(QuestionTypeEnum.radiogroup);
+        sq2.setNumber(1);
+        sq2.setTitle("The content taught is easy to understand");
+        sq2.setIsRequired(true);
+        sq2.setChoices(choices);
+        em.persist(sq2);
+        em.flush();
+        survey.getQuestionList().add(sq2);
+        
+        Question sq3 = new Question();
+        sq3.setType(QuestionTypeEnum.radiogroup);
+        sq3.setNumber(2);
+        sq3.setTitle("The content covered are clearly structured and well-organised");
+        sq3.setIsRequired(true);
+        sq3.setChoices(choices);
+        em.persist(sq3);
+        em.flush();
+        survey.getQuestionList().add(sq3);
+        
+        Question sq4 = new Question();
+        sq4.setType(QuestionTypeEnum.radiogroup);
+        sq4.setNumber(3);
+        sq4.setTitle("The content covered are applicable in my field of study");
+        sq4.setIsRequired(true);
+        sq4.setChoices(choices);
+        em.persist(sq4);
+        em.flush();
+        survey.getQuestionList().add(sq4);
+        
+        Question sq5 = new Question();
+        sq5.setType(QuestionTypeEnum.radiogroup);
+        sq5.setNumber(4);
+        sq5.setTitle("The content covered are useful");
+        sq5.setIsRequired(true);
+        sq5.setChoices(choices);
+        em.persist(sq5);
+        em.flush();
+        survey.getQuestionList().add(sq5);
+        
+        Question sq6 = new Question();
+        sq6.setType(QuestionTypeEnum.radiogroup);
+        sq6.setNumber(5);
+        sq6.setTitle("Grade likely to get for this module");
+        sq6.setIsRequired(true);
+        sq6.setChoices(choices);
+        em.persist(sq6);
+        em.flush();
+        survey.getQuestionList().add(sq6);
+        
+        Question sq7 = new Question();
+        sq7.setType(QuestionTypeEnum.text);
+        sq7.setNumber(6);
+        sq7.setTitle("Other comments");
+        sq7.setIsRequired(false);
+        em.persist(sq7);
+        em.flush();
+        survey.getQuestionList().add(sq7);
+        
+        Question sq8 = new Question();
+        sq8.setType(QuestionTypeEnum.radiogroup);
+        sq8.setNumber(7);
+        sq8.setTitle("The teacher has enhanced my thinking ability.");
+        sq8.setIsRequired(true);
+        sq8.setChoices(choices);
+        em.persist(sq8);
+        em.flush();
+        survey.getQuestionList().add(sq8);
+        
+        Question sq9 = new Question();
+        sq9.setType(QuestionTypeEnum.radiogroup);
+        sq9.setNumber(8);
+        sq9.setTitle("The teacher provides timely and useful feedback.");
+        sq9.setIsRequired(true);
+        sq9.setChoices(choices);
+        em.persist(sq9);
+        em.flush();
+        survey.getQuestionList().add(sq9);
+        
+        Question sq10 = new Question();
+        sq10.setType(QuestionTypeEnum.radiogroup);
+        sq10.setNumber(9);
+        sq10.setTitle("The teacher is approachable for consultation.");
+        sq10.setIsRequired(true);
+        sq10.setChoices(choices);
+        em.persist(sq10);
+        em.flush();
+        survey.getQuestionList().add(sq10);
+        
+        Question sq11 = new Question();
+        sq11.setType(QuestionTypeEnum.radiogroup);
+        sq11.setNumber(10);
+        sq11.setTitle("The teacher has increased my interest in the subject.");
+        sq11.setIsRequired(true);
+        sq11.setChoices(choices);
+        em.persist(sq11);
+        em.flush();
+        survey.getQuestionList().add(sq11);
+        
+        Question sq12 = new Question();
+        sq12.setType(QuestionTypeEnum.radiogroup);
+        sq12.setNumber(11);
+        sq12.setTitle("The teacher has enhanced my ability to learn independently.");
+        sq12.setIsRequired(true);
+        sq12.setChoices(choices);
+        em.persist(sq12);
+        em.flush();
+        survey.getQuestionList().add(sq12);
+        
+        Question sq13 = new Question();
+        sq13.setType(QuestionTypeEnum.radiogroup);
+        sq13.setNumber(12);
+        sq13.setTitle("The teacher encourages me to apply concepts learnt.");
+        sq13.setIsRequired(true);
+        sq13.setChoices(choices);
+        em.persist(sq13);
+        em.flush();
+        survey.getQuestionList().add(sq13);
+        
+        Question sq14 = new Question();
+        sq14.setType(QuestionTypeEnum.radiogroup);
+        sq14.setNumber(13);
+        sq14.setTitle("Overall the teacher is effective.");
+        sq14.setIsRequired(true);
+        sq14.setChoices(choices);
+        em.persist(sq14);
+        em.flush();
+        survey.getQuestionList().add(sq14);
+        
+        Question sq15 = new Question();
+        sq15.setType(QuestionTypeEnum.text);
+        sq15.setNumber(14);
+        sq15.setTitle("What are the teacher's strengths?");
+        sq15.setIsRequired(true);
+        em.persist(sq15);
+        em.flush();
+        survey.getQuestionList().add(sq15);
+        
+        Question sq16 = new Question();
+        sq16.setType(QuestionTypeEnum.text);
+        sq16.setNumber(15);
+        sq16.setTitle("What are the teacher's strengths?");
+        sq16.setIsRequired(true);
+        em.persist(sq16);
+        em.flush();
+        survey.getQuestionList().add(sq16);
+        
+        Question sq17 = new Question();
+        sq17.setType(QuestionTypeEnum.text);
+        sq17.setNumber(15);
+        sq17.setTitle("What improvements would you suggest to the teacher?");
+        sq17.setIsRequired(true);
+        em.persist(sq17);
+        em.flush();
+        survey.getQuestionList().add(sq17);
     }
 
     public void persist(Object object) {

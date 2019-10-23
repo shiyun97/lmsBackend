@@ -46,6 +46,8 @@ public class Coursepack implements Serializable {
     @Column 
     private Timestamp startDate;
     @Column
+    private Boolean published;
+    @Column
     private Double rating;
     @Column
     private String teacherBackground;
@@ -259,6 +261,14 @@ public class Coursepack implements Serializable {
 
     public void setRatingList(List<Rating> ratingList) {
         this.ratingList = ratingList;
+    }
+
+    public Boolean getPublished() {
+        return published;
+    }
+
+    public void setPublished(Boolean published) {
+        this.published = published;
     }
 
     
