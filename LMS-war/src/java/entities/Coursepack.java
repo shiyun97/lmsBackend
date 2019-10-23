@@ -49,22 +49,17 @@ public class Coursepack implements Serializable {
     private Double rating;
     @Column
     private String teacherBackground;
-
+    
     @ManyToMany
     private List<User> publicUserList;
-    //@OneToMany(mappedBy = "coursepack")
-    //private List<Folder> folderList;
     @OneToMany(mappedBy = "coursepack")
     private List<ForumPost> forumPostList;
-    //@OneToMany(mappedBy = "coursepack")
-    //private List<Quiz> quizList;
     @OneToMany(mappedBy = "coursepack")
     private List<GradeItem> gradeItemList;
     @ManyToOne
     private User assignedTeacher;
     @OneToMany
     private List<Feedback> feedbackList;
-    
     @OneToMany
     private List<Outlines> outlineList;
      

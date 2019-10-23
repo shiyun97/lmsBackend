@@ -6,6 +6,7 @@
 package entities;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -47,10 +48,11 @@ public class Outlines implements Serializable {
     private List<LessonOrder> lessonOrder; 
 
     public Outlines(){
-        
+        lessonOrder = new ArrayList<>();
     }
     
     public Outlines(Long outlineId, Coursepack coursepack, List<LessonOrder> lessonOrder, String name, int number) {
+        this();
         this.outlineId = outlineId;
         this.coursepack = coursepack;
         this.lessonOrder = lessonOrder;

@@ -28,12 +28,7 @@ public class CreateCoursepack {
     private Boolean published;
     private String teacherBackground;
     private List<String> outlines;
-    
-    /*private Outlines outlineList;
-    private Long outlineId;
-    private List<LessonOrder> lessonOrderList;
-    private String outlineName;*/
-    
+    private User assignedTeacher;
     
     private User user; 
     private Long userId;
@@ -44,7 +39,7 @@ public class CreateCoursepack {
         
     }
 
-    public CreateCoursepack(Coursepack coursepack, Long coursepackId, String code, String title, String description, String category, Double price, Boolean published, String teacherBackground,List<String> outlines, User user, Long userId, String email, String password) {
+    public CreateCoursepack(Coursepack coursepack, Long coursepackId, String code, String title, String description, String category, Double price, Boolean published, String teacherBackground,List<String> outlines, User assignedTeacher, User user, Long userId, String email, String password) {
         this.coursepack = coursepack;
         this.coursepackId = coursepackId;
         this.code = code;
@@ -55,11 +50,7 @@ public class CreateCoursepack {
         this.published = published;
         this.teacherBackground = teacherBackground;
         this.outlines = outlines;
-        
-        /*this.outlineList = outlineList;
-        this.outlineId = outlineId;
-        this.lessonOrderList = lessonOrderList;
-        this.outlineName = outlineName;*/
+        this.assignedTeacher = assignedTeacher;
         
         this.user = user;
         this.userId = userId;
@@ -213,4 +204,12 @@ public class CreateCoursepack {
         this.outlines = outlines;
     }
 
+    public User getAssignedTeacher() {
+        return assignedTeacher;
+    }
+
+    public void setAssignedTeacher(User assignedTeacher) {
+        this.assignedTeacher = assignedTeacher;
+    }
+    
 }

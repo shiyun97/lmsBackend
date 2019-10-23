@@ -7,6 +7,7 @@ package entities;
 
 import java.io.Serializable;
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.List;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -29,6 +30,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 public class Quiz implements Serializable {
 
     public Quiz(String title, String description, Timestamp startDate, Timestamp endDate, Timestamp createTs, Timestamp updateTs, Integer maxNoOfAttempt, Double maxMarks, String owner, Module module, List<Question> questionList, List<QuizAttempt> quizAttemptList, LessonOrder lessonOrder) {
+        this();
         this.title = title;
         this.description = description;
         this.startDate = startDate;
@@ -45,6 +47,8 @@ public class Quiz implements Serializable {
     }
 
     public Quiz() {
+        questionList = new ArrayList<>();
+        quizAttemptList = new ArrayList<>();
     }
 
     private static final long serialVersionUID = 1L;

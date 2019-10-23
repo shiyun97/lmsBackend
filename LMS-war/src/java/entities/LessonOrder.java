@@ -6,6 +6,7 @@
 package entities;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -46,11 +47,12 @@ public class LessonOrder implements Serializable {
     
 
     public LessonOrder(){
-        
+        publicUserList = new ArrayList<>();
     }
     
     
     public LessonOrder(Long lessonOrderId, int number, String name, Boolean type, File file, Quiz quiz, Outlines outlines, List<User> publicUserList) {
+        this();
         this.lessonOrderId = lessonOrderId;
         this.number = number;
         this.name = name;

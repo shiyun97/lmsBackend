@@ -76,7 +76,7 @@ public class CoursepackResource {
     @Path(value = "createCoursepack")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response createCoursepack(CreateCoursepack createCoursepack){
+    public Response createCoursepack(CreateCoursepack createCoursepack, @QueryParam("userId") Long userId){
         try{
             Coursepack coursepack = new Coursepack();
             coursepack.setCode(createCoursepack.getCode());
@@ -85,34 +85,17 @@ public class CoursepackResource {
             coursepack.setCategory(createCoursepack.getCategory());
             coursepack.setPrice(createCoursepack.getPrice());
             coursepack.setTeacherBackground(createCoursepack.getTeacherBackground());
-            coursepack.setAssignedTeacher(createCoursepack.getUser());
-            //coursepack.setOutlineList(new ArrayList<>());
             em.persist(coursepack);
             em.flush();
-           
-            /*int counter = 0;
-            for(String outline: createCoursepack.getOutlines()){
-                counter++;
-                Outlines newOut = new Outlines();
-                newOut.setName(outline);
-                newOut.setNumber(counter);
-                coursepack.getOutlineList().add(newOut);
-                newOut.setCoursepack(coursepack);
-                em.persist(newOut);
- 
-            }
-            List<Outlines> oline = new ArrayList<>();
-            for(Outlines o: coursepack.getOutlineList()){
-                Outlines newOut = new Outlines();
-                newOut.setName(o.getName());
-                newOut.setNumber(o.getNumber());
-                newOut.setOutlineId(o.getOutlineId());
-                oline.add(newOut);
-            }*/
+            
+            User user = em.find(User.class, userId);
+            User userCopy = new User(user.getFirstName(), user.getLastName(), user.getEmail(),
+                    user.getUsername(), null, user.getGender(), null, null, null, null, null, null, null, null);
+            coursepack.setAssignedTeacher(user);
 
             Coursepack coursepackCopy = new Coursepack(coursepack.getCoursepackId(), coursepack.getCode(), coursepack.getTitle(),
                         coursepack.getDescription(), coursepack.getCategory(), coursepack.getPrice(), null, null, 
-                        coursepack.getTeacherBackground(), null, null, null, null, null, null);
+                        coursepack.getTeacherBackground(), null, null, null, userCopy, null, null);
             
             return Response.status(Response.Status.OK).entity(coursepackCopy).build();
         } catch (Exception ex) {
@@ -465,7 +448,8 @@ public class CoursepackResource {
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response updateCoursepack(UpdateCoursepack updateCoursepack, @QueryParam("coursepackId") Long coursepackId){
+    public Response updateCoursepack(UpdateCoursepack updateCoursepack, @QueryParam("coursepackId") 
+                                                                                Long coursepackId){
         try{
             Coursepack coursepack = em.find(Coursepack.class, coursepackId);
             if(coursepack != null){
@@ -476,26 +460,23 @@ public class CoursepackResource {
                 coursepack.setPrice(updateCoursepack.getPrice());
                 coursepack.setPublished(updateCoursepack.getPublished());
                 coursepack.setTeacherBackground(updateCoursepack.getTeacherBackground());
-                coursepack.setAssignedTeacher(updateCoursepack.getUser());
-                
+                //coursepack.setAssignedTeacher(updateCoursepack.getUser());
+                //User user = em.find(User.class, userId);
+                User user = coursepack.getAssignedTeacher();
+//                User userCopy = new User(user.getFirstName(), user.getLastName(), user.getEmail(),
+//                    user.getUsername(), null, user.getGender(), null, null, null, null, null, null, null, null);
+                //coursepack.setAssignedTeacher(user);
                 em.merge(coursepack);
                 em.flush();
                 
-                /*List<Outlines> oline = new ArrayList<>();
-                for(Outlines o: coursepack.getOutlineList()){
-                  Outlines newOut = new Outlines();
-                  newOut.setName(o.getName());
-                  newOut.setNumber(o.getNumber());
-                  newOut.setOutlineId(o.getOutlineId());
-                  oline.add(newOut);
-                }*/
-                
+                User assignedTeacher = new User(user.getFirstName(), user.getLastName(), user.getEmail(),
+                    user.getUsername(), null, user.getGender(), null, null, null, null, null, null, null, null);
                 
                 Coursepack coursepackCopy = new Coursepack(coursepack.getCoursepackId(), coursepack.getCode(), coursepack.getTitle(),
                         coursepack.getDescription(), coursepack.getCategory(), coursepack.getPrice(), null, null, 
-                        coursepack.getTeacherBackground(), null, null, null, null, null, null);
-                
-                
+                        coursepack.getTeacherBackground(), null, null, 
+                        null, assignedTeacher, null, null);
+
                 return Response.status(Response.Status.OK).entity(coursepackCopy).build();
 
             }
@@ -574,18 +555,19 @@ public class CoursepackResource {
               newOut.setOutlineId(o.getOutlineId());
               
               List<LessonOrder> lessonOrder = new ArrayList<>();
-              for(LessonOrder lo: lessonOrder ){
+              for(LessonOrder lo: o.getLessonOrder() ){
                   LessonOrder nlo = new LessonOrder();
                   nlo.setName(lo.getName());
                   nlo.setNumber(lo.getNumber());
-                  if(lo.getFile()==null){
+                  if(lo.getQuiz()!=null){
                       Quiz quizCopy = new Quiz();
                       quizCopy.setTitle(lo.getQuiz().getTitle());
                       quizCopy.setQuizId(lo.getQuiz().getQuizId());
                       
                       nlo.setQuiz(quizCopy);
                   }
-                  else{
+                  
+                  if(lo.getFile()!=null){
                      File fileCopy = new File();
                      fileCopy.setName(lo.getFile().getName());
                      fileCopy.setFileId(lo.getFile().getFileId());
@@ -607,11 +589,12 @@ public class CoursepackResource {
             
             Coursepack coursepackCopy = new Coursepack(coursepack.getCoursepackId(), coursepack.getCode(), coursepack.getTitle(),
                         coursepack.getDescription(), coursepack.getCategory(), coursepack.getPrice(), null, null, 
-                        coursepack.getTeacherBackground(),null, null, null, teacherCopy,null, oline);
+                        coursepack.getTeacherBackground(),null, null, null, null,null, oline);
             
             return Response.status(Response.Status.OK).entity(coursepackCopy).build();
 
         } catch (Exception ex) {
+            ex.printStackTrace();
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
         }
     }
