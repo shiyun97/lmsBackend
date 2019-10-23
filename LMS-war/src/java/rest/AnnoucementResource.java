@@ -9,7 +9,6 @@ import datamodel.rest.CreateAnnoucement;
 import datamodel.rest.ErrorRsp;
 import datamodel.rest.GetAnnoucementRsp;
 import datamodel.rest.UpdateAnnoucement;
-import ejb.EmailSessionBean;
 import ejb.SendMailSSL;
 import entities.Annoucement;
 import entities.Module;
@@ -88,8 +87,11 @@ public class AnnoucementResource {
                     annoucement.getContent(), createdDate, lastUpdatedDate, startDate, endDate,
                     annoucement.getPublish(), annoucement.getEmailNotification(), moduleCopy, null);
             
-            //sendMail.send("ykwvix@gmail.com", "password!23$", "ykwvix@gmail.com", annoucement.getTitle(), annoucement.getContent());
-            
+            List<String> address = new ArrayList<>();
+            address.add("ykwvix@gmail.com");
+            address.add("ad1234567min@gmail.com");
+            sendMail.send("ad1234567min@gmail.com", "password!234%", address, annoucementCopy.getTitle(), annoucementCopy.getContent());
+            //sendMail.send("ad1234567min@gmail.com", "password!234%", "ykwvix@gmail.com", annoucementCopy.getTitle(), annoucementCopy.getContent());
             return Response.status(Response.Status.OK).entity(annoucementCopy).build();
             //EmailSessionBean.sendEmail(annoucement.getOwner().getEmail(), annoucement.getTitle(), annoucement.getOwner().getUsername());
         } catch (Exception ex) {
