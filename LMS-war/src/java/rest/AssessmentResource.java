@@ -450,6 +450,55 @@ public class AssessmentResource {
     }
     
     @GET
+    @Path("retrieveModuleQuizNotInGradebook/{moduleId}")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response retrieveAllModuleQuizNotInGradebook(@PathParam("moduleId") Long moduleId, @QueryParam("userId") Long userId){
+        User user = em.find(User.class, userId);
+        if(user == null || user.getAccessRight() != AccessRightEnum.Teacher ){
+            return Response.status(Status.FORBIDDEN)
+                    .entity(new ErrorRsp("User doesn't have access to this function"))
+                    .build();
+        }
+        
+        Module module = em.find(Module.class, moduleId);
+        if(module == null){
+            return Response.status(Status.BAD_REQUEST).entity(new ErrorRsp("Module doesn't exist")).build();
+        } else if (module.getAssignedTeacher() != user && !user.getStudentModuleList().contains(module)){
+            return Response.status(Status.FORBIDDEN)
+                    .entity(new ErrorRsp("User doesn't have access to this module"))
+                    .build();
+        }
+        
+        try {
+            List<Quiz> quizzes = new ArrayList<>();
+            
+            for(Quiz q: module.getQuizList()){
+                if(q.isGradeitemCreated()){
+                    Quiz newQ = new Quiz();
+                    newQ.setQuizId(q.getQuizId());
+                    newQ.setOpeningDate(q.getOpeningDate());
+                    newQ.setClosingDate(q.getClosingDate());
+                    newQ.setQuizType(q.getQuizType());
+                    newQ.setMaxMarks(q.getMaxMarks());
+                    newQ.setDescription(q.getDescription());
+                    newQ.setTitle(q.getTitle());
+                    newQ.setMaxTimeToFinish(q.getMaxTimeToFinish());
+                    newQ.setPublish(q.isPublish());
+                    newQ.setNoOfAttempts(q.getNoOfAttempts());
+                    newQ.setQuestionsOrder(q.getQuestionsOrder());
+                    newQ.setPublishAnswer(q.isPublishAnswer());
+                    quizzes.add(newQ);
+                }
+            }
+            
+            return Response.status(Status.OK).entity(new RetrieveQuizzesResp(quizzes)).build();
+        } catch (Exception e){
+            e.printStackTrace();
+            return Response.status(Status.INTERNAL_SERVER_ERROR).entity(new ErrorRsp(e.getMessage())).build();
+        }
+    }
+    
+    @GET
     @Path("retrieveModuleQuiz/{quizId}")
     @Produces(MediaType.APPLICATION_JSON)
     public Response retrieveModuleQuiz(@PathParam("quizId") Long quizId, @QueryParam("userId") Long userId){
@@ -1049,6 +1098,8 @@ public class AssessmentResource {
                 em.persist(gradeEntry);
                 em.flush();
             }
+            
+            quiz.setGradeitemCreated(true);
             
             return Response.status(Status.OK).build();
         } catch (Exception e){

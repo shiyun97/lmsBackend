@@ -79,6 +79,8 @@ public class Quiz implements Serializable {
     private boolean publishAnswer;
     @Column
     private Integer maxTimeToFinish;
+    @Column
+    private boolean gradeitemCreated;
     @ManyToOne
     private Module module;
     @OneToMany(cascade = CascadeType.REMOVE)
@@ -242,6 +244,14 @@ public class Quiz implements Serializable {
 
     public void setPublishAnswer(boolean publishAnswer) {
         this.publishAnswer = publishAnswer;
+    }
+
+    public boolean isGradeitemCreated() {
+        return gradeitemCreated;
+    }
+
+    public void setGradeitemCreated(boolean gradeitemCreated) {
+        this.gradeitemCreated = gradeitemCreated;
     }
     
 }
