@@ -826,7 +826,7 @@ public class AssessmentResource {
         }
         
         try{
-            Query q = em.createQuery("SELECT gi FROM Module m join m.gradeItemList gi join gi.gradeEntries ge WHERE gi.publish = :publish AND m.moduleId = :moduleId");
+            Query q = em.createQuery("SELECT DISTINCT gi FROM Module m join m.gradeItemList gi join gi.gradeEntries ge WHERE gi.publish = :publish AND m.moduleId = :moduleId");
             q.setParameter("moduleId", moduleId);
             q.setParameter("publish", true);
             
@@ -848,7 +848,7 @@ public class AssessmentResource {
                 giToReturn.setMedian(gradeItem.getMedian());
                 giToReturn.setSeventyFifth(gradeItem.getSeventyFifth());
                 giToReturn.setTwentyFifth(gradeItem.getTwentyFifth());
-                
+                giToReturn.setGradeEntries(new ArrayList<>());
                 for(GradeEntry ge: gradeItem.getGradeEntries()){
                     if(ge.getStudent() == user){
                         GradeEntry geToReturn = new GradeEntry();
