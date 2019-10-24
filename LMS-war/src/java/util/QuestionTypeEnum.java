@@ -10,5 +10,5 @@ package util;
  * @author Asus
  */
 public enum QuestionTypeEnum {
-    MCQ, Essay
+    radiogroup, text, html
 }

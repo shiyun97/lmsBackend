@@ -6,14 +6,13 @@
 package entities;
 
 import java.io.Serializable;
-import java.sql.Timestamp;
-import java.util.HashMap;
-import javax.persistence.Column;
+import java.util.List;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 
 /**
  *
@@ -22,15 +21,6 @@ import javax.persistence.ManyToOne;
 @Entity
 public class SurveyAttempt implements Serializable {
 
-    public SurveyAttempt(Timestamp createTs, Timestamp updateTs, Timestamp submitTs, HashMap answers, Survey survey, User surveyTaker) {
-        this.createTs = createTs;
-        this.updateTs = updateTs;
-        this.submitTs = submitTs;
-        this.answers = answers;
-        this.survey = survey;
-        this.surveyTaker = surveyTaker;
-    }
-
     public SurveyAttempt() {
     }
 
@@ -38,18 +28,12 @@ public class SurveyAttempt implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long surveyAttemptId;
-    @Column
-    private Timestamp createTs;
-    @Column
-    private Timestamp updateTs;
-    @Column
-    private Timestamp submitTs;
-    @Column
-    private HashMap answers;
     @ManyToOne
     private Survey survey;
     @ManyToOne
     private User surveyTaker;
+    @OneToMany
+    private List<QuestionAttempt> questionAttemptList;
 
     public Long getSurveyAttemptId() {
         return surveyAttemptId;
@@ -57,38 +41,6 @@ public class SurveyAttempt implements Serializable {
 
     public void setSurveyAttemptId(Long surveyAttemptId) {
         this.surveyAttemptId = surveyAttemptId;
-    }
-
-    public Timestamp getCreateTs() {
-        return createTs;
-    }
-
-    public void setCreateTs(Timestamp createTs) {
-        this.createTs = createTs;
-    }
-
-    public Timestamp getUpdateTs() {
-        return updateTs;
-    }
-
-    public void setUpdateTs(Timestamp updateTs) {
-        this.updateTs = updateTs;
-    }
-
-    public Timestamp getSubmitTs() {
-        return submitTs;
-    }
-
-    public void setSubmitTs(Timestamp submitTs) {
-        this.submitTs = submitTs;
-    }
-
-    public HashMap getAnswers() {
-        return answers;
-    }
-
-    public void setAnswers(HashMap answers) {
-        this.answers = answers;
     }
 
     public Survey getSurvey() {
@@ -107,13 +59,12 @@ public class SurveyAttempt implements Serializable {
         this.surveyTaker = surveyTaker;
     }
 
-    
-    public Long getId() {
-        return surveyAttemptId;
+    public List<QuestionAttempt> getQuestionAttemptList() {
+        return questionAttemptList;
     }
 
-    public void setId(Long id) {
-        this.surveyAttemptId = id;
+    public void setQuestionAttemptList(List<QuestionAttempt> questionAttemptList) {
+        this.questionAttemptList = questionAttemptList;
     }
 
     @Override

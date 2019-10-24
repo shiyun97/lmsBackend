@@ -7,13 +7,19 @@ package ejb;
 
 import entities.Attendance;
 import entities.ConsultationTimeslot;
+import entities.Coursepack;
+import entities.ForumPost;
+import entities.ForumTopic;
 import entities.Module;
+import entities.Question;
 import entities.Schedule;
+import entities.Survey;
 import entities.Tutorial;
 import entities.User;
 import entities.Venue;
 import java.sql.Timestamp;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Date;
@@ -27,6 +33,7 @@ import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 import util.AccessRightEnum;
 import util.GenderEnum;
+import util.QuestionTypeEnum;
 
 /**
  *
@@ -144,6 +151,16 @@ public class DataInitSessionBean {
         em.persist(v4);
         em.flush();
 
+        User student2 = new User();
+        student2.setFirstName("Mark");
+        student2.setLastName("Hamilton");
+        student2.setEmail("student2@gmail.com");
+        student2.setPassword("password");
+        student2.setGender(GenderEnum.Male);
+        student2.setAccessRight(AccessRightEnum.Student);
+        student2.setUsername("student2");
+        em.persist(student2);
+
         Module m1 = new Module();
         m1.setCode("CS1010");
         m1.setDescription("CS1010 Mod Desc");
@@ -158,8 +175,8 @@ public class DataInitSessionBean {
         m1.setLectureDetails("Monday 12:00 - 14:00");
         m1.setAssignedTeacher(teacher);
         m1.setStudentList(studentList);
-        //m1.getStudentList().add(student2);
-        //m1.getStudentList().add(student3);
+        m1.setFaculty("School of Computing");
+        m1.setDepartment("Department of Computer Science");
         teacher.getTeacherModuleList().add(m1);
         student.getStudentModuleList().add(m1);
         student2.getStudentModuleList().add(m1);
@@ -180,6 +197,8 @@ public class DataInitSessionBean {
         m2.setSemesterOffered(1);
         m2.setLectureDetails("Tuesday 12:00 - 14:00");
         m2.setAssignedTeacher(teacher);
+        m2.setFaculty("School of Computing");
+        m2.setDepartment("Department of Computer Science");
         teacher.getTeacherModuleList().add(m2);
         em.persist(m2);
         em.flush();
@@ -197,6 +216,8 @@ public class DataInitSessionBean {
         m3.setSemesterOffered(1);
         m3.setLectureDetails("Wednesday 12:00 - 14:00");
         m3.setAssignedTeacher(teacher);
+        m3.setFaculty("School of Computing");
+        m3.setDepartment("Department of Information Systems and Analytics");
         teacher.getTeacherModuleList().add(m3);
         em.persist(m3);
         em.flush();
@@ -214,6 +235,8 @@ public class DataInitSessionBean {
         m4.setSemesterOffered(1);
         m4.setLectureDetails("Wednesday 12:00 - 14:00");
         m4.setAssignedTeacher(teacher);
+        m4.setFaculty("School of Computing");
+        m4.setDepartment("Department of Information Systems and Analytics");
         teacher.getTeacherModuleList().add(m4);
         em.persist(m4);
         em.flush();
@@ -231,6 +254,9 @@ public class DataInitSessionBean {
         v1.setModuleList(moduleList);
         v2.setModuleList(moduleList2);
         em.flush();
+
+        student2.getStudentModuleList().add(m1);
+        m1.getStudentList().add(student2);
 
         Tutorial t1 = new Tutorial();
         t1.setModule(m1);
@@ -335,10 +361,13 @@ public class DataInitSessionBean {
         tutorialList2.add(t8);
         tutorialList2.add(t9);
         em.flush();
-        
+
         v3.setTutorialList(tutorialList);
         v4.setTutorialList(tutorialList2);
         em.flush();
+
+        student2.getTutorials().add(t1);
+        t1.getStudentList().add(student2);
 
         Schedule schedule = new Schedule();
         schedule.setSemester(1);
@@ -357,21 +386,24 @@ public class DataInitSessionBean {
         em.flush();
 
         ConsultationTimeslot c1 = new ConsultationTimeslot();
-        c1.setBooker(student);
-        c1.setEndTs(LocalTime.parse("11:30:00"));
+        c1.setBooker(student2);
+        c1.setEndTs(LocalTime.parse("11:00:00"));
         c1.setModule(m4);
         c1.setStartD(LocalDate.parse("2019-10-28"));
-        c1.setStartTs(LocalTime.parse("10:30:00"));
+        c1.setStartTs(LocalTime.parse("10:00:00"));
         em.persist(c1);
         em.flush();
+        m4.getConsultationList().add(c1);
 
         ConsultationTimeslot c2 = new ConsultationTimeslot();
-        c1.setEndTs(LocalTime.parse("11:30:00"));
-        c1.setModule(m4);
-        c1.setStartD(LocalDate.parse("2019-09-29"));
-        c1.setStartTs(LocalTime.parse("10:30:00"));
+        c2.setEndTs(LocalTime.parse("13:00:00"));
+        c2.setModule(m4);
+        c2.setStartD(LocalDate.parse("2019-10-28"));
+        c2.setStartTs(LocalTime.parse("12:00:00"));
         em.persist(c2);
         em.flush();
+        m4.getConsultationList().add(c2);
+
         m1.getConsultationList().add(c1);
         em.flush();
 
@@ -416,10 +448,326 @@ public class DataInitSessionBean {
         List<Attendance> attendanceList = new ArrayList<>();
         attendanceList.add(a1);
         attendanceList.add(a2);
-        //student.setAttendanceList(attendanceList);
-        //student2.setAttendanceList(attendanceList);
-        //student3.setAttendanceList(attendanceList);
+
+        ConsultationTimeslot c3 = new ConsultationTimeslot();
+        c3.setBooker(student);
+        c3.setEndTs(LocalTime.parse("11:00:00"));
+        c3.setModule(m4);
+        c3.setStartD(LocalDate.parse("2019-10-29"));
+        c3.setStartTs(LocalTime.parse("10:00:00"));
+        em.persist(c3);
         em.flush();
+        m4.getConsultationList().add(c3);
+
+        Coursepack cp1 = new Coursepack();
+        cp1.setAssignedTeacher(teacher);
+        cp1.setCategory("Computer Science");
+        cp1.setCode("CS1000");
+        cp1.setDescription("Learn C Programming and unlock doors to careers in computer engineering");
+        cp1.setPrice(500.00);
+        cp1.setRating(5.00);
+        //cp1.setStartDate(new Timestamp(2019-1900, 11, 30, 9, 0, 0, 0));
+        cp1.setPublished(false);
+        cp1.setTeacherBackground("Graduated with Master degree in Computer Science from NUS");
+        cp1.setTitle("C Programming");
+        teacher.getTeacherCoursepackList().add(cp1);
+        em.persist(cp1);
+        em.flush();
+
+        Coursepack cp2 = new Coursepack();
+        cp2.setAssignedTeacher(teacher);
+        cp2.setCategory("Business Management");
+        cp2.setCode("BM1000");
+        cp2.setDescription("Master the essentials of managing a successful business");
+        cp2.setPrice(300.00);
+        cp2.setRating(4.00);
+        cp2.setPublished(false);
+        cp2.setTeacherBackground("With more than 20 years of teaching experiences");
+        cp2.setTitle("Operations Management");
+        teacher.getTeacherCoursepackList().add(cp2);
+        em.persist(cp2);
+        em.flush();
+
+        Coursepack cp3 = new Coursepack();
+        cp3.setAssignedTeacher(teacher);
+        cp3.setCategory("Engineering");
+        cp3.setCode("EG1000");
+        cp3.setDescription("This course will introduce you to the Design Thinking process and illustrate best practices for each step along the way.");
+        cp3.setPrice(200.00);
+        cp3.setRating(5.00);
+        cp3.setPublished(false);
+        cp3.setTeacherBackground("Microsoft developer");
+        cp3.setTitle("Introduction to Design Thinking");
+        teacher.getTeacherCoursepackList().add(cp3);
+        em.persist(cp3);
+        em.flush();
+
+        ForumTopic topic1 = new ForumTopic();
+        topic1.setModule(m1);
+        topic1.setDescription("Please post your group name and team members (no more than 5 per team).");
+        topic1.setTitle("Group Formation");
+        em.persist(topic1);
+        em.flush();
+
+        ForumTopic topic2 = new ForumTopic();
+        topic2.setModule(m1);
+        topic2.setDescription("This topic heading is only used for disseminating important information.");
+        topic2.setTitle("Course Administration");
+        em.persist(topic2);
+        em.flush();
+
+        ForumTopic topic3 = new ForumTopic();
+        topic3.setCoursepack(cp1);
+        topic3.setDescription("Please use this topic heading to ask any general questions about the module.");
+        topic3.setTitle("General Enquiries");
+        em.persist(topic3);
+        em.flush();
+
+        ForumPost thread1 = new ForumPost();
+        thread1.setCreateTs(LocalDateTime.now());
+        thread1.setUpdateTs(LocalDateTime.now());
+        thread1.setMessage("Alice, Tom, John, Marcus and Peter");
+        thread1.setOwner(student);
+        thread1.setTitle("Grouping");
+        thread1.setTopic(topic1);
+        thread1.setThreadStarter(Boolean.TRUE);
+        em.persist(thread1);
+        em.flush();
+
+        ForumPost thread2 = new ForumPost();
+        thread2.setCreateTs(LocalDateTime.now());
+        thread2.setUpdateTs(LocalDateTime.now());
+        thread2.setMessage("I'm learning javascript and to practice traversing the DOM I have created a method that returns an array of parent elements based on the 'nodeName'. I have done this so that I could select all of a certain element (that is a parent of another) and style them or change them, etc.");
+        thread2.setOwner(extStu);
+        thread2.setTitle("Accessing all elements in array");
+        thread2.setTopic(topic3);
+        thread2.setThreadStarter(Boolean.TRUE);
+        em.persist(thread2);
+        em.flush();
+
+        ForumPost comment1 = new ForumPost();
+        comment1.setCreateTs(LocalDateTime.now());
+        comment1.setUpdateTs(LocalDateTime.now());
+        comment1.setMessage("No, you are doing to have to use a method.");
+        comment1.setOwner(student2);
+        comment1.setThreadStarter(Boolean.FALSE);
+        comment1.setType("comment");
+        em.persist(comment1);
+        em.flush();
+
+        ForumPost reply1 = new ForumPost();
+        reply1.setTitle("Re:Accessing all elements in array");
+        reply1.setCreateTs(LocalDateTime.now());
+        reply1.setUpdateTs(LocalDateTime.now());
+        reply1.setMessage("Probably the simplest way is to use arrays API.\n"
+                + "If you can use ES6, it would look like so: parents.forEach(parent => parent.style.background = \"black\")");
+        reply1.setOwner(teacher);
+        reply1.setThreadStarter(Boolean.FALSE);
+        reply1.setType("reply");
+        em.persist(reply1);
+        em.flush();
+
+        ForumPost comment2 = new ForumPost();
+        comment2.setParentOfComments(reply1);
+        comment2.setCreateTs(LocalDateTime.now());
+        comment2.setMessage("Thanks for this answer. I think what I was trying to achieve is much more "
+                + "complex than I had initially thought and much beyond my current capabilities. "
+                + "I appreciate this answer but I was wanted to change the function rather than changing "
+                + "how to access the elements once the function returned it's array. If that makes sense?!");
+        comment2.setCreateTs(LocalDateTime.now());
+        comment2.setUpdateTs(LocalDateTime.now());
+        comment2.setOwner(extStu);
+        comment2.setType("comment");
+        comment2.setThreadStarter(Boolean.FALSE);
+        em.persist(comment2);
+        em.flush();
+
+        createSurvey(m1);
+        createSurvey(m2);
+        createSurvey(m3);
+        createSurvey(m4);
+    }
+
+    public void createSurvey(Module module){
+        Survey survey = new Survey();
+        survey.setTitle("End-of-Semester Evaluation");
+        survey.setDescription("Welcome to the feedback exercise. <br />Please take time to review your learning experience in the past semester and be honest in your replies. <br /><br />Please click on <b>'Next'</b> to proceed with the exercise.");
+        survey.setModule(module);
+        survey.setOpeningDate(new Date());
+        survey.setClosingDate(new Date(2019-1900, 12, 12));
+        survey.setQuestionList(new ArrayList<>());
+        em.persist(survey);
+        em.flush();
+
+        Question sq1 = new Question();
+        sq1.setHtml("<h5>Quantitative on Content</h5>");
+        sq1.setType(QuestionTypeEnum.html);
+        em.persist(sq1);
+        em.flush();
+        survey.getQuestionList().add(sq1);
+
+        List<String> choices = new ArrayList<>();
+        choices.add("Strongly Disagree");
+        choices.add("Disagree");
+        choices.add("Neutral");
+        choices.add("Agree");
+        choices.add("Strongly Agree");
+
+        Question sq2 = new Question();
+        sq2.setType(QuestionTypeEnum.radiogroup);
+        sq2.setNumber(1);
+        sq2.setTitle("The content taught is easy to understand");
+        sq2.setIsRequired(true);
+        sq2.setChoices(choices);
+        em.persist(sq2);
+        em.flush();
+        survey.getQuestionList().add(sq2);
+
+        Question sq3 = new Question();
+        sq3.setType(QuestionTypeEnum.radiogroup);
+        sq3.setNumber(2);
+        sq3.setTitle("The content covered are clearly structured and well-organised");
+        sq3.setIsRequired(true);
+        sq3.setChoices(choices);
+        em.persist(sq3);
+        em.flush();
+        survey.getQuestionList().add(sq3);
+
+        Question sq4 = new Question();
+        sq4.setType(QuestionTypeEnum.radiogroup);
+        sq4.setNumber(3);
+        sq4.setTitle("The content covered are applicable in my field of study");
+        sq4.setIsRequired(true);
+        sq4.setChoices(choices);
+        em.persist(sq4);
+        em.flush();
+        survey.getQuestionList().add(sq4);
+
+        Question sq5 = new Question();
+        sq5.setType(QuestionTypeEnum.radiogroup);
+        sq5.setNumber(4);
+        sq5.setTitle("The content covered are useful");
+        sq5.setIsRequired(true);
+        sq5.setChoices(choices);
+        em.persist(sq5);
+        em.flush();
+        survey.getQuestionList().add(sq5);
+
+        Question sq6 = new Question();
+        sq6.setType(QuestionTypeEnum.radiogroup);
+        sq6.setNumber(5);
+        sq6.setTitle("Grade likely to get for this module");
+        sq6.setIsRequired(true);
+        sq6.setChoices(choices);
+        em.persist(sq6);
+        em.flush();
+        survey.getQuestionList().add(sq6);
+
+        Question sq7 = new Question();
+        sq7.setType(QuestionTypeEnum.text);
+        sq7.setNumber(6);
+        sq7.setTitle("Other comments");
+        sq7.setIsRequired(false);
+        em.persist(sq7);
+        em.flush();
+        survey.getQuestionList().add(sq7);
+
+        Question sq8 = new Question();
+        sq8.setType(QuestionTypeEnum.radiogroup);
+        sq8.setNumber(7);
+        sq8.setTitle("The teacher has enhanced my thinking ability.");
+        sq8.setIsRequired(true);
+        sq8.setChoices(choices);
+        em.persist(sq8);
+        em.flush();
+        survey.getQuestionList().add(sq8);
+
+        Question sq9 = new Question();
+        sq9.setType(QuestionTypeEnum.radiogroup);
+        sq9.setNumber(8);
+        sq9.setTitle("The teacher provides timely and useful feedback.");
+        sq9.setIsRequired(true);
+        sq9.setChoices(choices);
+        em.persist(sq9);
+        em.flush();
+        survey.getQuestionList().add(sq9);
+
+        Question sq10 = new Question();
+        sq10.setType(QuestionTypeEnum.radiogroup);
+        sq10.setNumber(9);
+        sq10.setTitle("The teacher is approachable for consultation.");
+        sq10.setIsRequired(true);
+        sq10.setChoices(choices);
+        em.persist(sq10);
+        em.flush();
+        survey.getQuestionList().add(sq10);
+
+        Question sq11 = new Question();
+        sq11.setType(QuestionTypeEnum.radiogroup);
+        sq11.setNumber(10);
+        sq11.setTitle("The teacher has increased my interest in the subject.");
+        sq11.setIsRequired(true);
+        sq11.setChoices(choices);
+        em.persist(sq11);
+        em.flush();
+        survey.getQuestionList().add(sq11);
+
+        Question sq12 = new Question();
+        sq12.setType(QuestionTypeEnum.radiogroup);
+        sq12.setNumber(11);
+        sq12.setTitle("The teacher has enhanced my ability to learn independently.");
+        sq12.setIsRequired(true);
+        sq12.setChoices(choices);
+        em.persist(sq12);
+        em.flush();
+        survey.getQuestionList().add(sq12);
+
+        Question sq13 = new Question();
+        sq13.setType(QuestionTypeEnum.radiogroup);
+        sq13.setNumber(12);
+        sq13.setTitle("The teacher encourages me to apply concepts learnt.");
+        sq13.setIsRequired(true);
+        sq13.setChoices(choices);
+        em.persist(sq13);
+        em.flush();
+        survey.getQuestionList().add(sq13);
+
+        Question sq14 = new Question();
+        sq14.setType(QuestionTypeEnum.radiogroup);
+        sq14.setNumber(13);
+        sq14.setTitle("Overall the teacher is effective.");
+        sq14.setIsRequired(true);
+        sq14.setChoices(choices);
+        em.persist(sq14);
+        em.flush();
+        survey.getQuestionList().add(sq14);
+
+        Question sq15 = new Question();
+        sq15.setType(QuestionTypeEnum.text);
+        sq15.setNumber(14);
+        sq15.setTitle("What are the teacher's strengths?");
+        sq15.setIsRequired(true);
+        em.persist(sq15);
+        em.flush();
+        survey.getQuestionList().add(sq15);
+
+        Question sq16 = new Question();
+        sq16.setType(QuestionTypeEnum.text);
+        sq16.setNumber(15);
+        sq16.setTitle("What are the teacher's strengths?");
+        sq16.setIsRequired(true);
+        em.persist(sq16);
+        em.flush();
+        survey.getQuestionList().add(sq16);
+
+        Question sq17 = new Question();
+        sq17.setType(QuestionTypeEnum.text);
+        sq17.setNumber(15);
+        sq17.setTitle("What improvements would you suggest to the teacher?");
+        sq17.setIsRequired(true);
+        em.persist(sq17);
+        em.flush();
+        survey.getQuestionList().add(sq17);
     }
 
     public void persist(Object object) {

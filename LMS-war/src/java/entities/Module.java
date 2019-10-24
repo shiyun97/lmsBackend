@@ -26,7 +26,7 @@ import javax.persistence.Table;
  * @author Vixson
  */
 @Entity
-public class Module implements Serializable {   
+public class Module implements Serializable {
 
     public Module() {
     }
@@ -56,8 +56,8 @@ public class Module implements Serializable {
     private List<User> studentList;
     @ManyToMany
     @JoinTable(
-    name = "module_publicuser", 
-    joinColumns = @JoinColumn(name = "moduleid"), 
+    name = "module_publicuser",
+    joinColumns = @JoinColumn(name = "moduleid"),
     inverseJoinColumns = @JoinColumn(name = "publicuserid"))
     private List<User> publicUserList;
     @OneToMany(mappedBy = "module")
@@ -67,7 +67,7 @@ public class Module implements Serializable {
     @OneToMany(mappedBy = "module", orphanRemoval = true)
     private List<Annoucement> annoucementList;
     @OneToMany(mappedBy = "module")
-    private List<ForumPost> forumPostList;
+    private List<ForumTopic> forumTopicList;
     @OneToMany(mappedBy = "module")
     private List<Quiz> quizList;
     @OneToMany(mappedBy = "module")
@@ -113,7 +113,7 @@ public class Module implements Serializable {
         this.publicUserList = publicUserList;
         this.folderList = folderList;
         this.annoucementList = annoucementList;
-        this.forumPostList = forumPostList;
+        this.forumTopicList = forumTopicList;
         this.quizList = quizList;
         this.gradeItemList = gradeItemList;
         this.attandanceList = attandanceList;
@@ -130,7 +130,7 @@ public class Module implements Serializable {
         this.department = department;
         this.faculty = faculty;
     }
-    
+
     public Module(Long moduleId, String code, String title, String description, Integer semesterOffered, String yearOffered, Integer creditUnit, String grade, Integer maxEnrollment, List<User> studentList, List<User> publicUserList, List<Folder> folderList, List<File> multimediaList, List<Annoucement> annoucementList, List<ForumPost> forumPostList, List<Quiz> quizList, List<GradeItem> gradeItemList, List<Attendance> attandanceList, List<ConsultationTimeslot> consultationList, List<LessonPlan> lessonPlanList, User assignedTeacher, List<ClassGroup> classGroupList, List<Feedback> feedbackList, List<Tutorial> tutorials, boolean hasExam, Timestamp examTime, Venue examVenue, String lectureDetails, String department, String faculty) {
         this.moduleId = moduleId;
         this.code = code;
@@ -146,7 +146,7 @@ public class Module implements Serializable {
         this.folderList = folderList;
         this.multimediaList = multimediaList;
         this.annoucementList = annoucementList;
-        this.forumPostList = forumPostList;
+        this.forumTopicList = forumTopicList;
         this.quizList = quizList;
         this.gradeItemList = gradeItemList;
         this.attandanceList = attandanceList;
@@ -163,7 +163,7 @@ public class Module implements Serializable {
         this.department = department;
         this.faculty = faculty;
     }
-	
+
     @Override
     public int hashCode() {
         int hash = 0;
@@ -273,12 +273,12 @@ public class Module implements Serializable {
         this.annoucementList = annoucementList;
     }
 
-    public List<ForumPost> getForumPostList() {
-        return forumPostList;
+    public List<ForumTopic> getForumTopicList() {
+        return forumTopicList;
     }
 
-    public void setForumPostList(List<ForumPost> forumPostList) {
-        this.forumPostList = forumPostList;
+    public void setForumTopicList(List<ForumTopic> forumTopicList) {
+        this.forumTopicList = forumTopicList;
     }
 
     public List<Quiz> getQuizList() {
@@ -320,7 +320,7 @@ public class Module implements Serializable {
     public void setLessonPlanList(List<LessonPlan> lessonPlanList) {
         this.lessonPlanList = lessonPlanList;
     }
-	
+
     public List<ClassGroup> getClassGroupList() {
         return classGroupList;
     }

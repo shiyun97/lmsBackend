@@ -6,12 +6,14 @@
 package entities;
 
 import java.io.Serializable;
-import java.util.HashMap;
+import java.util.List;
 import javax.persistence.Column;
+import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 import util.QuestionTypeEnum;
 
@@ -21,19 +23,6 @@ import util.QuestionTypeEnum;
  */
 @Entity
 public class Question implements Serializable {
-
-    public Question(QuestionTypeEnum type, Integer number, String description, String key, Double marks, Integer maxLength, Boolean mandatory, HashMap options, Quiz quiz, Survey survey) {
-        this.type = type;
-        this.number = number;
-        this.description = description;
-        this.rightAnswer = key;
-        this.marks = marks;
-        this.maxLength = maxLength;
-        this.mandatory = mandatory;
-        this.options = options;
-        this.quiz = quiz;
-        this.survey = survey;
-    }
 
     public Question() {
     }
@@ -45,36 +34,24 @@ public class Question implements Serializable {
     @Column
     private QuestionTypeEnum type; 
     @Column
+    @Lob
+    private String title;
+    @Column
     private Integer number;
     @Column
-    private String description;
+    private String explanation;
     @Column
-    private String rightAnswer;
+    private String correctAnswer;
     @Column
-    private Double marks;
+    private Double points;
     @Column
-    private Integer maxLength;
+    private Integer level;
     @Column
-    private Boolean mandatory;
+    private Boolean isRequired;
+    @ElementCollection
+    private List<String> choices;
     @Column
-    private HashMap options;
-    @ManyToOne
-    private Quiz quiz;
-    @ManyToOne
-    private Survey survey;
-    
-    
-    public Question(QuestionTypeEnum type, Integer number, String description, String key, Double marks, Integer maxLength, Boolean mandatory, HashMap options){
-        this.type = type;
-        this.number = number;
-        this.description = description;
-        this.rightAnswer = key;
-        this.marks = marks;
-        this.maxLength = maxLength;
-        this.mandatory = mandatory;
-        this.options = options;
-    }
-    
+    private String html;
 
     public Long getQuestionId() {
         return questionId;
@@ -82,6 +59,22 @@ public class Question implements Serializable {
 
     public void setQuestionId(Long questionId) {
         this.questionId = questionId;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public Integer getLevel() {
+        return level;
+    }
+
+    public void setLevel(Integer level) {
+        this.level = level;
     }
 
     @Override
@@ -125,68 +118,52 @@ public class Question implements Serializable {
         this.number = number;
     }
 
-    public String getDescription() {
-        return description;
+    public String getExplanation() {
+        return explanation;
     }
 
-    public void setDescription(String description) {
-        this.description = description;
+    public void setExplanation(String explanation) {
+        this.explanation = explanation;
     }
 
-    public String getRightAnswer() {
-        return rightAnswer;
+    public String getCorrectAnswer() {
+        return correctAnswer;
     }
 
-    public void setRightAnswer(String rightAnswer) {
-        this.rightAnswer = rightAnswer;
+    public void setCorrectAnswer(String correctAnswer) {
+        this.correctAnswer = correctAnswer;
     }
 
-    public Double getMarks() {
-        return marks;
+    public Double getPoints() {
+        return points;
     }
 
-    public void setMarks(Double marks) {
-        this.marks = marks;
+    public void setPoints(Double points) {
+        this.points = points;
     }
 
-    public Integer getMaxLength() {
-        return maxLength;
+    public Boolean getIsRequired() {
+        return isRequired;
     }
 
-    public void setMaxLength(Integer maxLength) {
-        this.maxLength = maxLength;
+    public void setIsRequired(Boolean isRequired) {
+        this.isRequired = isRequired;
     }
 
-    public Boolean getMandatory() {
-        return mandatory;
+    public List<String> getChoices() {
+        return choices;
     }
 
-    public void setMandatory(Boolean mandatory) {
-        this.mandatory = mandatory;
+    public void setChoices(List<String> choices) {
+        this.choices = choices;
     }
 
-    public HashMap getOptions() {
-        return options;
+    public String getHtml() {
+        return html;
     }
 
-    public void setOptions(HashMap options) {
-        this.options = options;
-    }
-
-    public Quiz getQuiz() {
-        return quiz;
-    }
-
-    public void setQuiz(Quiz quiz) {
-        this.quiz = quiz;
-    }
-
-    public Survey getSurvey() {
-        return survey;
-    }
-
-    public void setSurvey(Survey survey) {
-        this.survey = survey;
+    public void setHtml(String html) {
+        this.html = html;
     }
     
 }

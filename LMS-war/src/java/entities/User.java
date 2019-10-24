@@ -15,6 +15,7 @@ import javax.persistence.Id;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 import util.AccessRightEnum;
 import util.GenderEnum;
 
@@ -61,7 +62,7 @@ public class User implements Serializable {
     private List<Tutorial> tutorials;
     @OneToMany(mappedBy = "student")
     private List<Attendance> attendanceList;
-    
+
     public User(String firstName, String lastName, String email, String username, String password, GenderEnum gender, AccessRightEnum accessRight, List<ConsultationTimeslot> consultationTimeslotList, List<QuizAttempt> quizAttemptList, List<SurveyAttempt> surveyAttemptList, List<ClassGroup> classGroupList, List<Module> teacherModuleList, List<Module> studentModuleList, List<Module> publicUserModuleList) {
         this.firstName = firstName;
         this.lastName = lastName;
@@ -117,7 +118,7 @@ public class User implements Serializable {
         this.tutorials = tutorials;
         this.attendanceList = attendanceList;
     }
- 
+
     public User() {
     }
 
