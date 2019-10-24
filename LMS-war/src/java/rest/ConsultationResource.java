@@ -100,11 +100,15 @@ public class ConsultationResource {
                     //List<ConsultationTimeslot> timeslotsCopy = new ArrayList<>();
                     for (ConsultationTimeslot ct : timeslots) {
                         User booker = new User();
+                        if (ct.getBooker() != null) {
                         booker.setFirstName(ct.getBooker().getFirstName());
                         booker.setLastName(ct.getBooker().getLastName());
-                        
                         rsp.getConsultationTimeslots().add(new ConsultationTimeslot(
                                 ct.getconsultationTsId(), ct.getStartTs(), ct.getEndTs(), ct.getStartD(), null, booker));
+                        } else {
+                        rsp.getConsultationTimeslots().add(new ConsultationTimeslot(
+                                ct.getconsultationTsId(), ct.getStartTs(), ct.getEndTs(), ct.getStartD(), null, null));
+                        }
                     }
                     return Response.status(Response.Status.OK).entity(rsp).build();
                 } else {
