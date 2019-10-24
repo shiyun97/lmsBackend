@@ -83,7 +83,6 @@ public class Coursepack implements Serializable {
         this.rating = rating;
         this.teacherBackground = teacherBackground;
         this.publicUserList = publicUserList;
-        this.forumTopicList = forumTopicList;
         this.gradeItemList = gradeItemList;
         this.assignedTeacher = assignedTeacher;
         this.feedbackList = feedbackList;
@@ -95,7 +94,6 @@ public class Coursepack implements Serializable {
 
     public Coursepack(){
         publicUserList = new ArrayList<>();
-        forumPostList = new ArrayList<>();
         gradeItemList = new ArrayList<>();
         feedbackList = new ArrayList<>();
         outlineList = new ArrayList<>();
@@ -201,10 +199,6 @@ public class Coursepack implements Serializable {
         this.publicUserList = publicUserList;
     }
 
-    public void setFolderList(List<Folder> folderList) {
-        this.folderList = folderList;
-    }
-
     public List<Quiz> getQuizList() {
         return quizList;
     }
@@ -267,11 +261,7 @@ public class Coursepack implements Serializable {
     public void setFileList(List<File> fileList) {
         this.fileList = fileList;
     }
-
-    public void setQuizList(List<Quiz> quizList) {
-        this.quizList = quizList;
-    }
-
+    
     public List<ForumTopic> getForumTopicList() {
         return forumTopicList;
     }
