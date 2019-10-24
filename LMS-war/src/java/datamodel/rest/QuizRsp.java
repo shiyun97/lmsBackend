@@ -18,6 +18,7 @@ import util.QuizTypeEnum;
  */
 public class QuizRsp {
     private Long quizId;
+    private Long surveyId;
     private String title;
     private String description;
     private QuizTypeEnum quizType;
@@ -33,10 +34,19 @@ public class QuizRsp {
     private boolean publish;
     private boolean publishAnswer;
     private Integer maxTimeToFinish;
+    private boolean reachedMaxAttempt;
     private Long moduleId;
     private List<PageModel> pages = new ArrayList<>();
 
     public QuizRsp() {
+    }
+
+    public Long getSurveyId() {
+        return surveyId;
+    }
+
+    public void setSurveyId(Long surveyId) {
+        this.surveyId = surveyId;
     }
 
     public Double getMaxMarks() {
@@ -181,6 +191,14 @@ public class QuizRsp {
 
     public void setPublishAnswer(boolean publishAnswer) {
         this.publishAnswer = publishAnswer;
+    }
+
+    public boolean isReachedMaxAttempt() {
+        return reachedMaxAttempt;
+    }
+
+    public void setReachedMaxAttempt(boolean reachedMaxAttempt) {
+        this.reachedMaxAttempt = reachedMaxAttempt;
     }
     
 }

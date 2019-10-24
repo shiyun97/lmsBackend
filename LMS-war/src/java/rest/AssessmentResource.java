@@ -32,6 +32,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
@@ -448,6 +449,55 @@ public class AssessmentResource {
     }
     
     @GET
+    @Path("retrieveModuleQuizNotInGradebook/{moduleId}")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response retrieveAllModuleQuizNotInGradebook(@PathParam("moduleId") Long moduleId, @QueryParam("userId") Long userId){
+        User user = em.find(User.class, userId);
+        if(user == null || user.getAccessRight() != AccessRightEnum.Teacher ){
+            return Response.status(Status.FORBIDDEN)
+                    .entity(new ErrorRsp("User doesn't have access to this function"))
+                    .build();
+        }
+        
+        Module module = em.find(Module.class, moduleId);
+        if(module == null){
+            return Response.status(Status.BAD_REQUEST).entity(new ErrorRsp("Module doesn't exist")).build();
+        } else if (module.getAssignedTeacher() != user && !user.getStudentModuleList().contains(module)){
+            return Response.status(Status.FORBIDDEN)
+                    .entity(new ErrorRsp("User doesn't have access to this module"))
+                    .build();
+        }
+        
+        try {
+            List<Quiz> quizzes = new ArrayList<>();
+            
+            for(Quiz q: module.getQuizList()){
+                if(q.isGradeitemCreated()){
+                    Quiz newQ = new Quiz();
+                    newQ.setQuizId(q.getQuizId());
+                    newQ.setOpeningDate(q.getOpeningDate());
+                    newQ.setClosingDate(q.getClosingDate());
+                    newQ.setQuizType(q.getQuizType());
+                    newQ.setMaxMarks(q.getMaxMarks());
+                    newQ.setDescription(q.getDescription());
+                    newQ.setTitle(q.getTitle());
+                    newQ.setMaxTimeToFinish(q.getMaxTimeToFinish());
+                    newQ.setPublish(q.isPublish());
+                    newQ.setNoOfAttempts(q.getNoOfAttempts());
+                    newQ.setQuestionsOrder(q.getQuestionsOrder());
+                    newQ.setPublishAnswer(q.isPublishAnswer());
+                    quizzes.add(newQ);
+                }
+            }
+            
+            return Response.status(Status.OK).entity(new RetrieveQuizzesResp(quizzes)).build();
+        } catch (Exception e){
+            e.printStackTrace();
+            return Response.status(Status.INTERNAL_SERVER_ERROR).entity(new ErrorRsp(e.getMessage())).build();
+        }
+    }
+    
+    @GET
     @Path("retrieveModuleQuiz/{quizId}")
     @Produces(MediaType.APPLICATION_JSON)
     public Response retrieveModuleQuiz(@PathParam("quizId") Long quizId, @QueryParam("userId") Long userId){
@@ -490,6 +540,16 @@ public class AssessmentResource {
             newQ.setQuestionsOrder(q.getQuestionsOrder());
             newQ.setPublishAnswer(q.isPublishAnswer());
             newQ.getPages().add(new PageModel(q.getQuestionList(), "page1"));
+            newQ.setReachedMaxAttempt(false);
+            int count = 0;
+            for(QuizAttempt qa: q.getQuizAttemptList()){
+                if(qa.getQuizTaker() == user){
+                    if(++count >= q.getNoOfAttempts()){
+                        newQ.setReachedMaxAttempt(true);
+                        break;
+                    }
+                }
+            }
             
             return Response.status(Status.OK).entity(newQ).build();
         } catch (Exception e){
@@ -954,10 +1014,15 @@ public class AssessmentResource {
         return Response.status(Status.OK).build();
     }
     
+    
+    // There are different types on converting a quiz results to gradeItem.
+    // 1. best : by best marks
+    // 2. first : first attempt
+    // 3. last : last attempt
     @POST
     @Path("createGradeItemFromQuiz")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response createGradeItemFromQuiz(@QueryParam("userId") Long userId, @QueryParam("quizId") Long quizId, CreateGradeItemRqst rqst){
+    public Response createGradeItemFromQuiz(@QueryParam("userId") Long userId, @QueryParam("quizId") Long quizId, CreateGradeItemRqst rqst, @QueryParam("type") String type){
         User user = em.find(User.class, userId);
         if(user == null || user.getAccessRight() != AccessRightEnum.Teacher){
             return Response.status(Status.FORBIDDEN)
@@ -983,6 +1048,10 @@ public class AssessmentResource {
             return Response.status(Status.BAD_REQUEST).entity(new ErrorRsp("Quiz is not part of the module")).build();
         }
         
+        if(quiz.getClosingDate().after(new Date())){
+            return Response.status(Status.BAD_REQUEST).entity(new ErrorRsp("Quiz hasn't closed yet!")).build();
+        }
+        
         try {
             GradeItem gradeItem = new GradeItem();
             gradeItem.setTitle(rqst.getTitle());
@@ -993,16 +1062,43 @@ public class AssessmentResource {
             module.getGradeItemList().add(gradeItem);
             em.persist(gradeItem);
             
+            HashMap<User, Double> marks = new HashMap<>();
+            if(type.toLowerCase().contains("best")){
+                for(QuizAttempt qa: quiz.getQuizAttemptList()){
+                    if(!marks.containsKey(qa.getQuizTaker()) || marks.get(qa.getQuizTaker()) < qa.getTotalMarks()){
+                        marks.put(qa.getQuizTaker(), qa.getTotalMarks());
+                    }
+                }
+            } else if(type.toLowerCase().contains("last")){
+                HashMap<User, Date> times = new HashMap<>();
+                for(QuizAttempt qa: quiz.getQuizAttemptList()){
+                    if(!marks.containsKey(qa.getQuizTaker()) || times.get(qa.getQuizTaker()).before(qa.getCreateTs())){
+                        times.put(user, qa.getCreateTs());
+                        marks.put(qa.getQuizTaker(), qa.getTotalMarks());
+                    }
+                }
+            } else if(type.toLowerCase().contains("first")){
+                HashMap<User, Date> times = new HashMap<>();
+                for(QuizAttempt qa: quiz.getQuizAttemptList()){
+                    if(!marks.containsKey(qa.getQuizTaker()) || times.get(qa.getQuizTaker()).after(qa.getCreateTs())){
+                        times.put(user, qa.getCreateTs());
+                        marks.put(qa.getQuizTaker(), qa.getTotalMarks());
+                    }
+                }
+            }
+            
             for (QuizAttempt qa: quiz.getQuizAttemptList()){
                 GradeEntry gradeEntry = new GradeEntry();
                 gradeEntry.setGradeItem(gradeItem);
                 gradeEntry.setStudent(qa.getQuizTaker());
-                gradeEntry.setMarks(qa.getTotalMarks());
+                gradeEntry.setMarks(marks.getOrDefault(qa.getQuizTaker(), 0.0));
                 gradeItem.getGradeEntries().add(gradeEntry);
                 
                 em.persist(gradeEntry);
                 em.flush();
             }
+            
+            quiz.setGradeitemCreated(true);
             
             return Response.status(Status.OK).build();
         } catch (Exception e){

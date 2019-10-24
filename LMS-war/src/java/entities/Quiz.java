@@ -80,13 +80,14 @@ public class Quiz implements Serializable {
     private boolean publishAnswer;
     @Column
     private Integer maxTimeToFinish;
+    @Column
+    private boolean gradeitemCreated;
     @ManyToOne
     private Module module;
     @OneToMany(cascade = CascadeType.REMOVE)
     private List<Question> questionList;
     @OneToMany(mappedBy = "quiz")
     private List<QuizAttempt> quizAttemptList;
-    
 
     public boolean isPublish() {
         return publish;
@@ -95,7 +96,6 @@ public class Quiz implements Serializable {
     public void setPublish(boolean publish) {
         this.publish = publish;
     }
-
     
 
     public Long getQuizId() {
@@ -235,6 +235,14 @@ public class Quiz implements Serializable {
 
     public void setPublishAnswer(boolean publishAnswer) {
         this.publishAnswer = publishAnswer;
+    }
+
+    public boolean isGradeitemCreated() {
+        return gradeitemCreated;
+    }
+
+    public void setGradeitemCreated(boolean gradeitemCreated) {
+        this.gradeitemCreated = gradeitemCreated;
     }
     
 }
