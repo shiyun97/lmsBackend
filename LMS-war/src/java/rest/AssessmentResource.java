@@ -275,6 +275,187 @@ public class AssessmentResource {
     }
     
     @POST
+    @Path("createQuestion")
+    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_JSON)
+    public Response createQuestion(QuestionModel qm, @QueryParam("userId") Long userId){
+        User user = em.find(User.class, userId);
+        if(user == null || user.getAccessRight() != AccessRightEnum.Teacher){
+            return Response.status(Status.FORBIDDEN)
+                    .entity(new ErrorRsp("User doesn't have access to this function"))
+                    .build();
+        }
+        
+        Quiz quiz = em.find(Quiz.class, qm.getQuizId());
+        if(quiz == null){
+            return Response.status(Status.NOT_FOUND).entity(new ErrorRsp("Quiz with the given ID doesn't exist")).build();
+        }
+        
+        if(quiz.getModule().getAssignedTeacher() != user){
+            return Response.status(Status.FORBIDDEN)
+                    .entity(new ErrorRsp("User doesn't have access to this function"))
+                    .build();
+        }
+        
+        try {
+            Question question = new Question();
+            question.setTitle(qm.getTitle());
+            question.setLevel(qm.getLevel());
+            question.setNumber(quiz.getQuestionList().size() + 1);
+            question.setPoints(qm.getPoints());
+            question.setExplanation(qm.getExplanation());
+            question.setType(qm.getType());
+            question.setIsRequired(qm.getIsRequired());
+            question.setChoices(new ArrayList<>());
+
+            if(question.getType() == QuestionTypeEnum.radiogroup){
+                for (ChoiceModel choice: qm.getChoices()){
+                    question.getChoices().add(choice.getText());
+                    if(qm.getCorrectAnswer().equals(choice.getValue())){
+                        question.setCorrectAnswer(choice.getText());
+                    }
+                }
+            }
+
+            em.persist(question);
+            em.flush();
+
+            quiz.getQuestionList().add(question);
+            
+            return Response.status(Status.OK).entity(question).build();
+        } catch (Exception e){
+            e.printStackTrace();
+            return Response.status(Status.INTERNAL_SERVER_ERROR).entity(new ErrorRsp(e.getMessage())).build();
+        }
+    }
+    
+    @POST
+    @Path("updateQuestion")
+    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_JSON)
+    public Response updateQuestion(QuestionModel qm, @QueryParam("userId") Long userId){
+        User user = em.find(User.class, userId);
+        if(user == null || user.getAccessRight() != AccessRightEnum.Teacher){
+            return Response.status(Status.FORBIDDEN)
+                    .entity(new ErrorRsp("User doesn't have access to this function"))
+                    .build();
+        }
+        
+        Quiz quiz = em.find(Quiz.class, qm.getQuizId());
+        if(quiz == null){
+            return Response.status(Status.NOT_FOUND).entity(new ErrorRsp("Quiz with the given ID doesn't exist")).build();
+        }
+        
+        if(quiz.getModule().getAssignedTeacher() != user){
+            return Response.status(Status.FORBIDDEN)
+                    .entity(new ErrorRsp("User doesn't have access to this function"))
+                    .build();
+        }
+        
+        boolean attempted = !quiz.getQuizAttemptList().isEmpty();
+        
+        try {
+            Question question = em.find(Question.class, qm.getQuestionId());
+            
+            if(question == null){
+                return Response.status(Status.NOT_FOUND).entity(new ErrorRsp("Question with the given ID doesn't exist")).build();
+            }
+            
+            if(attempted){
+                Question oldQ = question;
+                quiz.getQuestionList().remove(oldQ);
+                
+                question = new Question();
+                question.setTitle(qm.getTitle());
+                question.setLevel(qm.getLevel());
+                question.setNumber(oldQ.getNumber());
+                question.setPoints(qm.getPoints());
+                question.setExplanation(qm.getExplanation());
+                question.setType(qm.getType());
+                question.setIsRequired(qm.getIsRequired());
+                question.setChoices(new ArrayList<>());
+                
+                em.persist(question);
+                quiz.getQuestionList().add(question);
+                em.flush();
+            } else {
+                question.setTitle(qm.getTitle());
+                question.setLevel(qm.getLevel());
+                question.setPoints(qm.getPoints());
+                question.setExplanation(qm.getExplanation());
+                question.setType(qm.getType());
+                question.setIsRequired(qm.getIsRequired());
+                question.setChoices(new ArrayList<>());
+            }
+
+            if(question.getType() == QuestionTypeEnum.radiogroup){
+                for (ChoiceModel choice: qm.getChoices()){
+                    question.getChoices().add(choice.getText());
+                    if(qm.getCorrectAnswer().equals(choice.getValue())){
+                        question.setCorrectAnswer(choice.getText());
+                    }
+                }
+            }
+            
+            return Response.status(Status.OK).entity(question).build();
+        } catch (Exception e){
+            e.printStackTrace();
+            return Response.status(Status.INTERNAL_SERVER_ERROR).entity(new ErrorRsp(e.getMessage())).build();
+        }
+    }
+    
+    @DELETE
+    @Path("deleteQuestion")
+    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_JSON)
+    public Response deleteQuestion(QuestionModel qm, @QueryParam("userId") Long userId){
+        User user = em.find(User.class, userId);
+        if(user == null || user.getAccessRight() != AccessRightEnum.Teacher){
+            return Response.status(Status.FORBIDDEN)
+                    .entity(new ErrorRsp("User doesn't have access to this function"))
+                    .build();
+        }
+        
+        Quiz quiz = em.find(Quiz.class, qm.getQuizId());
+        if(quiz == null){
+            return Response.status(Status.NOT_FOUND).entity(new ErrorRsp("Quiz with the given ID doesn't exist")).build();
+        }
+        
+        if(quiz.getModule().getAssignedTeacher() != user){
+            return Response.status(Status.FORBIDDEN)
+                    .entity(new ErrorRsp("User doesn't have access to this function"))
+                    .build();
+        }
+        
+        boolean attempted = !quiz.getQuizAttemptList().isEmpty();
+        
+        try {
+            Question question = em.find(Question.class, qm.getQuestionId());
+            
+            if(question == null){
+                return Response.status(Status.NOT_FOUND).entity(new ErrorRsp("Question with the given ID doesn't exist")).build();
+            }
+            
+            // Reduce the number of other questions after this question
+            for (Question q: quiz.getQuestionList()){
+                if(q.getNumber() > question.getNumber()){
+                    q.setNumber(q.getNumber() - 1);
+                }
+            }
+            
+            quiz.getQuestionList().remove(question);
+            if(!attempted){
+                em.remove(question);
+            }
+            
+            return Response.status(Status.OK).build();
+        } catch (Exception e){
+            e.printStackTrace();
+            return Response.status(Status.INTERNAL_SERVER_ERROR).entity(new ErrorRsp(e.getMessage())).build();
+        }
+    }
+    
+    @POST
     @Path("createQuizAttempt")
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
