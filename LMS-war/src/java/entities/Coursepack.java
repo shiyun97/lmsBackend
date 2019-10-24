@@ -7,6 +7,7 @@ package entities;
 
 import java.io.Serializable;
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import javax.persistence.Column;
@@ -17,6 +18,7 @@ import javax.persistence.Id;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  *
@@ -25,10 +27,6 @@ import javax.persistence.OneToMany;
 @Entity
 public class Coursepack implements Serializable {
     
-    public Coursepack(){
-        
-    }
-
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -44,27 +42,25 @@ public class Coursepack implements Serializable {
     @Column
     private Double price;
     @Column 
-    private Timestamp startDate;
+    private Boolean published;
     @Column
     private Double rating;
     @Column
     private String teacherBackground;
-
+    
     @ManyToMany
     private List<User> publicUserList;
-    //@OneToMany(mappedBy = "coursepack")
-    //private List<Folder> folderList;
     @OneToMany(mappedBy = "coursepack")
     private List<ForumTopic> forumTopicList;
     //@OneToMany(mappedBy = "coursepack")
     //private List<Quiz> quizList;
+    private List<ForumPost> forumPostList;
     @OneToMany(mappedBy = "coursepack")
     private List<GradeItem> gradeItemList;
     @ManyToOne
     private User assignedTeacher;
     @OneToMany
     private List<Feedback> feedbackList;
-    
     @OneToMany
     private List<Outlines> outlineList;
     @OneToMany
@@ -95,13 +91,25 @@ public class Coursepack implements Serializable {
     }
     
     public Coursepack(Long coursepackId, String code, String title, String description, String category, Double price, Timestamp startDate, Double rating, String teacherBackground, List<User> publicUserList, List<ForumTopic> forumTopicList, List<GradeItem> gradeItemList, User assignedTeacher, List<Feedback> feedbackList, List<Outlines> outlineList, List<File> multimediaList) {
+    
+    
+    public Coursepack(){
+        
+        this.publicUserList = new ArrayList<>();
+        this.forumPostList = new ArrayList<>();
+        this.gradeItemList = new ArrayList<>();
+        this.feedbackList = new ArrayList<>();
+        this.outlineList = new ArrayList<>();
+    }
+    
+
+    public Coursepack(Long coursepackId, String code, String title, String description, String category, Double price, Boolean published, Double rating, String teacherBackground, List<User> publicUserList, List<ForumPost> forumPostList, List<GradeItem> gradeItemList, User assignedTeacher, List<Feedback> feedbackList, List<Outlines> outlineList) {
         this.coursepackId = coursepackId;
         this.code = code;
         this.title = title;
         this.description = description;
         this.category = category;
         this.price = price;
-        this.startDate = startDate;
         this.rating = rating;
         this.teacherBackground = teacherBackground;
         this.publicUserList = publicUserList;
@@ -113,6 +121,7 @@ public class Coursepack implements Serializable {
         this.feedbackList = feedbackList;
         this.outlineList = outlineList;
         this.multimediaList = multimediaList;
+        this.published = published;
     }
 
     @Override
@@ -186,14 +195,6 @@ public class Coursepack implements Serializable {
 
     public void setPrice(Double price) {
         this.price = price;
-    }
-
-    public Timestamp getStartDate() {
-        return startDate;
-    }
-
-    public void setStartDate(Timestamp startDate) {
-        this.startDate = startDate;
     }
 
     public Double getRating() {
@@ -274,6 +275,12 @@ public class Coursepack implements Serializable {
 
     public void setRatingList(List<Rating> ratingList) {
         this.ratingList = ratingList;
+    public Boolean getPublished() {
+        return published;
+    }
+
+    public void setPublished(Boolean published) {
+        this.published = published;
     }
 
     

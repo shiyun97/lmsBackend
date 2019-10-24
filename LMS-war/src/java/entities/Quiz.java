@@ -51,6 +51,8 @@ public class Quiz implements Serializable {
     }
 
     public Quiz() {
+        questionList = new ArrayList<>();
+        quizAttemptList = new ArrayList<>();
     }
 
     private static final long serialVersionUID = 1L;

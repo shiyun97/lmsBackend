@@ -6,6 +6,7 @@
 package entities;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -41,20 +42,25 @@ public class LessonOrder implements Serializable {
     private Quiz quiz;
     @ManyToOne
     private Outlines outlines; 
+    @OneToMany
+    private List<User> publicUserList;
+    
 
     public LessonOrder(){
-        
+        publicUserList = new ArrayList<>();
     }
     
     
-    public LessonOrder(Long lessonOrderId, int order, String name, Boolean type, File file, Quiz quiz, Outlines outlines) {
+    public LessonOrder(Long lessonOrderId, int number, String name, Boolean type, File file, Quiz quiz, Outlines outlines, List<User> publicUserList) {
+        this();
         this.lessonOrderId = lessonOrderId;
-        this.number = order;
+        this.number = number;
         this.name = name;
         this.type = type; 
         this.file = file;
         this.quiz = quiz;
         this.outlines = outlines;
+        this.publicUserList = publicUserList;
     }
     
     
@@ -143,6 +149,14 @@ public class LessonOrder implements Serializable {
 
     public void setType(Boolean type) {
         this.type = type;
+    }
+
+    public List<User> getPublicUserList() {
+        return publicUserList;
+    }
+
+    public void setPublicUserList(List<User> publicUserList) {
+        this.publicUserList = publicUserList;
     }
     
     
