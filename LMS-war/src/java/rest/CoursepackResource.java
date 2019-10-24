@@ -417,23 +417,51 @@ public class CoursepackResource {
         }
     }
     
-    @Path(value = "getLessonOrder/{lessonOrderId}")
+    @Path(value = "getLessonOrderByOutlineId/{outlineId}")
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    public Response getLessonOrderById(@PathParam("lessonOrderId") Long lessonOrderId){
+    public Response getLessonOrderByOutlineId(@PathParam("outlineId") Long outlineId){
         try{
-            LessonOrder lessonOrder = em.find(LessonOrder.class, lessonOrderId);
-            if(lessonOrder == null){
-                return Response.status(Response.Status.NOT_FOUND).entity("LessonOrder does not exist").build();
+            
+            Outlines outline = em.find(Outlines.class, outlineId);
+   
+            if(outline == null){
+                return Response.status(Response.Status.NOT_FOUND).entity("Outline does not exist").build();
             }
-
-           LessonOrder lessonOrderCopy = new LessonOrder(lessonOrder.getLessonOrderId(), 
-                   lessonOrder.getNumber(), lessonOrder.getName(), lessonOrder.getType(), lessonOrder.getFile(),
-                   lessonOrder.getQuiz(), null, null);
+            
+            Outlines newOut = new Outlines();
+            
+            List<LessonOrder> lessonOrder = new ArrayList<>();
+              for(LessonOrder lo: outline.getLessonOrder() ){
+                  LessonOrder nlo = new LessonOrder();
+                  nlo.setName(lo.getName());
+                  nlo.setNumber(lo.getNumber());
+                  nlo.setLessonOrderId(lo.getLessonOrderId());
+                  if(lo.getQuiz()!=null){
+                      Quiz quizCopy = new Quiz();
+                      quizCopy.setTitle(lo.getQuiz().getTitle());
+                      quizCopy.setQuizId(lo.getQuiz().getQuizId());
+                      
+                      nlo.setQuiz(quizCopy);
+                  }
+                  
+                  if(lo.getFile()!=null){
+                     File fileCopy = new File();
+                     fileCopy.setName(lo.getFile().getName());
+                     fileCopy.setFileId(lo.getFile().getFileId());
+                     
+                     nlo.setFile(fileCopy);
+                  }
+                  
+                  lessonOrder.add(nlo);
+              }
+              newOut.setLessonOrder(lessonOrder);
+//              oline.add(newOut);
 
             
-            return Response.status(Response.Status.OK).entity(lessonOrderCopy).build();
-
+           
+            return Response.status(Response.Status.OK).entity(newOut).build();
+        
         } catch (Exception ex) {
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
         }
