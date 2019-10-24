@@ -80,6 +80,15 @@ public class DataInitSessionBean {
 
         //3
         User student2 = new User();
+        student2.setFirstName("Mark");
+        student2.setLastName("Hamilton");
+        student2.setEmail("student2@gmail.com");
+        student2.setPassword("password");
+        student2.setGender(GenderEnum.Male);
+        student2.setAccessRight(AccessRightEnum.Student);
+        student2.setUsername("student2");
+        em.persist(student2);
+        /*User student2 = new User();
         student2.setFirstName("Bob");
         student2.setLastName("Lim");
         student2.setEmail("student2@gmail.com");
@@ -88,7 +97,7 @@ public class DataInitSessionBean {
         student2.setAccessRight(AccessRightEnum.Student);
         student2.setUsername("student2");
         em.persist(student2);
-        em.flush();
+        em.flush();*/
 
         //4
         User student3 = new User();
@@ -151,16 +160,6 @@ public class DataInitSessionBean {
         em.persist(v4);
         em.flush();
 
-        User student2 = new User();
-        student2.setFirstName("Mark");
-        student2.setLastName("Hamilton");
-        student2.setEmail("student2@gmail.com");
-        student2.setPassword("password");
-        student2.setGender(GenderEnum.Male);
-        student2.setAccessRight(AccessRightEnum.Student);
-        student2.setUsername("student2");
-        em.persist(student2);
-
         Module m1 = new Module();
         m1.setCode("CS1010");
         m1.setDescription("CS1010 Mod Desc");
@@ -179,7 +178,7 @@ public class DataInitSessionBean {
         m1.setDepartment("Department of Computer Science");
         teacher.getTeacherModuleList().add(m1);
         student.getStudentModuleList().add(m1);
-        student2.getStudentModuleList().add(m1);
+        //student2.getStudentModuleList().add(m1);
         student3.getStudentModuleList().add(m1);
         em.persist(m1);
         em.flush();
@@ -256,7 +255,7 @@ public class DataInitSessionBean {
         em.flush();
 
         student2.getStudentModuleList().add(m1);
-        m1.getStudentList().add(student2);
+        //m1.getStudentList().add(student2);
 
         Tutorial t1 = new Tutorial();
         t1.setModule(m1);
@@ -366,8 +365,8 @@ public class DataInitSessionBean {
         v4.setTutorialList(tutorialList2);
         em.flush();
 
-        student2.getTutorials().add(t1);
-        t1.getStudentList().add(student2);
+        //student2.getTutorials().add(t1);
+        //t1.getStudentList().add(student2);
 
         Schedule schedule = new Schedule();
         schedule.setSemester(1);
@@ -588,13 +587,13 @@ public class DataInitSessionBean {
         createSurvey(m4);
     }
 
-    public void createSurvey(Module module){
+    public void createSurvey(Module module) {
         Survey survey = new Survey();
         survey.setTitle("End-of-Semester Evaluation");
         survey.setDescription("Welcome to the feedback exercise. <br />Please take time to review your learning experience in the past semester and be honest in your replies. <br /><br />Please click on <b>'Next'</b> to proceed with the exercise.");
         survey.setModule(module);
         survey.setOpeningDate(new Date());
-        survey.setClosingDate(new Date(2019-1900, 12, 12));
+        survey.setClosingDate(new Date(2019 - 1900, 12, 12));
         survey.setQuestionList(new ArrayList<>());
         em.persist(survey);
         em.flush();

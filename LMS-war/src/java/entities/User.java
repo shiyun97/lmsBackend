@@ -62,6 +62,10 @@ public class User implements Serializable {
     private List<Tutorial> tutorials;
     @OneToMany(mappedBy = "student")
     private List<Attendance> attendanceList;
+    @OneToMany(mappedBy = "assignedTeacher")
+    private List<Coursepack> teacherCoursepackList;
+    @ManyToMany(mappedBy = "publicUserList")
+    private List<Coursepack> publicUserCoursepackList;
 
     public User(String firstName, String lastName, String email, String username, String password, GenderEnum gender, AccessRightEnum accessRight, List<ConsultationTimeslot> consultationTimeslotList, List<QuizAttempt> quizAttemptList, List<SurveyAttempt> surveyAttemptList, List<ClassGroup> classGroupList, List<Module> teacherModuleList, List<Module> studentModuleList, List<Module> publicUserModuleList) {
         this.firstName = firstName;
@@ -289,5 +293,21 @@ public class User implements Serializable {
 
     public void setAttendanceList(List<Attendance> attendanceList) {
         this.attendanceList = attendanceList;
+    }
+    
+    public List<Coursepack> getTeacherCoursepackList() {
+        return teacherCoursepackList;
+    }
+
+    public void setTeacherCoursepackList(List<Coursepack> teacherCoursepackList) {
+        this.teacherCoursepackList = teacherCoursepackList;
+    }
+
+    public List<Coursepack> getPublicUserCoursepackList() {
+        return publicUserCoursepackList;
+    }
+
+    public void setPublicUserCoursepackList(List<Coursepack> publicUserCoursepackList) {
+        this.publicUserCoursepackList = publicUserCoursepackList;
     }
 }
