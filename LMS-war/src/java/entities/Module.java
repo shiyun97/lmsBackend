@@ -21,14 +21,12 @@ import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
-import javax.xml.bind.annotation.XmlRootElement;
 /**
  *
  * @author Vixson
  */
 @Entity
-@Table(name = "MODULE")
-public class Module implements Serializable {   
+public class Module implements Serializable {
 
     public Module() {
     }
@@ -58,15 +56,15 @@ public class Module implements Serializable {
     private List<User> studentList;
     @ManyToMany
     @JoinTable(
-    name = "module_publicuser", 
-    joinColumns = @JoinColumn(name = "moduleid"), 
+    name = "module_publicuser",
+    joinColumns = @JoinColumn(name = "moduleid"),
     inverseJoinColumns = @JoinColumn(name = "publicuserid"))
     private List<User> publicUserList;
     @OneToMany(mappedBy = "module")
     private List<Folder> folderList;
     @OneToMany(mappedBy = "module")
     private List<File> multimediaList;
-    @OneToMany(mappedBy = "module")
+    @OneToMany(mappedBy = "module", orphanRemoval = true)
     private List<Annoucement> annoucementList;
     @OneToMany(mappedBy = "module")
     private List<ForumTopic> forumTopicList;
@@ -92,8 +90,8 @@ public class Module implements Serializable {
     private boolean hasExam;
     @Column
     private Timestamp examTime;
-    @Column
-    private String examVenue;
+    @ManyToOne
+    private Venue examVenue;
     @Column
     private String lectureDetails;
     @Column
@@ -101,7 +99,7 @@ public class Module implements Serializable {
     @Column
     private String faculty;
 
-    public Module(Long moduleId, String code, String title, String description, Integer semesterOffered, String yearOffered, Integer creditUnit, String grade, Integer maxEnrollment, List<User> studentList, List<User> publicUserList, List<Folder> folderList, List<Annoucement> annoucementList, List<ForumTopic> forumTopicList, List<Quiz> quizList, List<GradeItem> gradeItemList, List<Attendance> attandanceList, List<ConsultationTimeslot> consultationList, List<LessonPlan> lessonPlanList, User assignedTeacher, List<ClassGroup> classGroupList, List<Feedback> feedbackList, List<Tutorial> tutorials, boolean hasExam, Timestamp examTime, String examVenue, String lectureDetails, String department, String faculty) {
+    public Module(Long moduleId, String code, String title, String description, Integer semesterOffered, String yearOffered, Integer creditUnit, String grade, Integer maxEnrollment, List<User> studentList, List<User> publicUserList, List<Folder> folderList, List<Annoucement> annoucementList, List<ForumPost> forumPostList, List<Quiz> quizList, List<GradeItem> gradeItemList, List<Attendance> attandanceList, List<ConsultationTimeslot> consultationList, List<LessonPlan> lessonPlanList, User assignedTeacher, List<ClassGroup> classGroupList, List<Feedback> feedbackList, List<Tutorial> tutorials, boolean hasExam, Timestamp examTime, Venue examVenue, String lectureDetails, String department, String faculty) {
         this.moduleId = moduleId;
         this.code = code;
         this.title = title;
@@ -132,8 +130,8 @@ public class Module implements Serializable {
         this.department = department;
         this.faculty = faculty;
     }
-    
-    public Module(Long moduleId, String code, String title, String description, Integer semesterOffered, String yearOffered, Integer creditUnit, String grade, Integer maxEnrollment, List<User> studentList, List<User> publicUserList, List<Folder> folderList, List<File> multimediaList, List<Annoucement> annoucementList, List<ForumTopic> forumTopicList, List<Quiz> quizList, List<GradeItem> gradeItemList, List<Attendance> attandanceList, List<ConsultationTimeslot> consultationList, List<LessonPlan> lessonPlanList, User assignedTeacher, List<ClassGroup> classGroupList, List<Feedback> feedbackList, List<Tutorial> tutorials, boolean hasExam, Timestamp examTime, String examVenue, String lectureDetails, String department, String faculty) {
+
+    public Module(Long moduleId, String code, String title, String description, Integer semesterOffered, String yearOffered, Integer creditUnit, String grade, Integer maxEnrollment, List<User> studentList, List<User> publicUserList, List<Folder> folderList, List<File> multimediaList, List<Annoucement> annoucementList, List<ForumPost> forumPostList, List<Quiz> quizList, List<GradeItem> gradeItemList, List<Attendance> attandanceList, List<ConsultationTimeslot> consultationList, List<LessonPlan> lessonPlanList, User assignedTeacher, List<ClassGroup> classGroupList, List<Feedback> feedbackList, List<Tutorial> tutorials, boolean hasExam, Timestamp examTime, Venue examVenue, String lectureDetails, String department, String faculty) {
         this.moduleId = moduleId;
         this.code = code;
         this.title = title;
@@ -165,7 +163,7 @@ public class Module implements Serializable {
         this.department = department;
         this.faculty = faculty;
     }
-	
+
     @Override
     public int hashCode() {
         int hash = 0;
@@ -322,7 +320,7 @@ public class Module implements Serializable {
     public void setLessonPlanList(List<LessonPlan> lessonPlanList) {
         this.lessonPlanList = lessonPlanList;
     }
-	
+
     public List<ClassGroup> getClassGroupList() {
         return classGroupList;
     }
@@ -359,11 +357,11 @@ public class Module implements Serializable {
         this.examTime = examTime;
     }
 
-    public String getExamVenue() {
+    public Venue getExamVenue() {
         return examVenue;
     }
 
-    public void setExamVenue(String examVenue) {
+    public void setExamVenue(Venue examVenue) {
         this.examVenue = examVenue;
     }
 

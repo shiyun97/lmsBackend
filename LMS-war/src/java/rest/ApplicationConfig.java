@@ -20,7 +20,9 @@ public class ApplicationConfig extends Application
     }
 
     private void addRestResourceClasses(Set<Class<?>> resources) {
+        resources.add(rest.AnnoucementResource.class);
         resources.add(rest.AssessmentResource.class);
+        resources.add(rest.AttendanceResource.class);
         resources.add(rest.ConsultationResource.class);
 //        resources.add(rest.CorsFilter.class);
         resources.add(rest.CorsFilter.class);
@@ -33,6 +35,6 @@ public class ApplicationConfig extends Application
         resources.add(rest.ModuleResource.class);
         resources.add(rest.StudentEnrollmentResource.class);
         resources.add(rest.UserResource.class);
-        
+
     }
 }

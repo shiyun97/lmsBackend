@@ -22,11 +22,11 @@ import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  *
- * 
+ *
  */
 @Entity
 public class Coursepack implements Serializable {
-    
+
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -47,7 +47,7 @@ public class Coursepack implements Serializable {
     private Double rating;
     @Column
     private String teacherBackground;
-    
+
     @ManyToMany
     private List<User> publicUserList;
     @OneToMany(mappedBy = "coursepack")
@@ -67,10 +67,10 @@ public class Coursepack implements Serializable {
     private List<File> fileList;
     @OneToMany
     private List<Quiz> quizList;
-    
-    
-    
-    
+
+
+
+
 
     public Coursepack(Long coursepackId, String code, String title, String description, String category, Double price, Boolean published, Double rating, String teacherBackground, List<User> publicUserList, List<ForumPost> forumPostList, List<GradeItem> gradeItemList, User assignedTeacher, List<Feedback> feedbackList, List<Outlines> outlineList, List<File> fileList,List<Quiz> quizList ) {
         this.coursepackId = coursepackId;
@@ -100,7 +100,7 @@ public class Coursepack implements Serializable {
         fileList = new ArrayList<>();
         quizList = new ArrayList<>();
     }
-    
+
 
     @Override
     public int hashCode() {
@@ -261,14 +261,14 @@ public class Coursepack implements Serializable {
     public void setFileList(List<File> fileList) {
         this.fileList = fileList;
     }
-    
+
     public List<ForumTopic> getForumTopicList() {
         return forumTopicList;
     }
 
     public void setForumTopicList(List<ForumTopic> forumTopicList) {
         this.forumTopicList = forumTopicList;
-    }  
+    }
 
     public List<File> getMultimediaList() {
         return multimediaList;
@@ -277,5 +277,5 @@ public class Coursepack implements Serializable {
     public void setMultimediaList(List<File> multimediaList) {
         this.multimediaList = multimediaList;
     }
-    
+
 }

@@ -5,6 +5,7 @@
  */
 package ejb;
 
+import entities.Attendance;
 import entities.ConsultationTimeslot;
 import entities.Coursepack;
 import entities.ForumPost;
@@ -15,6 +16,7 @@ import entities.Schedule;
 import entities.Survey;
 import entities.Tutorial;
 import entities.User;
+import entities.Venue;
 import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -52,17 +54,19 @@ public class DataInitSessionBean {
             System.out.println("Data already initialized!");
             return;
         }
+        //1
         User admin = new User();
         admin.setFirstName("Admin");
         admin.setLastName("Admin");
-        admin.setEmail("admin@gmail.com");
-        admin.setPassword("password");
+        admin.setEmail("ad1234567min@gmail.com");
+        admin.setPassword("password!234%");
         admin.setGender(GenderEnum.Male);
         admin.setAccessRight(AccessRightEnum.Admin);
         admin.setUsername("admin");
         em.persist(admin);
         em.flush();
 
+        //2
         User student = new User();
         student.setFirstName("John");
         student.setLastName("Tan");
@@ -74,17 +78,57 @@ public class DataInitSessionBean {
         em.persist(student);
         em.flush();
 
+        //3
+        User student2 = new User();
+        student2.setFirstName("Mark");
+        student2.setLastName("Hamilton");
+        student2.setEmail("student2@gmail.com");
+        student2.setPassword("password");
+        student2.setGender(GenderEnum.Male);
+        student2.setAccessRight(AccessRightEnum.Student);
+        student2.setUsername("student2");
+        em.persist(student2);
+        /*User student2 = new User();
+        student2.setFirstName("Bob");
+        student2.setLastName("Lim");
+        student2.setEmail("student2@gmail.com");
+        student2.setPassword("password");
+        student2.setGender(GenderEnum.Male);
+        student2.setAccessRight(AccessRightEnum.Student);
+        student2.setUsername("student2");
+        em.persist(student2);
+        em.flush();*/
+
+        //4
+        User student3 = new User();
+        student3.setFirstName("Mary");
+        student3.setLastName("Lee");
+        student3.setEmail("student3@gmail.com");
+        student3.setPassword("password");
+        student3.setGender(GenderEnum.Female);
+        student3.setAccessRight(AccessRightEnum.Student);
+        student3.setUsername("student3");
+        em.persist(student3);
+        em.flush();
+
+        List<User> studentList = new ArrayList<>();
+        studentList.add(student);
+        studentList.add(student2);
+        studentList.add(student3);
+
+        //5
         User teacher = new User();
         teacher.setFirstName("Alice");
         teacher.setLastName("Tan");
-        teacher.setEmail("teacher@gmail.com");
-        teacher.setPassword("password");
+        teacher.setEmail("tea1234567cher@gmail.com");
+        teacher.setPassword("password!234%");
         teacher.setGender(GenderEnum.Female);
         teacher.setAccessRight(AccessRightEnum.Teacher);
         teacher.setUsername("teacher");
         em.persist(teacher);
         em.flush();
 
+        //6
         User extStu = new User();
         extStu.setFirstName("Jane");
         extStu.setLastName("Doe");
@@ -96,15 +140,24 @@ public class DataInitSessionBean {
         em.persist(extStu);
         em.flush();
 
-        User student2 = new User();
-        student2.setFirstName("Mark");
-        student2.setLastName("Hamilton");
-        student2.setEmail("student2@gmail.com");
-        student2.setPassword("password");
-        student2.setGender(GenderEnum.Male);
-        student2.setAccessRight(AccessRightEnum.Student);
-        student2.setUsername("student2");
-        em.persist(student2);
+        Venue v1 = new Venue();
+        v1.setName("MPSH2");
+        em.persist(v1);
+        em.flush();
+
+        Venue v2 = new Venue();
+        v2.setName("COM1-12");
+        em.persist(v2);
+        em.flush();
+
+        Venue v3 = new Venue();
+        v3.setName("AS7-24");
+        em.persist(v3);
+        em.flush();
+
+        Venue v4 = new Venue();
+        v4.setName("COM1-21");
+        em.persist(v4);
         em.flush();
 
         Module m1 = new Module();
@@ -113,16 +166,20 @@ public class DataInitSessionBean {
         m1.setExamTime(new Timestamp(2019 - 1900, 11, 29, 9, 0, 0, 0));
         m1.setHasExam(true);
         m1.setCreditUnit(4);
-        m1.setExamVenue("MPSH 1");
+        m1.setExamVenue(v1);
         m1.setMaxEnrollment(30);
         m1.setYearOffered("2019/2020");
         m1.setTitle("Programming Methodology");
         m1.setSemesterOffered(1);
         m1.setLectureDetails("Monday 12:00 - 14:00");
         m1.setAssignedTeacher(teacher);
+        m1.setStudentList(studentList);
         m1.setFaculty("School of Computing");
         m1.setDepartment("Department of Computer Science");
         teacher.getTeacherModuleList().add(m1);
+        student.getStudentModuleList().add(m1);
+        //student2.getStudentModuleList().add(m1);
+        student3.getStudentModuleList().add(m1);
         em.persist(m1);
         em.flush();
 
@@ -132,7 +189,7 @@ public class DataInitSessionBean {
         m2.setExamTime(new Timestamp(2019 - 1900, 11, 30, 9, 0, 0, 0));
         m2.setHasExam(true);
         m2.setCreditUnit(4);
-        m2.setExamVenue("MPSH 1");
+        m2.setExamVenue(v1);
         m2.setMaxEnrollment(30);
         m2.setYearOffered("2019/2020");
         m2.setTitle("Programming Methodology 2");
@@ -151,7 +208,7 @@ public class DataInitSessionBean {
         m3.setExamTime(new Timestamp(2020 - 1900, 4, 29, 13, 0, 0, 0));
         m3.setHasExam(true);
         m3.setCreditUnit(8);
-        m3.setExamVenue("MPSH 1");
+        m3.setExamVenue(v2);
         m3.setMaxEnrollment(30);
         m3.setYearOffered("2019/2020");
         m3.setTitle("Capstone");
@@ -170,7 +227,7 @@ public class DataInitSessionBean {
         m4.setExamTime(new Timestamp(2020 - 1900, 12, 1, 9, 0, 0, 0));
         m4.setHasExam(true);
         m4.setCreditUnit(8);
-        m4.setExamVenue("MPSH 1");
+        m4.setExamVenue(v2);
         m4.setMaxEnrollment(30);
         m4.setYearOffered("2020/2021");
         m4.setTitle("Capstone");
@@ -183,14 +240,36 @@ public class DataInitSessionBean {
         em.persist(m4);
         em.flush();
 
+        List<Module> moduleList = new ArrayList<>();
+        moduleList.add(m1);
+        moduleList.add(m2);
+        em.flush();
+
+        List<Module> moduleList2 = new ArrayList<>();
+        moduleList2.add(m3);
+        moduleList2.add(m4);
+        em.flush();
+
+        v1.setModuleList(moduleList);
+        v2.setModuleList(moduleList2);
+        em.flush();
+
         student2.getStudentModuleList().add(m1);
-        m1.getStudentList().add(student2);
+        //m1.getStudentList().add(student2);
 
         Tutorial t1 = new Tutorial();
         t1.setModule(m1);
         t1.setMaxEnrollment(10);
-        t1.setVenue("SR1");
+        t1.setVenue(v3);
         t1.setTiming("Thursday 12:00 - 13:00");
+        t1.setModule(m1);
+        t1.setStudentList(studentList);
+        //t1.getStudentList().add(student);
+        //t1.getStudentList().add(student2);
+        //t1.getStudentList().add(student3);
+        student.getTutorials().add(t1);
+        student2.getTutorials().add(t1);
+        student3.getTutorials().add(t1);
         m1.getTutorials().add(t1);
         em.persist(t1);
         em.flush();
@@ -198,7 +277,7 @@ public class DataInitSessionBean {
         Tutorial t2 = new Tutorial();
         t2.setModule(m1);
         t2.setMaxEnrollment(10);
-        t2.setVenue("SR1");
+        t2.setVenue(v3);
         t2.setTiming("Thursday 13:00 - 14:00");
         m1.getTutorials().add(t2);
         em.persist(t2);
@@ -207,7 +286,7 @@ public class DataInitSessionBean {
         Tutorial t3 = new Tutorial();
         t3.setModule(m1);
         t3.setMaxEnrollment(10);
-        t3.setVenue("SR1");
+        t3.setVenue(v3);
         t3.setTiming("Thursday 14:00 - 15:00");
         m1.getTutorials().add(t3);
         em.persist(t3);
@@ -216,7 +295,7 @@ public class DataInitSessionBean {
         Tutorial t4 = new Tutorial();
         t4.setModule(m2);
         t4.setMaxEnrollment(10);
-        t4.setVenue("Tutorial Room 4");
+        t4.setVenue(v3);
         t4.setTiming("Friday 09:00 - 10:00");
         m2.getTutorials().add(t4);
         em.persist(t4);
@@ -225,7 +304,7 @@ public class DataInitSessionBean {
         Tutorial t5 = new Tutorial();
         t5.setModule(m2);
         t5.setMaxEnrollment(10);
-        t5.setVenue("Tutorial Room 4");
+        t5.setVenue(v3);
         t5.setTiming("Friday 13:00 - 14:00");
         m2.getTutorials().add(t5);
         em.persist(t5);
@@ -234,7 +313,7 @@ public class DataInitSessionBean {
         Tutorial t6 = new Tutorial();
         t6.setModule(m2);
         t6.setMaxEnrollment(10);
-        t6.setVenue("Tutorial Room 4");
+        t6.setVenue(v4);
         t6.setTiming("Friday 10:00 - 11:00");
         m2.getTutorials().add(t6);
         em.persist(t6);
@@ -243,7 +322,7 @@ public class DataInitSessionBean {
         Tutorial t7 = new Tutorial();
         t7.setModule(m3);
         t7.setMaxEnrollment(10);
-        t7.setVenue("Tutorial Room 2");
+        t7.setVenue(v4);
         t7.setTiming("Friday 10:00 - 11:00");
         m3.getTutorials().add(t7);
         em.persist(t7);
@@ -252,7 +331,7 @@ public class DataInitSessionBean {
         Tutorial t8 = new Tutorial();
         t8.setModule(m3);
         t8.setMaxEnrollment(10);
-        t8.setVenue("Tutorial Room 2");
+        t8.setVenue(v4);
         t8.setTiming("Friday 11:00 - 12:00");
         m3.getTutorials().add(t8);
         em.persist(t8);
@@ -261,14 +340,33 @@ public class DataInitSessionBean {
         Tutorial t9 = new Tutorial();
         t9.setModule(m3);
         t9.setMaxEnrollment(10);
-        t9.setVenue("Tutorial Room 2");
+        t9.setVenue(v4);
         t9.setTiming("Thursday 11:00 - 12:00");
         m3.getTutorials().add(t9);
         em.persist(t9);
         em.flush();
 
-        student2.getTutorials().add(t1);
-        t1.getStudentList().add(student2);
+        List<Tutorial> tutorialList = new ArrayList<>();
+        tutorialList.add(t1);
+        tutorialList.add(t2);
+        tutorialList.add(t3);
+        tutorialList.add(t4);
+        tutorialList.add(t5);
+        em.flush();
+
+        List<Tutorial> tutorialList2 = new ArrayList<>();
+        tutorialList2.add(t6);
+        tutorialList2.add(t7);
+        tutorialList2.add(t8);
+        tutorialList2.add(t9);
+        em.flush();
+
+        v3.setTutorialList(tutorialList);
+        v4.setTutorialList(tutorialList2);
+        em.flush();
+
+        //student2.getTutorials().add(t1);
+        //t1.getStudentList().add(student2);
 
         Schedule schedule = new Schedule();
         schedule.setSemester(1);
@@ -304,7 +402,52 @@ public class DataInitSessionBean {
         em.persist(c2);
         em.flush();
         m4.getConsultationList().add(c2);
-        
+
+        m1.getConsultationList().add(c1);
+        em.flush();
+
+        Attendance a1 = new Attendance();
+        a1.setDuration(5);
+        a1.setEndTs(new Timestamp(2020 - 1900, 4, 29, 13, 11, 0, 0));
+        a1.setModule(m1);
+        a1.setSemester(1);
+        a1.setStartTs(new Timestamp(2020 - 1900, 4, 29, 13, 10, 0, 0));
+        a1.setTotal(20);
+        //a1.setTutorial(t1);
+        //t1.getAttendanceList().add(a1);
+        a1.setAttendees(studentList);
+        //a1.getAttendees().add(student);
+        a1.setAttendedNumber(3);
+        student.getAttendanceList().add(a1);
+        student2.getAttendanceList().add(a1);
+        student3.getAttendanceList().add(a1);
+        m1.getAttandanceList().add(a1);
+        em.persist(a1);
+        em.flush();
+
+        Attendance a2 = new Attendance();
+        a2.setDuration(5);
+        a2.setEndTs(new Timestamp(2020 - 1900, 4, 29, 13, 11, 0, 0));
+        //a1.setModule(m1);
+        //m1.getAttandanceList().add(a1);
+        a2.setSemester(1);
+        a2.setStartTs(new Timestamp(2020 - 1900, 4, 29, 13, 10, 0, 0));
+        a2.setTotal(20);
+        a2.setTutorial(t1);
+        a2.setAttendees(studentList);
+        //a1.getAttendees().add(student);
+        a2.setAttendedNumber(3);
+        student.getAttendanceList().add(a2);
+        student2.getAttendanceList().add(a2);
+        student3.getAttendanceList().add(a2);
+        t1.getAttendanceList().add(a2);
+        em.persist(a2);
+        em.flush();
+
+        List<Attendance> attendanceList = new ArrayList<>();
+        attendanceList.add(a1);
+        attendanceList.add(a2);
+
         ConsultationTimeslot c3 = new ConsultationTimeslot();
         c3.setBooker(student);
         c3.setEndTs(LocalTime.parse("11:00:00"));
@@ -422,7 +565,7 @@ public class DataInitSessionBean {
         reply1.setType("reply");
         em.persist(reply1);
         em.flush();
-        
+
         ForumPost comment2 = new ForumPost();
         comment2.setParentOfComments(reply1);
         comment2.setCreateTs(LocalDateTime.now());
@@ -437,38 +580,38 @@ public class DataInitSessionBean {
         comment2.setThreadStarter(Boolean.FALSE);
         em.persist(comment2);
         em.flush();
-        
+
         createSurvey(m1);
         createSurvey(m2);
         createSurvey(m3);
         createSurvey(m4);
     }
-    
-    public void createSurvey(Module module){
+
+    public void createSurvey(Module module) {
         Survey survey = new Survey();
         survey.setTitle("End-of-Semester Evaluation");
         survey.setDescription("Welcome to the feedback exercise. <br />Please take time to review your learning experience in the past semester and be honest in your replies. <br /><br />Please click on <b>'Next'</b> to proceed with the exercise.");
         survey.setModule(module);
         survey.setOpeningDate(new Date());
-        survey.setClosingDate(new Date(2019-1900, 12, 12));
+        survey.setClosingDate(new Date(2019 - 1900, 12, 12));
         survey.setQuestionList(new ArrayList<>());
         em.persist(survey);
         em.flush();
-        
+
         Question sq1 = new Question();
         sq1.setHtml("<h5>Quantitative on Content</h5>");
         sq1.setType(QuestionTypeEnum.html);
         em.persist(sq1);
         em.flush();
         survey.getQuestionList().add(sq1);
-        
+
         List<String> choices = new ArrayList<>();
-        choices.add("Strongly Disagree");        
+        choices.add("Strongly Disagree");
         choices.add("Disagree");
         choices.add("Neutral");
         choices.add("Agree");
         choices.add("Strongly Agree");
-        
+
         Question sq2 = new Question();
         sq2.setType(QuestionTypeEnum.radiogroup);
         sq2.setNumber(1);
@@ -478,7 +621,7 @@ public class DataInitSessionBean {
         em.persist(sq2);
         em.flush();
         survey.getQuestionList().add(sq2);
-        
+
         Question sq3 = new Question();
         sq3.setType(QuestionTypeEnum.radiogroup);
         sq3.setNumber(2);
@@ -488,7 +631,7 @@ public class DataInitSessionBean {
         em.persist(sq3);
         em.flush();
         survey.getQuestionList().add(sq3);
-        
+
         Question sq4 = new Question();
         sq4.setType(QuestionTypeEnum.radiogroup);
         sq4.setNumber(3);
@@ -498,7 +641,7 @@ public class DataInitSessionBean {
         em.persist(sq4);
         em.flush();
         survey.getQuestionList().add(sq4);
-        
+
         Question sq5 = new Question();
         sq5.setType(QuestionTypeEnum.radiogroup);
         sq5.setNumber(4);
@@ -508,7 +651,7 @@ public class DataInitSessionBean {
         em.persist(sq5);
         em.flush();
         survey.getQuestionList().add(sq5);
-        
+
         Question sq6 = new Question();
         sq6.setType(QuestionTypeEnum.radiogroup);
         sq6.setNumber(5);
@@ -518,7 +661,7 @@ public class DataInitSessionBean {
         em.persist(sq6);
         em.flush();
         survey.getQuestionList().add(sq6);
-        
+
         Question sq7 = new Question();
         sq7.setType(QuestionTypeEnum.text);
         sq7.setNumber(6);
@@ -527,7 +670,7 @@ public class DataInitSessionBean {
         em.persist(sq7);
         em.flush();
         survey.getQuestionList().add(sq7);
-        
+
         Question sq8 = new Question();
         sq8.setType(QuestionTypeEnum.radiogroup);
         sq8.setNumber(7);
@@ -537,7 +680,7 @@ public class DataInitSessionBean {
         em.persist(sq8);
         em.flush();
         survey.getQuestionList().add(sq8);
-        
+
         Question sq9 = new Question();
         sq9.setType(QuestionTypeEnum.radiogroup);
         sq9.setNumber(8);
@@ -547,7 +690,7 @@ public class DataInitSessionBean {
         em.persist(sq9);
         em.flush();
         survey.getQuestionList().add(sq9);
-        
+
         Question sq10 = new Question();
         sq10.setType(QuestionTypeEnum.radiogroup);
         sq10.setNumber(9);
@@ -557,7 +700,7 @@ public class DataInitSessionBean {
         em.persist(sq10);
         em.flush();
         survey.getQuestionList().add(sq10);
-        
+
         Question sq11 = new Question();
         sq11.setType(QuestionTypeEnum.radiogroup);
         sq11.setNumber(10);
@@ -567,7 +710,7 @@ public class DataInitSessionBean {
         em.persist(sq11);
         em.flush();
         survey.getQuestionList().add(sq11);
-        
+
         Question sq12 = new Question();
         sq12.setType(QuestionTypeEnum.radiogroup);
         sq12.setNumber(11);
@@ -577,7 +720,7 @@ public class DataInitSessionBean {
         em.persist(sq12);
         em.flush();
         survey.getQuestionList().add(sq12);
-        
+
         Question sq13 = new Question();
         sq13.setType(QuestionTypeEnum.radiogroup);
         sq13.setNumber(12);
@@ -587,7 +730,7 @@ public class DataInitSessionBean {
         em.persist(sq13);
         em.flush();
         survey.getQuestionList().add(sq13);
-        
+
         Question sq14 = new Question();
         sq14.setType(QuestionTypeEnum.radiogroup);
         sq14.setNumber(13);
@@ -597,7 +740,7 @@ public class DataInitSessionBean {
         em.persist(sq14);
         em.flush();
         survey.getQuestionList().add(sq14);
-        
+
         Question sq15 = new Question();
         sq15.setType(QuestionTypeEnum.text);
         sq15.setNumber(14);
@@ -606,7 +749,7 @@ public class DataInitSessionBean {
         em.persist(sq15);
         em.flush();
         survey.getQuestionList().add(sq15);
-        
+
         Question sq16 = new Question();
         sq16.setType(QuestionTypeEnum.text);
         sq16.setNumber(15);
@@ -615,7 +758,7 @@ public class DataInitSessionBean {
         em.persist(sq16);
         em.flush();
         survey.getQuestionList().add(sq16);
-        
+
         Question sq17 = new Question();
         sq17.setType(QuestionTypeEnum.text);
         sq17.setNumber(15);
