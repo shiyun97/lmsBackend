@@ -58,8 +58,8 @@ public class Coursepack implements Serializable {
     //private List<Folder> folderList;
     @OneToMany(mappedBy = "coursepack")
     private List<ForumTopic> forumTopicList;
-    //@OneToMany(mappedBy = "coursepack")
-    //private List<Quiz> quizList;
+    @OneToMany(mappedBy = "coursepack")
+    private List<Quiz> quizList;
     @OneToMany(mappedBy = "coursepack")
     private List<GradeItem> gradeItemList;
     @ManyToOne
@@ -230,13 +230,13 @@ public class Coursepack implements Serializable {
         this.folderList = folderList;
     }*/
 
-    /*public List<Quiz> getQuizList() {
+    public List<Quiz> getQuizList() {
         return quizList;
     }
 
     public void setQuizList(List<Quiz> quizList) {
         this.quizList = quizList;
-    }*/
+    }
 
     public List<GradeItem> getGradeItemList() {
         return gradeItemList;

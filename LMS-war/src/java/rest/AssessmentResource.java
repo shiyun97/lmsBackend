@@ -1135,7 +1135,7 @@ public class AssessmentResource {
             quiz.setQuestionsOrder(rqst.getQuestionsOrder());
             quiz.setMaxTimeToFinish(rqst.getMaxTimeToFinish());
             quiz.setNoOfAttempts(rqst.getNoOfAttempts());
-//            quiz.setModule(module);
+//            quiz.setCoursepack(cp);
             quiz.setPublish(rqst.isPublish());
             quiz.setQuestionList(new ArrayList<Question>());
             // Parse Date
@@ -1183,7 +1183,7 @@ public class AssessmentResource {
                 quiz.getQuestionList().add(question);
             }
             
-//            module.getQuizList().add(quiz);
+            cp.getQuizList().add(quiz);
             em.persist(quiz);
             em.flush();
             
@@ -1317,7 +1317,55 @@ public class AssessmentResource {
         } catch (Exception e){
             e.printStackTrace();
             return Response.status(Status.INTERNAL_SERVER_ERROR).entity(new ErrorRsp(e.getMessage())).build();
+        }   
+    }
+    
+    @GET
+    @Path("retrieveAllCoursepackQuiz/{moduleId}")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response retrieveAllCoursepackQuiz(@PathParam("coursepackId") Long coursepackId, @QueryParam("userId") Long userId){
+        User user = em.find(User.class, userId);
+        if(user == null || user.getAccessRight() != AccessRightEnum.Teacher){
+            return Response.status(Status.FORBIDDEN)
+                    .entity(new ErrorRsp("User doesn't have access to this function"))
+                    .build();
         }
         
+        AccessRightEnum ar = user.getAccessRight();
+        
+        Coursepack cp = em.find(Coursepack.class, coursepackId);
+        if (cp == null){
+            return Response.status(Status.BAD_REQUEST).entity(new ErrorRsp("Coursepack is not found!")).build();
+        } else if (cp.getAssignedTeacher() != user){
+            return Response.status(Status.FORBIDDEN).entity(new ErrorRsp("User doesn't have access to this coursepack")).build();
+        }
+        
+        try {
+            List<Quiz> quizzes = new ArrayList<>();
+            
+            for(Quiz q: cp.getQuizList()){
+                if(ar == AccessRightEnum.Teacher || q.isPublish()){
+                    Quiz newQ = new Quiz();
+                    newQ.setQuizId(q.getQuizId());
+                    newQ.setOpeningDate(q.getOpeningDate());
+                    newQ.setClosingDate(q.getClosingDate());
+                    newQ.setQuizType(q.getQuizType());
+                    newQ.setMaxMarks(q.getMaxMarks());
+                    newQ.setDescription(q.getDescription());
+                    newQ.setTitle(q.getTitle());
+                    newQ.setMaxTimeToFinish(q.getMaxTimeToFinish());
+                    newQ.setPublish(q.isPublish());
+                    newQ.setNoOfAttempts(q.getNoOfAttempts());
+                    newQ.setQuestionsOrder(q.getQuestionsOrder());
+                    newQ.setPublishAnswer(q.isPublishAnswer());
+                    quizzes.add(newQ);
+                }
+            }
+            
+            return Response.status(Status.OK).entity(new RetrieveQuizzesResp(quizzes)).build();
+        } catch (Exception e){
+            e.printStackTrace();
+            return Response.status(Status.INTERNAL_SERVER_ERROR).entity(new ErrorRsp(e.getMessage())).build();
+        }
     }
 }
