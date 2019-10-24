@@ -35,6 +35,7 @@ import java.util.Date;
 import java.util.List;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 import javax.ws.rs.Consumes;
@@ -175,7 +176,7 @@ public class FeedbackResource {
             }
             em.persist(sa);
             em.flush();
-            
+            survey.getSurveyAttemptList().add(sa);
             return Response.status(Response.Status.OK).build();
         } catch (Exception e){
             e.printStackTrace();
@@ -186,7 +187,7 @@ public class FeedbackResource {
     @GET
     @Path("retrieveSurvey")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response retrieveSurvey(@QueryParam("userId") Long userId, @QueryParam("surveyId") Long surveyId){
+    public Response retrieveSurvey(@QueryParam("userId") Long userId, @QueryParam("moduleId") Long moduleId){
         User user = em.find(User.class, userId);
         if(user == null || (user.getAccessRight() != AccessRightEnum.Teacher && user.getAccessRight() != AccessRightEnum.Student)){
             return Response.status(Response.Status.FORBIDDEN)
@@ -194,20 +195,22 @@ public class FeedbackResource {
                     .build();
         }
         
-        Survey survey = em.find(Survey.class, surveyId);
-        if(survey == null){
-            return Response.status(Response.Status.NOT_FOUND).entity(new ErrorRsp("Survey with the given ID doesn't exist")).build();
+        AccessRightEnum ar = user.getAccessRight();
+        
+        Module module = em.find(Module.class, moduleId);
+        if(module == null){
+            return Response.status(Response.Status.NOT_FOUND).entity(new ErrorRsp("Module is not found")).build();
+        } else if ( ar == AccessRightEnum.Teacher && module.getAssignedTeacher() != user){
+            return Response.status(Response.Status.FORBIDDEN).entity(new ErrorRsp("User doesn't have access to this function")).build();
+        } else if (ar == AccessRightEnum.Student && !module.getStudentList().contains(user)){
+            return Response.status(Response.Status.FORBIDDEN).entity(new ErrorRsp("User doesn't have access to this function")).build();
         }
         
         try {
-//            Survey surveyToReturn = new Survey();
-//            surveyToReturn.setOpeningDate(survey.getOpeningDate());
-//            surveyToReturn.setClosingDate(survey.getClosingDate());
-//            surveyToReturn.setSurveyAttemptList(survey.getSurveyAttemptList());
-//            surveyToReturn.setSurveyId(survey.getSurveyId());
-//            surveyToReturn.setTitle(survey.getTitle());
-//            surveyToReturn.setDescription(survey.getDescription());
-//            
+            Query q = em.createQuery("SELECT s FROM Survey s WHERE s.module = :module");
+            q.setParameter("module", module);
+            Survey survey = (Survey) q.getSingleResult();
+            
             QuizRsp surveyToReturn = new QuizRsp();
             surveyToReturn.setQuizId(survey.getSurveyId());
             surveyToReturn.setOpeningDate(dateFormatter.format(survey.getOpeningDate()));
@@ -218,6 +221,8 @@ public class FeedbackResource {
             surveyToReturn.getPages().add(new PageModel(survey.getQuestionList(), "page1"));
             
             return Response.status(Response.Status.OK).entity(surveyToReturn).build();
+        } catch (NoResultException e){
+            return Response.status(Response.Status.NOT_FOUND).entity(new ErrorRsp("There are no surveys for this module")).build();
         } catch (Exception e){
             e.printStackTrace();
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(new ErrorRsp(e.getMessage())).build();
@@ -297,29 +302,26 @@ public class FeedbackResource {
         try {
             Query q = em.createQuery("SELECT s FROM Survey s WHERE s.module = :module");
             q.setParameter("module", module);
-            List<Survey> surveys = q.getResultList();
+            Survey survey = (Survey) q.getSingleResult();
             
-            if(surveys == null || surveys.isEmpty()){
+            if(survey == null){
                 return Response.status(Response.Status.NOT_FOUND).entity(new ErrorRsp("There are no surveys for this module")).build();
             }
             
-            RetrieveSurveys resp = new RetrieveSurveys(new ArrayList<>());
-            
-            for(Survey survey: surveys){
-                if(ar == AccessRightEnum.Teacher || 
-                        (survey.getOpeningDate().before(new Date()) && survey.getClosingDate().after(new Date()))){
-                    Survey surveyToReturn = new Survey();
-                    surveyToReturn.setOpeningDate(survey.getOpeningDate());
-                    surveyToReturn.setClosingDate(survey.getClosingDate());
-                    surveyToReturn.setSurveyId(survey.getSurveyId());
-                    surveyToReturn.setTitle(survey.getTitle());
-                    surveyToReturn.setDescription(survey.getDescription());
-
-                    resp.getSurveys().add(surveyToReturn);
-                }
+//            RetrieveSurveys resp = new RetrieveSurveys(new ArrayList<>());
+            if(ar == AccessRightEnum.Teacher || 
+                    (survey.getOpeningDate().before(new Date()) && survey.getClosingDate().after(new Date()))){
+                Survey surveyToReturn = new Survey();
+                surveyToReturn.setOpeningDate(survey.getOpeningDate());
+                surveyToReturn.setClosingDate(survey.getClosingDate());
+                surveyToReturn.setSurveyId(survey.getSurveyId());
+                surveyToReturn.setTitle(survey.getTitle());
+                surveyToReturn.setDescription(survey.getDescription());
             }
             
-            return Response.status(Response.Status.OK).entity(resp).build();
+            return Response.status(Response.Status.OK).entity(survey).build();
+        } catch (NoResultException e){
+            return Response.status(Response.Status.NOT_FOUND).entity(new ErrorRsp("There are no surveys for this module")).build();
         } catch (Exception e){
             e.printStackTrace();
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(new ErrorRsp(e.getMessage())).build();

@@ -15,6 +15,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 
 /**
  *
@@ -40,7 +41,7 @@ public class Survey implements Serializable {
     private Date closingDate;
     @OneToMany
     private List<Question> questionList;
-    @ManyToOne
+    @OneToOne
     private Module module;
     @OneToMany(mappedBy = "survey")
     private List<SurveyAttempt> surveyAttemptList;
