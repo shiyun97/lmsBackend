@@ -33,6 +33,7 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import util.AccessRightEnum;
+import static util.AccessRightEnum.Public;
 
 /**
  *
@@ -49,10 +50,10 @@ public class AnnoucementResource {
 
     public AnnoucementResource() {
     }
-    
+
     private SendMailSSL sendMail = new SendMailSSL();
 
-    @POST
+    /*@POST
     @Path(value = "createAnnoucement/{id}")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
@@ -110,16 +111,16 @@ public class AnnoucementResource {
             ex.printStackTrace();
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(new ErrorRsp(ex.getMessage())).build();
         }
-    }
-    
+    }*/
     @POST
     @Path(value = "createModuleAnnoucement/{id}")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public Response createModuleAnnoucement(CreateAnnoucement createAnnoucement, @PathParam("id") Long moduleId, @QueryParam("userId") Long userId) {
         try {
-            Date createdDate = formatter.parse(createAnnoucement.getCreatedDate());
-            Date lastUpdatedDate = formatter.parse(createAnnoucement.getLastUpdatedDate());
+            Date createdDate = new Date();
+            //Date createdDate = formatter.parse(createAnnoucement.getCreatedDate());
+            //Date lastUpdatedDate = formatter.parse(createAnnoucement.getLastUpdatedDate());
             Date startDate = formatter.parse(createAnnoucement.getStartDate());
             Date endDate = formatter.parse(createAnnoucement.getEndDate());
 
@@ -147,17 +148,19 @@ public class AnnoucementResource {
                     module.isHasExam(), module.getExamTime(), module.getExamVenue(), module.getLectureDetails(), module.getDepartment(),
                     module.getFaculty());
             Annoucement annoucementCopy = new Annoucement(annoucement.getAnnoucementId(), annoucement.getTitle(),
-                    annoucement.getContent(), createdDate, lastUpdatedDate, startDate, endDate,
+                    annoucement.getContent(), createdDate, createdDate, startDate, endDate,
                     annoucement.getPublish(), annoucement.getEmailNotification(), moduleCopy, null);
-                        
+
             List<String> address = new ArrayList<>();
             Query query = em.createQuery("select u from User u");
             List<User> userList = query.getResultList();
-            if(userList == null || userList.isEmpty()){
+            if (userList == null || userList.isEmpty()) {
                 return Response.status(Response.Status.NOT_FOUND).entity("No user found").build();
             }
-            for(User u : userList){
-                address.add(u.getEmail());
+            for (User u : userList) {
+                if (module.getStudentList().contains(u)) {
+                    address.add(u.getEmail());
+                }
             }
             sendMail.send(user.getEmail(), user.getPassword(), address, annoucementCopy.getTitle(), annoucementCopy.getContent());
             //sendMail.send("ad1234567min@gmail.com", "password!234%", "ykwvix@gmail.com", annoucementCopy.getTitle(), annoucementCopy.getContent());
@@ -173,12 +176,15 @@ public class AnnoucementResource {
     @Path(value = "createSystemAnnoucement")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response createSystemAnnoucement(CreateAnnoucement createAnnoucement) {
+    public Response createSystemAnnoucement(CreateAnnoucement createAnnoucement, @QueryParam("userId") Long userId) {
         try {
-            Date createdDate = formatter.parse(createAnnoucement.getCreatedDate());
-            Date lastUpdatedDate = formatter.parse(createAnnoucement.getLastUpdatedDate());
+            Date createdDate = new Date();
+            //Date createdDate = formatter.parse(createAnnoucement.getCreatedDate());
+            //Date lastUpdatedDate = formatter.parse(createAnnoucement.getLastUpdatedDate());
             Date startDate = formatter.parse(createAnnoucement.getStartDate());
             Date endDate = formatter.parse(createAnnoucement.getEndDate());
+
+            User user = em.find(User.class, userId);
 
             Annoucement annoucement = new Annoucement();
             annoucement.setTitle(createAnnoucement.getTitle());
@@ -191,12 +197,25 @@ public class AnnoucementResource {
             annoucement.setEmailNotification(createAnnoucement.getEmailNotification());
             //annoucement.setModule(createAnnoucement.getModule());
             //annoucement.setModule(module);
-            annoucement.setOwner(createAnnoucement.getOwner());
+            annoucement.setOwner(user);
             em.persist(annoucement);
             em.flush();
             Annoucement annoucementCopy = new Annoucement(annoucement.getAnnoucementId(), annoucement.getTitle(),
-                    annoucement.getContent(), createdDate, lastUpdatedDate, startDate, endDate,
+                    annoucement.getContent(), createdDate, createdDate, startDate, endDate,
                     annoucement.getPublish(), annoucement.getEmailNotification(), null, null);
+
+            List<String> address = new ArrayList<>();
+            Query query = em.createQuery("select u from User u");
+            List<User> userList = query.getResultList();
+            if (userList == null || userList.isEmpty()) {
+                return Response.status(Response.Status.NOT_FOUND).entity("No user found").build();
+            }
+            for (User u : userList) {
+                if (u.getAccessRight() != Public) {
+                    address.add(u.getEmail());
+                }
+            }
+            sendMail.send(user.getEmail(), user.getPassword(), address, annoucementCopy.getTitle(), annoucementCopy.getContent());
             return Response.status(Response.Status.OK).entity(annoucementCopy).build();
             //EmailSessionBean.sendEmail(annoucement.getOwner().getEmail(), annoucement.getTitle(), annoucement.getOwner().getUsername());
         } catch (Exception ex) {
@@ -469,35 +488,51 @@ public class AnnoucementResource {
     }
 
     @PUT
-    @Path(value = "updateAnnoucement")
+    @Path(value = "updateSystemAnnoucement")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response updateAnnoucement(UpdateAnnoucement updateAnnoucement, @QueryParam("annoucementId") Long annoucementId) {
+    public Response updateSystemAnnoucement(UpdateAnnoucement updateAnnoucement, @QueryParam("annoucementId") Long annoucementId, @QueryParam("userId") Long userId) {
         try {
             Annoucement annoucement = em.find(Annoucement.class, annoucementId);
             if (annoucement == null) {
                 return Response.status(Response.Status.NOT_FOUND).entity("No annoucement found").build();
             }
             Date createdDate = formatter.parse(updateAnnoucement.getCreatedDate());
-            Date lastUpdatedDate = formatter.parse(updateAnnoucement.getLastUpdatedDate());
+            Date updateDate = new Date();
+            //String lastUpdatedDate = formatter.format(date);
             Date startDate = formatter.parse(updateAnnoucement.getStartDate());
             Date endDate = formatter.parse(updateAnnoucement.getEndDate());
+
+            User user = em.find(User.class, userId);
 
             annoucement.setTitle(updateAnnoucement.getTitle());
             annoucement.setContent(updateAnnoucement.getContent());
             //annoucement.setCreatedDate(createdDate);
-            annoucement.setLastUpdatedDate(lastUpdatedDate);
+            annoucement.setLastUpdatedDate(updateDate);
             annoucement.setStartDate(startDate);
             annoucement.setEndDate(endDate);
             annoucement.setPublish(updateAnnoucement.getPublish());
             annoucement.setEmailNotification(updateAnnoucement.getEmailNotification());
             //annoucement.setModule(updateAnnoucement.getModule());
-            annoucement.setOwner(updateAnnoucement.getOwner());
+            annoucement.setOwner(user);
             em.merge(annoucement);
             em.flush();
             Annoucement annoucementCopy = new Annoucement(annoucement.getAnnoucementId(), annoucement.getTitle(),
-                    annoucement.getContent(), createdDate, lastUpdatedDate, startDate, endDate,
+                    annoucement.getContent(), createdDate, updateDate, startDate, endDate,
                     annoucement.getPublish(), annoucement.getEmailNotification(), null, null);
+
+            List<String> address = new ArrayList<>();
+            Query query = em.createQuery("select u from User u");
+            List<User> userList = query.getResultList();
+            if (userList == null || userList.isEmpty()) {
+                return Response.status(Response.Status.NOT_FOUND).entity("No user found").build();
+            }
+            for (User u : userList) {
+                if (u.getAccessRight() != Public) {
+                    address.add(u.getEmail());
+                }
+            }
+            sendMail.send(user.getEmail(), user.getPassword(), address, annoucementCopy.getTitle(), annoucementCopy.getContent());
             return Response.status(Response.Status.OK).entity(annoucementCopy).build();
         } catch (Exception ex) {
             ex.printStackTrace();
@@ -509,38 +544,54 @@ public class AnnoucementResource {
     @Path(value = "updateModuleAnnoucement")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response updateModuleAnnoucement(UpdateAnnoucement updateAnnoucement, @QueryParam("annoucementId") Long annoucementId) {
+    public Response updateModuleAnnoucement(UpdateAnnoucement updateAnnoucement, @QueryParam("moduleId") Long moduleId, @QueryParam("annoucementId") Long annoucementId, @QueryParam("userId") Long userId) {
         try {
             Annoucement annoucement = em.find(Annoucement.class, annoucementId);
             if (annoucement == null) {
                 return Response.status(Response.Status.NOT_FOUND).entity("No annoucement found").build();
             }
             Date createdDate = formatter.parse(updateAnnoucement.getCreatedDate());
-            Date lastUpdatedDate = formatter.parse(updateAnnoucement.getLastUpdatedDate());
+            Date updateDate = new Date();
+            //Date lastUpdatedDate = formatter.parse(updateAnnoucement.getLastUpdatedDate());
             Date startDate = formatter.parse(updateAnnoucement.getStartDate());
             Date endDate = formatter.parse(updateAnnoucement.getEndDate());
+
+            Module module = em.find(Module.class, moduleId);
+            User user = em.find(User.class, userId);
 
             annoucement.setTitle(updateAnnoucement.getTitle());
             annoucement.setContent(updateAnnoucement.getContent());
             //annoucement.setCreatedDate(createdDate);
-            annoucement.setLastUpdatedDate(lastUpdatedDate);
+            annoucement.setLastUpdatedDate(updateDate);
             annoucement.setStartDate(startDate);
             annoucement.setEndDate(endDate);
             annoucement.setPublish(updateAnnoucement.getPublish());
             annoucement.setEmailNotification(updateAnnoucement.getEmailNotification());
-            annoucement.setModule(updateAnnoucement.getModule());
+            annoucement.setModule(module);
             annoucement.setOwner(updateAnnoucement.getOwner());
             em.merge(annoucement);
             em.flush();
 
-            Module module = annoucement.getModule();
             Module moduleCopy = new Module(module.getModuleId(), module.getCode(), module.getTitle(), module.getDescription(),
                     null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
                     module.isHasExam(), module.getExamTime(), module.getExamVenue(), module.getLectureDetails(), module.getDepartment(),
                     module.getFaculty());
             Annoucement annoucementCopy = new Annoucement(annoucement.getAnnoucementId(), annoucement.getTitle(),
-                    annoucement.getContent(), createdDate, lastUpdatedDate, startDate, endDate,
+                    annoucement.getContent(), createdDate, updateDate, startDate, endDate,
                     annoucement.getPublish(), annoucement.getEmailNotification(), moduleCopy, null);
+
+            List<String> address = new ArrayList<>();
+            Query query = em.createQuery("select u from User u");
+            List<User> userList = query.getResultList();
+            if (userList == null || userList.isEmpty()) {
+                return Response.status(Response.Status.NOT_FOUND).entity("No user found").build();
+            }
+            for (User u : userList) {
+                if (module.getStudentList().contains(u)) {
+                    address.add(u.getEmail());
+                }
+            }
+            sendMail.send(user.getEmail(), user.getPassword(), address, annoucementCopy.getTitle(), annoucementCopy.getContent());
             return Response.status(Response.Status.OK).entity(annoucementCopy).build();
         } catch (Exception ex) {
             ex.printStackTrace();
