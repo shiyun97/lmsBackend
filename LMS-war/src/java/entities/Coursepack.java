@@ -88,11 +88,13 @@ public class Coursepack implements Serializable {
         this.assignedTeacher = assignedTeacher;
         this.feedbackList = feedbackList;
         this.outlineList = outlineList;
+
     }
     
+
     public Coursepack(Long coursepackId, String code, String title, String description, String category, Double price, Timestamp startDate, Double rating, String teacherBackground, List<User> publicUserList, List<ForumTopic> forumTopicList, List<GradeItem> gradeItemList, User assignedTeacher, List<Feedback> feedbackList, List<Outlines> outlineList, List<File> multimediaList) {
     }
-    
+
     public Coursepack(){
         
         publicUserList = new ArrayList<>();
@@ -103,7 +105,6 @@ public class Coursepack implements Serializable {
     }
     
 
-    
     @Override
     public int hashCode() {
         int hash = 0;
