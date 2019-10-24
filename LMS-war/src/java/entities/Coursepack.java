@@ -70,14 +70,14 @@ public class Coursepack implements Serializable {
      
     
 
-    public Coursepack(Long coursepackId, String code, String title, String description, String category, Double price, Timestamp startDate, Double rating, String teacherBackground, List<User> publicUserList, List<ForumTopic> forumTopicList, List<GradeItem> gradeItemList, User assignedTeacher, List<Feedback> feedbackList, List<Outlines> outlineList) {
+    public Coursepack(Long coursepackId, String code, String title, String description, String category, Double price, Boolean published, Double rating, String teacherBackground, List<User> publicUserList, List<ForumTopic> forumTopicList, List<GradeItem> gradeItemList, User assignedTeacher, List<Feedback> feedbackList, List<Outlines> outlineList) {
         this.coursepackId = coursepackId;
         this.code = code;
         this.title = title;
         this.description = description;
         this.category = category;
         this.price = price;
-        this.startDate = startDate;
+        this.published = published;
         this.rating = rating;
         this.teacherBackground = teacherBackground;
         this.publicUserList = publicUserList;
@@ -91,39 +91,19 @@ public class Coursepack implements Serializable {
     }
     
     public Coursepack(Long coursepackId, String code, String title, String description, String category, Double price, Timestamp startDate, Double rating, String teacherBackground, List<User> publicUserList, List<ForumTopic> forumTopicList, List<GradeItem> gradeItemList, User assignedTeacher, List<Feedback> feedbackList, List<Outlines> outlineList, List<File> multimediaList) {
-    
+    }
     
     public Coursepack(){
         
-        this.publicUserList = new ArrayList<>();
-        this.forumPostList = new ArrayList<>();
-        this.gradeItemList = new ArrayList<>();
-        this.feedbackList = new ArrayList<>();
-        this.outlineList = new ArrayList<>();
+        publicUserList = new ArrayList<>();
+        forumPostList = new ArrayList<>();
+        gradeItemList = new ArrayList<>();
+        feedbackList = new ArrayList<>();
+        outlineList = new ArrayList<>();
     }
     
 
-    public Coursepack(Long coursepackId, String code, String title, String description, String category, Double price, Boolean published, Double rating, String teacherBackground, List<User> publicUserList, List<ForumPost> forumPostList, List<GradeItem> gradeItemList, User assignedTeacher, List<Feedback> feedbackList, List<Outlines> outlineList) {
-        this.coursepackId = coursepackId;
-        this.code = code;
-        this.title = title;
-        this.description = description;
-        this.category = category;
-        this.price = price;
-        this.rating = rating;
-        this.teacherBackground = teacherBackground;
-        this.publicUserList = publicUserList;
-        //this.folderList = folderList;
-        this.forumTopicList = forumTopicList;
-        //this.quizList = quizList;
-        this.gradeItemList = gradeItemList;
-        this.assignedTeacher = assignedTeacher;
-        this.feedbackList = feedbackList;
-        this.outlineList = outlineList;
-        this.multimediaList = multimediaList;
-        this.published = published;
-    }
-
+    
     @Override
     public int hashCode() {
         int hash = 0;
@@ -275,6 +255,7 @@ public class Coursepack implements Serializable {
 
     public void setRatingList(List<Rating> ratingList) {
         this.ratingList = ratingList;
+    }
     public Boolean getPublished() {
         return published;
     }
