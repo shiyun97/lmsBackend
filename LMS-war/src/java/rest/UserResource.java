@@ -9,6 +9,7 @@ import datamodel.rest.CreateUser;
 import datamodel.rest.UpdateUser;
 import datamodel.rest.CheckUserLogin;
 import datamodel.rest.GetUserRsp;
+import ejb.SendMailSSL;
 import entities.User;
 import java.util.ArrayList;
 import java.util.List;
@@ -46,6 +47,8 @@ public class UserResource {
 
     public UserResource() {
     }
+
+    private SendMailSSL sendMail = new SendMailSSL();
 
     public boolean isLogin(User user) {
         user = em.find(User.class, user.getId());
@@ -88,6 +91,10 @@ public class UserResource {
     public Response createUser(CreateUser createUser) {
 
         //if (createUser.getUser().getAccessRight() == Admin) {
+        long i = 1;
+        Query query = em.createQuery("select u from User u where u.userId = :userId");
+        query.setParameter("userId", i);
+        User admin = (User) query.getSingleResult();
         try {
             User user = new User();
             user.setFirstName(createUser.getFirstName());
@@ -99,9 +106,10 @@ public class UserResource {
             user.setUsername(createUser.getUsername());
             em.persist(user);
             em.flush();
-            /*User userCopy = new User(user.getFirstName(),user.getLastName(),user.getEmail(),
-                        user.getUsername(),user.getPassword(),user.getGender(),user.getAccessRight(),
-                        null,null,null,null,null,null,null);*/
+            User userCopy = new User(user.getFirstName(), user.getLastName(), user.getEmail(),
+                    user.getUsername(), user.getPassword(), user.getGender(), user.getAccessRight(),
+                    null, null, null, null, null, null, null);
+            sendMail.sendSingle(admin.getEmail(), admin.getPassword(), userCopy.getEmail(), "Account created: " + userCopy.getEmail(), userCopy.getPassword());
             return Response.status(Response.Status.OK).entity(user).build();
         } catch (Exception ex) {
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();

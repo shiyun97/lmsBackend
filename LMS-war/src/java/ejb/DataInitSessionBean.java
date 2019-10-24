@@ -11,6 +11,7 @@ import entities.Module;
 import entities.Schedule;
 import entities.Tutorial;
 import entities.User;
+import entities.Venue;
 import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -123,14 +124,33 @@ public class DataInitSessionBean {
         em.persist(extStu);
         em.flush();
 
-        //7
+        Venue v1 = new Venue();
+        v1.setName("MPSH2");
+        em.persist(v1);
+        em.flush();
+
+        Venue v2 = new Venue();
+        v2.setName("COM1-12");
+        em.persist(v2);
+        em.flush();
+
+        Venue v3 = new Venue();
+        v3.setName("AS7-24");
+        em.persist(v3);
+        em.flush();
+
+        Venue v4 = new Venue();
+        v4.setName("COM1-21");
+        em.persist(v4);
+        em.flush();
+
         Module m1 = new Module();
         m1.setCode("CS1010");
         m1.setDescription("CS1010 Mod Desc");
         m1.setExamTime(new Timestamp(2019 - 1900, 11, 29, 9, 0, 0, 0));
         m1.setHasExam(true);
         m1.setCreditUnit(4);
-        m1.setExamVenue("MPSH 1");
+        m1.setExamVenue(v1);
         m1.setMaxEnrollment(30);
         m1.setYearOffered("2019/2020");
         m1.setTitle("Programming Methodology");
@@ -147,14 +167,13 @@ public class DataInitSessionBean {
         em.persist(m1);
         em.flush();
 
-        //8
         Module m2 = new Module();
         m2.setCode("CS2040");
         m2.setDescription("CS2040 Mod Desc");
         m2.setExamTime(new Timestamp(2019 - 1900, 11, 30, 9, 0, 0, 0));
         m2.setHasExam(true);
         m2.setCreditUnit(4);
-        m2.setExamVenue("MPSH 1");
+        m2.setExamVenue(v1);
         m2.setMaxEnrollment(30);
         m2.setYearOffered("2019/2020");
         m2.setTitle("Programming Methodology 2");
@@ -165,14 +184,13 @@ public class DataInitSessionBean {
         em.persist(m2);
         em.flush();
 
-        //9
         Module m3 = new Module();
         m3.setCode("IS4103");
         m3.setDescription("IS4103 Mod Desc");
         m3.setExamTime(new Timestamp(2020 - 1900, 4, 29, 13, 0, 0, 0));
         m3.setHasExam(true);
         m3.setCreditUnit(8);
-        m3.setExamVenue("MPSH 1");
+        m3.setExamVenue(v2);
         m3.setMaxEnrollment(30);
         m3.setYearOffered("2019/2020");
         m3.setTitle("Capstone");
@@ -183,14 +201,13 @@ public class DataInitSessionBean {
         em.persist(m3);
         em.flush();
 
-        //10
         Module m4 = new Module();
         m4.setCode("IS4103");
         m4.setDescription("IS4103 Mod Desc");
         m4.setExamTime(new Timestamp(2020 - 1900, 12, 1, 9, 0, 0, 0));
         m4.setHasExam(true);
         m4.setCreditUnit(8);
-        m4.setExamVenue("MPSH 1");
+        m4.setExamVenue(v2);
         m4.setMaxEnrollment(30);
         m4.setYearOffered("2020/2021");
         m4.setTitle("Capstone");
@@ -201,11 +218,24 @@ public class DataInitSessionBean {
         em.persist(m4);
         em.flush();
 
-        //11
+        List<Module> moduleList = new ArrayList<>();
+        moduleList.add(m1);
+        moduleList.add(m2);
+        em.flush();
+
+        List<Module> moduleList2 = new ArrayList<>();
+        moduleList2.add(m3);
+        moduleList2.add(m4);
+        em.flush();
+
+        v1.setModuleList(moduleList);
+        v2.setModuleList(moduleList2);
+        em.flush();
+
         Tutorial t1 = new Tutorial();
         t1.setModule(m1);
         t1.setMaxEnrollment(10);
-        t1.setVenue("SR1");
+        t1.setVenue(v3);
         t1.setTiming("Thursday 12:00 - 13:00");
         t1.setModule(m1);
         t1.setStudentList(studentList);
@@ -219,87 +249,97 @@ public class DataInitSessionBean {
         em.persist(t1);
         em.flush();
 
-        //12
         Tutorial t2 = new Tutorial();
         t2.setModule(m1);
         t2.setMaxEnrollment(10);
-        t2.setVenue("SR1");
+        t2.setVenue(v3);
         t2.setTiming("Thursday 13:00 - 14:00");
         m1.getTutorials().add(t2);
         em.persist(t2);
         em.flush();
 
-        //13
         Tutorial t3 = new Tutorial();
         t3.setModule(m1);
         t3.setMaxEnrollment(10);
-        t3.setVenue("SR1");
+        t3.setVenue(v3);
         t3.setTiming("Thursday 14:00 - 15:00");
         m1.getTutorials().add(t3);
         em.persist(t3);
         em.flush();
 
-        //14
         Tutorial t4 = new Tutorial();
         t4.setModule(m2);
         t4.setMaxEnrollment(10);
-        t4.setVenue("Tutorial Room 4");
+        t4.setVenue(v3);
         t4.setTiming("Friday 09:00 - 10:00");
         m2.getTutorials().add(t4);
         em.persist(t4);
         em.flush();
 
-        //15
         Tutorial t5 = new Tutorial();
         t5.setModule(m2);
         t5.setMaxEnrollment(10);
-        t5.setVenue("Tutorial Room 4");
+        t5.setVenue(v3);
         t5.setTiming("Friday 13:00 - 14:00");
         m2.getTutorials().add(t5);
         em.persist(t5);
         em.flush();
 
-        //16
         Tutorial t6 = new Tutorial();
         t6.setModule(m2);
         t6.setMaxEnrollment(10);
-        t6.setVenue("Tutorial Room 4");
+        t6.setVenue(v4);
         t6.setTiming("Friday 10:00 - 11:00");
         m2.getTutorials().add(t6);
         em.persist(t6);
         em.flush();
 
-        //17
         Tutorial t7 = new Tutorial();
         t7.setModule(m3);
         t7.setMaxEnrollment(10);
-        t7.setVenue("Tutorial Room 2");
+        t7.setVenue(v4);
         t7.setTiming("Friday 10:00 - 11:00");
         m3.getTutorials().add(t7);
         em.persist(t7);
         em.flush();
 
-        //18
         Tutorial t8 = new Tutorial();
         t8.setModule(m3);
         t8.setMaxEnrollment(10);
-        t8.setVenue("Tutorial Room 2");
+        t8.setVenue(v4);
         t8.setTiming("Friday 11:00 - 12:00");
         m3.getTutorials().add(t8);
         em.persist(t8);
         em.flush();
 
-        //19
         Tutorial t9 = new Tutorial();
         t9.setModule(m3);
         t9.setMaxEnrollment(10);
-        t9.setVenue("Tutorial Room 2");
+        t9.setVenue(v4);
         t9.setTiming("Thursday 11:00 - 12:00");
         m3.getTutorials().add(t9);
         em.persist(t9);
         em.flush();
 
-        //20
+        List<Tutorial> tutorialList = new ArrayList<>();
+        tutorialList.add(t1);
+        tutorialList.add(t2);
+        tutorialList.add(t3);
+        tutorialList.add(t4);
+        tutorialList.add(t5);
+        em.flush();
+
+        List<Tutorial> tutorialList2 = new ArrayList<>();
+        tutorialList2.add(t6);
+        tutorialList2.add(t7);
+        tutorialList2.add(t8);
+        tutorialList2.add(t9);
+        em.flush();
+        
+        v3.setTutorialList(tutorialList);
+        v4.setTutorialList(tutorialList2);
+        em.flush();
+
         Schedule schedule = new Schedule();
         schedule.setSemester(1);
         schedule.setYear("2019/2020");
@@ -316,7 +356,6 @@ public class DataInitSessionBean {
         em.persist(schedule);
         em.flush();
 
-        //21
         ConsultationTimeslot c1 = new ConsultationTimeslot();
         c1.setBooker(student);
         c1.setEndTs(LocalTime.parse("11:30:00"));
@@ -326,7 +365,6 @@ public class DataInitSessionBean {
         em.persist(c1);
         em.flush();
 
-        //22
         ConsultationTimeslot c2 = new ConsultationTimeslot();
         c1.setEndTs(LocalTime.parse("11:30:00"));
         c1.setModule(m4);
@@ -335,10 +373,8 @@ public class DataInitSessionBean {
         em.persist(c2);
         em.flush();
         m1.getConsultationList().add(c1);
-
         em.flush();
 
-        //23
         Attendance a1 = new Attendance();
         a1.setDuration(5);
         a1.setEndTs(new Timestamp(2020 - 1900, 4, 29, 13, 11, 0, 0));

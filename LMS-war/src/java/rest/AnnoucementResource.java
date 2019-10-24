@@ -497,7 +497,7 @@ public class AnnoucementResource {
             if (annoucement == null) {
                 return Response.status(Response.Status.NOT_FOUND).entity("No annoucement found").build();
             }
-            Date createdDate = formatter.parse(updateAnnoucement.getCreatedDate());
+            //Date createdDate = formatter.parse(updateAnnoucement.getCreatedDate());
             Date updateDate = new Date();
             //String lastUpdatedDate = formatter.format(date);
             Date startDate = formatter.parse(updateAnnoucement.getStartDate());
@@ -518,7 +518,7 @@ public class AnnoucementResource {
             em.merge(annoucement);
             em.flush();
             Annoucement annoucementCopy = new Annoucement(annoucement.getAnnoucementId(), annoucement.getTitle(),
-                    annoucement.getContent(), createdDate, updateDate, startDate, endDate,
+                    annoucement.getContent(), annoucement.getCreatedDate(), updateDate, startDate, endDate,
                     annoucement.getPublish(), annoucement.getEmailNotification(), null, null);
 
             List<String> address = new ArrayList<>();
@@ -550,7 +550,7 @@ public class AnnoucementResource {
             if (annoucement == null) {
                 return Response.status(Response.Status.NOT_FOUND).entity("No annoucement found").build();
             }
-            Date createdDate = formatter.parse(updateAnnoucement.getCreatedDate());
+           // Date createdDate = formatter.parse(updateAnnoucement.getCreatedDate());
             Date updateDate = new Date();
             //Date lastUpdatedDate = formatter.parse(updateAnnoucement.getLastUpdatedDate());
             Date startDate = formatter.parse(updateAnnoucement.getStartDate());
@@ -577,7 +577,7 @@ public class AnnoucementResource {
                     module.isHasExam(), module.getExamTime(), module.getExamVenue(), module.getLectureDetails(), module.getDepartment(),
                     module.getFaculty());
             Annoucement annoucementCopy = new Annoucement(annoucement.getAnnoucementId(), annoucement.getTitle(),
-                    annoucement.getContent(), createdDate, updateDate, startDate, endDate,
+                    annoucement.getContent(), annoucement.getCreatedDate(), updateDate, startDate, endDate,
                     annoucement.getPublish(), annoucement.getEmailNotification(), moduleCopy, null);
 
             List<String> address = new ArrayList<>();
