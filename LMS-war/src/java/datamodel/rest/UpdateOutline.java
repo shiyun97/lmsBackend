@@ -5,26 +5,29 @@
  */
 package datamodel.rest;
 
-import entities.Coursepack;
-import entities.Outlines;
-
 /**
  *
  * @author Jasmine
  */
+
 public class UpdateOutline {
     
-    private Coursepack coursepack;
-    
-    private Outlines outlineList;
+    private Long coursepackId;
+    private Long outlineId;
     private String name;
 
-    public UpdateOutline(Coursepack coursepack, Outlines outlineList, String name) {
-        this.coursepack = coursepack;
-        this.outlineList = outlineList;
-        this.name = name;
+    public UpdateOutline() {
     }
 
+//    public UpdateOutline(Long coursepackId, Long outlineId, String name) {
+//        this.coursepackId = coursepackId;
+//        this.outlineId = outlineId;
+//        this.name = name;
+//    }
+//    
+    
+    
+    
     public String getName() {
         return name;
     }
@@ -33,24 +36,32 @@ public class UpdateOutline {
         this.name = name;
     }
 
-    public Coursepack getCoursepack() {
-        return coursepack;
+    /**
+     * @return the coursepackId
+     */
+    public Long getCoursepackId() {
+        return coursepackId;
     }
 
-    public void setCoursepack(Coursepack coursepack) {
-        this.coursepack = coursepack;
+    /**
+     * @param coursepackId the coursepackId to set
+     */
+    public void setCoursepackId(Long coursepackId) {
+        this.coursepackId = coursepackId;
     }
 
-    public Outlines getOutlineList() {
-        return outlineList;
+    /**
+     * @return the outlineId
+     */
+    public Long getOutlineId() {
+        return outlineId;
     }
 
-    public void setOutlineList(Outlines outlineList) {
-        this.outlineList = outlineList;
+    /**
+     * @param outlineId the outlineId to set
+     */
+    public void setOutlineId(Long outlineId) {
+        this.outlineId = outlineId;
     }
     
-    
-    
-    
-
 }

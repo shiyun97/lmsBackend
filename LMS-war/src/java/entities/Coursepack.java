@@ -7,6 +7,7 @@ package entities;
 
 import java.io.Serializable;
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import javax.persistence.Column;
@@ -17,6 +18,7 @@ import javax.persistence.Id;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  *
@@ -25,10 +27,6 @@ import javax.persistence.OneToMany;
 @Entity
 public class Coursepack implements Serializable {
     
-    public Coursepack(){
-        
-    }
-
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -62,7 +60,15 @@ public class Coursepack implements Serializable {
     private List<Feedback> feedbackList;
     @OneToMany
     private List<Outlines> outlineList;
-     
+    
+    
+    public Coursepack(){
+        publicUserList = new ArrayList<>();
+        forumPostList = new ArrayList<>();
+        gradeItemList = new ArrayList<>();
+        feedbackList = new ArrayList<>();
+        outlineList = new ArrayList<>();
+    }
     
 
     public Coursepack(Long coursepackId, String code, String title, String description, String category, Double price, Boolean published, Double rating, String teacherBackground, List<User> publicUserList, List<ForumPost> forumPostList, List<GradeItem> gradeItemList, User assignedTeacher, List<Feedback> feedbackList, List<Outlines> outlineList) {
