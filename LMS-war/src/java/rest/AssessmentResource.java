@@ -498,7 +498,7 @@ public class AssessmentResource {
             qa.setQuizTaker(user);
             quiz.getQuizAttemptList().add(qa);
             qa.setQuestionAttemptList(new ArrayList<>());
-            em.persist(qa);
+            
             
             double totalMarks = 0.0;
             for (QuestionAttemptModel queA: rqst.getQuestionAttempts()){
@@ -522,6 +522,8 @@ public class AssessmentResource {
                 qa.getQuestionAttemptList().add(queAToPersist);
                 
             }
+            em.persist(qa);
+            
             qa.setTotalMarks(totalMarks);
             em.flush();
             
@@ -1233,9 +1235,9 @@ public class AssessmentResource {
             return Response.status(Status.BAD_REQUEST).entity(new ErrorRsp("Quiz is not part of the module")).build();
         }
         
-        if(quiz.getClosingDate().after(new Date())){
-            return Response.status(Status.BAD_REQUEST).entity(new ErrorRsp("Quiz hasn't closed yet!")).build();
-        }
+//        if(quiz.getClosingDate().after(new Date())){
+//            return Response.status(Status.BAD_REQUEST).entity(new ErrorRsp("Quiz hasn't closed yet!")).build();
+//        }
         
         try {
             GradeItem gradeItem = new GradeItem();
@@ -1272,11 +1274,11 @@ public class AssessmentResource {
                 }
             }
             
-            for (QuizAttempt qa: quiz.getQuizAttemptList()){
+            for (User u: module.getStudentList()){
                 GradeEntry gradeEntry = new GradeEntry();
                 gradeEntry.setGradeItem(gradeItem);
-                gradeEntry.setStudent(qa.getQuizTaker());
-                gradeEntry.setMarks(marks.getOrDefault(qa.getQuizTaker(), 0.0));
+                gradeEntry.setStudent(u);
+                gradeEntry.setMarks(marks.getOrDefault(u, 0.0));
                 gradeItem.getGradeEntries().add(gradeEntry);
                 
                 em.persist(gradeEntry);
