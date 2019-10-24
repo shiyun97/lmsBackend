@@ -6,6 +6,7 @@
 package entities;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import javax.persistence.CascadeType;
@@ -51,6 +52,8 @@ public class Quiz implements Serializable {
     }
 
     public Quiz() {
+        questionList = new ArrayList<>();
+        quizAttemptList = new ArrayList<>();
     }
 
     private static final long serialVersionUID = 1L;

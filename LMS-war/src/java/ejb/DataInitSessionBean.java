@@ -294,15 +294,16 @@ public class DataInitSessionBean {
         c1.setStartTs(LocalTime.parse("10:00:00"));
         em.persist(c1);
         em.flush();
+        m4.getConsultationList().add(c1);
 
         ConsultationTimeslot c2 = new ConsultationTimeslot();
-        c1.setEndTs(LocalTime.parse("13:00:00"));
-        c1.setModule(m4);
-        c1.setStartD(LocalDate.parse("2019-10-28"));
-        c1.setStartTs(LocalTime.parse("12:00:00"));
+        c2.setEndTs(LocalTime.parse("13:00:00"));
+        c2.setModule(m4);
+        c2.setStartD(LocalDate.parse("2019-10-28"));
+        c2.setStartTs(LocalTime.parse("12:00:00"));
         em.persist(c2);
         em.flush();
-        m1.getConsultationList().add(c1);
+        m4.getConsultationList().add(c2);
         
         ConsultationTimeslot c3 = new ConsultationTimeslot();
         c3.setBooker(student);
@@ -312,6 +313,7 @@ public class DataInitSessionBean {
         c3.setStartTs(LocalTime.parse("10:00:00"));
         em.persist(c3);
         em.flush();
+        m4.getConsultationList().add(c3);
 
         Coursepack cp1 = new Coursepack();
         cp1.setAssignedTeacher(teacher);
@@ -320,7 +322,8 @@ public class DataInitSessionBean {
         cp1.setDescription("Learn C Programming and unlock doors to careers in computer engineering");
         cp1.setPrice(500.00);
         cp1.setRating(5.00);
-        cp1.setStartDate(new Timestamp(2019 - 1900, 11, 30, 9, 0, 0, 0));
+        //cp1.setStartDate(new Timestamp(2019-1900, 11, 30, 9, 0, 0, 0));
+        cp1.setPublished(false);
         cp1.setTeacherBackground("Graduated with Master degree in Computer Science from NUS");
         cp1.setTitle("C Programming");
         teacher.getTeacherCoursepackList().add(cp1);
@@ -334,7 +337,7 @@ public class DataInitSessionBean {
         cp2.setDescription("Master the essentials of managing a successful business");
         cp2.setPrice(300.00);
         cp2.setRating(4.00);
-        cp2.setStartDate(new Timestamp(2020 - 1900, 12, 1, 9, 0, 0, 0));
+        cp2.setPublished(false);
         cp2.setTeacherBackground("With more than 20 years of teaching experiences");
         cp2.setTitle("Operations Management");
         teacher.getTeacherCoursepackList().add(cp2);
@@ -348,7 +351,7 @@ public class DataInitSessionBean {
         cp3.setDescription("This course will introduce you to the Design Thinking process and illustrate best practices for each step along the way.");
         cp3.setPrice(200.00);
         cp3.setRating(5.00);
-        cp3.setStartDate(new Timestamp(2020 - 1900, 12, 1, 9, 0, 0, 0));
+        cp3.setPublished(false);
         cp3.setTeacherBackground("Microsoft developer");
         cp3.setTitle("Introduction to Design Thinking");
         teacher.getTeacherCoursepackList().add(cp3);

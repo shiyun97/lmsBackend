@@ -14,6 +14,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 import util.AccessRightEnum;
 import util.GenderEnum;
 
@@ -102,7 +103,7 @@ public class User implements Serializable {
     private List<Coursepack> teacherCoursepackList;
     @ManyToMany(mappedBy = "publicUserList")
     private List<Coursepack> publicUserCoursepackList;
-
+    
     public Long getId() {
         return userId;
     }
@@ -279,6 +280,9 @@ public class User implements Serializable {
     public void setPublicUserCoursepackList(List<Coursepack> publicUserCoursepackList) {
         this.publicUserCoursepackList = publicUserCoursepackList;
     }
+
+    
+    
     
     
 }
