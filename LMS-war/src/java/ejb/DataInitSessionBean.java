@@ -103,8 +103,8 @@ public class DataInitSessionBean {
         User teacher = new User();
         teacher.setFirstName("Alice");
         teacher.setLastName("Tan");
-        teacher.setEmail("teacher@gmail.com");
-        teacher.setPassword("password");
+        teacher.setEmail("tea1234567cher@gmail.com");
+        teacher.setPassword("password!234%");
         teacher.setGender(GenderEnum.Female);
         teacher.setAccessRight(AccessRightEnum.Teacher);
         teacher.setUsername("teacher");
