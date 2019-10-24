@@ -550,7 +550,7 @@ public class AnnoucementResource {
             if (annoucement == null) {
                 return Response.status(Response.Status.NOT_FOUND).entity("No annoucement found").build();
             }
-            //Date createdDate = formatter.parse(updateAnnoucement.getCreatedDate());
+
             Date updateDate = new Date();
             //Date lastUpdatedDate = formatter.parse(updateAnnoucement.getLastUpdatedDate());
             Date startDate = formatter.parse(updateAnnoucement.getStartDate());

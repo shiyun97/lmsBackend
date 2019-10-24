@@ -6,11 +6,13 @@
 package entities;
 
 import java.io.Serializable;
+import java.util.List;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
 
 /**
  *
@@ -22,30 +24,36 @@ public class Venue implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long id;
+    private Long venueId;
     @Column
     private String name;
+    @OneToMany(mappedBy = "examVenue", orphanRemoval = true)
+    private List<Module> moduleList;
+    @OneToMany(mappedBy = "venue", orphanRemoval = true)
+    private List<Tutorial> tutorialList;
 
     public Venue() {
     }
-    
-    public Venue(Long id, String name) {
-        this.id = id;
-        this.name = name;
-    }
 
+    public Venue(Long venueId, String name, List<Module> moduleList, List<Tutorial> tutorialList) {
+        this.venueId = venueId;
+        this.name = name;
+        this.moduleList = moduleList;
+        this.tutorialList = tutorialList;
+    }
+    
     public Long getId() {
-        return id;
+        return venueId;
     }
 
     public void setId(Long id) {
-        this.id = id;
+        this.venueId = id;
     }
 
     @Override
     public int hashCode() {
         int hash = 0;
-        hash += (id != null ? id.hashCode() : 0);
+        hash += (venueId != null ? venueId.hashCode() : 0);
         return hash;
     }
 
@@ -56,7 +64,7 @@ public class Venue implements Serializable {
             return false;
         }
         Venue other = (Venue) object;
-        if ((this.id == null && other.id != null) || (this.id != null && !this.id.equals(other.id))) {
+        if ((this.venueId == null && other.venueId != null) || (this.venueId != null && !this.venueId.equals(other.venueId))) {
             return false;
         }
         return true;
@@ -64,7 +72,7 @@ public class Venue implements Serializable {
 
     @Override
     public String toString() {
-        return "entities.Venue[ id=" + id + " ]";
+        return "entities.Venue[ id=" + venueId + " ]";
     }
 
     public String getName() {
@@ -73,6 +81,22 @@ public class Venue implements Serializable {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public List<Module> getModuleList() {
+        return moduleList;
+    }
+
+    public void setModuleList(List<Module> moduleList) {
+        this.moduleList = moduleList;
+    }
+
+    public List<Tutorial> getTutorialList() {
+        return tutorialList;
+    }
+
+    public void setTutorialList(List<Tutorial> tutorialList) {
+        this.tutorialList = tutorialList;
     }
     
 }
