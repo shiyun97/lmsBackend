@@ -105,7 +105,7 @@ public class ModuleMountingResource {
             module.setExamTime(mountModuleReq.getExamTime());
 
             Venue venue = em.find(Venue.class, venueId);
-            Venue venueCopy = new Venue(venue.getId(), venue.getName(), null, null);
+            Venue venueCopy = new Venue(venue.getId(), venue.getName());
             module.setExamVenue(venue);
             User user = em.find(User.class, userId);
             User userCopy = new User(user.getFirstName(), user.getLastName(), user.getEmail(),
@@ -149,7 +149,7 @@ public class ModuleMountingResource {
             em.persist(tutorial);
             em.flush();
             module.getTutorials().add(tutorial);
-            Venue venueCopy = new Venue(venue.getId(), venue.getName(), null, null);
+            Venue venueCopy = new Venue(venue.getId(), venue.getName());
             Tutorial tutorialCopy = new Tutorial(tutorial.getTutorialId(), tutorial.getMaxEnrollment(),
                     venueCopy, tutorial.getTiming(), null, null);
             return Response.status(Response.Status.OK).entity(tutorialCopy).build();
@@ -287,12 +287,12 @@ public class ModuleMountingResource {
                             teacher.getUsername(), null, teacher.getGender(), teacher.getAccessRight(),
                             null, null, null, null, null, null, null);
                     Venue venue = module.getExamVenue();
-                    Venue venueCopy = new Venue(venue.getId(), venue.getName(), null, null);
+                    Venue venueCopy = new Venue(venue.getId(), venue.getName());
                     List<Tutorial> tutorialsCopy = new ArrayList<>();
                     List<Tutorial> tutorials = module.getTutorials();
                     for (Tutorial t : tutorials) {
                         Venue tutVenue = t.getVenue();
-                        Venue tutVenueCopy = new Venue(tutVenue.getId(), tutVenue.getName(), null, null);
+                        Venue tutVenueCopy = new Venue(tutVenue.getId(), tutVenue.getName());
                         t.getMaxEnrollment();
                         t.getTiming();
                         t.getStudentList();
@@ -393,7 +393,7 @@ public class ModuleMountingResource {
                 module.setHasExam(updateModule.isHasExam());
                 module.setExamTime(updateModule.getExamTime());
                 Venue venue = em.find(Venue.class, venueId);
-                Venue venueCopy = new Venue(venue.getId(), venue.getName(), null, null);
+                Venue venueCopy = new Venue(venue.getId(), venue.getName());
                 module.setExamVenue(venue);
                 User user = em.find(User.class, userId);
                 User userCopy = new User(user.getFirstName(), user.getLastName(), user.getEmail(),
@@ -517,7 +517,7 @@ public class ModuleMountingResource {
             if (venue == null) {
                 return Response.status(Response.Status.NOT_FOUND).entity("Venue does not exist").build();
             }
-            Venue venueCopy = new Venue(venue.getId(), venue.getName(), null, null);
+            Venue venueCopy = new Venue(venue.getId(), venue.getName());
             List<Tutorial> tutorialsCopy = new ArrayList<>();
             List<Tutorial> tutorials = module.getTutorials();
             for (Tutorial t : tutorials) {
@@ -557,7 +557,7 @@ public class ModuleMountingResource {
             tutorial.setTiming(updateModuleTutorial.getTiming());
             em.merge(tutorial);
             em.flush();
-            Venue venueCopy = new Venue(venue.getId(), venue.getName(), null, null);
+            Venue venueCopy = new Venue(venue.getId(), venue.getName());
             Tutorial tutorialCopy = new Tutorial(tutorial.getTutorialId(), tutorial.getMaxEnrollment(),
                     venueCopy, tutorial.getTiming(), null, null);
             return Response.status(Response.Status.OK).entity(tutorialCopy).build();
@@ -599,7 +599,7 @@ public class ModuleMountingResource {
             }
             em.merge(tutorial);
             em.flush();
-            Venue venueCopy = new Venue(venue.getId(), venue.getName(), null, null);
+            Venue venueCopy = new Venue(venue.getId(), venue.getName());
             Tutorial tutorialCopy = new Tutorial(tutorial.getTutorialId(), tutorial.getMaxEnrollment(),
                     venueCopy, tutorial.getTiming(), studentsCopy, null);
             return Response.status(Response.Status.OK).entity(tutorialCopy).build();
@@ -630,7 +630,7 @@ public class ModuleMountingResource {
                     Tutorial temp = em.find(Tutorial.class, tutorial.getTutorialId());
                     int currentEnrollment = temp.getStudentList().size();
                     Venue v = tutorial.getVenue();
-                    Venue vCopy = new Venue(v.getId(), v.getName(), null, null);
+                    Venue vCopy = new Venue(v.getId(), v.getName());
                     /*List<User> students = tutorial.getStudentList();
                     for (User s : students) {
                         /*User user = em.find(User.class, userId);
@@ -727,7 +727,7 @@ public class ModuleMountingResource {
             GetVenueRsp rsp = new GetVenueRsp(new ArrayList<>());
             for (Venue v : venueList) {
                 rsp.getVenueList().add(new Venue(
-                        v.getId(), v.getName(), null, null));
+                        v.getId(), v.getName()));
             }
             return Response.status(Response.Status.OK).entity(rsp).build();
         } catch (Exception ex) {

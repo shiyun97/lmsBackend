@@ -27,20 +27,20 @@ public class Venue implements Serializable {
     private Long venueId;
     @Column
     private String name;
-    @OneToMany(mappedBy = "examVenue", orphanRemoval = true)
-    private List<Module> moduleList;
-    @OneToMany(mappedBy = "venue", orphanRemoval = true)
-    private List<Tutorial> tutorialList;
+//    @OneToMany(mappedBy = "examVenue", orphanRemoval = true)
+//    private List<Module> moduleList;
+//    @OneToMany(mappedBy = "venue", orphanRemoval = true)
+//    private List<Tutorial> tutorialList;
 
     public Venue() {
     }
 
-    public Venue(Long venueId, String name, List<Module> moduleList, List<Tutorial> tutorialList) {
+    public Venue(Long venueId, String name) {
         this.venueId = venueId;
         this.name = name;
-        this.moduleList = moduleList;
-        this.tutorialList = tutorialList;
     }
+
+    
     
     public Long getId() {
         return venueId;
@@ -83,20 +83,20 @@ public class Venue implements Serializable {
         this.name = name;
     }
 
-    public List<Module> getModuleList() {
-        return moduleList;
-    }
-
-    public void setModuleList(List<Module> moduleList) {
-        this.moduleList = moduleList;
-    }
-
-    public List<Tutorial> getTutorialList() {
-        return tutorialList;
-    }
-
-    public void setTutorialList(List<Tutorial> tutorialList) {
-        this.tutorialList = tutorialList;
-    }
-    
+//    public List<Module> getModuleList() {
+//        return moduleList;
+//    }
+//
+//    public void setModuleList(List<Module> moduleList) {
+//        this.moduleList = moduleList;
+//    }
+//
+//    public List<Tutorial> getTutorialList() {
+//        return tutorialList;
+//    }
+//
+//    public void setTutorialList(List<Tutorial> tutorialList) {
+//        this.tutorialList = tutorialList;
+//    }
+//    
 }
