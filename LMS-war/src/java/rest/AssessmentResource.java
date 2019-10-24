@@ -206,62 +206,62 @@ public class AssessmentResource {
             quiz.setOpeningDate(openingDate);
             quiz.setClosingDate(closingDate);
             
-            List<QuestionModel> questionsRqst = rqst.getQuestions();
+//            List<QuestionModel> questionsRqst = rqst.getQuestions();
+//            
+//            double total = 0;
+//            int count = 1;
+//            for(QuestionModel qm: questionsRqst){
+//                
+//                Question question = null;
+//                
+//                // No ID means it's a new question
+//                if(qm.getQuestionId() == null){
+//                    question = new Question();
+//                } else { 
+//
+//                    question = em.find(Question.class, qm.getQuestionId());
+//                    
+//                    if(em == null){
+//                        return Response.status(Status.NOT_FOUND).entity(new ErrorRsp()).build();
+//                    }
+//                    
+//                    // IF updated remove old question from quiz and create a new copy of question entity
+//                    if(qm.getUpdated() && attempted){
+//                        quiz.getQuestionList().remove(question);
+//                        question = new Question();
+//                    }
+//                }
+//                
+//                
+//                
+//                // Count max marks
+//                total += qm.getPoints();
+//                
+//                question.setNumber(count++);
+//                question.setTitle(qm.getTitle());
+//                question.setLevel(qm.getLevel());
+//                question.setPoints(qm.getPoints());
+//                question.setExplanation(qm.getExplanation());
+//                question.setType(qm.getType());
+//                question.setIsRequired(qm.getIsRequired());
+//                question.setChoices(new ArrayList<>());
+//                
+//                if(question.getType() == QuestionTypeEnum.radiogroup){
+//                    for (ChoiceModel choice: qm.getChoices()){
+//                        question.getChoices().add(choice.getText());
+//                        if(qm.getCorrectAnswer().equals(choice.getValue())){
+//                            question.setCorrectAnswer(choice.getText());
+//                        }
+//                    }
+//                }
+//                
+//                em.persist(question);
+//                em.flush();
+//                
+//                quiz.getQuestionList().add(question);
+//            }
             
-            double total = 0;
-            int count = 1;
-            for(QuestionModel qm: questionsRqst){
-                
-                Question question = null;
-                
-                // No ID means it's a new question
-                if(qm.getQuestionId() == null){
-                    question = new Question();
-                } else { 
-
-                    question = em.find(Question.class, qm.getQuestionId());
-                    
-                    if(em == null){
-                        return Response.status(Status.NOT_FOUND).entity(new ErrorRsp()).build();
-                    }
-                    
-                    // IF updated remove old question from quiz and create a new copy of question entity
-                    if(qm.getUpdated() && attempted){
-                        quiz.getQuestionList().remove(question);
-                        question = new Question();
-                    }
-                }
-                
-                
-                
-                // Count max marks
-                total += qm.getPoints();
-                
-                question.setNumber(count++);
-                question.setTitle(qm.getTitle());
-                question.setLevel(qm.getLevel());
-                question.setPoints(qm.getPoints());
-                question.setExplanation(qm.getExplanation());
-                question.setType(qm.getType());
-                question.setIsRequired(qm.getIsRequired());
-                question.setChoices(new ArrayList<>());
-                
-                if(question.getType() == QuestionTypeEnum.radiogroup){
-                    for (ChoiceModel choice: qm.getChoices()){
-                        question.getChoices().add(choice.getText());
-                        if(qm.getCorrectAnswer().equals(choice.getValue())){
-                            question.setCorrectAnswer(choice.getText());
-                        }
-                    }
-                }
-                
-                em.persist(question);
-                em.flush();
-                
-                quiz.getQuestionList().add(question);
-            }
-            
-            quiz.setMaxMarks(total);
+//            quiz.setMaxMarks(total);
             
             return Response.status(Status.OK).build();
             
@@ -321,7 +321,7 @@ public class AssessmentResource {
             em.flush();
 
             quiz.getQuestionList().add(question);
-            
+            quiz.setMaxMarks(quiz.getMaxMarks() + question.getPoints());
             return Response.status(Status.OK).entity(question).build();
         } catch (Exception e){
             e.printStackTrace();
@@ -360,7 +360,7 @@ public class AssessmentResource {
             if(question == null){
                 return Response.status(Status.NOT_FOUND).entity(new ErrorRsp("Question with the given ID doesn't exist")).build();
             }
-            
+            double pointDiff = qm.getPoints() - question.getPoints();
             if(attempted){
                 Question oldQ = question;
                 quiz.getQuestionList().remove(oldQ);
@@ -387,6 +387,8 @@ public class AssessmentResource {
                 question.setIsRequired(qm.getIsRequired());
                 question.setChoices(new ArrayList<>());
             }
+            
+            quiz.setMaxMarks(quiz.getMaxMarks() + pointDiff);
 
             if(question.getType() == QuestionTypeEnum.radiogroup){
                 for (ChoiceModel choice: qm.getChoices()){
@@ -443,6 +445,7 @@ public class AssessmentResource {
                 }
             }
             
+            quiz.setMaxMarks(quiz.getMaxMarks() - question.getPoints());
             quiz.getQuestionList().remove(question);
             if(!attempted){
                 em.remove(question);
