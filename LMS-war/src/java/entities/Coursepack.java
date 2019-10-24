@@ -60,6 +60,10 @@ public class Coursepack implements Serializable {
     private List<Feedback> feedbackList;
     @OneToMany
     private List<Outlines> outlineList;
+    @OneToMany
+    private List<File> fileList;
+    @OneToMany
+    private List<Quiz> quizList;
     
     
     public Coursepack(){
@@ -68,10 +72,12 @@ public class Coursepack implements Serializable {
         gradeItemList = new ArrayList<>();
         feedbackList = new ArrayList<>();
         outlineList = new ArrayList<>();
+        fileList = new ArrayList<>();
+        quizList = new ArrayList<>();
     }
     
 
-    public Coursepack(Long coursepackId, String code, String title, String description, String category, Double price, Boolean published, Double rating, String teacherBackground, List<User> publicUserList, List<ForumPost> forumPostList, List<GradeItem> gradeItemList, User assignedTeacher, List<Feedback> feedbackList, List<Outlines> outlineList) {
+    public Coursepack(Long coursepackId, String code, String title, String description, String category, Double price, Boolean published, Double rating, String teacherBackground, List<User> publicUserList, List<ForumPost> forumPostList, List<GradeItem> gradeItemList, User assignedTeacher, List<Feedback> feedbackList, List<Outlines> outlineList, List<File> fileList,List<Quiz> quizList ) {
         this.coursepackId = coursepackId;
         this.code = code;
         this.title = title;
@@ -81,14 +87,14 @@ public class Coursepack implements Serializable {
         this.rating = rating;
         this.teacherBackground = teacherBackground;
         this.publicUserList = publicUserList;
-        //this.folderList = folderList;
         this.forumPostList = forumPostList;
-        //this.quizList = quizList;
         this.gradeItemList = gradeItemList;
         this.assignedTeacher = assignedTeacher;
         this.feedbackList = feedbackList;
         this.outlineList = outlineList;
         this.published = published;
+        this.fileList = fileList;
+        this.quizList = quizList;
     }
 
     @Override
@@ -188,14 +194,6 @@ public class Coursepack implements Serializable {
         this.publicUserList = publicUserList;
     }
 
-    /*public List<Folder> getFolderList() {
-        return folderList;
-    }
-
-    public void setFolderList(List<Folder> folderList) {
-        this.folderList = folderList;
-    }*/
-
     public List<ForumPost> getForumPostList() {
         return forumPostList;
     }
@@ -203,14 +201,6 @@ public class Coursepack implements Serializable {
     public void setForumPostList(List<ForumPost> forumPostList) {
         this.forumPostList = forumPostList;
     }
-
-    /*public List<Quiz> getQuizList() {
-        return quizList;
-    }
-
-    public void setQuizList(List<Quiz> quizList) {
-        this.quizList = quizList;
-    }*/
 
     public List<GradeItem> getGradeItemList() {
         return gradeItemList;
@@ -250,6 +240,22 @@ public class Coursepack implements Serializable {
 
     public void setPublished(Boolean published) {
         this.published = published;
+    }
+
+    public List<File> getFileList() {
+        return fileList;
+    }
+
+    public void setFileList(List<File> fileList) {
+        this.fileList = fileList;
+    }
+
+    public List<Quiz> getQuizList() {
+        return quizList;
+    }
+
+    public void setQuizList(List<Quiz> quizList) {
+        this.quizList = quizList;
     }
 
     
