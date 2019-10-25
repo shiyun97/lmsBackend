@@ -126,6 +126,10 @@ public class AnnoucementResource {
 
             Module module = em.find(Module.class, moduleId);
             User user = em.find(User.class, userId);
+            
+            if(startDate.before(createdDate) && endDate.before(createdDate) && endDate.before(startDate)) {
+                return Response.status(Response.Status.BAD_REQUEST).entity(new ErrorRsp("Invalid date")).build();
+            }
 
             Annoucement annoucement = new Annoucement();
             annoucement.setTitle(createAnnoucement.getTitle());
@@ -134,7 +138,7 @@ public class AnnoucementResource {
             annoucement.setLastUpdatedDate(createdDate);
             annoucement.setStartDate(startDate);
             annoucement.setEndDate(endDate);
-            annoucement.setPublish(createAnnoucement.getPublish());
+            //annoucement.setPublish(createAnnoucement.getPublish());
             annoucement.setEmailNotification(createAnnoucement.getEmailNotification());
             //annoucement.setModule(createAnnoucement.getModule());
             annoucement.setModule(module);
@@ -149,7 +153,7 @@ public class AnnoucementResource {
                     module.getFaculty());
             Annoucement annoucementCopy = new Annoucement(annoucement.getAnnoucementId(), annoucement.getTitle(),
                     annoucement.getContent(), createdDate, createdDate, startDate, endDate,
-                    annoucement.getPublish(), annoucement.getEmailNotification(), moduleCopy, null);
+                    null, annoucement.getEmailNotification(), moduleCopy, null);
 
             List<String> address = new ArrayList<>();
             Query query = em.createQuery("select u from User u");
@@ -185,6 +189,10 @@ public class AnnoucementResource {
             Date endDate = formatter.parse(createAnnoucement.getEndDate());
 
             User user = em.find(User.class, userId);
+            
+            if(startDate.before(createdDate) && endDate.before(createdDate) && endDate.before(startDate)) {
+                return Response.status(Response.Status.BAD_REQUEST).entity(new ErrorRsp("Invalid date")).build();
+            }
 
             Annoucement annoucement = new Annoucement();
             annoucement.setTitle(createAnnoucement.getTitle());
@@ -193,7 +201,7 @@ public class AnnoucementResource {
             annoucement.setLastUpdatedDate(createdDate);
             annoucement.setStartDate(startDate);
             annoucement.setEndDate(endDate);
-            annoucement.setPublish(createAnnoucement.getPublish());
+            //annoucement.setPublish(createAnnoucement.getPublish());
             annoucement.setEmailNotification(createAnnoucement.getEmailNotification());
             //annoucement.setModule(createAnnoucement.getModule());
             //annoucement.setModule(module);
@@ -202,7 +210,7 @@ public class AnnoucementResource {
             em.flush();
             Annoucement annoucementCopy = new Annoucement(annoucement.getAnnoucementId(), annoucement.getTitle(),
                     annoucement.getContent(), createdDate, createdDate, startDate, endDate,
-                    annoucement.getPublish(), annoucement.getEmailNotification(), null, null);
+                    null, annoucement.getEmailNotification(), null, null);
 
             List<String> address = new ArrayList<>();
             Query query = em.createQuery("select u from User u");
@@ -315,7 +323,7 @@ public class AnnoucementResource {
                     module.getFaculty());
             Date now = new Date();
             for (Annoucement a : annoucementList) {
-                if (a.getEndDate().after(now)) {
+                if (a.getStartDate().before(now) && a.getEndDate().after(now)) {
                     rsp.getAnnoucementList().add(
                             new Annoucement(a.getAnnoucementId(), a.getTitle(),
                                     a.getContent(), a.getCreatedDate(), a.getLastUpdatedDate(),
@@ -344,7 +352,7 @@ public class AnnoucementResource {
             GetAnnoucementRsp rsp = new GetAnnoucementRsp(new ArrayList<>());
             Date now = new Date();
             for (Annoucement a : annoucementList) {
-                if (a.getEndDate().after(now)) {
+                if (a.getStartDate().before(now) && a.getEndDate().after(now)) {
                     rsp.getAnnoucementList().add(
                             new Annoucement(a.getAnnoucementId(), a.getTitle(),
                                     a.getContent(), a.getCreatedDate(), a.getLastUpdatedDate(),
@@ -502,6 +510,10 @@ public class AnnoucementResource {
             //String lastUpdatedDate = formatter.format(date);
             Date startDate = formatter.parse(updateAnnoucement.getStartDate());
             Date endDate = formatter.parse(updateAnnoucement.getEndDate());
+            
+            if(startDate.before(updateDate) && endDate.before(updateDate) && endDate.before(startDate)) {
+                return Response.status(Response.Status.BAD_REQUEST).entity(new ErrorRsp("Invalid date")).build();
+            }
 
             User user = em.find(User.class, userId);
 
@@ -555,6 +567,10 @@ public class AnnoucementResource {
             //Date lastUpdatedDate = formatter.parse(updateAnnoucement.getLastUpdatedDate());
             Date startDate = formatter.parse(updateAnnoucement.getStartDate());
             Date endDate = formatter.parse(updateAnnoucement.getEndDate());
+            
+            if(startDate.before(updateDate) && endDate.before(updateDate) && endDate.before(startDate)) {
+                return Response.status(Response.Status.BAD_REQUEST).entity(new ErrorRsp("Invalid date")).build();
+            }
 
             Module module = em.find(Module.class, moduleId);
             User user = em.find(User.class, userId);
@@ -608,7 +624,14 @@ public class AnnoucementResource {
             if (annoucement == null) {
                 return Response.status(Response.Status.NOT_FOUND).entity("No annoucement found").build();
             }
-            annoucement.getModule().getAnnoucementList().remove(annoucement);
+            //annoucement.getModule().getAnnoucementList().remove(annoucement);
+            if (annoucement.getModule() != null) {
+                Module module = em.find(Module.class, annoucement.getModule().getModuleId());
+                module.getAnnoucementList().remove(annoucement);
+                em.merge(module);
+                annoucement.setModule(null);
+            }
+            
             annoucement.setOwner(null);
             em.remove(annoucement);
             return Response.status(Response.Status.OK).build();

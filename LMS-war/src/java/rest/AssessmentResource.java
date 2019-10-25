@@ -127,15 +127,7 @@ public class AssessmentResource {
                 question.setType(qm.getType());
                 question.setIsRequired(qm.getIsRequired());
                 question.setChoices(new ArrayList<>());
-                
-                if(question.getType() == QuestionTypeEnum.radiogroup){
-                    for (ChoiceModel choice: qm.getChoices()){
-                        question.getChoices().add(choice.getText());
-                        if(qm.getCorrectAnswer().equals(choice.getValue())){
-                            question.setCorrectAnswer(choice.getText());
-                        }
-                    }
-                }
+                question.setCorrectAnswer(qm.getCorrectAnswer());
                 
                 em.persist(question);
                 em.flush();
@@ -659,7 +651,7 @@ public class AssessmentResource {
             List<Quiz> quizzes = new ArrayList<>();
             
             for(Quiz q: module.getQuizList()){
-                if(q.isGradeitemCreated()){
+                if(!q.isGradeitemCreated()){
                     Quiz newQ = new Quiz();
                     newQ.setQuizId(q.getQuizId());
                     newQ.setOpeningDate(q.getOpeningDate());
@@ -999,6 +991,11 @@ public class AssessmentResource {
                     .build();
         }
         
+        for(GradeEntry ge: gradeItem.getGradeEntries()){
+            ge.setStudent(null);
+            em.remove(ge);
+        }
+        
         em.remove(gradeItem);
         em.flush();
         
@@ -1196,7 +1193,7 @@ public class AssessmentResource {
             return Response.status(Status.NOT_FOUND).entity(new ErrorRsp("GradeItem not found")).build();
         }
         
-        gradeItem.setPublish(true);
+        gradeItem.setPublish(false);
         
         return Response.status(Status.OK).build();
     }
@@ -1319,22 +1316,22 @@ public class AssessmentResource {
             quiz.setDescription(rqst.getDescription());
             quiz.setQuizType(rqst.getQuizType());
             quiz.setQuestionsOrder(rqst.getQuestionsOrder());
-            quiz.setMaxTimeToFinish(rqst.getMaxTimeToFinish());
+//            quiz.setMaxTimeToFinish(rqst.getMaxTimeToFinish());
             quiz.setNoOfAttempts(rqst.getNoOfAttempts());
 //            quiz.setCoursepack(cp);
             quiz.setPublish(rqst.isPublish());
             quiz.setQuestionList(new ArrayList<Question>());
             // Parse Date
-            Date openingDate = dateFormatter.parse(rqst.getOpeningDate());
-            Date closingDate = dateFormatter.parse(rqst.getClosingDate());
+//            Date openingDate = dateFormatter.parse(rqst.getOpeningDate());
+//            Date closingDate = dateFormatter.parse(rqst.getClosingDate());
             
             // Verify date
-            if(!openingDate.before(closingDate)){
-                return Response.status(Status.BAD_REQUEST).entity(new ErrorRsp("Opening date is not before closing date")).build();
-            }
+//            if(!openingDate.before(closingDate)){
+//                return Response.status(Status.BAD_REQUEST).entity(new ErrorRsp("Opening date is not before closing date")).build();
+//            }
             
-            quiz.setOpeningDate(openingDate);
-            quiz.setClosingDate(closingDate);
+//            quiz.setOpeningDate(openingDate);
+//            quiz.setClosingDate(closingDate);
             
             List<QuestionModel> questionsRqst = rqst.getQuestions();
             
@@ -1353,15 +1350,7 @@ public class AssessmentResource {
                 question.setType(qm.getType());
                 question.setIsRequired(qm.getIsRequired());
                 question.setChoices(new ArrayList<>());
-                
-                if(question.getType() == QuestionTypeEnum.radiogroup){
-                    for (ChoiceModel choice: qm.getChoices()){
-                        question.getChoices().add(choice.getText());
-                        if(qm.getCorrectAnswer().equals(choice.getValue())){
-                            question.setCorrectAnswer(choice.getText());
-                        }
-                    }
-                }
+                question.setCorrectAnswer(qm.getCorrectAnswer());
                 
                 em.persist(question);
                 em.flush();
@@ -1377,9 +1366,6 @@ public class AssessmentResource {
             
             return Response.status(Status.OK).entity(quiz.getQuizId()).build();
             
-        } catch (ParseException pe){
-            pe.printStackTrace();
-            return Response.status(Status.BAD_REQUEST).entity(new ErrorRsp("Opening or closing date isn't in proper format")).build();
         } catch (Exception e){
             e.printStackTrace();
             return Response.status(Status.INTERNAL_SERVER_ERROR).entity(new ErrorRsp(e.getMessage())).build();
@@ -1486,9 +1472,9 @@ public class AssessmentResource {
             newQ.setMaxMarks(q.getMaxMarks());
             newQ.setDescription(q.getDescription());
             newQ.setTitle(q.getTitle());
-            newQ.setMaxTimeToFinish(q.getMaxTimeToFinish());
+//            newQ.setMaxTimeToFinish(q.getMaxTimeToFinish());
             newQ.setPublish(q.isPublish());
-            newQ.setNoOfAttempts(q.getNoOfAttempts());
+//            newQ.setNoOfAttempts(q.getNoOfAttempts());
             newQ.setQuestionsOrder(q.getQuestionsOrder());
             newQ.setPublishAnswer(q.isPublishAnswer());
             newQ.getPages().add(new PageModel(q.getQuestionList(), "page1"));
@@ -1507,7 +1493,7 @@ public class AssessmentResource {
     }
     
     @GET
-    @Path("retrieveAllCoursepackQuiz/{moduleId}")
+    @Path("retrieveAllCoursepackQuiz/{coursepackId}")
     @Produces(MediaType.APPLICATION_JSON)
     public Response retrieveAllCoursepackQuiz(@PathParam("coursepackId") Long coursepackId, @QueryParam("userId") Long userId){
         User user = em.find(User.class, userId);
@@ -1533,15 +1519,15 @@ public class AssessmentResource {
                 if(ar == AccessRightEnum.Teacher || q.isPublish()){
                     Quiz newQ = new Quiz();
                     newQ.setQuizId(q.getQuizId());
-                    newQ.setOpeningDate(q.getOpeningDate());
-                    newQ.setClosingDate(q.getClosingDate());
+//                    newQ.setOpeningDate(q.getOpeningDate());
+//                    newQ.setClosingDate(q.getClosingDate());
                     newQ.setQuizType(q.getQuizType());
                     newQ.setMaxMarks(q.getMaxMarks());
                     newQ.setDescription(q.getDescription());
                     newQ.setTitle(q.getTitle());
-                    newQ.setMaxTimeToFinish(q.getMaxTimeToFinish());
+//                    newQ.setMaxTimeToFinish(q.getMaxTimeToFinish());
                     newQ.setPublish(q.isPublish());
-                    newQ.setNoOfAttempts(q.getNoOfAttempts());
+//                    newQ.setNoOfAttempts(q.getNoOfAttempts());
                     newQ.setQuestionsOrder(q.getQuestionsOrder());
                     newQ.setPublishAnswer(q.isPublishAnswer());
                     quizzes.add(newQ);

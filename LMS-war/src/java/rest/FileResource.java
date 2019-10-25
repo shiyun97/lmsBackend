@@ -451,6 +451,39 @@ public class FileResource {
         }
     }
     
+    @Path("retrieveAllMultimediaForCoursepacks")
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response retrieveAllMultimediaForCoursepack(){
+        Query query = em.createQuery("SELECT m FROM File m WHERE m.type = :type AND m.coursepack.coursepackId != null");
+        query.setParameter("type", "multimedia");
+        List<entities.File> files = query.getResultList();
+
+        if (files == null || files.size() == 0) {
+            return Response.status(Response.Status.BAD_REQUEST).entity(new ErrorRsp("No multimedia uploaded yet!")).build();
+        }
+        
+        try {
+            List<entities.File> multimediaRsp = new ArrayList<>();
+            for (entities.File f : files) {
+                if (f.getIsDelete() == false) {
+                    User u = new User();
+                    u.setUserId(f.getUploader().getUserId());
+                    u.setFirstName(f.getUploader().getFirstName());
+                    u.setLastName(f.getUploader().getLastName());
+                    Coursepack c = new Coursepack();
+                    c.setCoursepackId(f.getCoursepack().getCoursepackId());
+                    entities.File temp = new entities.File(f.getFileId(), f.getName(), f.getType(), f.getLocation(), f.getCreatedDt(), f.getIsDelete(), null, null, u, c, null);
+                    multimediaRsp.add(temp);
+                }
+            }
+            return Response.status(Response.Status.OK).entity(new RetrieveFilesRsp(multimediaRsp, new ArrayList<>(), new Folder())).build();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(new ErrorRsp(e.getMessage())).build();
+        }
+    }
+    
     @Path("retrieveMultimediaById")
     @GET
     @Produces(MediaType.APPLICATION_JSON)
