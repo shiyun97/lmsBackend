@@ -6,9 +6,10 @@
 package entities;
 
 import java.io.Serializable;
-import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -18,7 +19,10 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
+import javax.persistence.Temporal;
 import javax.xml.bind.annotation.XmlRootElement;
+import util.QuestionOrderEnum;
+import util.QuizTypeEnum;
 
 /**
  *
@@ -29,17 +33,18 @@ import javax.xml.bind.annotation.XmlRootElement;
 @XmlRootElement
 public class Quiz implements Serializable {
 
-    public Quiz(String title, String description, Timestamp startDate, Timestamp endDate, Timestamp createTs, Timestamp updateTs, Integer maxNoOfAttempt, Double maxMarks, String owner, Module module, List<Question> questionList, List<QuizAttempt> quizAttemptList, LessonOrder lessonOrder) {
-        this();
+    public Quiz(Long quizId, String title, String description, QuizTypeEnum quizType, QuestionOrderEnum questionsOrder, Date openingDate, Date closingDate, Integer noOfAttempts, Double maxMarks, boolean publish, Integer maxTimeToFinish, Module module, List<Question> questionList, List<QuizAttempt> quizAttemptList) {
+        this.quizId = quizId;
         this.title = title;
         this.description = description;
-        this.startDate = startDate;
-        this.endDate = endDate;
-        this.createTs = createTs;
-        this.updateTs = updateTs;
-        this.maxNoOfAttempt = maxNoOfAttempt;
+        this.quizType = quizType;
+        this.questionsOrder = questionsOrder;
+        this.openingDate = openingDate;
+        this.closingDate = closingDate;
+        this.noOfAttempts = noOfAttempts;
         this.maxMarks = maxMarks;
-        this.owner = owner;
+        this.publish = publish;
+        this.maxTimeToFinish = maxTimeToFinish;
         this.module = module;
         this.questionList = questionList;
         this.quizAttemptList = quizAttemptList;
@@ -60,22 +65,28 @@ public class Quiz implements Serializable {
     @Column
     private String description;
     @Column
-    private Timestamp startDate;
+    private QuizTypeEnum quizType;
     @Column
-    private Timestamp endDate;
+    private QuestionOrderEnum questionsOrder;
     @Column
-    private Timestamp createTs;
+    private Date openingDate;
     @Column
-    private Timestamp updateTs;
+    private Date closingDate;
     @Column
-    private Integer maxNoOfAttempt;
+    private Integer noOfAttempts;
     @Column
     private Double maxMarks;
     @Column
-    private String owner;
+    private boolean publish;
+    @Column
+    private boolean publishAnswer;
+    @Column
+    private Integer maxTimeToFinish;
+    @Column
+    private boolean gradeitemCreated;
     @ManyToOne
     private Module module;
-    @OneToMany(mappedBy = "quiz")
+    @OneToMany(cascade = CascadeType.REMOVE)
     private List<Question> questionList;
     @OneToMany(mappedBy = "quiz")
     private List<QuizAttempt> quizAttemptList;
@@ -85,6 +96,14 @@ public class Quiz implements Serializable {
 
     public LessonOrder getLessonOrder() {
         return lessonOrder;
+    }
+
+    public boolean isPublish() {
+        return publish;
+    }
+
+    public void setPublish(boolean publish) {
+        this.publish = publish;
     }
 
     public void setLessonOrder(LessonOrder lessonOrder) {
@@ -142,52 +161,28 @@ public class Quiz implements Serializable {
         this.description = description;
     }
 
-    public Timestamp getStartDate() {
-        return startDate;
+    public Date getOpeningDate() {
+        return openingDate;
     }
 
-    public void setStartDate(Timestamp startDate) {
-        this.startDate = startDate;
+    public void setOpeningDate(Date openingDate) {
+        this.openingDate = openingDate;
     }
 
-    public Timestamp getEndDate() {
-        return endDate;
+    public Date getClosingDate() {
+        return closingDate;
     }
 
-    public void setEndDate(Timestamp endDate) {
-        this.endDate = endDate;
+    public void setClosingDate(Date closingDate) {
+        this.closingDate = closingDate;
     }
 
-    public String getOwner() {
-        return owner;
+    public Integer getNoOfAttempts() {
+        return noOfAttempts;
     }
 
-    public void setOwner(String owner) {
-        this.owner = owner;
-    }
-
-    public Timestamp getCreateTs() {
-        return createTs;
-    }
-
-    public void setCreateTs(Timestamp createTs) {
-        this.createTs = createTs;
-    }
-
-    public Timestamp getUpdateTs() {
-        return updateTs;
-    }
-
-    public void setUpdateTs(Timestamp updateTs) {
-        this.updateTs = updateTs;
-    }
-
-    public Integer getMaxNoOfAttempt() {
-        return maxNoOfAttempt;
-    }
-
-    public void setMaxNoOfAttempt(Integer maxNoOfAttempt) {
-        this.maxNoOfAttempt = maxNoOfAttempt;
+    public void setNoOfAttempts(Integer noOfAttempts) {
+        this.noOfAttempts = noOfAttempts;
     }
 
     public Double getMaxMarks() {
@@ -220,6 +215,46 @@ public class Quiz implements Serializable {
 
     public void setQuizAttemptList(List<QuizAttempt> quizAttemptList) {
         this.quizAttemptList = quizAttemptList;
+    }
+
+    public QuizTypeEnum getQuizType() {
+        return quizType;
+    }
+
+    public void setQuizType(QuizTypeEnum quizType) {
+        this.quizType = quizType;
+    }
+
+    public QuestionOrderEnum getQuestionsOrder() {
+        return questionsOrder;
+    }
+
+    public void setQuestionsOrder(QuestionOrderEnum questionsOrder) {
+        this.questionsOrder = questionsOrder;
+    }
+
+    public Integer getMaxTimeToFinish() {
+        return maxTimeToFinish;
+    }
+
+    public void setMaxTimeToFinish(Integer maxTimeToFinish) {
+        this.maxTimeToFinish = maxTimeToFinish;
+    }
+
+    public boolean isPublishAnswer() {
+        return publishAnswer;
+    }
+
+    public void setPublishAnswer(boolean publishAnswer) {
+        this.publishAnswer = publishAnswer;
+    }
+
+    public boolean isGradeitemCreated() {
+        return gradeitemCreated;
+    }
+
+    public void setGradeitemCreated(boolean gradeitemCreated) {
+        this.gradeitemCreated = gradeitemCreated;
     }
     
 }
