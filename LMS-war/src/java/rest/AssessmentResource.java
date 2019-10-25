@@ -127,15 +127,7 @@ public class AssessmentResource {
                 question.setType(qm.getType());
                 question.setIsRequired(qm.getIsRequired());
                 question.setChoices(new ArrayList<>());
-                
-                if(question.getType() == QuestionTypeEnum.radiogroup){
-                    for (ChoiceModel choice: qm.getChoices()){
-                        question.getChoices().add(choice.getText());
-                        if(qm.getCorrectAnswer().equals(choice.getValue())){
-                            question.setCorrectAnswer(choice.getText());
-                        }
-                    }
-                }
+                question.setCorrectAnswer(qm.getCorrectAnswer());
                 
                 em.persist(question);
                 em.flush();
@@ -1358,15 +1350,7 @@ public class AssessmentResource {
                 question.setType(qm.getType());
                 question.setIsRequired(qm.getIsRequired());
                 question.setChoices(new ArrayList<>());
-                
-                if(question.getType() == QuestionTypeEnum.radiogroup){
-                    for (ChoiceModel choice: qm.getChoices()){
-                        question.getChoices().add(choice.getText());
-                        if(qm.getCorrectAnswer().equals(choice.getValue())){
-                            question.setCorrectAnswer(choice.getText());
-                        }
-                    }
-                }
+                question.setCorrectAnswer(qm.getCorrectAnswer());
                 
                 em.persist(question);
                 em.flush();
