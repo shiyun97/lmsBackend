@@ -5,6 +5,7 @@
  */
 package ejb;
 
+import entities.Annoucement;
 import entities.Attendance;
 import entities.ConsultationTimeslot;
 import entities.Coursepack;
@@ -54,7 +55,7 @@ public class DataInitSessionBean {
             System.out.println("Data already initialized!");
             return;
         }
-        //1
+
         User admin = new User();
         admin.setFirstName("Admin");
         admin.setLastName("Admin");
@@ -66,7 +67,6 @@ public class DataInitSessionBean {
         em.persist(admin);
         em.flush();
 
-        //2
         User student = new User();
         student.setFirstName("John");
         student.setLastName("Tan");
@@ -78,7 +78,6 @@ public class DataInitSessionBean {
         em.persist(student);
         em.flush();
 
-        //3
         User student2 = new User();
         student2.setFirstName("Mark");
         student2.setLastName("Hamilton");
@@ -88,18 +87,7 @@ public class DataInitSessionBean {
         student2.setAccessRight(AccessRightEnum.Student);
         student2.setUsername("student2");
         em.persist(student2);
-        /*User student2 = new User();
-        student2.setFirstName("Bob");
-        student2.setLastName("Lim");
-        student2.setEmail("student2@gmail.com");
-        student2.setPassword("password");
-        student2.setGender(GenderEnum.Male);
-        student2.setAccessRight(AccessRightEnum.Student);
-        student2.setUsername("student2");
-        em.persist(student2);
-        em.flush();*/
 
-        //4
         User student3 = new User();
         student3.setFirstName("Mary");
         student3.setLastName("Lee");
@@ -110,13 +98,111 @@ public class DataInitSessionBean {
         student3.setUsername("student3");
         em.persist(student3);
         em.flush();
+        
+        User student4 = new User();
+        student4.setFirstName("Bob");
+        student4.setLastName("Lim");
+        student4.setEmail("student4@gmail.com");
+        student4.setPassword("password");
+        student4.setGender(GenderEnum.Male);
+        student4.setAccessRight(AccessRightEnum.Student);
+        student4.setUsername("student4");
+        em.persist(student4);
+        em.flush();
+        
+        User student5 = new User();
+        student5.setFirstName("Mark");
+        student5.setLastName("Lee");
+        student5.setEmail("student5@gmail.com");
+        student5.setPassword("password");
+        student5.setGender(GenderEnum.Female);
+        student5.setAccessRight(AccessRightEnum.Student);
+        student5.setUsername("student5");
+        em.persist(student5);
+        em.flush();
+        
+        User student6 = new User();
+        student6.setFirstName("Marcus");
+        student6.setLastName("Chua");
+        student6.setEmail("student6@gmail.com");
+        student6.setPassword("password");
+        student6.setGender(GenderEnum.Male);
+        student6.setAccessRight(AccessRightEnum.Student);
+        student6.setUsername("student6");
+        em.persist(student6);
+        em.flush();
+        
+        User student7 = new User();
+        student7.setFirstName("Josephine");
+        student7.setLastName("Tan");
+        student7.setEmail("student7@gmail.com");
+        student7.setPassword("password");
+        student7.setGender(GenderEnum.Female);
+        student7.setAccessRight(AccessRightEnum.Student);
+        student7.setUsername("student7");
+        em.persist(student7);
+        em.flush();
+        
+        User student8 = new User();
+        student8.setFirstName("Da");
+        student8.setLastName("Wei");
+        student8.setEmail("student8@gmail.com");
+        student8.setPassword("password");
+        student8.setGender(GenderEnum.Male);
+        student8.setAccessRight(AccessRightEnum.Student);
+        student8.setUsername("student8");
+        em.persist(student8);
+        em.flush();
+        
+        User student9 = new User();
+        student9.setFirstName("Rose");
+        student9.setLastName("May");
+        student9.setEmail("student9@gmail.com");
+        student9.setPassword("password");
+        student9.setGender(GenderEnum.Female);
+        student9.setAccessRight(AccessRightEnum.Student);
+        student9.setUsername("student9");
+        em.persist(student9);
+        em.flush();
+        
+        User student10 = new User();
+        student10.setFirstName("Jane");
+        student10.setLastName("Loaer");
+        student10.setEmail("student10@gmail.com");
+        student10.setPassword("password");
+        student10.setGender(GenderEnum.Female);
+        student10.setAccessRight(AccessRightEnum.Student);
+        student10.setUsername("student10");
+        em.persist(student10);
+        em.flush();
+        
+        User student11 = new User();
+        student11.setFirstName("Kate");
+        student11.setLastName("Low");
+        student11.setEmail("student11@gmail.com");
+        student11.setPassword("password");
+        student11.setGender(GenderEnum.Female);
+        student11.setAccessRight(AccessRightEnum.Student);
+        student11.setUsername("student11");
+        em.persist(student11);
+        em.flush();
 
         List<User> studentList = new ArrayList<>();
         studentList.add(student);
         studentList.add(student2);
         studentList.add(student3);
-
-        //5
+        studentList.add(student4);
+        studentList.add(student5);
+        studentList.add(student6);
+        studentList.add(student7);
+        studentList.add(student8);
+        studentList.add(student9);
+        studentList.add(student10);
+        studentList.add(student11);
+        
+        List<User> studentList2 = new ArrayList<>();
+        studentList2.add(student11);
+        
         User teacher = new User();
         teacher.setFirstName("Alice");
         teacher.setLastName("Tan");
@@ -128,7 +214,6 @@ public class DataInitSessionBean {
         em.persist(teacher);
         em.flush();
 
-        //6
         User extStu = new User();
         extStu.setFirstName("Jane");
         extStu.setLastName("Doe");
@@ -138,6 +223,28 @@ public class DataInitSessionBean {
         extStu.setAccessRight(AccessRightEnum.Public);
         extStu.setUsername("public");
         em.persist(extStu);
+        em.flush();
+        
+        User extStu2 = new User();
+        extStu2.setFirstName("May");
+        extStu2.setLastName("Doe");
+        extStu2.setEmail("public2@gmail.com");
+        extStu2.setPassword("password");
+        extStu2.setGender(GenderEnum.Female);
+        extStu2.setAccessRight(AccessRightEnum.Public);
+        extStu2.setUsername("public");
+        em.persist(extStu2);
+        em.flush();
+        
+        User extStu3 = new User();
+        extStu3.setFirstName("April");
+        extStu3.setLastName("Doe");
+        extStu3.setEmail("public3@gmail.com");
+        extStu3.setPassword("password");
+        extStu3.setGender(GenderEnum.Female);
+        extStu3.setAccessRight(AccessRightEnum.Public);
+        extStu3.setUsername("public");
+        em.persist(extStu3);
         em.flush();
 
         Venue v1 = new Venue();
@@ -180,6 +287,14 @@ public class DataInitSessionBean {
         student.getStudentModuleList().add(m1);
         //student2.getStudentModuleList().add(m1);
         student3.getStudentModuleList().add(m1);
+        student4.getStudentModuleList().add(m1);
+        student5.getStudentModuleList().add(m1);
+        student6.getStudentModuleList().add(m1);
+        student7.getStudentModuleList().add(m1);
+        student8.getStudentModuleList().add(m1);
+        student9.getStudentModuleList().add(m1);
+        student10.getStudentModuleList().add(m1);
+        student11.getStudentModuleList().add(m1);
         em.persist(m1);
         em.flush();
 
@@ -199,6 +314,8 @@ public class DataInitSessionBean {
         m2.setFaculty("School of Computing");
         m2.setDepartment("Department of Computer Science");
         teacher.getTeacherModuleList().add(m2);
+        m2.setStudentList(studentList2);
+        student11.getStudentModuleList().add(m2);
         em.persist(m2);
         em.flush();
 
@@ -250,10 +367,6 @@ public class DataInitSessionBean {
         moduleList2.add(m4);
         em.flush();
 
-        v1.setModuleList(moduleList);
-        v2.setModuleList(moduleList2);
-        em.flush();
-
         student2.getStudentModuleList().add(m1);
         //m1.getStudentList().add(student2);
 
@@ -270,6 +383,13 @@ public class DataInitSessionBean {
         student.getTutorials().add(t1);
         student2.getTutorials().add(t1);
         student3.getTutorials().add(t1);
+        student4.getTutorials().add(t1);
+        student5.getTutorials().add(t1);
+        student6.getTutorials().add(t1);
+        student7.getTutorials().add(t1);
+        student8.getTutorials().add(t1);
+        student9.getTutorials().add(t1);
+        student10.getTutorials().add(t1);
         m1.getTutorials().add(t1);
         em.persist(t1);
         em.flush();
@@ -280,6 +400,8 @@ public class DataInitSessionBean {
         t2.setVenue(v3);
         t2.setTiming("Thursday 13:00 - 14:00");
         m1.getTutorials().add(t2);
+        t2.setStudentList(studentList2);
+        student11.getTutorials().add(t2);
         em.persist(t2);
         em.flush();
 
@@ -361,10 +483,6 @@ public class DataInitSessionBean {
         tutorialList2.add(t9);
         em.flush();
 
-        v3.setTutorialList(tutorialList);
-        v4.setTutorialList(tutorialList2);
-        em.flush();
-
         //student2.getTutorials().add(t1);
         //t1.getStudentList().add(student2);
 
@@ -406,42 +524,101 @@ public class DataInitSessionBean {
         m1.getConsultationList().add(c1);
         em.flush();
 
+        List<User> testMissingStudents = new ArrayList<>();
+        testMissingStudents.add(student);
+        testMissingStudents.add(student2);
+        testMissingStudents.add(student3);
+        testMissingStudents.add(student4);
+        testMissingStudents.add(student5);
+        
         Attendance a1 = new Attendance();
         a1.setDuration(5);
         a1.setEndTs(new Timestamp(2020 - 1900, 4, 29, 13, 11, 0, 0));
         a1.setModule(m1);
         a1.setSemester(1);
         a1.setStartTs(new Timestamp(2020 - 1900, 4, 29, 13, 10, 0, 0));
-        a1.setTotal(20);
+        a1.setTotal(11);
         //a1.setTutorial(t1);
         //t1.getAttendanceList().add(a1);
         a1.setAttendees(studentList);
         //a1.getAttendees().add(student);
-        a1.setAttendedNumber(3);
+        a1.setAttendedNumber(11);
         student.getAttendanceList().add(a1);
         student2.getAttendanceList().add(a1);
         student3.getAttendanceList().add(a1);
+        student4.getAttendanceList().add(a1);
+        student5.getAttendanceList().add(a1);
+        student6.getAttendanceList().add(a1);
+        student7.getAttendanceList().add(a1);
+        student8.getAttendanceList().add(a1);
+        student9.getAttendanceList().add(a1);
+        student10.getAttendanceList().add(a1);
+        student11.getAttendanceList().add(a1);
         m1.getAttandanceList().add(a1);
         em.persist(a1);
         em.flush();
 
         Attendance a2 = new Attendance();
         a2.setDuration(5);
-        a2.setEndTs(new Timestamp(2020 - 1900, 4, 29, 13, 11, 0, 0));
+        a2.setEndTs(new Timestamp(2020 - 1900, 3, 29, 13, 11, 0, 0));
         //a1.setModule(m1);
         //m1.getAttandanceList().add(a1);
         a2.setSemester(1);
-        a2.setStartTs(new Timestamp(2020 - 1900, 4, 29, 13, 10, 0, 0));
-        a2.setTotal(20);
+        a2.setStartTs(new Timestamp(2020 - 1900, 3, 29, 13, 10, 0, 0));
+        a2.setTotal(11);
         a2.setTutorial(t1);
         a2.setAttendees(studentList);
         //a1.getAttendees().add(student);
-        a2.setAttendedNumber(3);
+        a2.setAttendedNumber(11);
         student.getAttendanceList().add(a2);
         student2.getAttendanceList().add(a2);
         student3.getAttendanceList().add(a2);
+        student4.getAttendanceList().add(a2);
+        student5.getAttendanceList().add(a2);
+        student6.getAttendanceList().add(a2);
+        student7.getAttendanceList().add(a2);
+        student8.getAttendanceList().add(a2);
+        student9.getAttendanceList().add(a2);
+        student10.getAttendanceList().add(a2);
+        student11.getAttendanceList().add(a2);
         t1.getAttendanceList().add(a2);
         em.persist(a2);
+        em.flush();
+        
+        Attendance a3 = new Attendance();
+        a3.setDuration(5);
+        a3.setEndTs(new Timestamp(2020 - 1900, 11, 29, 13, 11, 0, 0));
+        a3.setSemester(1);
+        a3.setStartTs(new Timestamp(2020 - 1900, 11, 29, 13, 10, 0, 0));
+        a3.setTotal(11);
+        a3.setTutorial(t1);
+        a3.setAttendees(testMissingStudents);
+        a3.setAttendedNumber(5);
+        student.getAttendanceList().add(a3);
+        student2.getAttendanceList().add(a3);
+        student3.getAttendanceList().add(a3);
+        student4.getAttendanceList().add(a3);
+        student5.getAttendanceList().add(a3);
+        m1.getAttandanceList().add(a3);
+        em.persist(a3);
+        em.flush();
+        
+        Attendance a4 = new Attendance();
+        a4.setDuration(5);
+        a4.setEndTs(new Timestamp(2020 - 1900, 10, 29, 13, 11, 0, 0));
+        a4.setSemester(1);
+        a4.setStartTs(new Timestamp(2020 - 1900, 10, 29, 13, 10, 0, 0));
+        a4.setTotal(11);
+        a4.setTutorial(t1);
+        a4.setAttendees(testMissingStudents);
+        a4.setAttendedNumber(5);
+        student.getAttendanceList().add(a4);
+        student2.getAttendanceList().add(a4);
+        student3.getAttendanceList().add(a4);
+        student4.getAttendanceList().add(a4);
+        student5.getAttendanceList().add(a4);
+        t1.getAttendanceList().add(a4);
+        em.persist(a4);
         em.flush();
 
         List<Attendance> attendanceList = new ArrayList<>();
@@ -522,6 +699,13 @@ public class DataInitSessionBean {
         em.persist(topic3);
         em.flush();
 
+        ForumTopic topic4 = new ForumTopic();
+        topic3.setModule(m1);
+        topic3.setDescription("Please use this topic heading to ask any questions relating to assignment 6.");
+        topic3.setTitle("Assignment 6");
+        em.persist(topic4);
+        em.flush();
+
         ForumPost thread1 = new ForumPost();
         thread1.setCreateTs(LocalDateTime.now());
         thread1.setUpdateTs(LocalDateTime.now());
@@ -532,6 +716,7 @@ public class DataInitSessionBean {
         thread1.setThreadStarter(Boolean.TRUE);
         em.persist(thread1);
         em.flush();
+        topic1.getThreads().add(thread1);
 
         ForumPost thread2 = new ForumPost();
         thread2.setCreateTs(LocalDateTime.now());
@@ -543,6 +728,7 @@ public class DataInitSessionBean {
         thread2.setThreadStarter(Boolean.TRUE);
         em.persist(thread2);
         em.flush();
+        topic3.getThreads().add(thread2);
 
         ForumPost comment1 = new ForumPost();
         comment1.setCreateTs(LocalDateTime.now());
@@ -553,6 +739,7 @@ public class DataInitSessionBean {
         comment1.setType("comment");
         em.persist(comment1);
         em.flush();
+        thread2.getComments().add(comment1);
 
         ForumPost reply1 = new ForumPost();
         reply1.setTitle("Re:Accessing all elements in array");
@@ -565,6 +752,7 @@ public class DataInitSessionBean {
         reply1.setType("reply");
         em.persist(reply1);
         em.flush();
+        thread2.getReplies().add(reply1);
 
         ForumPost comment2 = new ForumPost();
         comment2.setParentOfComments(reply1);
@@ -580,11 +768,153 @@ public class DataInitSessionBean {
         comment2.setThreadStarter(Boolean.FALSE);
         em.persist(comment2);
         em.flush();
+        reply1.getComments().add(comment2);
+
+        ForumPost thread3 = new ForumPost();
+        thread3.setCreateTs(LocalDateTime.now());
+        thread3.setUpdateTs(LocalDateTime.now());
+        thread3.setMessage("I was unable to attempt the quiz as there isn’t any link for me to click to start quiz");
+        thread3.setOwner(student);
+        thread3.setTitle("Unable to attempt quiz");
+        thread3.setTopic(topic3);
+        thread3.setThreadStarter(Boolean.TRUE);
+        em.persist(thread3);
+        em.flush();
+        topic3.getThreads().add(thread3);
+
+        ForumPost comment3 = new ForumPost();
+        comment3.setCreateTs(LocalDateTime.now());
+        comment3.setUpdateTs(LocalDateTime.now());
+        comment3.setMessage("I am not having any problem with this. I see a link there.");
+        comment3.setOwner(student2);
+        comment3.setThreadStarter(Boolean.FALSE);
+        comment3.setType("comment");
+        em.persist(comment3);
+        em.flush();
+        thread3.getComments().add(comment3);
+
+        ForumPost reply2 = new ForumPost();
+        reply2.setTitle("Re:Unable to attempt quiz");
+        reply2.setCreateTs(LocalDateTime.now());
+        reply2.setUpdateTs(LocalDateTime.now());
+        reply2.setMessage("The issue has since been rectified by the LumiNUS steam. Could you try again? The deadline for the current quiz is also extended by 1 day, to 23.59pm Monday. ");
+        reply2.setOwner(teacher);
+        reply2.setThreadStarter(Boolean.FALSE);
+        reply2.setType("reply");
+        em.persist(reply2);
+        em.flush();
+        thread3.getReplies().add(reply2);
+
+        ForumPost comment4 = new ForumPost();
+        comment4.setCreateTs(LocalDateTime.now());
+        comment4.setUpdateTs(LocalDateTime.now());
+        comment4.setMessage("Yes, I am now able to attempt the quiz. Thank you.");
+        comment4.setOwner(student);
+        comment4.setThreadStarter(Boolean.FALSE);
+        comment4.setType("comment");
+        em.persist(comment4);
+        em.flush();
+        reply2.getComments().add(comment4);
+
+        ForumPost thread4 = new ForumPost();
+        thread4.setCreateTs(LocalDateTime.now());
+        thread4.setUpdateTs(LocalDateTime.now());
+        thread4.setMessage("Dear Profs/TAs, \n" + "\n" + "1. May I clarify if we are using a vector calculation to calculate the shortest distance? Meaning using dist = sqrt[ (x1 - x2)^2 + (y1 - y2) ^2 ] \n"
+                + "\n" + "    Or is the shortest distance based on vertical and horizontal travel only?\n" + "\n"
+                + "2. Could there be a typo here?  Shouldn't it be dist = sqrt ( 30^2 ) = 30? How is the distance from the house to Stores 0 and 2 distance sqrt(30)? sqrt(30) is smaller than 10 anyway.");
+        thread4.setOwner(student);
+        thread4.setTitle("PDMap: Calculating (shortest) distance");
+        thread4.setTopic(topic4);
+        thread4.setThreadStarter(Boolean.TRUE);
+        em.persist(thread4);
+        em.flush();
+        topic4.getThreads().add(thread4);
+
+        ForumPost reply3 = new ForumPost();
+        reply3.setTitle("Re:PDMap: Calculating (shortest) distance");
+        reply3.setCreateTs(LocalDateTime.now());
+        reply3.setUpdateTs(LocalDateTime.now());
+        reply3.setMessage("1. Take euclidean distance. (your formula is correct)\n" + "\n" + "2. Yes there is a typo. Distance to 0 and 2 pizza stores are 30. Not sqrt(30)");
+        reply3.setOwner(teacher);
+        reply3.setThreadStarter(Boolean.FALSE);
+        reply3.setType("reply");
+        em.persist(reply3);
+        em.flush();
+        thread4.getReplies().add(reply3);
+
+        ForumPost comment5 = new ForumPost();
+        comment5.setCreateTs(LocalDateTime.now());
+        comment5.setUpdateTs(LocalDateTime.now());
+        comment5.setMessage("The assignment instruction was:\n" + "\n" + "\"Since we are all using integer arithmetic, the distance computation must be exact.\"\n" + "\n"
+                + "May I check how are we supposed to get integer distance if we're using euclidian distance to calculate it? Do I just not use square root in the formula? Or do we convert a float to an integer? But doing so will lose accuracy?\n"
+                + "\n" + "Kindly advise please, thank you!");
+        comment5.setOwner(student);
+        comment5.setThreadStarter(Boolean.FALSE);
+        comment5.setType("comment");
+        comment5.setParentOfComments(reply3);
+        em.persist(comment5);
+        em.flush();
+        reply3.getComments().add(comment5);
+        
 
         createSurvey(m1);
         createSurvey(m2);
         createSurvey(m3);
         createSurvey(m4);
+        
+        Annoucement an1 = new Annoucement();
+        an1.setTitle("abc");
+        an1.setContent("learn you abc");
+        an1.setCreatedDate(new Date(2019 - 1900, 10, 22, 11, 0));
+        an1.setLastUpdatedDate(new Date(2019 - 1900, 10, 22, 11, 0));
+        an1.setStartDate(new Date(2019 - 1900, 10, 22, 12, 0));
+        an1.setEndDate(new Date(2019 - 1900, 10, 24, 12, 0));
+        an1.setPublish(true);
+        an1.setEmailNotification(true);
+        an1.setOwner(admin);
+        em.persist(an1);
+        em.flush();   
+        
+        Annoucement an2 = new Annoucement();
+        an2.setTitle("def");
+        an2.setContent("learn your def");
+        an2.setCreatedDate(new Date(2019 - 1900, 10, 22, 10, 0));
+        an2.setLastUpdatedDate(new Date(2019 - 1900, 10, 22, 10, 0));
+        an2.setStartDate(new Date(2019 - 1900, 10, 22, 11, 0));
+        an2.setEndDate(new Date(2019 - 1900, 10, 24, 23, 0));
+        an2.setPublish(true);
+        an2.setEmailNotification(true);
+        an2.setModule(m1);
+        an2.setOwner(teacher);
+        em.persist(an2);
+        em.flush();
+        
+        Annoucement an3 = new Annoucement();
+        an3.setTitle("ghi");
+        an3.setContent("learn your ghi");
+        an3.setCreatedDate(new Date(2019 - 1900, 10, 24, 10, 0));
+        an3.setLastUpdatedDate(new Date(2019 - 1900, 10, 24, 10, 0));
+        an3.setStartDate(new Date(2019 - 1900, 10, 25, 11, 0));
+        an3.setEndDate(new Date(2019 - 1900, 10, 28, 23, 0));
+        an3.setPublish(true);
+        an3.setEmailNotification(true);
+        an3.setOwner(admin);
+        em.persist(an3);
+        em.flush();
+        
+        Annoucement an4 = new Annoucement();
+        an4.setTitle("jkl");
+        an4.setContent("learn your jkl");
+        an4.setCreatedDate(new Date(2019 - 1900, 10, 24, 10, 0));
+        an4.setLastUpdatedDate(new Date(2019 - 1900, 10, 24, 10, 0));
+        an4.setStartDate(new Date(2019 - 1900, 10, 25, 11, 0));
+        an4.setEndDate(new Date(2019 - 1900, 10, 28, 23, 0));
+        an4.setPublish(true);
+        an4.setEmailNotification(true);
+        an4.setModule(m1);
+        an4.setOwner(teacher);
+        em.persist(an4);
+        em.flush();
     }
 
     public void createSurvey(Module module) {

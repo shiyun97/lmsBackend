@@ -212,7 +212,7 @@ public class AttendanceResource {
         }
     }
 
-    @GET
+    /*@GET
     @Path("getStudentAttandance")
     @Produces(MediaType.APPLICATION_JSON)
     public Response getStudentAttandance(@QueryParam("userId") Long userId) {
@@ -250,12 +250,12 @@ public class AttendanceResource {
                                     null, tutorialCopy, null));
                             /*rspTutorial.getTutorials().add(new Tutorial(
                                     t.getTutorialId(), t.getMaxEnrollment(),
-                                    t.getVenue(), t.getTiming(), null, null));*/
+                                    t.getVenue(), t.getTiming(), null, null));
                         }
                     }
                     /*Tutorial tutorial = a.getTutorial();
                 Tutorial tutorialCopy = new Tutorial(tutorial.getTutorialId(), tutorial.getMaxEnrollment(),
-                        tutorial.getVenue(), tutorial.getTiming(), null, null);*/
+                        tutorial.getVenue(), tutorial.getTiming(), null, null);
                 }
             }
             return Response.status(Response.Status.OK).entity(rsp).build();
@@ -263,8 +263,7 @@ public class AttendanceResource {
             ex.printStackTrace();
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(new ErrorRsp(ex.getMessage())).build();
         }
-    }
-
+    }*/
     @GET
     @Path("getStudentModuleAttandance")
     @Produces(MediaType.APPLICATION_JSON)
@@ -321,7 +320,7 @@ public class AttendanceResource {
         }
     }
 
-    /*@GET
+    @GET
     @Path("getStudentTutorialAttandance")
     @Produces(MediaType.APPLICATION_JSON)
     public Response getStudentTutorialAttandance(@QueryParam("userId") Long userId, @QueryParam("tutorialId") Long tutorialId) {
@@ -335,6 +334,41 @@ public class AttendanceResource {
                 return Response.status(Response.Status.NOT_FOUND).entity("Tutorial does not exist").build();
             }
             List<Attendance> attendanceList = tutorial.getAttendanceList();
+            if (attendanceList == null || attendanceList.isEmpty()) {
+                return Response.status(Response.Status.NOT_FOUND).entity("No attendance found").build();
+            }
+            GetAttendanceRsp rsp = new GetAttendanceRsp(new ArrayList<>());
+            for (Attendance a : attendanceList) {
+                if (a.getAttendees().contains(user)) {
+                    Tutorial tutorialCopy = new Tutorial(tutorial.getTutorialId(), tutorial.getMaxEnrollment(),
+                            tutorial.getVenue(), tutorial.getTiming(), null, null);
+                    rsp.getAttendanceList().add(new Attendance(
+                            a.getAttendanceId(), a.getTotal(), a.getAttendedNumber(),
+                            a.getSemester(), null, null, null, null,
+                            null, tutorialCopy, null));
+                }
+            }
+            return Response.status(Response.Status.OK).entity(rsp).build();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(new ErrorRsp(ex.getMessage())).build();
+        }
+    }
+
+    @GET
+    @Path("getStudentOnlyModuleAttandance")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getStudentOnlyModuleAttandance(@QueryParam("userId") Long userId, @QueryParam("moduleId") Long moduleId) {
+        try {
+            User user = em.find(User.class, userId);
+            if (user == null) {
+                return Response.status(Response.Status.NOT_FOUND).entity("User does not exist").build();
+            }
+            Module module = em.find(Module.class, moduleId);
+            if (module == null) {
+                return Response.status(Response.Status.NOT_FOUND).entity("Module does not exist").build();
+            }
+            List<Attendance> attendanceList = module.getAttandanceList();
             if (attendanceList == null || attendanceList.isEmpty()) {
                 return Response.status(Response.Status.NOT_FOUND).entity("No attendance found").build();
             }
@@ -357,8 +391,84 @@ public class AttendanceResource {
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(new ErrorRsp(ex.getMessage())).build();
         }
     }
-    
+
     @GET
+    @Path("getStudentAllModuleAttandance")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getStudentAllModuleAttandance(@QueryParam("userId") Long userId) {
+        try {
+            User user = em.find(User.class, userId);
+            if (user == null) {
+                return Response.status(Response.Status.NOT_FOUND).entity("User does not exist").build();
+            }
+            List<Module> moduleList = user.getStudentModuleList();
+            if (moduleList == null || moduleList.isEmpty()) {
+                return Response.status(Response.Status.NOT_FOUND).entity("No module enrolled").build();
+            }
+            GetAttendanceRsp rsp = new GetAttendanceRsp(new ArrayList<>());
+            for (Module m : moduleList) {
+                List<Attendance> attendanceList = m.getAttandanceList();
+                if (attendanceList == null || attendanceList.isEmpty()) {
+                    return Response.status(Response.Status.NOT_FOUND).entity("No attendance found").build();
+                }
+                for (Attendance a : attendanceList) {
+                    if (a.getAttendees().contains(user)) {
+                        Module moduleCopy = new Module(m.getModuleId(), m.getCode(), m.getTitle(),
+                                null, m.getSemesterOffered(), m.getYearOffered(), m.getCreditUnit(),
+                                null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
+                                null, m.isHasExam(), null, null, null, null, null);
+                        rsp.getAttendanceList().add(new Attendance(
+                                a.getAttendanceId(), a.getTotal(), a.getAttendedNumber(),
+                                a.getSemester(), null, null, null, moduleCopy,
+                                null, null, null));
+                    }
+                }
+            }
+            return Response.status(Response.Status.OK).entity(rsp).build();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(new ErrorRsp(ex.getMessage())).build();
+        }
+    }
+
+    @GET
+    @Path("getStudentAllTutorialAttandance")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getStudentAllTutorialAttandance(@QueryParam("userId") Long userId) {
+        try {
+            User user = em.find(User.class, userId);
+            if (user == null) {
+                return Response.status(Response.Status.NOT_FOUND).entity("User does not exist").build();
+            }
+            List<Tutorial> tutorialList = user.getTutorials();
+            if (tutorialList == null || tutorialList.isEmpty()) {
+                return Response.status(Response.Status.NOT_FOUND).entity("No tutorial enrolled").build();
+            }
+            GetAttendanceRsp rsp = new GetAttendanceRsp(new ArrayList<>());
+            for (Tutorial t : tutorialList) {
+                List<Attendance> attendanceList = t.getAttendanceList();
+                if (attendanceList == null || attendanceList.isEmpty()) {
+                    return Response.status(Response.Status.NOT_FOUND).entity("No attendance found").build();
+                }
+                for (Attendance a : attendanceList) {
+                    if (a.getAttendees().contains(user)) {
+                        Tutorial tutorialCopy = new Tutorial(t.getTutorialId(), t.getMaxEnrollment(),
+                                t.getVenue(), t.getTiming(), null, null);
+                        rsp.getAttendanceList().add(new Attendance(
+                                a.getAttendanceId(), a.getTotal(), a.getAttendedNumber(),
+                                a.getSemester(), null, null, null, null,
+                                null, tutorialCopy, null));
+                    }
+                }
+            }
+            return Response.status(Response.Status.OK).entity(rsp).build();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(new ErrorRsp(ex.getMessage())).build();
+        }
+    }
+
+    /*@GET
     @Path("getUserAttandance")
     @Produces(MediaType.APPLICATION_JSON)
     public Response getUserAttandance(@QueryParam("userId") Long userId) {
@@ -387,7 +497,8 @@ public class AttendanceResource {
     @GET
     @Path("getAttendees")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response getAttendees(@QueryParam("attendanceId") Long attendanceId) {
+    public Response getAttendees(@QueryParam("attendanceId") Long attendanceId
+    ) {
         try {
             Attendance attendance = em.find(Attendance.class, attendanceId);
             if (attendance == null) {
@@ -416,7 +527,10 @@ public class AttendanceResource {
     @Path(value = "updateAttendance")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response updateAttendance(UpdateAttendance updateAttendance, @QueryParam("moduleId") Long moduleId, @QueryParam("attendanceId") Long attendanceId) {
+    public Response updateAttendance(UpdateAttendance updateAttendance,
+            @QueryParam("moduleId") Long moduleId,
+            @QueryParam("attendanceId") Long attendanceId
+    ) {
         try {
             Module module = em.find(Module.class, moduleId);
             Attendance attendance = em.find(Attendance.class, attendanceId);
@@ -447,7 +561,10 @@ public class AttendanceResource {
     @Path(value = "updateTutorialAttendance")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response updateTutorialAttendance(UpdateAttendance updateAttendance, @QueryParam("tutorialId") Long tutorialId, @QueryParam("attendanceId") Long attendanceId) {
+    public Response updateTutorialAttendance(UpdateAttendance updateAttendance,
+            @QueryParam("tutorialId") Long tutorialId,
+            @QueryParam("attendanceId") Long attendanceId
+    ) {
         try {
             Tutorial tutorial = em.find(Tutorial.class, tutorialId);
             Attendance attendance = em.find(Attendance.class, attendanceId);
@@ -478,7 +595,9 @@ public class AttendanceResource {
     @Path(value = "addAttendee")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response addAttendee(@QueryParam("attendanceId") Long attendanceId, @QueryParam("userId") Long userId) {
+    public Response addAttendee(@QueryParam("attendanceId") Long attendanceId,
+            @QueryParam("userId") Long userId
+    ) {
         try {
             Attendance attendance = em.find(Attendance.class, attendanceId);
             if (attendance == null) {
@@ -515,7 +634,9 @@ public class AttendanceResource {
     @Path(value = "addListOfAttendees")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response addListOfAttendees(@QueryParam("moduleId") Long moduleId, @QueryParam("attendanceId") Long attendanceId) {
+    public Response addListOfAttendees(@QueryParam("moduleId") Long moduleId,
+            @QueryParam("attendanceId") Long attendanceId
+    ) {
         try {
             Module module = em.find(Module.class, moduleId);
             if (module == null) {
@@ -557,7 +678,9 @@ public class AttendanceResource {
     @Path(value = "addTutorialListOfAttendees")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response addTutorialListOfAttendees(@QueryParam("tutorialId") Long tutorialId, @QueryParam("attendanceId") Long attendanceId) {
+    public Response addTutorialListOfAttendees(@QueryParam("tutorialId") Long tutorialId,
+            @QueryParam("attendanceId") Long attendanceId
+    ) {
         try {
             Tutorial tutorial = em.find(Tutorial.class, tutorialId);
             if (tutorial == null) {
@@ -599,7 +722,9 @@ public class AttendanceResource {
     @Path(value = "removeAttendee")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response removeAttendee(@QueryParam("attendanceId") Long attendanceId, @QueryParam("userId") Long userId) {
+    public Response removeAttendee(@QueryParam("attendanceId") Long attendanceId,
+            @QueryParam("userId") Long userId
+    ) {
         try {
             Attendance attendance = em.find(Attendance.class, attendanceId);
             if (attendance == null) {
@@ -634,7 +759,10 @@ public class AttendanceResource {
     @Path(value = "signAttendance")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response signAttendance(@QueryParam("moduleId") Long moduleId, @QueryParam("userId") Long userId, @QueryParam("attendanceId") Long attendanceId) {
+    public Response signAttendance(@QueryParam("moduleId") Long moduleId,
+            @QueryParam("userId") Long userId,
+            @QueryParam("attendanceId") Long attendanceId
+    ) {
         try {
             Module module = em.find(Module.class, moduleId);
             User user = em.find(User.class, userId);
@@ -666,7 +794,10 @@ public class AttendanceResource {
     @Path(value = "signTutorialAttendance")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response signTutorialAttendance(@QueryParam("tutorialId") Long tutorialId, @QueryParam("userId") Long userId, @QueryParam("attendanceId") Long attendanceId) {
+    public Response signTutorialAttendance(@QueryParam("tutorialId") Long tutorialId,
+            @QueryParam("userId") Long userId,
+            @QueryParam("attendanceId") Long attendanceId
+    ) {
         try {
             Tutorial tutorial = em.find(Tutorial.class, tutorialId);
             User user = em.find(User.class, userId);
@@ -697,7 +828,9 @@ public class AttendanceResource {
     @Path(value = "deleteAttendance")
     @DELETE
     @Produces(MediaType.APPLICATION_JSON)
-    public Response deleteAttendance(@QueryParam("moduleId") Long moduleId, @QueryParam("attendanceId") Long attendanceId) {
+    public Response deleteAttendance(@QueryParam("moduleId") Long moduleId,
+            @QueryParam("attendanceId") Long attendanceId
+    ) {
         try {
             Module module = em.find(Module.class, moduleId);
             Attendance attendance = em.find(Attendance.class, attendanceId);
@@ -722,7 +855,9 @@ public class AttendanceResource {
     @Path(value = "deleteTutorialAttendance")
     @DELETE
     @Produces(MediaType.APPLICATION_JSON)
-    public Response deleteTutorialAttendance(@QueryParam("tutorialId") Long tutorialId, @QueryParam("attendanceId") Long attendanceId) {
+    public Response deleteTutorialAttendance(@QueryParam("tutorialId") Long tutorialId,
+            @QueryParam("attendanceId") Long attendanceId
+    ) {
         try {
             Tutorial tutorial = em.find(Tutorial.class, tutorialId);
             Attendance attendance = em.find(Attendance.class, attendanceId);
