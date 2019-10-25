@@ -1025,7 +1025,7 @@ public class DataInitSessionBean {
         sq9.setType(QuestionTypeEnum.radiogroup);
         sq9.setNumber(7);
         sq9.setTitle("The teacher has enhanced my thinking ability.");
-        sq9.setIsRequired(true);
+        sq9.setIsRequired(false);
         sq9.setChoices(choices);
         em.persist(sq9);
         em.flush();
@@ -1035,7 +1035,7 @@ public class DataInitSessionBean {
         sq10.setType(QuestionTypeEnum.radiogroup);
         sq10.setNumber(8);
         sq10.setTitle("The teacher provides timely and useful feedback.");
-        sq10.setIsRequired(true);
+        sq10.setIsRequired(false);
         sq10.setChoices(choices);
         em.persist(sq10);
         em.flush();
@@ -1045,7 +1045,7 @@ public class DataInitSessionBean {
         sq11.setType(QuestionTypeEnum.radiogroup);
         sq11.setNumber(9);
         sq11.setTitle("The teacher is approachable for consultation.");
-        sq11.setIsRequired(true);
+        sq11.setIsRequired(false);
         sq11.setChoices(choices);
         em.persist(sq11);
         em.flush();
@@ -1055,7 +1055,7 @@ public class DataInitSessionBean {
         sq12.setType(QuestionTypeEnum.radiogroup);
         sq12.setNumber(10);
         sq12.setTitle("The teacher has increased my interest in the subject.");
-        sq12.setIsRequired(true);
+        sq12.setIsRequired(false);
         sq12.setChoices(choices);
         em.persist(sq12);
         em.flush();
@@ -1065,7 +1065,7 @@ public class DataInitSessionBean {
         sq13.setType(QuestionTypeEnum.radiogroup);
         sq13.setNumber(11);
         sq13.setTitle("The teacher has enhanced my ability to learn independently.");
-        sq13.setIsRequired(true);
+        sq13.setIsRequired(false);
         sq13.setChoices(choices);
         em.persist(sq13);
         em.flush();
@@ -1075,7 +1075,7 @@ public class DataInitSessionBean {
         sq14.setType(QuestionTypeEnum.radiogroup);
         sq14.setNumber(12);
         sq14.setTitle("The teacher encourages me to apply concepts learnt.");
-        sq14.setIsRequired(true);
+        sq14.setIsRequired(false);
         sq14.setChoices(choices);
         em.persist(sq14);
         em.flush();
@@ -1085,7 +1085,7 @@ public class DataInitSessionBean {
         sq15.setType(QuestionTypeEnum.radiogroup);
         sq15.setNumber(13);
         sq15.setTitle("Overall the teacher is effective.");
-        sq15.setIsRequired(true);
+        sq15.setIsRequired(false);
         sq15.setChoices(choices);
         em.persist(sq15);
         em.flush();
@@ -1095,7 +1095,7 @@ public class DataInitSessionBean {
         sq16.setType(QuestionTypeEnum.text);
         sq16.setNumber(14);
         sq16.setTitle("What are the teacher's strengths?");
-        sq16.setIsRequired(true);
+        sq16.setIsRequired(false);
         em.persist(sq16);
         em.flush();
         survey.getQuestionList().add(sq16);
@@ -1104,7 +1104,7 @@ public class DataInitSessionBean {
         sq17.setType(QuestionTypeEnum.text);
         sq17.setNumber(15);
         sq17.setTitle("What are the teacher's weaknesses?");
-        sq17.setIsRequired(true);
+        sq17.setIsRequired(false);
         em.persist(sq17);
         em.flush();
         survey.getQuestionList().add(sq17);
@@ -1113,7 +1113,7 @@ public class DataInitSessionBean {
         sq18.setType(QuestionTypeEnum.text);
         sq18.setNumber(15);
         sq18.setTitle("What improvements would you suggest to the teacher?");
-        sq18.setIsRequired(true);
+        sq18.setIsRequired(false);
         em.persist(sq18);
         em.flush();
         survey.getQuestionList().add(sq18);
