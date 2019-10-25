@@ -357,14 +357,27 @@ public class CoursepackResource {
         if(lessonOrder == null){
                 return Response.status(Response.Status.NOT_FOUND).entity("Lesson order does not exist").build(); 
         }
-        //if(lessonOrder.getPublicUserList() == null){
         
+        
+        if(lessonOrder.getFile()!=null){
+            File file = lessonOrder.getFile();
+
+            file.setLessonOrder(null);
+            lessonOrder.setFile(null);
+            em.merge(file);
+        }
+        
+        
+        if(lessonOrder.getQuiz()!= null){
+            Quiz quiz = lessonOrder.getQuiz();
+            quiz.setLessonOrder(null);
+            lessonOrder.setQuiz(null);
+            em.merge(quiz);
+        }
+        em.flush();
+                
         lessonOrder.getOutlines().getLessonOrder().remove(lessonOrder);
         em.remove(lessonOrder);
-        
-//        }else{
-//            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
-//        }
         
         return Response.status(Response.Status.OK).build();
     }
