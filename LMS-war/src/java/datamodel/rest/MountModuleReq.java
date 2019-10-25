@@ -35,6 +35,12 @@ public class MountModuleReq {
     private String faculty;
     private String department;
     
+    private Tutorial tutorialList;
+    private Long tutorialId;
+    private String venue;
+    private String timing;
+    private List<User> studentList;
+    
     private User user; 
     private Long userId;
     private String email;
@@ -44,7 +50,7 @@ public class MountModuleReq {
     public MountModuleReq() {
     }
 
-    public MountModuleReq(Module module, Long moduleId, String code, String title, String description, Integer semesterOffered, String yearOffered, Integer creditUnit, Integer maxEnrollment, boolean hasExam, Timestamp examTime, String examVenue, User assignedTeacher, String lectureDetails, String faculty, String department, User user, Long userId, String email, String password) {
+    public MountModuleReq(Module module, Long moduleId, String code, String title, String description, Integer semesterOffered, String yearOffered, Integer creditUnit, Integer maxEnrollment, boolean hasExam, Timestamp examTime, String examVenue, User assignedTeacher, String lectureDetails, String faculty, String department, Tutorial tutorialList, Long tutorialId, String venue, String timing, List<User> studentList, User user, Long userId, String email, String password) {
         this.module = module;
         this.moduleId = moduleId;
         this.code = code;
@@ -61,6 +67,11 @@ public class MountModuleReq {
         this.lectureDetails = lectureDetails;
         this.faculty = faculty;
         this.department = department;
+        this.tutorialList = tutorialList;
+        this.tutorialId = tutorialId;
+        this.venue = venue;
+        this.timing = timing;
+        this.studentList = studentList;
         this.user = user;
         this.userId = userId;
         this.email = email;
@@ -68,7 +79,7 @@ public class MountModuleReq {
     }
 
     
-    
+
     public Module getModule() {
         return module;
     }
@@ -124,7 +135,7 @@ public class MountModuleReq {
     public void setMaxEnrollment(Integer maxEnrollment) {
         this.maxEnrollment = maxEnrollment;
     }
-    
+
     public Long getModuleId() {
         return moduleId;
     }
@@ -219,6 +230,46 @@ public class MountModuleReq {
 
     public void setLectureDetails(String lectureDetails) {
         this.lectureDetails = lectureDetails;
+    }
+
+    public Tutorial getTutorialList() {
+        return tutorialList;
+    }
+
+    public void setTutorialList(Tutorial tutorialList) {
+        this.tutorialList = tutorialList;
+    }
+
+    public Long getTutorialId() {
+        return tutorialId;
+    }
+
+    public void setTutorialId(Long tutorialId) {
+        this.tutorialId = tutorialId;
+    }
+
+    public String getVenue() {
+        return venue;
+    }
+
+    public void setVenue(String venue) {
+        this.venue = venue;
+    }
+
+    public String getTiming() {
+        return timing;
+    }
+
+    public void setTiming(String timing) {
+        this.timing = timing;
+    }
+
+    public List<User> getStudentList() {
+        return studentList;
+    }
+
+    public void setStudentList(List<User> studentList) {
+        this.studentList = studentList;
     }
 
     public String getFaculty() {

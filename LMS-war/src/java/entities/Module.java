@@ -21,12 +21,14 @@ import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.xml.bind.annotation.XmlRootElement;
 /**
  *
  * @author Vixson
  */
 @Entity
-public class Module implements Serializable {
+@Table(name = "MODULE")
+public class Module implements Serializable {   
 
     public Module() {
     }
@@ -56,18 +58,16 @@ public class Module implements Serializable {
     private List<User> studentList;
     @ManyToMany
     @JoinTable(
-    name = "module_publicuser",
-    joinColumns = @JoinColumn(name = "moduleid"),
+    name = "module_publicuser", 
+    joinColumns = @JoinColumn(name = "moduleid"), 
     inverseJoinColumns = @JoinColumn(name = "publicuserid"))
     private List<User> publicUserList;
     @OneToMany(mappedBy = "module")
     private List<Folder> folderList;
     @OneToMany(mappedBy = "module")
-    private List<File> multimediaList;
-    @OneToMany(mappedBy = "module", orphanRemoval = true)
     private List<Annoucement> annoucementList;
     @OneToMany(mappedBy = "module")
-    private List<ForumTopic> forumTopicList;
+    private List<ForumPost> forumPostList;
     @OneToMany(mappedBy = "module")
     private List<Quiz> quizList;
     @OneToMany(mappedBy = "module")
@@ -75,7 +75,7 @@ public class Module implements Serializable {
     @OneToMany(mappedBy = "module")
     private List<Attendance> attandanceList;
     @OneToMany(mappedBy = "module")
-    private List<ConsultationTimeslot> consultationList;
+    private List<Consultation> consultationList;
     @OneToMany(mappedBy = "module")
     private List<LessonPlan> lessonPlanList;
     @ManyToOne
@@ -90,8 +90,8 @@ public class Module implements Serializable {
     private boolean hasExam;
     @Column
     private Timestamp examTime;
-    @ManyToOne
-    private Venue examVenue;
+    @Column
+    private String examVenue;
     @Column
     private String lectureDetails;
     @Column
@@ -99,7 +99,7 @@ public class Module implements Serializable {
     @Column
     private String faculty;
 
-    public Module(Long moduleId, String code, String title, String description, Integer semesterOffered, String yearOffered, Integer creditUnit, String grade, Integer maxEnrollment, List<User> studentList, List<User> publicUserList, List<Folder> folderList, List<Annoucement> annoucementList, List<ForumPost> forumPostList, List<Quiz> quizList, List<GradeItem> gradeItemList, List<Attendance> attandanceList, List<ConsultationTimeslot> consultationList, List<LessonPlan> lessonPlanList, User assignedTeacher, List<ClassGroup> classGroupList, List<Feedback> feedbackList, List<Tutorial> tutorials, boolean hasExam, Timestamp examTime, Venue examVenue, String lectureDetails, String department, String faculty) {
+    public Module(Long moduleId, String code, String title, String description, Integer semesterOffered, String yearOffered, Integer creditUnit, String grade, Integer maxEnrollment, List<User> studentList, List<User> publicUserList, List<Folder> folderList, List<Annoucement> annoucementList, List<ForumPost> forumPostList, List<Quiz> quizList, List<GradeItem> gradeItemList, List<Attendance> attandanceList, List<Consultation> consultationList, List<LessonPlan> lessonPlanList, User assignedTeacher, List<ClassGroup> classGroupList, List<Feedback> feedbackList, List<Tutorial> tutorials, boolean hasExam, Timestamp examTime, String examVenue, String lectureDetails, String department, String faculty) {
         this.moduleId = moduleId;
         this.code = code;
         this.title = title;
@@ -113,7 +113,7 @@ public class Module implements Serializable {
         this.publicUserList = publicUserList;
         this.folderList = folderList;
         this.annoucementList = annoucementList;
-        this.forumTopicList = forumTopicList;
+        this.forumPostList = forumPostList;
         this.quizList = quizList;
         this.gradeItemList = gradeItemList;
         this.attandanceList = attandanceList;
@@ -130,40 +130,9 @@ public class Module implements Serializable {
         this.department = department;
         this.faculty = faculty;
     }
-
-    public Module(Long moduleId, String code, String title, String description, Integer semesterOffered, String yearOffered, Integer creditUnit, String grade, Integer maxEnrollment, List<User> studentList, List<User> publicUserList, List<Folder> folderList, List<File> multimediaList, List<Annoucement> annoucementList, List<ForumPost> forumPostList, List<Quiz> quizList, List<GradeItem> gradeItemList, List<Attendance> attandanceList, List<ConsultationTimeslot> consultationList, List<LessonPlan> lessonPlanList, User assignedTeacher, List<ClassGroup> classGroupList, List<Feedback> feedbackList, List<Tutorial> tutorials, boolean hasExam, Timestamp examTime, Venue examVenue, String lectureDetails, String department, String faculty) {
-        this.moduleId = moduleId;
-        this.code = code;
-        this.title = title;
-        this.description = description;
-        this.semesterOffered = semesterOffered;
-        this.yearOffered = yearOffered;
-        this.creditUnit = creditUnit;
-        this.grade = grade;
-        this.maxEnrollment = maxEnrollment;
-        this.studentList = studentList;
-        this.publicUserList = publicUserList;
-        this.folderList = folderList;
-        this.multimediaList = multimediaList;
-        this.annoucementList = annoucementList;
-        this.forumTopicList = forumTopicList;
-        this.quizList = quizList;
-        this.gradeItemList = gradeItemList;
-        this.attandanceList = attandanceList;
-        this.consultationList = consultationList;
-        this.lessonPlanList = lessonPlanList;
-        this.assignedTeacher = assignedTeacher;
-        this.classGroupList = classGroupList;
-        this.feedbackList = feedbackList;
-        this.tutorials = tutorials;
-        this.hasExam = hasExam;
-        this.examTime = examTime;
-        this.examVenue = examVenue;
-        this.lectureDetails = lectureDetails;
-        this.department = department;
-        this.faculty = faculty;
-    }
-
+    
+    
+	
     @Override
     public int hashCode() {
         int hash = 0;
@@ -273,12 +242,12 @@ public class Module implements Serializable {
         this.annoucementList = annoucementList;
     }
 
-    public List<ForumTopic> getForumTopicList() {
-        return forumTopicList;
+    public List<ForumPost> getForumPostList() {
+        return forumPostList;
     }
 
-    public void setForumTopicList(List<ForumTopic> forumTopicList) {
-        this.forumTopicList = forumTopicList;
+    public void setForumPostList(List<ForumPost> forumPostList) {
+        this.forumPostList = forumPostList;
     }
 
     public List<Quiz> getQuizList() {
@@ -305,11 +274,11 @@ public class Module implements Serializable {
         this.attandanceList = attandanceList;
     }
 
-    public List<ConsultationTimeslot> getConsultationList() {
+    public List<Consultation> getConsultationList() {
         return consultationList;
     }
 
-    public void setConsultationList(List<ConsultationTimeslot> consultationList) {
+    public void setConsultationList(List<Consultation> consultationList) {
         this.consultationList = consultationList;
     }
 
@@ -320,7 +289,7 @@ public class Module implements Serializable {
     public void setLessonPlanList(List<LessonPlan> lessonPlanList) {
         this.lessonPlanList = lessonPlanList;
     }
-
+	
     public List<ClassGroup> getClassGroupList() {
         return classGroupList;
     }
@@ -357,11 +326,11 @@ public class Module implements Serializable {
         this.examTime = examTime;
     }
 
-    public Venue getExamVenue() {
+    public String getExamVenue() {
         return examVenue;
     }
 
-    public void setExamVenue(Venue examVenue) {
+    public void setExamVenue(String examVenue) {
         this.examVenue = examVenue;
     }
 
@@ -403,14 +372,6 @@ public class Module implements Serializable {
 
     public void setFeedbackList(List<Feedback> feedbackList) {
         this.feedbackList = feedbackList;
-    }
-
-    public List<File> getMultimediaList() {
-        return multimediaList;
-    }
-
-    public void setMultimediaList(List<File> multimediaList) {
-        this.multimediaList = multimediaList;
     }
 
     public String getDepartment() {

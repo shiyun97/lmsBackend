@@ -3,9 +3,10 @@
   <persistence-unit name="LMS-warPU" transaction-type="JTA">
     <jta-data-source>jdbc/lmsDatasource</jta-data-source>
     <class>entities.Module</class>
-    <class>entities.Annoucement</class>
+    <class>entities.Attendance</class>
     <class>entities.Badge</class>
     <class>entities.ClassGroup</class>
+    <class>entities.ClassGroupList</class>
     <class>entities.Consultation</class>
     <class>entities.ConsultationTimeslot</class>
     <class>entities.Feedback</class>
@@ -25,14 +26,10 @@
     <class>entities.Schedule</class>
     <class>entities.Appeal</class>
     <class>entities.BiddingRound</class>
-    <class>entities.Attendance</class>
-    <class>entities.Venue</class>
+    <class>entities.Annoucement</class>
     <class>entities.Coursepack</class>
-    <class>entities.ForumTopic</class>
     <class>entities.LessonOrder</class>
     <class>entities.Outlines</class>
-    <class>entities.QuestionAttempt</class>
-    <class>entities.Rating</class>
     <exclude-unlisted-classes>true</exclude-unlisted-classes>
     <properties>
       <property name="javax.persistence.schema-generation.database.action" value="create"/>

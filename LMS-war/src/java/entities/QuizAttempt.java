@@ -6,15 +6,14 @@
 package entities;
 
 import java.io.Serializable;
-import java.util.Date;
-import java.util.List;
+import java.sql.Timestamp;
+import java.util.HashMap;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
 
 /**
  *
@@ -22,6 +21,16 @@ import javax.persistence.OneToMany;
  */
 @Entity
 public class QuizAttempt implements Serializable {
+
+    public QuizAttempt(Timestamp createTs, Timestamp updateTs, Timestamp submitTs, HashMap answers, Double totalMarks, Quiz quiz, User quizTaker) {
+        this.createTs = createTs;
+        this.updateTs = updateTs;
+        this.submitTs = submitTs;
+        this.answers = answers;
+        this.totalMarks = totalMarks;
+        this.quiz = quiz;
+        this.quizTaker = quizTaker;
+    }
 
     public QuizAttempt() {
     }
@@ -31,15 +40,19 @@ public class QuizAttempt implements Serializable {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long quizAttemptId;
     @Column
-    private Date createTs;
+    private Timestamp createTs;
+    @Column
+    private Timestamp updateTs;
+    @Column
+    private Timestamp submitTs;
+    @Column
+    private HashMap answers;
     @Column
     private Double totalMarks;
     @ManyToOne
     private Quiz quiz;
     @ManyToOne
     private User quizTaker;
-    @OneToMany
-    private List<QuestionAttempt> questionAttemptList;
 
 
     public Long getQuizAttemptId() {
@@ -75,14 +88,38 @@ public class QuizAttempt implements Serializable {
         return "entities.QuizAttempt[ Id=" + quizAttemptId + " ]";
     }
 
-    public Date getCreateTs() {
+    public Timestamp getCreateTs() {
         return createTs;
     }
 
-    public void setCreateTs(Date createTs) {
+    public void setCreateTs(Timestamp createTs) {
         this.createTs = createTs;
     }
-    
+
+    public Timestamp getUpdateTs() {
+        return updateTs;
+    }
+
+    public void setUpdateTs(Timestamp updateTs) {
+        this.updateTs = updateTs;
+    }
+
+    public Timestamp getSubmitTs() {
+        return submitTs;
+    }
+
+    public void setSubmitTs(Timestamp submitTs) {
+        this.submitTs = submitTs;
+    }
+
+    public HashMap getAnswers() {
+        return answers;
+    }
+
+    public void setAnswers(HashMap answers) {
+        this.answers = answers;
+    }
+
     public Double getTotalMarks() {
         return totalMarks;
     }
@@ -105,14 +142,6 @@ public class QuizAttempt implements Serializable {
 
     public void setQuizTaker(User quizTaker) {
         this.quizTaker = quizTaker;
-    }
-
-    public List<QuestionAttempt> getQuestionAttemptList() {
-        return questionAttemptList;
-    }
-
-    public void setQuestionAttemptList(List<QuestionAttempt> questionAttemptList) {
-        this.questionAttemptList = questionAttemptList;
     }
     
 }

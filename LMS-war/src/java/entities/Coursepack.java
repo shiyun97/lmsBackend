@@ -22,11 +22,11 @@ import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  *
- *
+ * 
  */
 @Entity
 public class Coursepack implements Serializable {
-
+    
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -41,17 +41,17 @@ public class Coursepack implements Serializable {
     private String category;
     @Column
     private Double price;
-    @Column
+    @Column 
     private Boolean published;
     @Column
     private Double rating;
     @Column
     private String teacherBackground;
-
+    
     @ManyToMany
     private List<User> publicUserList;
     @OneToMany(mappedBy = "coursepack")
-    private List<ForumTopic> forumTopicList;
+    private List<ForumPost> forumPostList;
     @OneToMany(mappedBy = "coursepack")
     private List<GradeItem> gradeItemList;
     @ManyToOne
@@ -61,16 +61,21 @@ public class Coursepack implements Serializable {
     @OneToMany
     private List<Outlines> outlineList;
     @OneToMany
-    private List<Rating> ratingList;
-    @OneToMany(mappedBy = "coursepack")
-    private List<File> multimediaList;
     private List<File> fileList;
     @OneToMany
     private List<Quiz> quizList;
-
-
-
-
+    
+    
+    public Coursepack(){
+        publicUserList = new ArrayList<>();
+        forumPostList = new ArrayList<>();
+        gradeItemList = new ArrayList<>();
+        feedbackList = new ArrayList<>();
+        outlineList = new ArrayList<>();
+        fileList = new ArrayList<>();
+        quizList = new ArrayList<>();
+    }
+    
 
     public Coursepack(Long coursepackId, String code, String title, String description, String category, Double price, Boolean published, Double rating, String teacherBackground, List<User> publicUserList, List<ForumPost> forumPostList, List<GradeItem> gradeItemList, User assignedTeacher, List<Feedback> feedbackList, List<Outlines> outlineList, List<File> fileList,List<Quiz> quizList ) {
         this.coursepackId = coursepackId;
@@ -79,10 +84,10 @@ public class Coursepack implements Serializable {
         this.description = description;
         this.category = category;
         this.price = price;
-        this.published = published;
         this.rating = rating;
         this.teacherBackground = teacherBackground;
         this.publicUserList = publicUserList;
+        this.forumPostList = forumPostList;
         this.gradeItemList = gradeItemList;
         this.assignedTeacher = assignedTeacher;
         this.feedbackList = feedbackList;
@@ -91,16 +96,6 @@ public class Coursepack implements Serializable {
         this.fileList = fileList;
         this.quizList = quizList;
     }
-
-    public Coursepack(){
-        publicUserList = new ArrayList<>();
-        gradeItemList = new ArrayList<>();
-        feedbackList = new ArrayList<>();
-        outlineList = new ArrayList<>();
-        fileList = new ArrayList<>();
-        quizList = new ArrayList<>();
-    }
-
 
     @Override
     public int hashCode() {
@@ -199,12 +194,12 @@ public class Coursepack implements Serializable {
         this.publicUserList = publicUserList;
     }
 
-    public List<Quiz> getQuizList() {
-        return quizList;
+    public List<ForumPost> getForumPostList() {
+        return forumPostList;
     }
 
-    public void setQuizList(List<Quiz> quizList) {
-        this.quizList = quizList;
+    public void setForumPostList(List<ForumPost> forumPostList) {
+        this.forumPostList = forumPostList;
     }
 
     public List<GradeItem> getGradeItemList() {
@@ -239,13 +234,6 @@ public class Coursepack implements Serializable {
         this.outlineList = outlineList;
     }
 
-    public List<Rating> getRatingList() {
-        return ratingList;
-    }
-
-    public void setRatingList(List<Rating> ratingList) {
-        this.ratingList = ratingList;
-    }
     public Boolean getPublished() {
         return published;
     }
@@ -262,20 +250,15 @@ public class Coursepack implements Serializable {
         this.fileList = fileList;
     }
 
-    public List<ForumTopic> getForumTopicList() {
-        return forumTopicList;
+    public List<Quiz> getQuizList() {
+        return quizList;
     }
 
-    public void setForumTopicList(List<ForumTopic> forumTopicList) {
-        this.forumTopicList = forumTopicList;
+    public void setQuizList(List<Quiz> quizList) {
+        this.quizList = quizList;
     }
 
-    public List<File> getMultimediaList() {
-        return multimediaList;
-    }
-
-    public void setMultimediaList(List<File> multimediaList) {
-        this.multimediaList = multimediaList;
-    }
-
+    
+    
+    
 }

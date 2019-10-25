@@ -6,8 +6,8 @@
 package entities;
 
 import java.io.Serializable;
+import java.sql.Timestamp;
 import java.util.List;
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -23,6 +23,19 @@ import javax.persistence.OneToMany;
 @Entity
 public class GradeItem implements Serializable {
 
+    public GradeItem(Double title, Double mean, Double median, Double twentyFifth, Double seventyFifth, Timestamp createTs, Timestamp updateTs, Boolean released, List<GradeEntry> gradeEntries, Module module) {
+        this.title = title;
+        this.mean = mean;
+        this.median = median;
+        this.twentyFifth = twentyFifth;
+        this.seventyFifth = seventyFifth;
+        this.createTs = createTs;
+        this.updateTs = updateTs;
+        this.released = released;
+        this.gradeEntries = gradeEntries;
+        this.module = module;
+    }
+
     public GradeItem() {
     }
 
@@ -31,11 +44,7 @@ public class GradeItem implements Serializable {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long gradeItemId;
     @Column
-    private String title;
-    @Column
-    private String description;
-    @Column
-    private Double maxMarks;
+    private Double title;
     @Column
     private Double mean;
     @Column
@@ -45,8 +54,12 @@ public class GradeItem implements Serializable {
     @Column
     private Double seventyFifth;
     @Column
-    private Boolean publish;
-    @OneToMany(cascade = CascadeType.REMOVE)
+    private Timestamp createTs;
+    @Column
+    private Timestamp updateTs;
+    @Column
+    private Boolean released;
+    @OneToMany
     private List<GradeEntry> gradeEntries;
     @ManyToOne
     private Module module;
@@ -87,20 +100,12 @@ public class GradeItem implements Serializable {
         return "entities.GradeItem[ Id=" + gradeItemId + " ]";
     }
 
-    public String getTitle() {
+    public Double getTitle() {
         return title;
     }
 
-    public void setTitle(String title) {
+    public void setTitle(Double title) {
         this.title = title;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
     }
 
     public Double getMean() {
@@ -135,12 +140,28 @@ public class GradeItem implements Serializable {
         this.seventyFifth = seventyFifth;
     }
 
-    public Boolean getPublish() {
-        return publish;
+    public Timestamp getCreateTs() {
+        return createTs;
     }
 
-    public void setPublish(Boolean publish) {
-        this.publish = publish;
+    public void setCreateTs(Timestamp createTs) {
+        this.createTs = createTs;
+    }
+
+    public Timestamp getUpdateTs() {
+        return updateTs;
+    }
+
+    public void setUpdateTs(Timestamp updateTs) {
+        this.updateTs = updateTs;
+    }
+
+    public Boolean getReleased() {
+        return released;
+    }
+
+    public void setReleased(Boolean released) {
+        this.released = released;
     }
 
     public List<GradeEntry> getGradeEntries() {
@@ -159,13 +180,6 @@ public class GradeItem implements Serializable {
         this.module = module;
     }
 
-    public Double getMaxMarks() {
-        return maxMarks;
-    }
-
-    public void setMaxMarks(Double maxMarks) {
-        this.maxMarks = maxMarks;
-    }
     public Coursepack getCoursepack() {
         return coursepack;
     }

@@ -13,7 +13,6 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToMany;
-import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import util.AccessRightEnum;
@@ -25,47 +24,6 @@ import util.GenderEnum;
  */
 @Entity
 public class User implements Serializable {
-
-    private static final long serialVersionUID = 1L;
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long userId;
-    @Column
-    private String firstName;
-    @Column
-    private String lastName;
-    @Column
-    private String email;
-    @Column
-    private String username;
-    @Column
-    private String password;
-    @Column
-    private GenderEnum gender;
-    @Column
-    private AccessRightEnum accessRight;
-    @OneToMany(mappedBy = "booker")
-    private List<ConsultationTimeslot> consultationTimeslotList;
-    @OneToMany(mappedBy = "quizTaker")
-    private List<QuizAttempt> quizAttemptList;
-    @OneToMany(mappedBy = "surveyTaker")
-    private List<SurveyAttempt> surveyAttemptList;
-    @ManyToMany(mappedBy = "members")
-    private List<ClassGroup> classGroupList;
-    @OneToMany(mappedBy = "assignedTeacher")
-    private List<Module> teacherModuleList;
-    @ManyToMany(mappedBy = "studentList")
-    private List<Module> studentModuleList;
-    @ManyToMany(mappedBy = "publicUserList")
-    private List<Module> publicUserModuleList;
-    @ManyToMany(mappedBy = "studentList")
-    private List<Tutorial> tutorials;
-    @OneToMany(mappedBy = "student")
-    private List<Attendance> attendanceList;
-    @OneToMany(mappedBy = "assignedTeacher")
-    private List<Coursepack> teacherCoursepackList;
-    @ManyToMany(mappedBy = "publicUserList")
-    private List<Coursepack> publicUserCoursepackList;
 
     public User(String firstName, String lastName, String email, String username, String password, GenderEnum gender, AccessRightEnum accessRight, List<ConsultationTimeslot> consultationTimeslotList, List<QuizAttempt> quizAttemptList, List<SurveyAttempt> surveyAttemptList, List<ClassGroup> classGroupList, List<Module> teacherModuleList, List<Module> studentModuleList, List<Module> publicUserModuleList) {
         this.firstName = firstName;
@@ -103,29 +61,49 @@ public class User implements Serializable {
         this.publicUserModuleList = publicUserModuleList;
     }
 
-    public User(Long userId, String firstName, String lastName, String email, String username, String password, GenderEnum gender, AccessRightEnum accessRight, List<ConsultationTimeslot> consultationTimeslotList, List<QuizAttempt> quizAttemptList, List<SurveyAttempt> surveyAttemptList, List<ClassGroup> classGroupList, List<Module> teacherModuleList, List<Module> studentModuleList, List<Module> publicUserModuleList, List<Tutorial> tutorials, List<Attendance> attendanceList) {
-        this.userId = userId;
-        this.firstName = firstName;
-        this.lastName = lastName;
-        this.email = email;
-        this.username = username;
-        this.password = password;
-        this.gender = gender;
-        this.accessRight = accessRight;
-        this.consultationTimeslotList = consultationTimeslotList;
-        this.quizAttemptList = quizAttemptList;
-        this.surveyAttemptList = surveyAttemptList;
-        this.classGroupList = classGroupList;
-        this.teacherModuleList = teacherModuleList;
-        this.studentModuleList = studentModuleList;
-        this.publicUserModuleList = publicUserModuleList;
-        this.tutorials = tutorials;
-        this.attendanceList = attendanceList;
-    }
-
     public User() {
     }
 
+    private static final long serialVersionUID = 1L;
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private Long userId;
+    @Column
+    private String firstName;
+    @Column
+    private String lastName;
+    @Column
+    private String email;
+    @Column
+    private String username;
+    @Column
+    private String password;
+    @Column
+    private GenderEnum gender;
+    @Column
+    private AccessRightEnum accessRight;
+    @OneToMany(mappedBy = "booker")
+    private List<ConsultationTimeslot> consultationTimeslotList;
+    @OneToMany(mappedBy = "quizTaker")
+    private List<QuizAttempt> quizAttemptList;
+    @OneToMany(mappedBy = "surveyTaker")
+    private List<SurveyAttempt> surveyAttemptList;
+    @ManyToMany(mappedBy = "members")
+    private List<ClassGroup> classGroupList;
+    @OneToMany(mappedBy = "assignedTeacher")
+    private List<Module> teacherModuleList;
+    @ManyToMany(mappedBy = "studentList")
+    private List<Module> studentModuleList;
+    @ManyToMany(mappedBy = "publicUserList")
+    private List<Module> publicUserModuleList;
+    @ManyToMany(mappedBy = "studentList")
+    private List<Tutorial> tutorials;
+    
+    @OneToMany(mappedBy = "assignedTeacher")
+    private List<Coursepack> teacherCoursepackList;
+    @ManyToMany(mappedBy = "publicUserList")
+    private List<Coursepack> publicUserCoursepackList;
+    
     public Long getId() {
         return userId;
     }
@@ -287,14 +265,6 @@ public class User implements Serializable {
         this.userId = userId;
     }
 
-    public List<Attendance> getAttendanceList() {
-        return attendanceList;
-    }
-
-    public void setAttendanceList(List<Attendance> attendanceList) {
-        this.attendanceList = attendanceList;
-    }
-    
     public List<Coursepack> getTeacherCoursepackList() {
         return teacherCoursepackList;
     }
@@ -310,4 +280,9 @@ public class User implements Serializable {
     public void setPublicUserCoursepackList(List<Coursepack> publicUserCoursepackList) {
         this.publicUserCoursepackList = publicUserCoursepackList;
     }
+
+    
+    
+    
+    
 }

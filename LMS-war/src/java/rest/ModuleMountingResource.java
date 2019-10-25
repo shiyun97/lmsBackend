@@ -8,19 +8,15 @@ package rest;
 import datamodel.rest.MountModuleReq;
 import datamodel.rest.UpdateModule;
 import datamodel.rest.CheckUserLogin;
-import datamodel.rest.ErrorRsp;
 import datamodel.rest.GetModuleRsp;
 import datamodel.rest.GetTutorialRsp;
 import datamodel.rest.GetUserRsp;
-import datamodel.rest.GetVenueRsp;
 import datamodel.rest.MountTutorial;
 import datamodel.rest.UpdateModuleTutorial;
-import datamodel.rest.UpdateTutorialStudent;
 import entities.Feedback;
 import entities.Module;
 import entities.Tutorial;
 import entities.User;
-import entities.Venue;
 import java.util.ArrayList;
 import java.util.List;
 import javax.ejb.Stateless;
@@ -91,7 +87,7 @@ public class ModuleMountingResource {
     @Path(value = "mountModule")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response mountModule(MountModuleReq mountModuleReq, @QueryParam("userId") Long userId, @QueryParam("venueId") Long venueId) {
+    public Response mountModule(MountModuleReq mountModuleReq) {
         try {
             Module module = new Module();
             module.setCode(mountModuleReq.getCode());
@@ -103,24 +99,21 @@ public class ModuleMountingResource {
             module.setMaxEnrollment(mountModuleReq.getMaxEnrollment());
             module.setHasExam(mountModuleReq.isHasExam());
             module.setExamTime(mountModuleReq.getExamTime());
-
-            Venue venue = em.find(Venue.class, venueId);
-            Venue venueCopy = new Venue(venue.getId(), venue.getName());
-            module.setExamVenue(venue);
-            User user = em.find(User.class, userId);
-            User userCopy = new User(user.getFirstName(), user.getLastName(), user.getEmail(),
-                    user.getUsername(), null, user.getGender(), null, null, null, null, null, null, null, null);
-            module.setAssignedTeacher(user);
+            module.setExamVenue(mountModuleReq.getExamVenue());
+            module.setAssignedTeacher(mountModuleReq.getUser());
             module.setLectureDetails(mountModuleReq.getLectureDetails());
-            module.setFaculty(mountModuleReq.getFaculty());
-            module.setDepartment(mountModuleReq.getDepartment());
             em.persist(module);
             em.flush();
-            Module moduleCopy = new Module(module.getModuleId(), module.getCode(), module.getTitle(), module.getDescription(),
-                    module.getSemesterOffered(), module.getYearOffered(), module.getCreditUnit(), null, module.getMaxEnrollment(), null,
-                    null, null, null, null, null, null, null, null, null, userCopy, null, null, null, module.isHasExam(), module.getExamTime(),
-                    venueCopy, module.getLectureDetails(), module.getDepartment(), module.getFaculty());
-            return Response.status(Response.Status.OK).entity(moduleCopy).build();
+            Tutorial tutorial = new Tutorial();
+            tutorial.setMaxEnrollment(mountModuleReq.getMaxEnrollment());
+            tutorial.setVenue(mountModuleReq.getVenue());
+            tutorial.setTiming(mountModuleReq.getTiming());
+            tutorial.setModule(mountModuleReq.getModule());
+            em.persist(tutorial);
+            em.flush();
+            module.getTutorials().add(tutorial);
+
+            return Response.status(Response.Status.OK).entity(module).build();
         } catch (Exception ex) {
             ex.printStackTrace();
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
@@ -131,28 +124,22 @@ public class ModuleMountingResource {
     @Path(value = "mountTutorial")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response mountTutorial(MountTutorial mountTutorial, @QueryParam("moduleId") Long moduleId, @QueryParam("venueId") Long venueId) {
+    public Response mountTutorial(MountTutorial mountTutorial, @QueryParam("moduleId") Long moduleId) {
         try {
             Module module = em.find(Module.class, moduleId);
             if (module == null) {
                 return Response.status(Response.Status.NOT_FOUND).entity("Module does not exist").build();
             }
-            Venue venue = em.find(Venue.class, venueId);
-            if (venue == null) {
-                return Response.status(Response.Status.NOT_FOUND).entity("Venue does not exist").build();
-            }
             Tutorial tutorial = new Tutorial();
             tutorial.setMaxEnrollment(mountTutorial.getMaxEnrollment());
-            tutorial.setVenue(venue);
-            tutorial.setTiming(mountTutorial.getTiming());;
-            tutorial.setModule(module);
+            tutorial.setVenue(mountTutorial.getVenue());
+            tutorial.setTiming(mountTutorial.getTiming());
+            tutorial.setModule(mountTutorial.getModule());
             em.persist(tutorial);
             em.flush();
             module.getTutorials().add(tutorial);
-            Venue venueCopy = new Venue(venue.getId(), venue.getName());
-            Tutorial tutorialCopy = new Tutorial(tutorial.getTutorialId(), tutorial.getMaxEnrollment(),
-                    venueCopy, tutorial.getTiming(), null, null);
-            return Response.status(Response.Status.OK).entity(tutorialCopy).build();
+            return Response.status(Response.Status.OK).entity(module).build();
+
         } catch (Exception ex) {
             ex.printStackTrace();
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
@@ -167,7 +154,7 @@ public class ModuleMountingResource {
             Module module = em.find(Module.class, moduleId);
 
             if (module == null) {
-                return Response.status(Response.Status.NOT_FOUND).entity(new ErrorRsp("Module does not exist")).build();
+                return Response.status(Response.Status.NOT_FOUND).entity("Module does not exist").build();
             }
 
             User teacher = module.getAssignedTeacher();
@@ -175,40 +162,39 @@ public class ModuleMountingResource {
                     teacher.getUsername(), null, teacher.getGender(), teacher.getAccessRight(),
                     null, null, null, null, null, null, null);
 
-            List<Tutorial> tutorialsCopy = new ArrayList<>();
-            List<Tutorial> tutorials = module.getTutorials();
+            List<Tutorial> tutorials = new ArrayList<>();
             for (Tutorial t : tutorials) {
                 t.getMaxEnrollment();
                 t.getVenue();
                 t.getTiming();
                 t.getStudentList();
                 t.getModule();
-                tutorialsCopy.add(new Tutorial(
-                        t.getTutorialId(), t.getMaxEnrollment(), t.getVenue(),
-                        t.getTiming(), null, null));
+
+
+                tutorials.add(t);
             }
 
-            List<Feedback> feedbackListCopy = new ArrayList<>();
-            List<Feedback> feedbackList = module.getFeedbackList();
+            List<Feedback> feedbackList = new ArrayList<>();
             for (Feedback f : feedbackList) {
+                f.getClass();
                 f.getCreateTs();
                 f.getFeedback();
-                feedbackListCopy.add(new Feedback(
-                        f.getFeedbackId(), f.getFeedback(), f.getCreateTs()));
+
+                feedbackList.add(f);
             }
 
             Module moduleCopy = new Module(module.getModuleId(), module.getCode(), module.getTitle(),
                     module.getDescription(), module.getSemesterOffered(),
                     module.getYearOffered(), module.getCreditUnit(), null, module.getMaxEnrollment(),
                     null, null, null, null, null, null, null, null, null, null,
-                    teacherCopy, null, feedbackListCopy, tutorialsCopy, module.isHasExam(),
+                    teacherCopy, null, feedbackList, tutorials, module.isHasExam(),
                     module.getExamTime(), module.getExamVenue(), module.getLectureDetails(), module.getFaculty(),
                     module.getDepartment());
 
             return Response.status(Response.Status.OK).entity(moduleCopy).build();
 
         } catch (Exception ex) {
-            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(new ErrorRsp(ex.getMessage())).build();
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
         }
     }
 
@@ -230,33 +216,31 @@ public class ModuleMountingResource {
                     teacher.getUsername(), null, teacher.getGender(), teacher.getAccessRight(),
                     null, null, null, null, null, null, null);
 
-            List<Tutorial> tutorialsCopy = new ArrayList<>();
-            List<Tutorial> tutorials = module.getTutorials();
+            List<Tutorial> tutorials = new ArrayList<>();
             for (Tutorial t : tutorials) {
                 t.getMaxEnrollment();
                 t.getVenue();
                 t.getTiming();
                 t.getStudentList();
                 t.getModule();
-                tutorialsCopy.add(new Tutorial(
-                        t.getTutorialId(), t.getMaxEnrollment(), t.getVenue(),
-                        t.getTiming(), null, null));
+
+                tutorials.add(t);
             }
 
-            List<Feedback> feedbackListCopy = new ArrayList<>();
-            List<Feedback> feedbackList = module.getFeedbackList();
+            List<Feedback> feedbackList = new ArrayList<>();
             for (Feedback f : feedbackList) {
+                f.getClass();
                 f.getCreateTs();
                 f.getFeedback();
-                feedbackListCopy.add(new Feedback(
-                        f.getFeedbackId(), f.getFeedback(), f.getCreateTs()));
+
+                feedbackList.add(f);
             }
 
             Module moduleCopy = new Module(module.getModuleId(), module.getCode(), module.getTitle(),
                     module.getDescription(), module.getSemesterOffered(),
                     module.getYearOffered(), module.getCreditUnit(), null, module.getMaxEnrollment(),
                     null, null, null, null, null, null, null, null, null, null,
-                    teacherCopy, null, feedbackListCopy, tutorialsCopy, module.isHasExam(),
+                    teacherCopy, null, feedbackList, tutorials, module.isHasExam(),
                     module.getExamTime(), module.getExamVenue(), module.getLectureDetails(), module.getFaculty(),
                     module.getDepartment());
 
@@ -286,36 +270,30 @@ public class ModuleMountingResource {
                     User teacherCopy = new User(null, teacher.getId(), teacher.getFirstName(), teacher.getLastName(), teacher.getEmail(),
                             teacher.getUsername(), null, teacher.getGender(), teacher.getAccessRight(),
                             null, null, null, null, null, null, null);
-                    Venue venue = module.getExamVenue();
-                    Venue venueCopy = new Venue(venue.getId(), venue.getName());
-                    List<Tutorial> tutorialsCopy = new ArrayList<>();
-                    List<Tutorial> tutorials = module.getTutorials();
+
+                    List<Tutorial> tutorials = new ArrayList<>();
                     for (Tutorial t : tutorials) {
-                        Venue tutVenue = t.getVenue();
-                        Venue tutVenueCopy = new Venue(tutVenue.getId(), tutVenue.getName());
                         t.getMaxEnrollment();
+                        t.getVenue();
                         t.getTiming();
                         t.getStudentList();
                         t.getModule();
-                        tutorialsCopy.add(new Tutorial(
-                                t.getTutorialId(), t.getMaxEnrollment(), tutVenueCopy,
-                                t.getTiming(), null, null));
+                        tutorials.add(t);
                     }
-                    List<Feedback> feedbackListCopy = new ArrayList<>();
-                    List<Feedback> feedbackList = module.getFeedbackList();
+                    List<Feedback> feedbackList = new ArrayList<>();
                     for (Feedback f : feedbackList) {
+                        f.getClass();
                         f.getCreateTs();
                         f.getFeedback();
-                        feedbackListCopy.add(new Feedback(
-                                f.getFeedbackId(), f.getFeedback(), f.getCreateTs()));
+                        feedbackList.add(f);
                     }
                     rsp.getModule().add(
                             new Module(module.getModuleId(), module.getCode(), module.getTitle(),
                                     module.getDescription(), module.getSemesterOffered(),
                                     module.getYearOffered(), module.getCreditUnit(), null, module.getMaxEnrollment(),
                                     null, null, null, null, null, null, null, null, null, null,
-                                    teacherCopy, null, feedbackListCopy, tutorialsCopy, module.isHasExam(),
-                                    module.getExamTime(), venueCopy, module.getLectureDetails(), module.getFaculty(),
+                                    teacherCopy, null, feedbackList, tutorials, module.isHasExam(),
+                                    module.getExamTime(), module.getExamVenue(), module.getLectureDetails(), module.getFaculty(),
                                     module.getDepartment()));
                 }
                 return Response.status(Response.Status.OK).entity(rsp).build();
@@ -376,7 +354,7 @@ public class ModuleMountingResource {
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response updateModule(UpdateModule updateModule, @QueryParam("moduleId") Long moduleId, @QueryParam("userId") Long userId, @QueryParam("venueId") Long venueId) {
+    public Response updateModule(UpdateModule updateModule, @QueryParam("moduleId") Long moduleId) {
 
         try {
 
@@ -390,25 +368,16 @@ public class ModuleMountingResource {
                 module.setYearOffered(updateModule.getYearOffered());
                 module.setCreditUnit(updateModule.getCreditUnit());
                 module.setMaxEnrollment(updateModule.getMaxEnrollment());
+                module.setAssignedTeacher(updateModule.getAssignedTeacher());
                 module.setHasExam(updateModule.isHasExam());
                 module.setExamTime(updateModule.getExamTime());
-                Venue venue = em.find(Venue.class, venueId);
-                Venue venueCopy = new Venue(venue.getId(), venue.getName());
-                module.setExamVenue(venue);
-                User user = em.find(User.class, userId);
-                User userCopy = new User(user.getFirstName(), user.getLastName(), user.getEmail(),
-                        user.getUsername(), null, user.getGender(), null, null, null, null, null, null, null, null);
-                module.setAssignedTeacher(user);
+                module.setExamVenue(updateModule.getExamVenue());
                 module.setLectureDetails(updateModule.getLectureDetails());
-                module.setFaculty(updateModule.getFaculty());
-                module.setDepartment(updateModule.getDepartment());
+
                 em.merge(module);
                 em.flush();
-                Module moduleCopy = new Module(module.getModuleId(), module.getCode(), module.getTitle(), module.getDescription(),
-                        module.getSemesterOffered(), module.getYearOffered(), module.getCreditUnit(), null, module.getMaxEnrollment(), null,
-                        null, null, null, null, null, null, null, null, null, userCopy, null, null, null, module.isHasExam(), module.getExamTime(),
-                        venueCopy, module.getLectureDetails(), module.getDepartment(), module.getFaculty());
-                return Response.status(Response.Status.OK).entity(moduleCopy).build();
+
+                return Response.status(Response.Status.OK).entity(module).build();
             }
             return Response.status(Response.Status.NOT_FOUND).entity("Module does not exist").build();
         } catch (Exception ex) {
@@ -417,19 +386,15 @@ public class ModuleMountingResource {
         }
     }
 
-    /*@Path(value = "updateModuleWithTutorial")
+    @Path(value = "updateModuleWithTutorial")
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response updateModuleWithTutorial(UpdateModule updateModule, @QueryParam("moduleId") Long moduleId, @QueryParam("userId") Long userId, @QueryParam("venueId") Long venueId) {
+    public Response updateModuleWithTutorial(UpdateModule updateModule, @QueryParam("moduleId") Long moduleId) {
 
         try {
 
             Module module = em.find(Module.class, moduleId);
-            Venue venue = em.find(Venue.class, venueId);
-            if (venue == null) {
-                return Response.status(Response.Status.NOT_FOUND).entity("Venue does not exist").build();
-            }
 
             if (module != null) {
                 module.setCode(updateModule.getCode());
@@ -439,39 +404,34 @@ public class ModuleMountingResource {
                 module.setYearOffered(updateModule.getYearOffered());
                 module.setCreditUnit(updateModule.getCreditUnit());
                 module.setMaxEnrollment(updateModule.getMaxEnrollment());
-                User user = em.find(User.class, userId);
-                User userCopy = new User(user.getFirstName(), user.getLastName(), user.getEmail(),
-                        user.getUsername(), null, user.getGender(), null, null, null, null, null, null, null, null);
-                module.setAssignedTeacher(user);
+                module.setAssignedTeacher(updateModule.getAssignedTeacher());
+                module.setHasExam(updateModule.isHasExam());
+                module.setExamTime(updateModule.getExamTime());
+                module.setExamVenue(updateModule.getExamVenue());
                 module.setLectureDetails(updateModule.getLectureDetails());
-                module.setFaculty(updateModule.getFaculty());
-                module.setDepartment(updateModule.getDepartment());
+
                 if (module.getTutorials().isEmpty()) {
                     em.merge(module);
                     return Response.status(Response.Status.NOT_FOUND).entity("Module has no tutorial").build();
                 }
-                List<Tutorial> tutorialsCopy = new ArrayList<>();
                 List<Tutorial> tutorials = module.getTutorials();
                 for (Tutorial t : tutorials) {
                     t.setMaxEnrollment(updateModule.getMaxEnrollment());
-                    t.setVenue(venue);
+                    t.setVenue(updateModule.getVenue());
                     t.setTiming(updateModule.getTiming());
+                    t.setStudentList(updateModule.getStudentList());
                     em.merge(t);
-                    tutorialsCopy.add(new Tutorial(t.getTutorialId(), t.getMaxEnrollment(),
-                            t.getVenue(), t.getTiming(), null, null));
                 }
-                Module moduleCopy = new Module(module.getModuleId(), module.getCode(), module.getTitle(), module.getDescription(),
-                        module.getSemesterOffered(), module.getYearOffered(), module.getCreditUnit(), null, module.getMaxEnrollment(), null,
-                        null, null, null, null, null, null, null, null, null, userCopy, null, null, null, module.isHasExam(), module.getExamTime(),
-                        module.getExamVenue(), module.getLectureDetails(), module.getDepartment(), module.getFaculty());
-                return Response.status(Response.Status.OK).entity(moduleCopy).build();
+                em.flush();
+                return Response.status(Response.Status.OK).entity(module).build();
             }
             return Response.status(Response.Status.NOT_FOUND).entity("Module does not exist").build();
         } catch (Exception ex) {
             ex.printStackTrace();
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
         }
-    }*/
+    }
+
     @Path(value = "updateModuleDescription/{moduleId}")
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
@@ -482,28 +442,28 @@ public class ModuleMountingResource {
 
             Module module = em.find(Module.class, moduleId);
 
-            if (module == null) {
-                return Response.status(Response.Status.NOT_FOUND).entity(new ErrorRsp("Module does not exist")).build();
+            if(module == null){
+                return Response.status(Response.Status.NOT_FOUND).entity("Module does not exist").build();
             }
-
+            
             module.setDescription(description);
 
 //            em.merge(module);
             em.flush();
 
             return Response.status(Response.Status.OK).build();
-
+            
         } catch (Exception ex) {
             ex.printStackTrace();
-            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(new ErrorRsp(ex.getMessage())).build();
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(ex.getMessage()).build();
         }
     }
-
+    
     @Path(value = "updateModuleTutorial")
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response updateModuleTutorial(UpdateModuleTutorial updateModuleTutorial, @QueryParam("moduleId") Long moduleId, @QueryParam("venueId") Long venueId) {
+    public Response updateModuleTutorial(UpdateModuleTutorial updateModuleTutorial, @QueryParam("moduleId") Long moduleId) {
 
         try {
             Module module = em.find(Module.class, moduleId);
@@ -513,96 +473,15 @@ public class ModuleMountingResource {
             if (module.getTutorials().isEmpty()) {
                 return Response.status(Response.Status.NOT_FOUND).entity("Module has no tutorial").build();
             }
-            Venue venue = em.find(Venue.class, venueId);
-            if (venue == null) {
-                return Response.status(Response.Status.NOT_FOUND).entity("Venue does not exist").build();
-            }
-            Venue venueCopy = new Venue(venue.getId(), venue.getName());
-            List<Tutorial> tutorialsCopy = new ArrayList<>();
             List<Tutorial> tutorials = module.getTutorials();
             for (Tutorial t : tutorials) {
                 t.setMaxEnrollment(updateModuleTutorial.getMaxEnrollment());
-                t.setVenue(venue);
+                t.setVenue(updateModuleTutorial.getVenue());
                 t.setTiming(updateModuleTutorial.getTiming());
+                t.setStudentList(updateModuleTutorial.getStudentList());
                 em.merge(t);
-                em.flush();
-                tutorialsCopy.add(new Tutorial(
-                        t.getTutorialId(), t.getMaxEnrollment(), venueCopy,
-                        t.getTiming(), null, null));
             }
-            return Response.status(Response.Status.OK).entity(tutorialsCopy).build();
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
-        }
-    }
-
-    @Path(value = "updateTutorial")
-    @POST
-    @Consumes(MediaType.APPLICATION_JSON)
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response updateTutorial(UpdateModuleTutorial updateModuleTutorial, @QueryParam("tutorialId") Long tutorialId, @QueryParam("venueId") Long venueId) {
-
-        try {
-            Tutorial tutorial = em.find(Tutorial.class, tutorialId);
-            if (tutorial == null) {
-                return Response.status(Response.Status.NOT_FOUND).entity("Tutorial does not exist").build();
-            }
-            Venue venue = em.find(Venue.class, venueId);
-            if (venue == null) {
-                return Response.status(Response.Status.NOT_FOUND).entity("Venue does not exist").build();
-            }
-            tutorial.setMaxEnrollment(updateModuleTutorial.getMaxEnrollment());
-            tutorial.setVenue(venue);
-            tutorial.setTiming(updateModuleTutorial.getTiming());
-            em.merge(tutorial);
-            em.flush();
-            Venue venueCopy = new Venue(venue.getId(), venue.getName());
-            Tutorial tutorialCopy = new Tutorial(tutorial.getTutorialId(), tutorial.getMaxEnrollment(),
-                    venueCopy, tutorial.getTiming(), null, null);
-            return Response.status(Response.Status.OK).entity(tutorialCopy).build();
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
-        }
-    }
-
-    @Path(value = "updateTutorialWithStudent")
-    @POST
-    @Consumes(MediaType.APPLICATION_JSON)
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response updateTutorialWithStudent(UpdateTutorialStudent updateTutorialStudent, @QueryParam("tutorialId") Long tutorialId, @QueryParam("venueId") Long venueId) {
-
-        try {
-            Tutorial tutorial = em.find(Tutorial.class, tutorialId);
-            if (tutorial == null) {
-                return Response.status(Response.Status.NOT_FOUND).entity("Tutorial does not exist").build();
-            }
-            Venue venue = em.find(Venue.class, venueId);
-            if (venue == null) {
-                return Response.status(Response.Status.NOT_FOUND).entity("Venue does not exist").build();
-            }
-            tutorial.setMaxEnrollment(updateTutorialStudent.getMaxEnrollment());
-            tutorial.setVenue(venue);
-            tutorial.setTiming(updateTutorialStudent.getTiming());
-            List<User> studentsCopy = new ArrayList<>();
-            List<User> students = tutorial.getStudentList();
-            for (User s : students) {
-                s.setId(updateTutorialStudent.getUserId());
-                s.setEmail(updateTutorialStudent.getEmail());
-                s.setFirstName(updateTutorialStudent.getFirstName());
-                s.setLastName(updateTutorialStudent.getLastName());
-                s.setGender(updateTutorialStudent.getGender());
-                s.setUsername(updateTutorialStudent.getUsername());
-                studentsCopy.add(new User(s.getFirstName(), s.getLastName(), s.getEmail(), s.getUsername(), null,
-                        s.getGender(), null, null, null, null, null, null, null, null));
-            }
-            em.merge(tutorial);
-            em.flush();
-            Venue venueCopy = new Venue(venue.getId(), venue.getName());
-            Tutorial tutorialCopy = new Tutorial(tutorial.getTutorialId(), tutorial.getMaxEnrollment(),
-                    venueCopy, tutorial.getTiming(), studentsCopy, null);
-            return Response.status(Response.Status.OK).entity(tutorialCopy).build();
+            return Response.status(Response.Status.OK).entity(tutorials).build();
         } catch (Exception ex) {
             ex.printStackTrace();
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
@@ -616,50 +495,45 @@ public class ModuleMountingResource {
         try {
             Module module = em.find(Module.class, moduleId);
             if (module == null) {
-                return Response.status(Response.Status.NOT_FOUND).entity(new ErrorRsp("No module found")).build();
+                return Response.status(Response.Status.NOT_FOUND).entity("No module found").build();
             }
             /*Query query = em.createQuery("select t from Tutorial t where t.module = :moduleId");
             query.setParameter("moduleId", moduleId);
             List<Tutorial> tutorials = query.getResultList();*/
-            GetTutorialRsp rsp = new GetTutorialRsp(new ArrayList<>(), new ArrayList<>());
+            GetTutorialRsp rsp = new GetTutorialRsp(new ArrayList<>());
             List<Tutorial> tutorials = module.getTutorials();
             if (tutorials == null && tutorials.isEmpty()) {
-                return Response.status(Response.Status.NOT_FOUND).entity(new ErrorRsp("No tutorial found")).build();
+                return Response.status(Response.Status.NOT_FOUND).entity("No tutorial found").build();
             } else {
                 for (Tutorial tutorial : tutorials) {
-                    Tutorial temp = em.find(Tutorial.class, tutorial.getTutorialId());
-                    int currentEnrollment = temp.getStudentList().size();
-                    Venue v = tutorial.getVenue();
-                    Venue vCopy = new Venue(v.getId(), v.getName());
-                    /*List<User> students = tutorial.getStudentList();
+                    List<User> students = tutorial.getStudentList();
                     for (User s : students) {
                         /*User user = em.find(User.class, userId);
-                        if (tutorial.getStudentList().contains(user)) {
+                        if (tutorial.getStudentList().contains(user)) {*/
                         s.getAccessRight();
-                        //s.getClassGroupList();
-                        //s.getConsultationTimeslotList();
+                        s.getClassGroupList();
+                        s.getConsultationTimeslotList();
                         s.getEmail();
                         s.getFirstName();
                         s.getGender();
                         s.getLastName();
-                        //s.getQuizAttemptList();
-                        //s.getStudentModuleList();
-                        //s.getSurveyAttemptList();
-                        //s.getTutorials();
+                        s.getQuizAttemptList();
+                        s.getStudentModuleList();
+                        s.getSurveyAttemptList();
+                        s.getTutorials();
                         s.getUsername();
                         students.add(s);
-                    }*/
+                    }
                     //}
                     rsp.getTutorials().add(
                             new Tutorial(tutorial.getTutorialId(), tutorial.getMaxEnrollment(),
-                                    vCopy, tutorial.getTiming(), null, null));
-                    rsp.getCurrentEnrollment().add(new Integer(currentEnrollment));
+                                    tutorial.getVenue(), tutorial.getTiming(), students, tutorial.getModule()));
                 }
             }
             return Response.status(Response.Status.OK).entity(rsp).build();
         } catch (Exception ex) {
             ex.printStackTrace();
-            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(new ErrorRsp(ex.getMessage())).build();
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
         }
     }
 
@@ -670,64 +544,21 @@ public class ModuleMountingResource {
         try {
             Module module = em.find(Module.class, moduleId);
             if (module == null) {
-                return Response.status(Response.Status.NOT_FOUND).entity(new ErrorRsp("No module found")).build();
+                return Response.status(Response.Status.NOT_FOUND).entity("No module found").build();
             }
             GetUserRsp rsp = new GetUserRsp(new ArrayList<>());
             List<User> students = module.getStudentList();
             if (students == null && students.isEmpty()) {
-                return Response.status(Response.Status.NOT_FOUND).entity(new ErrorRsp("No students found")).build();
+                return Response.status(Response.Status.NOT_FOUND).entity("No students found").build();
             }
             for (User s : students) {
                 rsp.getUserList().add(
-                        new User(null, s.getUserId(), s.getFirstName(),
+                        new User(s.getTutorials(), s.getUserId(), s.getFirstName(),
                                 s.getLastName(), s.getEmail(), s.getUsername(), null,
-                                s.getGender(), s.getAccessRight(), null,
-                                null, null,
-                                null, null, null, null));
+                                s.getGender(), s.getAccessRight(), s.getConsultationTimeslotList(),
+                                s.getQuizAttemptList(), s.getSurveyAttemptList(),
+                                s.getClassGroupList(), null, s.getStudentModuleList(), null));
 
-            }
-            return Response.status(Response.Status.OK).entity(rsp).build();
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(new ErrorRsp(ex.getMessage())).build();
-        }
-    }
-
-    @Path(value = "deleteTutorial")
-    @DELETE
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response deleteTutorial(@QueryParam("moduleId") Long moduleId, @QueryParam("tutorialId") Long tutorialId) {
-        try {
-            Module module = em.find(Module.class, moduleId);
-            Tutorial tutorial = em.find(Tutorial.class, tutorialId);
-            /*if(!module.getTutorials().contains(tutorial)){
-                 return Response.status(Response.Status.NOT_FOUND).entity("No tutorial found in module").build();
-            }*/
-            if (tutorial == null) {
-                return Response.status(Response.Status.NOT_FOUND).entity("No tutorial found").build();
-            }
-            em.remove(tutorial);
-            module.getTutorials().remove(tutorial);
-            return Response.status(Response.Status.OK).entity("Tutorial deleted").build();
-        } catch (Exception ex) {
-            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
-        }
-    }
-
-    @Path(value = "getAllVenue")
-    @GET
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response getAllVenue() {
-        try {
-            Query query = em.createQuery("select v from Venue v");
-            List<Venue> venueList = query.getResultList();
-            if (venueList == null && venueList.isEmpty()) {
-                return Response.status(Response.Status.NOT_FOUND).entity("No venue found").build();
-            }
-            GetVenueRsp rsp = new GetVenueRsp(new ArrayList<>());
-            for (Venue v : venueList) {
-                rsp.getVenueList().add(new Venue(
-                        v.getId(), v.getName()));
             }
             return Response.status(Response.Status.OK).entity(rsp).build();
         } catch (Exception ex) {

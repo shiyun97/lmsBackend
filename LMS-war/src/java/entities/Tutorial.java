@@ -14,7 +14,6 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
 
 /**
  *
@@ -29,34 +28,22 @@ public class Tutorial implements Serializable {
     private Long tutorialId;
     @Column
     private int maxEnrollment;
-    @ManyToOne
-    private Venue venue;
+    @Column
+    private String venue;
     @Column
     private String timing;
     @ManyToMany
     private List<User> studentList;
     @ManyToOne
     private Module module;
-    @OneToMany(mappedBy = "tutorial")
-    private List<Attendance> attendanceList;
 
-    public Tutorial(Long tutorialId, int maxEnrollment, Venue venue, String timing, List<User> studentList, Module module) {
+    public Tutorial(Long tutorialId, int maxEnrollment, String venue, String timing, List<User> studentList, Module module) {
         this.tutorialId = tutorialId;
         this.maxEnrollment = maxEnrollment;
         this.venue = venue;
         this.timing = timing;
         this.studentList = studentList;
         this.module = module;
-    }
-
-    public Tutorial(Long tutorialId, int maxEnrollment, Venue venue, String timing, List<User> studentList, Module module, List<Attendance> attendanceList) {
-        this.tutorialId = tutorialId;
-        this.maxEnrollment = maxEnrollment;
-        this.venue = venue;
-        this.timing = timing;
-        this.studentList = studentList;
-        this.module = module;
-        this.attendanceList = attendanceList;
     }
 
     public Tutorial() {
@@ -70,11 +57,11 @@ public class Tutorial implements Serializable {
         this.tutorialId = tutorialId;
     }
 
-    public Venue getVenue() {
+    public String getVenue() {
         return venue;
     }
 
-    public void setVenue(Venue venue) {
+    public void setVenue(String venue) {
         this.venue = venue;
     }
 
@@ -134,12 +121,5 @@ public class Tutorial implements Serializable {
     public String toString() {
         return "entities.Tutorial[ id=" + tutorialId + " ]";
     }
-
-    public List<Attendance> getAttendanceList() {
-        return attendanceList;
-    }
-
-    public void setAttendanceList(List<Attendance> attendanceList) {
-        this.attendanceList = attendanceList;
-    }
+    
 }

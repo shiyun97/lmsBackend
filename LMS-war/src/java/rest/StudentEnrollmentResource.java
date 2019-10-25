@@ -5,7 +5,6 @@
  */
 package rest;
 
-import datamodel.rest.AppealRoundRsp;
 import datamodel.rest.CreateAppealRqst;
 import datamodel.rest.ErrorRsp;
 import datamodel.rest.RetrieveAppealsRsp;
@@ -136,7 +135,7 @@ public class StudentEnrollmentResource {
             return Response.status(Status.INTERNAL_SERVER_ERROR).entity(new ErrorRsp(e.getMessage())).build();
         }
     }
-     
+    
     @Path("updateSchedule")
     @POST
     @Produces(MediaType.APPLICATION_JSON)
@@ -442,12 +441,6 @@ public class StudentEnrollmentResource {
         }
         
         // Check the number of credits the student has registered for
-        int mc = 0;
-        for(Module m: user.getStudentModuleList()){
-            if(m.getYearOffered().equals(AcademicYearSessionBean.getYear()) && m.getSemesterOffered() == AcademicYearSessionBean.getSemester()){
-                mc += m.getCreditUnit();
-            }
-        }
         
         try {
             Module module = em.find(Module.class, moduleId);
@@ -458,11 +451,9 @@ public class StudentEnrollmentResource {
             } else if(!module.getYearOffered().equals(AcademicYearSessionBean.getYear())
                     || module.getSemesterOffered() != AcademicYearSessionBean.getSemester()){
                 return Response.status(Status.BAD_REQUEST).entity(new ErrorRsp("Module isn't offered this semester")).build();
-            } else if(module.getMaxEnrollment() <= module.getStudentList().size()){
+            }else if(module.getMaxEnrollment() <= module.getStudentList().size()){
                 return Response.status(Status.BAD_REQUEST).entity(new ErrorRsp("Module already full")).build();
-            } else if(module.getCreditUnit() + mc > 24){
-                return Response.status(Status.BAD_REQUEST).entity(new ErrorRsp("Student can only take 24MC per semester")).build();
-            }else {
+            } else {
                 module.getStudentList().add(user);
                 user.getStudentModuleList().add(module);
                 em.flush();
@@ -478,9 +469,9 @@ public class StudentEnrollmentResource {
     @Produces(MediaType.APPLICATION_JSON)
     public Response enrollModule(@QueryParam("userId") Long userId, @QueryParam("moduleId") Long moduleId, @QueryParam("adminId") Long adminId){
         // Check session open or not
-//        if(!isModuleRoundOpen()){
-//            return Response.status(Status.BAD_REQUEST).entity(new ErrorRsp("Module enrollment is closed")).build();
-//        }
+        if(!isModuleRoundOpen()){
+            return Response.status(Status.BAD_REQUEST).entity(new ErrorRsp("Module enrollment is closed")).build();
+        }
         
         // Verify user
         User user = em.find(User.class, userId);
@@ -565,6 +556,7 @@ public class StudentEnrollmentResource {
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     public Response retrieveStudentModules(@PathParam("userId") Long userId){
+        
         // Verify user
         User user = em.find(User.class, userId);
         if(user == null || user.getAccessRight() != AccessRightEnum.Student){
@@ -575,7 +567,7 @@ public class StudentEnrollmentResource {
         }
         
         try{
-            Query query = em.createQuery("SELECT DISTINCT m FROM User u join u.studentModuleList m "
+            Query query = em.createQuery("SELECT m FROM Module m join m.studentList stu "
                     + "WHERE m.semesterOffered = :semester AND m.yearOffered = :year");
             query.setParameter("semester", AcademicYearSessionBean.getSemester());
             query.setParameter("year", AcademicYearSessionBean.getYear());
@@ -843,10 +835,6 @@ public class StudentEnrollmentResource {
                         || m.getSemesterOffered() != AcademicYearSessionBean.getSemester()){
                     return Response.status(Status.NOT_FOUND).entity(new ErrorRsp("Module is not found or not offered in this semester!")).build();
                 }
-                
-                if(m.getStudentList().contains(user)){
-                    return Response.status(Status.BAD_REQUEST).entity(new ErrorRsp("Student already enrolled in the module")).build();
-                }
                 appeal.setModule(m);
                 appeal.setType(AppealTypeEnum.Module);
                 
@@ -868,9 +856,7 @@ public class StudentEnrollmentResource {
                     return Response.status(Status.NOT_FOUND).entity(new ErrorRsp("New tutorial and old tutorial are from different modules!")).build();
                 } else if(!old.getStudentList().contains(user)){
                     return Response.status(Status.BAD_REQUEST).entity(new ErrorRsp("Student isn't enrolled in the old tutorial.")).build();
-                } else if(newT.getStudentList().contains(user)){
-                    return Response.status(Status.BAD_REQUEST).entity(new ErrorRsp("Student is already enrolled in the new tutorial")).build();
-                } else{
+                } else {
                     Module m = old.getModule();
                     if(m == null || !m.getYearOffered().equals(AcademicYearSessionBean.getYear()) 
                         || m.getSemesterOffered() != AcademicYearSessionBean.getSemester()){
@@ -1238,88 +1224,5 @@ public class StudentEnrollmentResource {
         } catch (Exception e){
             return Response.status(Status.INTERNAL_SERVER_ERROR).entity(new ErrorRsp(e.getMessage())).build(); 
         }
-    }
-    
-    @Path("isAppealOpen")
-    @GET
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response isAppealOpen(){
-        try{
-            Query q = em.createQuery("SELECT s FROM Schedule s WHERE s.semester=:semester AND s.year=:year");
-            q.setParameter("semester", AcademicYearSessionBean.getSemester());
-            q.setParameter("year", AcademicYearSessionBean.getYear());
-            Schedule sched = (Schedule) q.getSingleResult();
-            
-            Date date = sched.getTutorialRound2EndDate();
-            date = new Date(date.getTime() + 2*7*24*3600000);
-            Boolean resp = new Date().before(date);
-            System.out.println(resp);
-            return Response.status(Status.OK).entity(resp.toString()).build();
-        } catch (NoResultException n){
-            return Response.status(Status.NOT_FOUND).entity(new ErrorRsp("No schedule exists with the given year and semester")).build();
-        } catch (Exception e){
-            e.printStackTrace();
-            return Response.status(Status.INTERNAL_SERVER_ERROR).entity(new ErrorRsp(e.getMessage())).build();
-        }
-    }
-    
-    @Path("getAppealById/{appealId}")
-    @GET
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response getAppealById(@PathParam("appealId") Long appealId){
-        Appeal appeal = em.find(Appeal.class, appealId);
-        
-        if(appeal == null){
-            return Response.status(Status.NOT_FOUND).entity(new ErrorRsp("Appeal with the given ID is not found")).build();
-        }
-        Appeal resp = null;
-        
-        User stu = appeal.getStudent();
-        User stuCopy = new User(null, stu.getId(), stu.getFirstName(), stu.getLastName(), stu.getEmail(),
-                    stu.getUsername(), null, stu.getGender(), stu.getAccessRight(),
-                    null, null, null, null, null, null, null);
-
-        User admin = appeal.getAdmin();
-        User adminCopy = null;
-        if(admin != null){
-            adminCopy = new User(null, admin.getId(), admin.getFirstName(), admin.getLastName(), admin.getEmail(),
-                    admin.getUsername(), null, admin.getGender(), admin.getAccessRight(),
-                    null, null, null, null, null, null, null);
-        }
-        
-        if(appeal.getType() == AppealTypeEnum.Module){
-            Module m = appeal.getModule();
-            Module mCopy = new Module(m.getModuleId(),m.getCode(), m.getTitle(), m.getDescription(),
-                            m.getSemesterOffered(), m.getYearOffered(),
-                            m.getCreditUnit(), m.getGrade(), m.getMaxEnrollment(), 
-                            null, null, null, null, null, null, null, null, null, null,
-                            null, null, null, null, m.isHasExam(), m.getExamTime(), m.getExamVenue(),
-                            m.getLectureDetails(), m.getDepartment(), m.getFaculty());
-
-            resp = new Appeal(appeal.getAppealId(), appeal.getType(),
-                    appeal.getReason(), appeal.getCreateDate(), appeal.getStatus(),
-                    mCopy, null, null, stuCopy, adminCopy, appeal.getResultDetails());
-        } else if(appeal.getOldTutorial().getModule().getYearOffered().equals(AcademicYearSessionBean.getYear()) 
-                && appeal.getOldTutorial().getModule().getSemesterOffered() == AcademicYearSessionBean.getSemester()) {
-            Tutorial old = appeal.getOldTutorial();
-            Tutorial newT = appeal.getNewTutorial();
-
-            Module m = old.getModule();
-            Module mCopy = new Module(m.getModuleId(),m.getCode(), m.getTitle(), m.getDescription(),
-                            m.getSemesterOffered(), m.getYearOffered(),
-                            m.getCreditUnit(), m.getGrade(), m.getMaxEnrollment(), 
-                            null, null, null, null, null, null, null, null, null, null,
-                            null, null, null, null, m.isHasExam(), m.getExamTime(), m.getExamVenue(),
-                            m.getLectureDetails(), m.getDepartment(), m.getFaculty());
-
-            Tutorial oldR = new Tutorial(old.getTutorialId(), old.getMaxEnrollment(), old.getVenue(), old.getTiming(), null, mCopy);
-            Tutorial newR = new Tutorial(newT.getTutorialId(), newT.getMaxEnrollment(), newT.getVenue(), newT.getTiming(), null, mCopy);
-            resp = new Appeal(appeal.getAppealId(), appeal.getType(),
-                    appeal.getReason(), appeal.getCreateDate(), appeal.getStatus(),
-                    null, oldR, newR, stuCopy, adminCopy, appeal.getResultDetails());
-        }
-        
-        return Response.status(Status.OK).entity(resp).build();
-        
     }
 }

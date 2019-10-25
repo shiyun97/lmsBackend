@@ -15,18 +15,12 @@ import java.util.List;
 public class GetTutorialRsp {
     
     private List<Tutorial> tutorials;
-    private List<Integer> currentEnrollment;
 
     public GetTutorialRsp() {
     }
 
     public GetTutorialRsp(List<Tutorial> tutorials) {
         this.tutorials = tutorials;
-    }
-
-    public GetTutorialRsp(List<Tutorial> tutorials, List<Integer> currentEnrollment) {
-        this.tutorials = tutorials;
-        this.currentEnrollment = currentEnrollment;
     }
 
     public List<Tutorial> getTutorials() {
@@ -37,11 +31,4 @@ public class GetTutorialRsp {
         this.tutorials = tutorials;
     }
     
-    public List<Integer> getCurrentEnrollment() {
-        return currentEnrollment;
-    }
-
-    public void setCurrentEnrollment(List<Integer> currentEnrollment) {
-        this.currentEnrollment = currentEnrollment;
-    }
 }

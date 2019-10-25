@@ -21,6 +21,16 @@ import javax.persistence.ManyToOne;
 @Entity
 public class GradeEntry implements Serializable {
 
+    public GradeEntry(Double marks, String notes, Timestamp createTs, Timestamp updateTs, GradeItem gradeItem, User student, User grader) {
+        this.marks = marks;
+        this.notes = notes;
+        this.createTs = createTs;
+        this.updateTs = updateTs;
+        this.gradeItem = gradeItem;
+        this.student = student;
+        this.grader = grader;
+    }
+
     public GradeEntry() {
     }
 
@@ -31,11 +41,17 @@ public class GradeEntry implements Serializable {
     @Column
     private Double marks;
     @Column
-    private String remarks;
+    private String notes;
+    @Column 
+    private Timestamp createTs;
+    @Column 
+    private Timestamp updateTs;
     @ManyToOne
     private GradeItem gradeItem;
     @ManyToOne
     private User student;
+    @ManyToOne
+    private User grader;
     
 
 
@@ -80,12 +96,28 @@ public class GradeEntry implements Serializable {
         this.marks = marks;
     }
 
-    public String getRemarks() {
-        return remarks;
+    public String getNotes() {
+        return notes;
     }
 
-    public void setRemarks(String remarks) {
-        this.remarks = remarks;
+    public void setNotes(String notes) {
+        this.notes = notes;
+    }
+
+    public Timestamp getCreateTs() {
+        return createTs;
+    }
+
+    public void setCreateTs(Timestamp createTs) {
+        this.createTs = createTs;
+    }
+
+    public Timestamp getUpdateTs() {
+        return updateTs;
+    }
+
+    public void setUpdateTs(Timestamp updateTs) {
+        this.updateTs = updateTs;
     }
 
     public GradeItem getGradeItem() {
@@ -102,6 +134,14 @@ public class GradeEntry implements Serializable {
 
     public void setStudent(User student) {
         this.student = student;
+    }
+
+    public User getGrader() {
+        return grader;
+    }
+
+    public void setGrader(User grader) {
+        this.grader = grader;
     }
     
 }

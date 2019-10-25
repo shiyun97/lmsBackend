@@ -15,14 +15,12 @@ import java.util.List;
 public class GetClassGroupRsp {
     
     private List<ClassGroup> classGroupList;
-    private List<Integer> currentEnrollment;
 
     public GetClassGroupRsp() {
     }
 
-    public GetClassGroupRsp(List<ClassGroup> classGroupList, List<Integer> currentEnrollment) {
+    public GetClassGroupRsp(List<ClassGroup> classGroupList) {
         this.classGroupList = classGroupList;
-        this.currentEnrollment = currentEnrollment;
     }
     
     public List<ClassGroup> getClassGroupList() {
@@ -33,12 +31,4 @@ public class GetClassGroupRsp {
         this.classGroupList = classGroupList;
     }
     
-    public List<Integer> getCurrentEnrollment() {
-        return currentEnrollment;
-    }
-
-    public void setCurrentEnrollment(List<Integer> currentEnrollment) {
-        this.currentEnrollment = currentEnrollment;
-    }
-
 }

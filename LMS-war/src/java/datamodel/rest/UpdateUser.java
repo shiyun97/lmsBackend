@@ -1,6 +1,7 @@
 package datamodel.rest;
 
 import entities.ClassGroup;
+import entities.ClassGroupList;
 import entities.ConsultationTimeslot;
 import entities.Module;
 import entities.QuizAttempt;

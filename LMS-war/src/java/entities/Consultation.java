@@ -27,10 +27,10 @@ import javax.xml.bind.annotation.XmlRootElement;
 @XmlRootElement
 public class Consultation implements Serializable {
 
-    public Consultation(String title, String description, Module module) {
+    public Consultation(String title, String description, List<ConsultationTimeslot> consultationTimeslot, Module module) {
         this.title = title;
         this.description = description;
-        //this.consultationTimeslot = consultationTimeslot;
+        this.consultationTimeslot = consultationTimeslot;
         this.module = module;
     }
 
@@ -45,8 +45,8 @@ public class Consultation implements Serializable {
     private String title;
     @Column
     private String description;
-    //@OneToMany(mappedBy = "consultation")
-    //private List<ConsultationTimeslot> consultationTimeslot;
+    @OneToMany(mappedBy = "consultation")
+    private List<ConsultationTimeslot> consultationTimeslot;
     @ManyToOne
     private Module module;
     
@@ -100,13 +100,13 @@ public class Consultation implements Serializable {
         this.description = description;
     }
 
-    /*public List<ConsultationTimeslot> getConsultationTimeslot() {
+    public List<ConsultationTimeslot> getConsultationTimeslot() {
         return consultationTimeslot;
     }
 
     public void setConsultationTimeslot(List<ConsultationTimeslot> consultationTimeslot) {
         this.consultationTimeslot = consultationTimeslot;
-    }*/
+    }
 
     public Module getModule() {
         return module;
