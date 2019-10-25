@@ -232,7 +232,7 @@ public class FeedbackResource {
     @GET
     @Path("retrieveSurveyAttempts")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response retrieveSurveyAttempts(@QueryParam("userId") Long userId, @QueryParam("surveyId") Long surveyId){
+    public Response retrieveSurveyAttempts(@QueryParam("userId") Long userId, @QueryParam("moduleId") Long moduleId){
         User user = em.find(User.class, userId);
         if(user == null || user.getAccessRight() != AccessRightEnum.Teacher){
             return Response.status(Response.Status.FORBIDDEN)
@@ -240,35 +240,42 @@ public class FeedbackResource {
                     .build();
         }
         
-        Survey survey = em.find(Survey.class, surveyId);
-        if(survey == null){
-            return Response.status(Response.Status.NOT_FOUND).entity(new ErrorRsp("Survey with the given ID doesn't exist")).build();
+        Module module = em.find(Module.class, moduleId);
+        if(module == null){
+            return Response.status(Response.Status.NOT_FOUND).entity(new ErrorRsp("Module is not found")).build();
         }
         
         try {
-            
-            if(survey.getSurveyAttemptList().isEmpty()){
+            Query q = em.createQuery("SELECT s FROM Survey s WHERE s.module = :module");
+            q.setParameter("module", module);
+            Survey survey = (Survey) q.getSingleResult();
+
+            if (survey == null) {
+                return Response.status(Response.Status.NOT_FOUND).entity(new ErrorRsp("Survey with the given ID doesn't exist")).build();
+            }
+
+            if (survey.getSurveyAttemptList().isEmpty()) {
                 return Response.status(Response.Status.NOT_FOUND).entity(new ErrorRsp("There are no attempts yet for this survey")).build();
             }
-            
+
             RetrieveSurveyAttempts resp = new RetrieveSurveyAttempts(new ArrayList<>());
-            
-            for (SurveyAttempt sa: survey.getSurveyAttemptList()){
+
+            for (SurveyAttempt sa : survey.getSurveyAttemptList()) {
                 SurveyAttempt saCopy = new SurveyAttempt();
                 saCopy.setSurveyAttemptId(sa.getSurveyAttemptId());
                 saCopy.setQuestionAttemptList(sa.getQuestionAttemptList());
-                
+
                 User stu = new User();
                 stu.setUserId(sa.getSurveyTaker().getUserId());
                 stu.setFirstName(sa.getSurveyTaker().getFirstName());
                 stu.setLastName(sa.getSurveyTaker().getLastName());
                 stu.setUsername(sa.getSurveyTaker().getUsername());
-                
+
                 saCopy.setSurveyTaker(stu);
-                
+
                 resp.getSurveyAttempts().add(saCopy);
             }
-            
+
             
             return Response.status(Response.Status.OK).entity(resp).build();
         } catch (Exception e){
