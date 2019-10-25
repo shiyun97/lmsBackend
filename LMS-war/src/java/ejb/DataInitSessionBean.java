@@ -299,7 +299,7 @@ public class DataInitSessionBean {
         em.persist(c2);
         em.flush();
         m4.getConsultationList().add(c2);
-        
+
         ConsultationTimeslot c3 = new ConsultationTimeslot();
         c3.setBooker(student);
         c3.setEndTs(LocalTime.parse("11:00:00"));
@@ -374,6 +374,13 @@ public class DataInitSessionBean {
         em.persist(topic3);
         em.flush();
 
+        ForumTopic topic4 = new ForumTopic();
+        topic3.setModule(m1);
+        topic3.setDescription("Please use this topic heading to ask any questions relating to assignment 6.");
+        topic3.setTitle("Assignment 6");
+        em.persist(topic4);
+        em.flush();
+
         ForumPost thread1 = new ForumPost();
         thread1.setCreateTs(LocalDateTime.now());
         thread1.setUpdateTs(LocalDateTime.now());
@@ -384,6 +391,7 @@ public class DataInitSessionBean {
         thread1.setThreadStarter(Boolean.TRUE);
         em.persist(thread1);
         em.flush();
+        topic1.getThreads().add(thread1);
 
         ForumPost thread2 = new ForumPost();
         thread2.setCreateTs(LocalDateTime.now());
@@ -395,6 +403,7 @@ public class DataInitSessionBean {
         thread2.setThreadStarter(Boolean.TRUE);
         em.persist(thread2);
         em.flush();
+        topic3.getThreads().add(thread2);
 
         ForumPost comment1 = new ForumPost();
         comment1.setCreateTs(LocalDateTime.now());
@@ -405,6 +414,7 @@ public class DataInitSessionBean {
         comment1.setType("comment");
         em.persist(comment1);
         em.flush();
+        thread2.getComments().add(comment1);
 
         ForumPost reply1 = new ForumPost();
         reply1.setTitle("Re:Accessing all elements in array");
@@ -417,7 +427,8 @@ public class DataInitSessionBean {
         reply1.setType("reply");
         em.persist(reply1);
         em.flush();
-        
+        thread2.getReplies().add(reply1);
+
         ForumPost comment2 = new ForumPost();
         comment2.setParentOfComments(reply1);
         comment2.setCreateTs(LocalDateTime.now());
@@ -432,6 +443,94 @@ public class DataInitSessionBean {
         comment2.setThreadStarter(Boolean.FALSE);
         em.persist(comment2);
         em.flush();
+        reply1.getComments().add(comment2);
+
+        ForumPost thread3 = new ForumPost();
+        thread3.setCreateTs(LocalDateTime.now());
+        thread3.setUpdateTs(LocalDateTime.now());
+        thread3.setMessage("I was unable to attempt the quiz as there isn’t any link for me to click to start quiz");
+        thread3.setOwner(student);
+        thread3.setTitle("Unable to attempt quiz");
+        thread3.setTopic(topic3);
+        thread3.setThreadStarter(Boolean.TRUE);
+        em.persist(thread3);
+        em.flush();
+        topic3.getThreads().add(thread3);
+
+        ForumPost comment3 = new ForumPost();
+        comment3.setCreateTs(LocalDateTime.now());
+        comment3.setUpdateTs(LocalDateTime.now());
+        comment3.setMessage("I am not having any problem with this. I see a link there.");
+        comment3.setOwner(student2);
+        comment3.setThreadStarter(Boolean.FALSE);
+        comment3.setType("comment");
+        em.persist(comment3);
+        em.flush();
+        thread3.getComments().add(comment3);
+
+        ForumPost reply2 = new ForumPost();
+        reply2.setTitle("Re:Unable to attempt quiz");
+        reply2.setCreateTs(LocalDateTime.now());
+        reply2.setUpdateTs(LocalDateTime.now());
+        reply2.setMessage("The issue has since been rectified by the LumiNUS steam. Could you try again? The deadline for the current quiz is also extended by 1 day, to 23.59pm Monday. ");
+        reply2.setOwner(teacher);
+        reply2.setThreadStarter(Boolean.FALSE);
+        reply2.setType("reply");
+        em.persist(reply2);
+        em.flush();
+        thread3.getReplies().add(reply2);
+
+        ForumPost comment4 = new ForumPost();
+        comment4.setCreateTs(LocalDateTime.now());
+        comment4.setUpdateTs(LocalDateTime.now());
+        comment4.setMessage("Yes, I am now able to attempt the quiz. Thank you.");
+        comment4.setOwner(student);
+        comment4.setThreadStarter(Boolean.FALSE);
+        comment4.setType("comment");
+        em.persist(comment4);
+        em.flush();
+        reply2.getComments().add(comment4);
+
+        ForumPost thread4 = new ForumPost();
+        thread4.setCreateTs(LocalDateTime.now());
+        thread4.setUpdateTs(LocalDateTime.now());
+        thread4.setMessage("Dear Profs/TAs, \n" + "\n" + "1. May I clarify if we are using a vector calculation to calculate the shortest distance? Meaning using dist = sqrt[ (x1 - x2)^2 + (y1 - y2) ^2 ] \n"
+                + "\n" + "    Or is the shortest distance based on vertical and horizontal travel only?\n" + "\n"
+                + "2. Could there be a typo here?  Shouldn't it be dist = sqrt ( 30^2 ) = 30? How is the distance from the house to Stores 0 and 2 distance sqrt(30)? sqrt(30) is smaller than 10 anyway.");
+        thread4.setOwner(student);
+        thread4.setTitle("PDMap: Calculating (shortest) distance");
+        thread4.setTopic(topic4);
+        thread4.setThreadStarter(Boolean.TRUE);
+        em.persist(thread4);
+        em.flush();
+        topic4.getThreads().add(thread4);
+
+        ForumPost reply3 = new ForumPost();
+        reply3.setTitle("Re:PDMap: Calculating (shortest) distance");
+        reply3.setCreateTs(LocalDateTime.now());
+        reply3.setUpdateTs(LocalDateTime.now());
+        reply3.setMessage("1. Take euclidean distance. (your formula is correct)\n" + "\n" + "2. Yes there is a typo. Distance to 0 and 2 pizza stores are 30. Not sqrt(30)");
+        reply3.setOwner(teacher);
+        reply3.setThreadStarter(Boolean.FALSE);
+        reply3.setType("reply");
+        em.persist(reply3);
+        em.flush();
+        thread4.getReplies().add(reply3);
+
+        ForumPost comment5 = new ForumPost();
+        comment5.setCreateTs(LocalDateTime.now());
+        comment5.setUpdateTs(LocalDateTime.now());
+        comment5.setMessage("The assignment instruction was:\n" + "\n" + "\"Since we are all using integer arithmetic, the distance computation must be exact.\"\n" + "\n"
+                + "May I check how are we supposed to get integer distance if we're using euclidian distance to calculate it? Do I just not use square root in the formula? Or do we convert a float to an integer? But doing so will lose accuracy?\n"
+                + "\n" + "Kindly advise please, thank you!");
+        comment5.setOwner(student);
+        comment5.setThreadStarter(Boolean.FALSE);
+        comment5.setType("comment");
+        comment5.setParentOfComments(reply3);
+        em.persist(comment5);
+        em.flush();
+        reply3.getComments().add(comment5);
+        
     }
 
     public void persist(Object object) {
