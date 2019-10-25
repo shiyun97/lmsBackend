@@ -138,7 +138,7 @@ public class AnnoucementResource {
             annoucement.setLastUpdatedDate(createdDate);
             annoucement.setStartDate(startDate);
             annoucement.setEndDate(endDate);
-            annoucement.setPublish(createAnnoucement.getPublish());
+            //annoucement.setPublish(createAnnoucement.getPublish());
             annoucement.setEmailNotification(createAnnoucement.getEmailNotification());
             //annoucement.setModule(createAnnoucement.getModule());
             annoucement.setModule(module);
@@ -153,7 +153,7 @@ public class AnnoucementResource {
                     module.getFaculty());
             Annoucement annoucementCopy = new Annoucement(annoucement.getAnnoucementId(), annoucement.getTitle(),
                     annoucement.getContent(), createdDate, createdDate, startDate, endDate,
-                    annoucement.getPublish(), annoucement.getEmailNotification(), moduleCopy, null);
+                    null, annoucement.getEmailNotification(), moduleCopy, null);
 
             List<String> address = new ArrayList<>();
             Query query = em.createQuery("select u from User u");
@@ -201,7 +201,7 @@ public class AnnoucementResource {
             annoucement.setLastUpdatedDate(createdDate);
             annoucement.setStartDate(startDate);
             annoucement.setEndDate(endDate);
-            annoucement.setPublish(createAnnoucement.getPublish());
+            //annoucement.setPublish(createAnnoucement.getPublish());
             annoucement.setEmailNotification(createAnnoucement.getEmailNotification());
             //annoucement.setModule(createAnnoucement.getModule());
             //annoucement.setModule(module);
@@ -210,7 +210,7 @@ public class AnnoucementResource {
             em.flush();
             Annoucement annoucementCopy = new Annoucement(annoucement.getAnnoucementId(), annoucement.getTitle(),
                     annoucement.getContent(), createdDate, createdDate, startDate, endDate,
-                    annoucement.getPublish(), annoucement.getEmailNotification(), null, null);
+                    null, annoucement.getEmailNotification(), null, null);
 
             List<String> address = new ArrayList<>();
             Query query = em.createQuery("select u from User u");
@@ -323,7 +323,7 @@ public class AnnoucementResource {
                     module.getFaculty());
             Date now = new Date();
             for (Annoucement a : annoucementList) {
-                if (a.getEndDate().after(now)) {
+                if (a.getStartDate().before(now) && a.getEndDate().after(now)) {
                     rsp.getAnnoucementList().add(
                             new Annoucement(a.getAnnoucementId(), a.getTitle(),
                                     a.getContent(), a.getCreatedDate(), a.getLastUpdatedDate(),
@@ -352,7 +352,7 @@ public class AnnoucementResource {
             GetAnnoucementRsp rsp = new GetAnnoucementRsp(new ArrayList<>());
             Date now = new Date();
             for (Annoucement a : annoucementList) {
-                if (a.getEndDate().after(now)) {
+                if (a.getStartDate().before(now) && a.getEndDate().after(now)) {
                     rsp.getAnnoucementList().add(
                             new Annoucement(a.getAnnoucementId(), a.getTitle(),
                                     a.getContent(), a.getCreatedDate(), a.getLastUpdatedDate(),

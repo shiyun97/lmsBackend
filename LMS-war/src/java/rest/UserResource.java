@@ -9,6 +9,7 @@ import datamodel.rest.CreateUser;
 import datamodel.rest.UpdateUser;
 import datamodel.rest.CheckUserLogin;
 import datamodel.rest.GetUserRsp;
+import ejb.SHAExample;
 import ejb.SendMailSSL;
 import entities.User;
 import java.util.ArrayList;
@@ -49,6 +50,7 @@ public class UserResource {
     }
 
     private SendMailSSL sendMail = new SendMailSSL();
+    private SHAExample hashPassword = new SHAExample();
 
     public boolean isLogin(User user) {
         user = em.find(User.class, user.getId());
@@ -106,11 +108,12 @@ public class UserResource {
             user.setUsername(createUser.getUsername());
             em.persist(user);
             em.flush();
+            String passwordNow = hashPassword.getPassword(user.getPassword());
             User userCopy = new User(user.getFirstName(), user.getLastName(), user.getEmail(),
-                    user.getUsername(), user.getPassword(), user.getGender(), user.getAccessRight(),
+                    user.getUsername(), passwordNow, user.getGender(), user.getAccessRight(),
                     null, null, null, null, null, null, null);
-            sendMail.sendSingle(admin.getEmail(), admin.getPassword(), userCopy.getEmail(), "Account created: " + userCopy.getEmail(), userCopy.getPassword());
-            return Response.status(Response.Status.OK).entity(user).build();
+            sendMail.sendSingle(admin.getEmail(), admin.getPassword(), userCopy.getEmail(), "Account created: " + userCopy.getEmail(), user.getPassword());
+            return Response.status(Response.Status.OK).entity(userCopy).build();
         } catch (Exception ex) {
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
         }
