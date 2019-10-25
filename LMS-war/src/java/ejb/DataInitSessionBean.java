@@ -532,10 +532,10 @@ public class DataInitSessionBean {
         
         Attendance a1 = new Attendance();
         a1.setDuration(5);
-        a1.setEndTs(new Timestamp(2020 - 1900, 4, 29, 13, 11, 0, 0));
+        a1.setEndTs(new Timestamp(2019 - 1900, 9, 20, 13, 11, 0, 0));
         a1.setModule(m1);
         a1.setSemester(1);
-        a1.setStartTs(new Timestamp(2020 - 1900, 4, 29, 13, 10, 0, 0));
+        a1.setStartTs(new Timestamp(2019 - 1900, 9, 20, 13, 10, 0, 0));
         a1.setTotal(11);
         //a1.setTutorial(t1);
         //t1.getAttendanceList().add(a1);
@@ -559,11 +559,11 @@ public class DataInitSessionBean {
 
         Attendance a2 = new Attendance();
         a2.setDuration(5);
-        a2.setEndTs(new Timestamp(2020 - 1900, 3, 29, 13, 11, 0, 0));
+        a2.setEndTs(new Timestamp(2019 - 1900, 9, 27, 13, 11, 0, 0));
         //a1.setModule(m1);
         //m1.getAttandanceList().add(a1);
         a2.setSemester(1);
-        a2.setStartTs(new Timestamp(2020 - 1900, 3, 29, 13, 10, 0, 0));
+        a2.setStartTs(new Timestamp(2019 - 1900, 9, 27, 13, 10, 0, 0));
         a2.setTotal(11);
         a2.setTutorial(t1);
         a2.setAttendees(studentList);
@@ -586,9 +586,9 @@ public class DataInitSessionBean {
         
         Attendance a3 = new Attendance();
         a3.setDuration(5);
-        a3.setEndTs(new Timestamp(2020 - 1900, 11, 29, 13, 11, 0, 0));
+        a3.setEndTs(new Timestamp(2019 - 1900, 10, 10, 13, 11, 0, 0));
         a3.setSemester(1);
-        a3.setStartTs(new Timestamp(2020 - 1900, 11, 29, 13, 10, 0, 0));
+        a3.setStartTs(new Timestamp(2019 - 1900, 10, 10, 13, 10, 0, 0));
         a3.setTotal(11);
         a3.setTutorial(t1);
         a3.setAttendees(testMissingStudents);
@@ -604,9 +604,9 @@ public class DataInitSessionBean {
         
         Attendance a4 = new Attendance();
         a4.setDuration(5);
-        a4.setEndTs(new Timestamp(2020 - 1900, 10, 29, 13, 11, 0, 0));
+        a4.setEndTs(new Timestamp(2019 - 1900, 10, 17, 13, 11, 0, 0));
         a4.setSemester(1);
-        a4.setStartTs(new Timestamp(2020 - 1900, 10, 29, 13, 10, 0, 0));
+        a4.setStartTs(new Timestamp(2019 - 1900, 10, 17, 13, 10, 0, 0));
         a4.setTotal(11);
         a4.setTutorial(t1);
         a4.setAttendees(testMissingStudents);
@@ -683,6 +683,7 @@ public class DataInitSessionBean {
         topic1.setTitle("Group Formation");
         em.persist(topic1);
         em.flush();
+        m1.getForumTopicList().add(topic1);
 
         ForumTopic topic2 = new ForumTopic();
         topic2.setModule(m1);
@@ -690,6 +691,7 @@ public class DataInitSessionBean {
         topic2.setTitle("Course Administration");
         em.persist(topic2);
         em.flush();
+        m1.getForumTopicList().add(topic2);
 
         ForumTopic topic3 = new ForumTopic();
         topic3.setCoursepack(cp1);
@@ -697,13 +699,15 @@ public class DataInitSessionBean {
         topic3.setTitle("General Enquiries");
         em.persist(topic3);
         em.flush();
+        cp1.getForumTopicList().add(topic3);
 
         ForumTopic topic4 = new ForumTopic();
-        topic3.setModule(m1);
-        topic3.setDescription("Please use this topic heading to ask any questions relating to assignment 6.");
-        topic3.setTitle("Assignment 6");
+        topic4.setModule(m1);
+        topic4.setDescription("Please use this topic heading to ask any questions relating to assignment 6.");
+        topic4.setTitle("Assignment 6");
         em.persist(topic4);
         em.flush();
+        m1.getForumTopicList().add(topic4);
 
         ForumPost thread1 = new ForumPost();
         thread1.setCreateTs(LocalDateTime.now());
@@ -736,6 +740,7 @@ public class DataInitSessionBean {
         comment1.setOwner(student2);
         comment1.setThreadStarter(Boolean.FALSE);
         comment1.setType("comment");
+        comment1.setParentOfComments(thread2);
         em.persist(comment1);
         em.flush();
         thread2.getComments().add(comment1);
@@ -749,6 +754,7 @@ public class DataInitSessionBean {
         reply1.setOwner(teacher);
         reply1.setThreadStarter(Boolean.FALSE);
         reply1.setType("reply");
+        reply1.setParentOfReply(thread2);
         em.persist(reply1);
         em.flush();
         thread2.getReplies().add(reply1);
@@ -788,6 +794,7 @@ public class DataInitSessionBean {
         comment3.setOwner(student2);
         comment3.setThreadStarter(Boolean.FALSE);
         comment3.setType("comment");
+        comment3.setParentOfComments(thread3);
         em.persist(comment3);
         em.flush();
         thread3.getComments().add(comment3);
@@ -800,6 +807,7 @@ public class DataInitSessionBean {
         reply2.setOwner(teacher);
         reply2.setThreadStarter(Boolean.FALSE);
         reply2.setType("reply");
+        reply2.setParentOfReply(thread3);
         em.persist(reply2);
         em.flush();
         thread3.getReplies().add(reply2);
@@ -837,6 +845,7 @@ public class DataInitSessionBean {
         reply3.setOwner(teacher);
         reply3.setThreadStarter(Boolean.FALSE);
         reply3.setType("reply");
+        reply3.setParentOfReply(thread4);
         em.persist(reply3);
         em.flush();
         thread4.getReplies().add(reply3);
@@ -1024,7 +1033,7 @@ public class DataInitSessionBean {
         sq9.setType(QuestionTypeEnum.radiogroup);
         sq9.setNumber(7);
         sq9.setTitle("The teacher has enhanced my thinking ability.");
-        sq9.setIsRequired(true);
+        sq9.setIsRequired(false);
         sq9.setChoices(choices);
         em.persist(sq9);
         em.flush();
@@ -1034,7 +1043,7 @@ public class DataInitSessionBean {
         sq10.setType(QuestionTypeEnum.radiogroup);
         sq10.setNumber(8);
         sq10.setTitle("The teacher provides timely and useful feedback.");
-        sq10.setIsRequired(true);
+        sq10.setIsRequired(false);
         sq10.setChoices(choices);
         em.persist(sq10);
         em.flush();
@@ -1044,7 +1053,7 @@ public class DataInitSessionBean {
         sq11.setType(QuestionTypeEnum.radiogroup);
         sq11.setNumber(9);
         sq11.setTitle("The teacher is approachable for consultation.");
-        sq11.setIsRequired(true);
+        sq11.setIsRequired(false);
         sq11.setChoices(choices);
         em.persist(sq11);
         em.flush();
@@ -1054,7 +1063,7 @@ public class DataInitSessionBean {
         sq12.setType(QuestionTypeEnum.radiogroup);
         sq12.setNumber(10);
         sq12.setTitle("The teacher has increased my interest in the subject.");
-        sq12.setIsRequired(true);
+        sq12.setIsRequired(false);
         sq12.setChoices(choices);
         em.persist(sq12);
         em.flush();
@@ -1064,7 +1073,7 @@ public class DataInitSessionBean {
         sq13.setType(QuestionTypeEnum.radiogroup);
         sq13.setNumber(11);
         sq13.setTitle("The teacher has enhanced my ability to learn independently.");
-        sq13.setIsRequired(true);
+        sq13.setIsRequired(false);
         sq13.setChoices(choices);
         em.persist(sq13);
         em.flush();
@@ -1074,7 +1083,7 @@ public class DataInitSessionBean {
         sq14.setType(QuestionTypeEnum.radiogroup);
         sq14.setNumber(12);
         sq14.setTitle("The teacher encourages me to apply concepts learnt.");
-        sq14.setIsRequired(true);
+        sq14.setIsRequired(false);
         sq14.setChoices(choices);
         em.persist(sq14);
         em.flush();
@@ -1084,7 +1093,7 @@ public class DataInitSessionBean {
         sq15.setType(QuestionTypeEnum.radiogroup);
         sq15.setNumber(13);
         sq15.setTitle("Overall the teacher is effective.");
-        sq15.setIsRequired(true);
+        sq15.setIsRequired(false);
         sq15.setChoices(choices);
         em.persist(sq15);
         em.flush();
@@ -1094,7 +1103,7 @@ public class DataInitSessionBean {
         sq16.setType(QuestionTypeEnum.text);
         sq16.setNumber(14);
         sq16.setTitle("What are the teacher's strengths?");
-        sq16.setIsRequired(true);
+        sq16.setIsRequired(false);
         em.persist(sq16);
         em.flush();
         survey.getQuestionList().add(sq16);
@@ -1103,7 +1112,7 @@ public class DataInitSessionBean {
         sq17.setType(QuestionTypeEnum.text);
         sq17.setNumber(15);
         sq17.setTitle("What are the teacher's weaknesses?");
-        sq17.setIsRequired(true);
+        sq17.setIsRequired(false);
         em.persist(sq17);
         em.flush();
         survey.getQuestionList().add(sq17);
@@ -1112,7 +1121,7 @@ public class DataInitSessionBean {
         sq18.setType(QuestionTypeEnum.text);
         sq18.setNumber(15);
         sq18.setTitle("What improvements would you suggest to the teacher?");
-        sq18.setIsRequired(true);
+        sq18.setIsRequired(false);
         em.persist(sq18);
         em.flush();
         survey.getQuestionList().add(sq18);

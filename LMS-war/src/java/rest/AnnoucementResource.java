@@ -138,7 +138,7 @@ public class AnnoucementResource {
             annoucement.setLastUpdatedDate(createdDate);
             annoucement.setStartDate(startDate);
             annoucement.setEndDate(endDate);
-            annoucement.setPublish(createAnnoucement.getPublish());
+            //annoucement.setPublish(createAnnoucement.getPublish());
             annoucement.setEmailNotification(createAnnoucement.getEmailNotification());
             //annoucement.setModule(createAnnoucement.getModule());
             annoucement.setModule(module);
@@ -153,20 +153,23 @@ public class AnnoucementResource {
                     module.getFaculty());
             Annoucement annoucementCopy = new Annoucement(annoucement.getAnnoucementId(), annoucement.getTitle(),
                     annoucement.getContent(), createdDate, createdDate, startDate, endDate,
-                    annoucement.getPublish(), annoucement.getEmailNotification(), moduleCopy, null);
+                    null, annoucement.getEmailNotification(), moduleCopy, null);
 
-            List<String> address = new ArrayList<>();
-            Query query = em.createQuery("select u from User u");
-            List<User> userList = query.getResultList();
-            if (userList == null || userList.isEmpty()) {
-                return Response.status(Response.Status.NOT_FOUND).entity("No user found").build();
-            }
-            for (User u : userList) {
-                if ((module.getStudentList().contains(u) || module.getAssignedTeacher().getUserId() == userId) && !u.getAccessRight().equals(AccessRightEnum.Admin)) {
-                    address.add(u.getEmail());
+            if (createAnnoucement.getEmailNotification() == true) {
+                List<String> address = new ArrayList<>();
+                Query query = em.createQuery("select u from User u");
+                List<User> userList = query.getResultList();
+                if (userList == null || userList.isEmpty()) {
+                    return Response.status(Response.Status.NOT_FOUND).entity("No user found").build();
                 }
+                for (User u : userList) {
+                    if ((module.getStudentList().contains(u) || module.getAssignedTeacher().getUserId() == userId) && !u.getAccessRight().equals(AccessRightEnum.Admin)) {
+                        address.add(u.getEmail());
+                    }
+                }
+                sendMail.send(user.getEmail(), user.getPassword(), address, annoucementCopy.getTitle(), annoucementCopy.getContent());
             }
-            sendMail.send(user.getEmail(), user.getPassword(), address, annoucementCopy.getTitle(), annoucementCopy.getContent());
+
             //sendMail.send("ad1234567min@gmail.com", "password!234%", "ykwvix@gmail.com", annoucementCopy.getTitle(), annoucementCopy.getContent());
             return Response.status(Response.Status.OK).entity(annoucementCopy).build();
             //EmailSessionBean.sendEmail(annoucement.getOwner().getEmail(), annoucement.getTitle(), annoucement.getOwner().getUsername());
@@ -201,7 +204,7 @@ public class AnnoucementResource {
             annoucement.setLastUpdatedDate(createdDate);
             annoucement.setStartDate(startDate);
             annoucement.setEndDate(endDate);
-            annoucement.setPublish(createAnnoucement.getPublish());
+            //annoucement.setPublish(createAnnoucement.getPublish());
             annoucement.setEmailNotification(createAnnoucement.getEmailNotification());
             //annoucement.setModule(createAnnoucement.getModule());
             //annoucement.setModule(module);
@@ -210,20 +213,22 @@ public class AnnoucementResource {
             em.flush();
             Annoucement annoucementCopy = new Annoucement(annoucement.getAnnoucementId(), annoucement.getTitle(),
                     annoucement.getContent(), createdDate, createdDate, startDate, endDate,
-                    annoucement.getPublish(), annoucement.getEmailNotification(), null, null);
+                    null, annoucement.getEmailNotification(), null, null);
 
-            List<String> address = new ArrayList<>();
-            Query query = em.createQuery("select u from User u");
-            List<User> userList = query.getResultList();
-            if (userList == null || userList.isEmpty()) {
-                return Response.status(Response.Status.NOT_FOUND).entity("No user found").build();
-            }
-            for (User u : userList) {
-                if (u.getAccessRight() != Public) {
-                    address.add(u.getEmail());
+            if (createAnnoucement.getEmailNotification() == true) {
+                List<String> address = new ArrayList<>();
+                Query query = em.createQuery("select u from User u");
+                List<User> userList = query.getResultList();
+                if (userList == null || userList.isEmpty()) {
+                    return Response.status(Response.Status.NOT_FOUND).entity("No user found").build();
                 }
+                for (User u : userList) {
+                    if (u.getAccessRight() != Public) {
+                        address.add(u.getEmail());
+                    }
+                }
+                sendMail.send(user.getEmail(), user.getPassword(), address, annoucementCopy.getTitle(), annoucementCopy.getContent());
             }
-            sendMail.send(user.getEmail(), user.getPassword(), address, annoucementCopy.getTitle(), annoucementCopy.getContent());
             return Response.status(Response.Status.OK).entity(annoucementCopy).build();
             //EmailSessionBean.sendEmail(annoucement.getOwner().getEmail(), annoucement.getTitle(), annoucement.getOwner().getUsername());
         } catch (Exception ex) {
@@ -323,7 +328,7 @@ public class AnnoucementResource {
                     module.getFaculty());
             Date now = new Date();
             for (Annoucement a : annoucementList) {
-                if (a.getEndDate().after(now)) {
+                if (a.getStartDate().before(now) && a.getEndDate().after(now)) {
                     rsp.getAnnoucementList().add(
                             new Annoucement(a.getAnnoucementId(), a.getTitle(),
                                     a.getContent(), a.getCreatedDate(), a.getLastUpdatedDate(),
@@ -352,7 +357,7 @@ public class AnnoucementResource {
             GetAnnoucementRsp rsp = new GetAnnoucementRsp(new ArrayList<>());
             Date now = new Date();
             for (Annoucement a : annoucementList) {
-                if (a.getEndDate().after(now)) {
+                if (a.getStartDate().before(now) && a.getEndDate().after(now)) {
                     rsp.getAnnoucementList().add(
                             new Annoucement(a.getAnnoucementId(), a.getTitle(),
                                     a.getContent(), a.getCreatedDate(), a.getLastUpdatedDate(),
@@ -533,18 +538,20 @@ public class AnnoucementResource {
                     annoucement.getContent(), annoucement.getCreatedDate(), updateDate, startDate, endDate,
                     annoucement.getPublish(), annoucement.getEmailNotification(), null, null);
 
-            List<String> address = new ArrayList<>();
-            Query query = em.createQuery("select u from User u");
-            List<User> userList = query.getResultList();
-            if (userList == null || userList.isEmpty()) {
-                return Response.status(Response.Status.NOT_FOUND).entity("No user found").build();
-            }
-            for (User u : userList) {
-                if (u.getAccessRight() != Public) {
-                    address.add(u.getEmail());
+            if (updateAnnoucement.getEmailNotification() == true) {
+                List<String> address = new ArrayList<>();
+                Query query = em.createQuery("select u from User u");
+                List<User> userList = query.getResultList();
+                if (userList == null || userList.isEmpty()) {
+                    return Response.status(Response.Status.NOT_FOUND).entity("No user found").build();
                 }
+                for (User u : userList) {
+                    if (u.getAccessRight() != Public) {
+                        address.add(u.getEmail());
+                    }
+                }
+                sendMail.send(user.getEmail(), user.getPassword(), address, annoucementCopy.getTitle(), annoucementCopy.getContent());
             }
-            sendMail.send(user.getEmail(), user.getPassword(), address, annoucementCopy.getTitle(), annoucementCopy.getContent());
             return Response.status(Response.Status.OK).entity(annoucementCopy).build();
         } catch (Exception ex) {
             ex.printStackTrace();
@@ -596,18 +603,20 @@ public class AnnoucementResource {
                     annoucement.getContent(), annoucement.getCreatedDate(), updateDate, startDate, endDate,
                     annoucement.getPublish(), annoucement.getEmailNotification(), moduleCopy, null);
 
-            List<String> address = new ArrayList<>();
-            Query query = em.createQuery("select u from User u");
-            List<User> userList = query.getResultList();
-            if (userList == null || userList.isEmpty()) {
-                return Response.status(Response.Status.NOT_FOUND).entity("No user found").build();
-            }
-            for (User u : userList) {
-                if ((module.getStudentList().contains(u) || module.getAssignedTeacher().getUserId() == userId) && !u.getAccessRight().equals(AccessRightEnum.Admin)) {
-                    address.add(u.getEmail());
+            if (updateAnnoucement.getEmailNotification() == true) {
+                List<String> address = new ArrayList<>();
+                Query query = em.createQuery("select u from User u");
+                List<User> userList = query.getResultList();
+                if (userList == null || userList.isEmpty()) {
+                    return Response.status(Response.Status.NOT_FOUND).entity("No user found").build();
                 }
+                for (User u : userList) {
+                    if ((module.getStudentList().contains(u) || module.getAssignedTeacher().getUserId() == userId) && !u.getAccessRight().equals(AccessRightEnum.Admin)) {
+                        address.add(u.getEmail());
+                    }
+                }
+                sendMail.send(user.getEmail(), user.getPassword(), address, annoucementCopy.getTitle(), annoucementCopy.getContent());
             }
-            sendMail.send(user.getEmail(), user.getPassword(), address, annoucementCopy.getTitle(), annoucementCopy.getContent());
             return Response.status(Response.Status.OK).entity(annoucementCopy).build();
         } catch (Exception ex) {
             ex.printStackTrace();
