@@ -999,6 +999,11 @@ public class AssessmentResource {
                     .build();
         }
         
+        for(GradeEntry ge: gradeItem.getGradeEntries()){
+            ge.setStudent(null);
+            em.remove(ge);
+        }
+        
         em.remove(gradeItem);
         em.flush();
         
@@ -1196,7 +1201,7 @@ public class AssessmentResource {
             return Response.status(Status.NOT_FOUND).entity(new ErrorRsp("GradeItem not found")).build();
         }
         
-        gradeItem.setPublish(true);
+        gradeItem.setPublish(false);
         
         return Response.status(Status.OK).build();
     }
