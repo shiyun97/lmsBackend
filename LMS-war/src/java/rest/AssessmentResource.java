@@ -127,6 +127,7 @@ public class AssessmentResource {
                 question.setType(qm.getType());
                 question.setIsRequired(qm.getIsRequired());
                 question.setChoices(new ArrayList<>());
+                question.setCorrectAnswer(qm.getCorrectAnswer());
                 
                 if(question.getType() == QuestionTypeEnum.radiogroup){
                     for (ChoiceModel choice: qm.getChoices()){
@@ -659,7 +660,7 @@ public class AssessmentResource {
             List<Quiz> quizzes = new ArrayList<>();
             
             for(Quiz q: module.getQuizList()){
-                if(q.isGradeitemCreated()){
+                if(!q.isGradeitemCreated()){
                     Quiz newQ = new Quiz();
                     newQ.setQuizId(q.getQuizId());
                     newQ.setOpeningDate(q.getOpeningDate());
@@ -1196,7 +1197,7 @@ public class AssessmentResource {
             return Response.status(Status.NOT_FOUND).entity(new ErrorRsp("GradeItem not found")).build();
         }
         
-        gradeItem.setPublish(true);
+        gradeItem.setPublish(false);
         
         return Response.status(Status.OK).build();
     }
