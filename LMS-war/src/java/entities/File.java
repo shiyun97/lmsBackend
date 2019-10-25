@@ -6,6 +6,7 @@
 package entities;
 
 import java.io.Serializable;
+import java.sql.Timestamp;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -21,11 +22,38 @@ import javax.persistence.OneToOne;
 @Entity
 public class File implements Serializable {
 
-    public File(String name, String type, String location, Folder folder, LessonOrder lessonOrder) {
+    public File(String name, String type, String location, Folder folder, Module module, Boolean isDelete) {
         this.name = name;
         this.type = type;
         this.location = location;
         this.folder = folder;
+        this.module = module;
+        this.isDelete = isDelete;
+    }
+    
+    public File(Long fileId, String name, String type, String location, Timestamp createdDt, Boolean isDelete, Folder folder, Module module, User uploader) {
+        this.fileId = fileId;
+        this.name = name;
+        this.type = type;
+        this.location = location;
+        this.createdDt = createdDt;
+        this.isDelete = isDelete;
+        this.folder = folder;
+        this.module = module;
+        this.uploader = uploader;
+    }
+
+    public File(Long fileId, String name, String type, String location, Timestamp createdDt, Boolean isDelete, Folder folder, Module module, User uploader, Coursepack coursepack, LessonOrder lessonOrder) {
+        this.fileId = fileId;
+        this.name = name;
+        this.type = type;
+        this.location = location;
+        this.createdDt = createdDt;
+        this.isDelete = isDelete;
+        this.folder = folder;
+        this.module = module;
+        this.uploader = uploader;
+        this.coursepack = coursepack;
         this.lessonOrder = lessonOrder;
     }
 
@@ -42,8 +70,18 @@ public class File implements Serializable {
     private String type;
     @Column
     private String location;
+    @Column
+    private Timestamp createdDt;
+    @Column
+    private Boolean isDelete;
     @ManyToOne
     private Folder folder;
+    @ManyToOne
+    private Module module; // for multimedia files
+    @ManyToOne
+    private User uploader;
+    @ManyToOne
+    private Coursepack coursepack;
     
     @OneToOne
     private LessonOrder lessonOrder;
@@ -121,6 +159,46 @@ public class File implements Serializable {
 
     public void setFolder(Folder folder) {
         this.folder = folder;
+    }
+
+    public Module getModule() {
+        return module;
+    }
+
+    public void setModule(Module module) {
+        this.module = module;
+    }
+
+    public Boolean getIsDelete() {
+        return isDelete;
+    }
+
+    public void setIsDelete(Boolean isDelete) {
+        this.isDelete = isDelete;
+    }
+
+    public Timestamp getCreatedDt() {
+        return createdDt;
+    }
+
+    public void setCreatedDt(Timestamp createdDt) {
+        this.createdDt = createdDt;
+    }
+
+    public User getUploader() {
+        return uploader;
+    }
+
+    public void setUploader(User uploader) {
+        this.uploader = uploader;
+    }
+
+    public Coursepack getCoursepack() {
+        return coursepack;
+    }
+
+    public void setCoursepack(Coursepack coursepack) {
+        this.coursepack = coursepack;
     }
     
 }

@@ -18,22 +18,31 @@ import java.util.List;
  */
 public class CreateClassGroup {
     
-    private ClassGroup classGroup;
+    //private ClassGroup classGroup;
     
-    private Long classGroupId;
+    //private Long classGroupId;
     private String name;
     private Timestamp startTs;
     private Timestamp closeTs;
-    private Module module;
+    //private Module module;
+    private Long moduleId;
     private Integer maxMember;
-    private List<User> members;
+    //private List<User> members;
     
-    private User user;
+    //private User user;
     
     public CreateClassGroup() {
     }
+    
+    public CreateClassGroup(String name, Timestamp startTs, Timestamp closeTs, Long moduleId, Integer maxMember) {
+        this.name = name;
+        this.startTs = startTs;
+        this.closeTs = closeTs;
+        this.moduleId = moduleId;
+        this.maxMember = maxMember;
+    }
 
-    public CreateClassGroup(ClassGroup classGroup, Long classGroupId, String name, Timestamp startTs, Timestamp closeTs, Module module, Integer maxMember, List<User> members) {
+    /*public CreateClassGroup(ClassGroup classGroup, Long classGroupId, String name, Timestamp startTs, Timestamp closeTs, Module module, Integer maxMember, List<User> members) {
         this.classGroup = classGroup;
         this.classGroupId = classGroupId;
         this.name = name;
@@ -54,11 +63,11 @@ public class CreateClassGroup {
         this.maxMember = maxMember;
         this.members = members;
         this.user = user;
-    }
+    }*/
     
     
     
-
+    /*
     public ClassGroup getClassGroup() {
         return classGroup;
     }
@@ -73,7 +82,7 @@ public class CreateClassGroup {
 
     public void setClassGroupId(Long classGroupId) {
         this.classGroupId = classGroupId;
-    }
+    }*/
 
     public String getName() {
         return name;
@@ -99,12 +108,21 @@ public class CreateClassGroup {
         this.closeTs = closeTs;
     }
 
+    /*
     public Module getModule() {
         return module;
     }
 
     public void setModule(Module module) {
         this.module = module;
+    }*/
+
+    public Long getModuleId() {
+        return moduleId;
+    }
+
+    public void setModuleId(Long moduleId) {
+        this.moduleId = moduleId;
     }
 
     public Integer getMaxMember() {
@@ -114,7 +132,7 @@ public class CreateClassGroup {
     public void setMaxMember(Integer maxMember) {
         this.maxMember = maxMember;
     }
-
+    /*
     public List<User> getMembers() {
         return members;
     }
@@ -129,7 +147,7 @@ public class CreateClassGroup {
 
     public void setUser(User user) {
         this.user = user;
-    }
+    }*/
 
 
 

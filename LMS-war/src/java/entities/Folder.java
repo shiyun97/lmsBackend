@@ -24,7 +24,7 @@ import util.AccessRightEnum;
 @Entity
 public class Folder implements Serializable {
 
-    public Folder(String name, Double size, Boolean submission, Timestamp submissionOpenTs, Timestamp submissionCloseTs, AccessRightEnum accessRight, List<File> file, Module module) {
+    public Folder(String name, Double size, Boolean submission, Timestamp submissionOpenTs, Timestamp submissionCloseTs, AccessRightEnum accessRight, List<File> file, Module module, Boolean isDelete) {
         this.name = name;
         this.size = size;
         this.submission = submission;
@@ -33,6 +33,21 @@ public class Folder implements Serializable {
         this.accessRight = accessRight;
         this.file = file;
         this.module = module;
+        this.isDelete = isDelete;
+    }
+    
+    public Folder(Long folderId, String name, Double size, Boolean submission, Timestamp submissionOpenTs, Timestamp submissionCloseTs, AccessRightEnum accessRight, List<File> file, Module module, Boolean isDelete, Folder parentFolder) {
+        this.folderId = folderId;
+        this.name = name;
+        this.size = size;
+        this.submission = submission;
+        this.submissionOpenTs = submissionOpenTs;
+        this.submissionCloseTs = submissionCloseTs;
+        this.accessRight = accessRight;
+        this.file = file;
+        this.module = module;
+        this.isDelete = isDelete;
+        this.parentFolder = parentFolder;
     }
 
     public Folder() {
@@ -54,10 +69,14 @@ public class Folder implements Serializable {
     private Timestamp submissionCloseTs;
     @Column
     private AccessRightEnum accessRight;
+    @Column
+    private Boolean isDelete;
     @OneToMany(mappedBy = "folder")
     private List<File> file;
     @ManyToOne
     private Module module;
+    @ManyToOne
+    private Folder parentFolder;
   
 
     public Long getFolderId() {
@@ -155,6 +174,22 @@ public class Folder implements Serializable {
 
     public void setModule(Module module) {
         this.module = module;
+    }
+
+    public Folder getParentFolder() {
+        return parentFolder;
+    }
+
+    public void setParentFolder(Folder parentFolder) {
+        this.parentFolder = parentFolder;
+    }
+
+    public Boolean getIsDelete() {
+        return isDelete;
+    }
+
+    public void setIsDelete(Boolean isDelete) {
+        this.isDelete = isDelete;
     }
     
 }
