@@ -43,6 +43,20 @@ public class File implements Serializable {
         this.uploader = uploader;
     }
 
+    public File(Long fileId, String name, String type, String location, Timestamp createdDt, Boolean isDelete, Folder folder, Module module, User uploader, Coursepack coursepack, LessonOrder lessonOrder) {
+        this.fileId = fileId;
+        this.name = name;
+        this.type = type;
+        this.location = location;
+        this.createdDt = createdDt;
+        this.isDelete = isDelete;
+        this.folder = folder;
+        this.module = module;
+        this.uploader = uploader;
+        this.coursepack = coursepack;
+        this.lessonOrder = lessonOrder;
+    }
+
     public File() {
     }
 
@@ -66,7 +80,19 @@ public class File implements Serializable {
     private Module module; // for multimedia files
     @ManyToOne
     private User uploader;
-  
+    @ManyToOne
+    private Coursepack coursepack;
+    
+    @OneToOne
+    private LessonOrder lessonOrder;
+
+    public LessonOrder getLessonOrder() {
+        return lessonOrder;
+    }
+
+    public void setLessonOrder(LessonOrder lessonOrder) {
+        this.lessonOrder = lessonOrder;
+    }
     
     
 
@@ -165,6 +191,14 @@ public class File implements Serializable {
 
     public void setUploader(User uploader) {
         this.uploader = uploader;
+    }
+
+    public Coursepack getCoursepack() {
+        return coursepack;
+    }
+
+    public void setCoursepack(Coursepack coursepack) {
+        this.coursepack = coursepack;
     }
     
 }

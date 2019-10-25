@@ -241,7 +241,7 @@ public class AttendanceResource {
                 } else {
                     //GetTutorialRsp rspTutorial = new GetTutorialRsp(new ArrayList<>());
                     for (Tutorial t : tutorialList) {
-                        if (a.getTutorial().equals(t)) {
+                        if (t.getAttendanceList().contains(a)) {
                             Tutorial tutorialCopy = new Tutorial(t.getTutorialId(), t.getMaxEnrollment(),
                                     t.getVenue(), t.getTiming(), null, null);
                             rsp.getAttendanceList().add(new Attendance(
@@ -260,10 +260,130 @@ public class AttendanceResource {
             }
             return Response.status(Response.Status.OK).entity(rsp).build();
         } catch (Exception ex) {
+            ex.printStackTrace();
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(new ErrorRsp(ex.getMessage())).build();
         }
     }
 
+    @GET
+    @Path("getStudentModuleAttandance")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getStudentModuleAttandance(@QueryParam("userId") Long userId, @QueryParam("moduleId") Long moduleId) {
+        try {
+            User user = em.find(User.class, userId);
+            if (user == null) {
+                return Response.status(Response.Status.NOT_FOUND).entity("User does not exist").build();
+            }
+            Module module = em.find(Module.class, moduleId);
+            if (module == null) {
+                return Response.status(Response.Status.NOT_FOUND).entity("Module does not exist").build();
+            }
+            List<Attendance> attendanceList = module.getAttandanceList();
+            if (attendanceList == null || attendanceList.isEmpty()) {
+                return Response.status(Response.Status.NOT_FOUND).entity("No attendance found").build();
+            }
+            GetAttendanceRsp rsp = new GetAttendanceRsp(new ArrayList<>());
+            for (Attendance a : attendanceList) {
+                if (a.getAttendees().contains(user)) {
+                    Module moduleCopy = new Module(module.getModuleId(), module.getCode(), module.getTitle(),
+                            null, module.getSemesterOffered(), module.getYearOffered(), module.getCreditUnit(),
+                            null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
+                            null, module.isHasExam(), null, null, null, null, null);
+                    rsp.getAttendanceList().add(new Attendance(
+                            a.getAttendanceId(), a.getTotal(), a.getAttendedNumber(),
+                            a.getSemester(), null, null, null, moduleCopy,
+                            null, null, null));
+
+                    List<Tutorial> tutorialList = module.getTutorials();
+                    if (tutorialList != null || !tutorialList.isEmpty()) {
+                        for (Tutorial t : tutorialList) {
+                            List<Attendance> tutorialAttendanceList = t.getAttendanceList();
+                            if (tutorialAttendanceList != null || !tutorialAttendanceList.isEmpty()) {
+                                for (Attendance ta : tutorialAttendanceList) {
+                                    if (ta.getAttendees().contains(user)) {
+                                        Tutorial tutorialCopy = new Tutorial(t.getTutorialId(), t.getMaxEnrollment(),
+                                                t.getVenue(), t.getTiming(), null, null);
+                                        rsp.getAttendanceList().add(new Attendance(
+                                                ta.getAttendanceId(), ta.getTotal(), ta.getAttendedNumber(),
+                                                ta.getSemester(), null, null, null, null,
+                                                null, tutorialCopy, null));
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            return Response.status(Response.Status.OK).entity(rsp).build();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(new ErrorRsp(ex.getMessage())).build();
+        }
+    }
+
+    /*@GET
+    @Path("getStudentTutorialAttandance")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getStudentTutorialAttandance(@QueryParam("userId") Long userId, @QueryParam("tutorialId") Long tutorialId) {
+        try {
+            User user = em.find(User.class, userId);
+            if (user == null) {
+                return Response.status(Response.Status.NOT_FOUND).entity("User does not exist").build();
+            }
+            Tutorial tutorial = em.find(Tutorial.class, tutorialId);
+            if (tutorial == null) {
+                return Response.status(Response.Status.NOT_FOUND).entity("Tutorial does not exist").build();
+            }
+            List<Attendance> attendanceList = tutorial.getAttendanceList();
+            if (attendanceList == null || attendanceList.isEmpty()) {
+                return Response.status(Response.Status.NOT_FOUND).entity("No attendance found").build();
+            }
+            GetAttendanceRsp rsp = new GetAttendanceRsp(new ArrayList<>());
+            for (Attendance a : attendanceList) {
+                if (a.getAttendees().contains(user)) {
+                    Module moduleCopy = new Module(module.getModuleId(), module.getCode(), module.getTitle(),
+                            null, module.getSemesterOffered(), module.getYearOffered(), module.getCreditUnit(),
+                            null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
+                            null, module.isHasExam(), null, null, null, null, null);
+                    rsp.getAttendanceList().add(new Attendance(
+                            a.getAttendanceId(), a.getTotal(), a.getAttendedNumber(),
+                            a.getSemester(), null, null, null, moduleCopy,
+                            null, null, null));
+                }
+            }
+            return Response.status(Response.Status.OK).entity(rsp).build();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(new ErrorRsp(ex.getMessage())).build();
+        }
+    }
+    
+    @GET
+    @Path("getUserAttandance")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getUserAttandance(@QueryParam("userId") Long userId) {
+        try {
+            User user = em.find(User.class, userId);
+            if (user == null) {
+                return Response.status(Response.Status.NOT_FOUND).entity("User does not exist").build();
+            }
+            List<Attendance> attendanceList = user.getAttendanceList();
+            if (attendanceList == null || attendanceList.isEmpty()) {
+                return Response.status(Response.Status.NOT_FOUND).entity("No attendance found").build();
+            }
+            GetAttendanceRsp rsp = new GetAttendanceRsp(new ArrayList<>());
+            for (Attendance a : attendanceList) {
+                rsp.getAttendanceList().add(new Attendance(
+                        a.getAttendanceId(), a.getTotal(), a.getAttendedNumber(),
+                        a.getSemester(), null, null, null, null,
+                        null, null, null));
+            }
+            return Response.status(Response.Status.OK).entity(rsp).build();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(new ErrorRsp(ex.getMessage())).build();
+        }
+    }*/
     @GET
     @Path("getAttendees")
     @Produces(MediaType.APPLICATION_JSON)

@@ -44,7 +44,7 @@ public class Attendance implements Serializable {
     private Module module;
     @OneToMany
     private List<User> attendees;
-    @OneToOne
+    @ManyToOne
     private Tutorial tutorial;
     @ManyToOne
     private User student;

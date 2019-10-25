@@ -13,7 +13,9 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToMany;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 import util.AccessRightEnum;
 import util.GenderEnum;
 
@@ -60,7 +62,11 @@ public class User implements Serializable {
     private List<Tutorial> tutorials;
     @OneToMany(mappedBy = "student")
     private List<Attendance> attendanceList;
-    
+    @OneToMany(mappedBy = "assignedTeacher")
+    private List<Coursepack> teacherCoursepackList;
+    @ManyToMany(mappedBy = "publicUserList")
+    private List<Coursepack> publicUserCoursepackList;
+
     public User(String firstName, String lastName, String email, String username, String password, GenderEnum gender, AccessRightEnum accessRight, List<ConsultationTimeslot> consultationTimeslotList, List<QuizAttempt> quizAttemptList, List<SurveyAttempt> surveyAttemptList, List<ClassGroup> classGroupList, List<Module> teacherModuleList, List<Module> studentModuleList, List<Module> publicUserModuleList) {
         this.firstName = firstName;
         this.lastName = lastName;
@@ -116,9 +122,10 @@ public class User implements Serializable {
         this.tutorials = tutorials;
         this.attendanceList = attendanceList;
     }
-    
+
     public User() {
     }
+
     public Long getId() {
         return userId;
     }
@@ -288,4 +295,19 @@ public class User implements Serializable {
         this.attendanceList = attendanceList;
     }
     
+    public List<Coursepack> getTeacherCoursepackList() {
+        return teacherCoursepackList;
+    }
+
+    public void setTeacherCoursepackList(List<Coursepack> teacherCoursepackList) {
+        this.teacherCoursepackList = teacherCoursepackList;
+    }
+
+    public List<Coursepack> getPublicUserCoursepackList() {
+        return publicUserCoursepackList;
+    }
+
+    public void setPublicUserCoursepackList(List<Coursepack> publicUserCoursepackList) {
+        this.publicUserCoursepackList = publicUserCoursepackList;
+    }
 }

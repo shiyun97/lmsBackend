@@ -132,7 +132,6 @@ public class Annoucement implements Serializable {
     public void setLastUpdatedDate(Date lastUpdatedDate) {
         this.lastUpdatedDate = lastUpdatedDate;
     }
-
     @XmlJavaTypeAdapter(DateTimeAdapter.class)
     public Date getStartDate() {
         return startDate;

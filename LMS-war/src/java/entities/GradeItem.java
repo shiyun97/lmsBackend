@@ -50,6 +50,8 @@ public class GradeItem implements Serializable {
     private List<GradeEntry> gradeEntries;
     @ManyToOne
     private Module module;
+    @ManyToOne
+    private Coursepack coursepack;
 
 
     public Long getGradeItemId() {
@@ -164,6 +166,14 @@ public class GradeItem implements Serializable {
     public void setMaxMarks(Double maxMarks) {
         this.maxMarks = maxMarks;
     }
+    public Coursepack getCoursepack() {
+        return coursepack;
+    }
+
+    public void setCoursepack(Coursepack coursepack) {
+        this.coursepack = coursepack;
+    }
+    
     
     
 }

@@ -29,8 +29,8 @@ public class Tutorial implements Serializable {
     private Long tutorialId;
     @Column
     private int maxEnrollment;
-    @Column
-    private String venue;
+    @ManyToOne
+    private Venue venue;
     @Column
     private String timing;
     @ManyToMany
@@ -40,7 +40,7 @@ public class Tutorial implements Serializable {
     @OneToMany(mappedBy = "tutorial")
     private List<Attendance> attendanceList;
 
-    public Tutorial(Long tutorialId, int maxEnrollment, String venue, String timing, List<User> studentList, Module module) {
+    public Tutorial(Long tutorialId, int maxEnrollment, Venue venue, String timing, List<User> studentList, Module module) {
         this.tutorialId = tutorialId;
         this.maxEnrollment = maxEnrollment;
         this.venue = venue;
@@ -49,7 +49,7 @@ public class Tutorial implements Serializable {
         this.module = module;
     }
 
-    public Tutorial(Long tutorialId, int maxEnrollment, String venue, String timing, List<User> studentList, Module module, List<Attendance> attendanceList) {
+    public Tutorial(Long tutorialId, int maxEnrollment, Venue venue, String timing, List<User> studentList, Module module, List<Attendance> attendanceList) {
         this.tutorialId = tutorialId;
         this.maxEnrollment = maxEnrollment;
         this.venue = venue;
@@ -70,11 +70,11 @@ public class Tutorial implements Serializable {
         this.tutorialId = tutorialId;
     }
 
-    public String getVenue() {
+    public Venue getVenue() {
         return venue;
     }
 
-    public void setVenue(String venue) {
+    public void setVenue(Venue venue) {
         this.venue = venue;
     }
 

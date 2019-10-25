@@ -28,6 +28,7 @@ public class QuizRqst {
     private boolean publish;
     private Integer maxTimeToFinish;
     private Long moduleId;
+    private Long coursepackId;
     private List<QuestionModel> questions;
 
     public Long getQuizId() {
@@ -124,5 +125,13 @@ public class QuizRqst {
 
     public void setQuestions(List<QuestionModel> questions) {
         this.questions = questions;
+    }
+
+    public Long getCoursepackId() {
+        return coursepackId;
+    }
+
+    public void setCoursepackId(Long coursepackId) {
+        this.coursepackId = coursepackId;
     }
 }

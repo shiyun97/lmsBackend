@@ -6,6 +6,7 @@
 package entities;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import javax.persistence.CascadeType;
@@ -49,9 +50,12 @@ public class Quiz implements Serializable {
         this.module = module;
         this.questionList = questionList;
         this.quizAttemptList = quizAttemptList;
+        this.lessonOrder = lessonOrder; 
     }
 
     public Quiz() {
+        questionList = new ArrayList<>();
+        quizAttemptList = new ArrayList<>();
     }
 
     private static final long serialVersionUID = 1L;
@@ -88,6 +92,13 @@ public class Quiz implements Serializable {
     private List<Question> questionList;
     @OneToMany(mappedBy = "quiz")
     private List<QuizAttempt> quizAttemptList;
+    
+    @OneToOne
+    private LessonOrder lessonOrder;
+
+    public LessonOrder getLessonOrder() {
+        return lessonOrder;
+    }
 
     public boolean isPublish() {
         return publish;
@@ -96,6 +107,11 @@ public class Quiz implements Serializable {
     public void setPublish(boolean publish) {
         this.publish = publish;
     }
+
+    public void setLessonOrder(LessonOrder lessonOrder) {
+        this.lessonOrder = lessonOrder;
+    }
+    
     
 
     public Long getQuizId() {

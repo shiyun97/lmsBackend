@@ -13,8 +13,6 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
-import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
-import util.xml.DateTimeAdapter;
 
 /**
  *
@@ -72,7 +70,6 @@ public class Schedule implements Serializable {
     public Schedule() {
     }
 
-    @XmlJavaTypeAdapter(DateTimeAdapter.class)
     public Date getTutorialRound1StartDate() {
         return tutorialRound1StartDate;
     }
@@ -81,7 +78,6 @@ public class Schedule implements Serializable {
         this.tutorialRound1StartDate = tutorialRound1StartDate;
     }
 
-    @XmlJavaTypeAdapter(DateTimeAdapter.class)
     public Date getTutorialRound1EndDate() {
         return tutorialRound1EndDate;
     }
@@ -90,7 +86,6 @@ public class Schedule implements Serializable {
         this.tutorialRound1EndDate = tutorialRound1EndDate;
     }
 
-    @XmlJavaTypeAdapter(DateTimeAdapter.class)
     public Date getTutorialRound2StartDate() {
         return tutorialRound2StartDate;
     }
@@ -99,7 +94,6 @@ public class Schedule implements Serializable {
         this.tutorialRound2StartDate = tutorialRound2StartDate;
     }
 
-    @XmlJavaTypeAdapter(DateTimeAdapter.class)
     public Date getTutorialRound2EndDate() {
         return tutorialRound2EndDate;
     }
@@ -124,7 +118,6 @@ public class Schedule implements Serializable {
         this.semester = semester;
     }
 
-    @XmlJavaTypeAdapter(DateTimeAdapter.class)
     public Date getModuleRound1StartDate() {
         return moduleRound1StartDate;
     }
@@ -133,7 +126,6 @@ public class Schedule implements Serializable {
         this.moduleRound1StartDate = moduleRound1StartDate;
     }
 
-    @XmlJavaTypeAdapter(DateTimeAdapter.class)
     public Date getModuleRound1EndDate() {
         return moduleRound1EndDate;
     }
@@ -142,7 +134,6 @@ public class Schedule implements Serializable {
         this.moduleRound1EndDate = moduleRound1EndDate;
     }
 
-    @XmlJavaTypeAdapter(DateTimeAdapter.class)
     public Date getModuleRound2StartDate() {
         return moduleRound2StartDate;
     }
@@ -151,7 +142,6 @@ public class Schedule implements Serializable {
         this.moduleRound2StartDate = moduleRound2StartDate;
     }
 
-    @XmlJavaTypeAdapter(DateTimeAdapter.class)
     public Date getModuleRound2EndDate() {
         return moduleRound2EndDate;
     }
@@ -160,7 +150,6 @@ public class Schedule implements Serializable {
         this.moduleRound2EndDate = moduleRound2EndDate;
     }
 
-    @XmlJavaTypeAdapter(DateTimeAdapter.class)
     public Date getModuleRound3StartDate() {
         return moduleRound3StartDate;
     }
@@ -169,7 +158,6 @@ public class Schedule implements Serializable {
         this.moduleRound3StartDate = moduleRound3StartDate;
     }
 
-    @XmlJavaTypeAdapter(DateTimeAdapter.class)
     public Date getModuleRound3EndDate() {
         return moduleRound3EndDate;
     }
