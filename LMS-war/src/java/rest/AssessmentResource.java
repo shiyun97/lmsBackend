@@ -659,7 +659,7 @@ public class AssessmentResource {
             List<Quiz> quizzes = new ArrayList<>();
             
             for(Quiz q: module.getQuizList()){
-                if(q.isGradeitemCreated()){
+                if(!q.isGradeitemCreated()){
                     Quiz newQ = new Quiz();
                     newQ.setQuizId(q.getQuizId());
                     newQ.setOpeningDate(q.getOpeningDate());
