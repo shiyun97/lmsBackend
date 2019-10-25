@@ -357,8 +357,16 @@ public class CoursepackResource {
         if(lessonOrder == null){
                 return Response.status(Response.Status.NOT_FOUND).entity("Lesson order does not exist").build(); 
         }
-        //if(lessonOrder.getPublicUserList() == null){
         
+
+        File file = lessonOrder.getFile();
+        file.setLessonOrder(null);
+        em.merge(file);
+        Quiz quiz = lessonOrder.getQuiz();
+        quiz.setLessonOrder(null);
+        em.merge(quiz);
+        em.flush();
+                
         lessonOrder.getOutlines().getLessonOrder().remove(lessonOrder);
         em.remove(lessonOrder);
         
