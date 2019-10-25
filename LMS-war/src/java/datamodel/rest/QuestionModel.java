@@ -14,6 +14,7 @@ import util.QuestionTypeEnum;
  */
 public class QuestionModel {
     private Long questionId;
+    private Long quizId;
     private String name;
     private String title;
     private QuestionTypeEnum type;
@@ -111,6 +112,14 @@ public class QuestionModel {
 
     public void setUpdated(Boolean updated) {
         this.updated = updated;
+    }
+
+    public Long getQuizId() {
+        return quizId;
+    }
+
+    public void setQuizId(Long quizId) {
+        this.quizId = quizId;
     }
     
 }

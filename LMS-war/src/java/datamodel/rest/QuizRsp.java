@@ -18,6 +18,7 @@ import util.QuizTypeEnum;
  */
 public class QuizRsp {
     private Long quizId;
+    private Long surveyId;
     private String title;
     private String description;
     private QuizTypeEnum quizType;
@@ -38,6 +39,14 @@ public class QuizRsp {
     private List<PageModel> pages = new ArrayList<>();
 
     public QuizRsp() {
+    }
+
+    public Long getSurveyId() {
+        return surveyId;
+    }
+
+    public void setSurveyId(Long surveyId) {
+        this.surveyId = surveyId;
     }
 
     public Double getMaxMarks() {

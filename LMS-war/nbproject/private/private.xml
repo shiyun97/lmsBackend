@@ -3,10 +3,17 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/C:/Users/mingfong/Desktop/lmsBackend/LMS-war/setup/glassfish-resources.xml</file>
-            <file>file:/C:/Users/mingfong/Desktop/lmsBackend/LMS-war/src/java/ejb/DataInitSessionBean.java</file>
-            <file>file:/C:/Users/mingfong/Desktop/lmsBackend/LMS-war/src/java/rest/ConsultationResource.java</file>
-            <file>file:/C:/Users/mingfong/Desktop/lmsBackend/LMS-war/web/WEB-INF/web.xml</file>
+            <file>file:/C:/Users/Vixson/Documents/GitHub/lmsBackend/LMS-war/src/java/rest/ModuleMountingResource.java</file>
+            <file>file:/C:/Users/Vixson/Documents/GitHub/lmsBackend/LMS-war/src/java/datamodel/rest/GetVenueRsp.java</file>
+            <file>file:/C:/Users/Vixson/Documents/GitHub/lmsBackend/LMS-war/src/java/entities/Venue.java</file>
+            <file>file:/C:/Users/Vixson/Documents/GitHub/lmsBackend/LMS-war/src/java/rest/AnnoucementResource.java</file>
+            <file>file:/C:/Users/Vixson/Documents/GitHub/lmsBackend/LMS-war/src/java/entities/Module.java</file>
+            <file>file:/C:/Users/Vixson/Documents/GitHub/lmsBackend/LMS-war/src/java/ejb/SendMailSSL.java</file>
+            <file>file:/C:/Users/Vixson/Documents/GitHub/lmsBackend/LMS-war/src/java/rest/UserResource.java</file>
+            <file>file:/C:/Users/Vixson/Documents/GitHub/lmsBackend/LMS-war/src/java/entities/Tutorial.java</file>
+            <file>file:/C:/Users/Vixson/Documents/GitHub/lmsBackend/LMS-war/src/java/ejb/DataInitSessionBean.java</file>
+            <file>file:/C:/Users/Vixson/Documents/GitHub/lmsBackend/LMS-war/src/java/datamodel/rest/GetTutorialRsp.java</file>
+            <file>file:/C:/Users/Vixson/Documents/GitHub/lmsBackend/LMS-war/src/java/entities/User.java</file>
         </group>
     </open-files>
 </project-private>

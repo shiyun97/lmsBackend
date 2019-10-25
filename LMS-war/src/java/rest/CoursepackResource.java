@@ -95,7 +95,7 @@ public class CoursepackResource {
 
             Coursepack coursepackCopy = new Coursepack(coursepack.getCoursepackId(), coursepack.getCode(), coursepack.getTitle(),
                         coursepack.getDescription(), coursepack.getCategory(), coursepack.getPrice(), null, null, 
-                        coursepack.getTeacherBackground(), null, null, null, userCopy, null, null);
+                        coursepack.getTeacherBackground(), null, null, null, userCopy, null, null, null, null);
             
             return Response.status(Response.Status.OK).entity(coursepackCopy).build();
         } catch (Exception ex) {
@@ -158,42 +158,29 @@ public class CoursepackResource {
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response updateOutline(@QueryParam("coursepackId") Long coursepackId,
-                                        @QueryParam("outlineId") Long outlineId, @QueryParam("name") String name){
+    public Response updateOutline(@QueryParam("outlineId") Long outlineId, @QueryParam("name") String name){
 
       try{
-         
-            Coursepack cp = em.find(Coursepack.class, coursepackId);
-            if(cp ==null){
-                return Response.status(Response.Status.NOT_FOUND).entity("Coursepack does not exist").build();
-            }
-            if(cp.getOutlineList().isEmpty()){
-                return Response.status(Response.Status.NOT_FOUND).entity("Coursepack does not exist").build();
-            }
-            
+
             Outlines o = em.find(Outlines.class, outlineId);
-            if(o ==null){
-                return Response.status(Response.Status.NOT_FOUND).entity("Outline does not exist").build();
-            }else{
-                if(cp.getOutlineList().contains(o)){
-                  o.setName(name);
-                     em.merge(o);  
-                       return Response.status(Response.Status.OK).entity(o).build();
+            if(o !=null){
+                
+                o.setName(name);
+                
+                Coursepack cp = o.getCoursepack();
+
+                    Coursepack coursepackCopy = new Coursepack(cp.getCoursepackId(), cp.getCode(), cp.getTitle(),
+                        cp.getDescription(), cp.getCategory(), cp.getPrice(), null, null, 
+                        cp.getTeacherBackground(), null, null, 
+                        null, null, null, null, null, null);  
+                     
+                    Outlines outline = new Outlines(o.getOutlineId(), coursepackCopy, null, o.getName(), o.getNumber());  
+                     
+                    return Response.status(Response.Status.OK).entity(outline).build();
 
                 }
-                else{
                     return Response.status(Response.Status.NOT_FOUND).entity("Outline does not exist").build();
-                }
-            
-            }
 
-//          Outlines outline = em.find(Outlines.class, outlineId);
-//          if(outline != null){
-//              outline.setName(updateOutline.getName());
-//              outline.setNumber(updateOutline.);
-//              em.merge(outline);
-//              em.flush();
-//              
             
 
         } catch (Exception ex) {
@@ -386,16 +373,16 @@ public class CoursepackResource {
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response updateLessonOrder(UpdateLessonOrder updateLessonOrder, @QueryParam("lessonOrderId") Long lessonOrderId){
+    public Response updateLessonOrder(@QueryParam("lessonOrderId") Long lessonOrderId, @QueryParam("name") String name){
       try{
           
           LessonOrder lo = em.find(LessonOrder.class, lessonOrderId);
           if(lo != null){
-              lo.setName(updateLessonOrder.getName());
-              em.merge(lo);
-              em.flush();
+              lo.setName(name);
+              
+              LessonOrder lessonOrder = new LessonOrder(lo.getLessonOrderId(), lo.getNumber(), lo.getName(), null, null, null, null, null);
 
-              return Response.status(Response.Status.OK).entity(lo).build();
+              return Response.status(Response.Status.OK).entity(lessonOrder).build();
             }
             return Response.status(Response.Status.NOT_FOUND).entity("Lesson Order does not exist").build();
         } catch (Exception ex) {
@@ -528,7 +515,7 @@ public class CoursepackResource {
                 Coursepack coursepackCopy = new Coursepack(coursepack.getCoursepackId(), coursepack.getCode(), coursepack.getTitle(),
                         coursepack.getDescription(), coursepack.getCategory(), coursepack.getPrice(), null, null, 
                         coursepack.getTeacherBackground(), null, null, 
-                        null, assignedTeacher, null, null);
+                        null, assignedTeacher, null, null, null, null);
 
                 return Response.status(Response.Status.OK).entity(coursepackCopy).build();
 
@@ -643,7 +630,7 @@ public class CoursepackResource {
             
             Coursepack coursepackCopy = new Coursepack(coursepack.getCoursepackId(), coursepack.getCode(), coursepack.getTitle(),
                         coursepack.getDescription(), coursepack.getCategory(), coursepack.getPrice(), coursepack.getPublished(), null, 
-                        coursepack.getTeacherBackground(),null, null, null, null,null, oline);
+                        coursepack.getTeacherBackground(),null, null, null, null,null, oline, null, null);
             
             return Response.status(Response.Status.OK).entity(coursepackCopy).build();
 
@@ -706,7 +693,7 @@ public class CoursepackResource {
             
             Coursepack coursepackCopy = new Coursepack(coursepack.getCoursepackId(), coursepack.getCode(), coursepack.getTitle(),
                         coursepack.getDescription(), coursepack.getCategory(), coursepack.getPrice(),null, null, 
-                        coursepack.getTeacherBackground(), null, null, null, teacherCopy, null, oline );
+                        coursepack.getTeacherBackground(), null, null, null, teacherCopy, null, oline, null, null );
             
             return Response.status(Response.Status.OK).entity(coursepackCopy).build();
 
@@ -734,7 +721,7 @@ public class CoursepackResource {
                     rsp.getCoursepack().add(
                             new Coursepack(coursepack.getCoursepackId(), coursepack.getCode(), coursepack.getTitle(),
                                     coursepack.getDescription(), coursepack.getCategory(), coursepack.getPrice(), null, null, 
-                                    coursepack.getTeacherBackground(),null, null, null, null, null, null));
+                                    coursepack.getTeacherBackground(),null, null, null, null, null, null, null, null));
                 }
                 return Response.status(Response.Status.OK).entity(rsp).build();
             }
@@ -801,7 +788,7 @@ public class CoursepackResource {
             rsp.getCoursepack().add(
                 new Coursepack(coursepack.getCoursepackId(), coursepack.getCode(), coursepack.getTitle(),
                         coursepack.getDescription(), coursepack.getCategory(), coursepack.getPrice(), null, null, 
-                        coursepack.getTeacherBackground(),null, null, null, null,null, oline));
+                        coursepack.getTeacherBackground(),null, null, null, null,null, oline, null, null));
                 
                 }
             }

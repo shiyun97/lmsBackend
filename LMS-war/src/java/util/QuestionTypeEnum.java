@@ -10,5 +10,5 @@ package util;
  * @author Asus
  */
 public enum QuestionTypeEnum {
-    radiogroup, text
+    radiogroup, text, html
 }
