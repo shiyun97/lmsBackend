@@ -126,6 +126,10 @@ public class AnnoucementResource {
 
             Module module = em.find(Module.class, moduleId);
             User user = em.find(User.class, userId);
+            
+            if(startDate.before(createdDate) && endDate.before(createdDate) && endDate.before(startDate)) {
+                return Response.status(Response.Status.BAD_REQUEST).entity(new ErrorRsp("Invalid date")).build();
+            }
 
             Annoucement annoucement = new Annoucement();
             annoucement.setTitle(createAnnoucement.getTitle());
@@ -185,6 +189,10 @@ public class AnnoucementResource {
             Date endDate = formatter.parse(createAnnoucement.getEndDate());
 
             User user = em.find(User.class, userId);
+            
+            if(startDate.before(createdDate) && endDate.before(createdDate) && endDate.before(startDate)) {
+                return Response.status(Response.Status.BAD_REQUEST).entity(new ErrorRsp("Invalid date")).build();
+            }
 
             Annoucement annoucement = new Annoucement();
             annoucement.setTitle(createAnnoucement.getTitle());
@@ -502,6 +510,10 @@ public class AnnoucementResource {
             //String lastUpdatedDate = formatter.format(date);
             Date startDate = formatter.parse(updateAnnoucement.getStartDate());
             Date endDate = formatter.parse(updateAnnoucement.getEndDate());
+            
+            if(startDate.before(updateDate) && endDate.before(updateDate) && endDate.before(startDate)) {
+                return Response.status(Response.Status.BAD_REQUEST).entity(new ErrorRsp("Invalid date")).build();
+            }
 
             User user = em.find(User.class, userId);
 
@@ -555,6 +567,10 @@ public class AnnoucementResource {
             //Date lastUpdatedDate = formatter.parse(updateAnnoucement.getLastUpdatedDate());
             Date startDate = formatter.parse(updateAnnoucement.getStartDate());
             Date endDate = formatter.parse(updateAnnoucement.getEndDate());
+            
+            if(startDate.before(updateDate) && endDate.before(updateDate) && endDate.before(startDate)) {
+                return Response.status(Response.Status.BAD_REQUEST).entity(new ErrorRsp("Invalid date")).build();
+            }
 
             Module module = em.find(Module.class, moduleId);
             User user = em.find(User.class, userId);
@@ -608,7 +624,14 @@ public class AnnoucementResource {
             if (annoucement == null) {
                 return Response.status(Response.Status.NOT_FOUND).entity("No annoucement found").build();
             }
-            annoucement.getModule().getAnnoucementList().remove(annoucement);
+            //annoucement.getModule().getAnnoucementList().remove(annoucement);
+            if (annoucement.getModule() != null) {
+                Module module = em.find(Module.class, annoucement.getModule().getModuleId());
+                module.getAnnoucementList().remove(annoucement);
+                em.merge(module);
+                annoucement.setModule(null);
+            }
+            
             annoucement.setOwner(null);
             em.remove(annoucement);
             return Response.status(Response.Status.OK).build();
