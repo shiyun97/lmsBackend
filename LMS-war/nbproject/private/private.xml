@@ -15,6 +15,12 @@
             <file>file:/C:/Users/Vixson/Documents/GitHub/lmsBackend/LMS-war/src/java/ejb/DataInitSessionBean.java</file>
             <file>file:/C:/Users/Vixson/Documents/GitHub/lmsBackend/LMS-war/src/java/datamodel/rest/GetTutorialRsp.java</file>
             <file>file:/C:/Users/Vixson/Documents/GitHub/lmsBackend/LMS-war/src/java/entities/User.java</file>
+            <file>file:/C:/Users/Jasmine/Documents/GitHub/lmsBackend/LMS-war/src/java/rest/ApplicationConfig.java</file>
+            <file>file:/C:/Users/Jasmine/Documents/GitHub/lmsBackend/LMS-war/src/java/rest/CoursepackResource.java</file>
+            <file>file:/C:/Users/Jasmine/Documents/GitHub/lmsBackend/LMS-war/src/java/entities/LessonOrder.java</file>
+            <file>file:/C:/Users/Jasmine/Documents/GitHub/lmsBackend/LMS-war/src/java/entities/File.java</file>
+            <file>file:/C:/Users/Jasmine/Documents/GitHub/lmsBackend/LMS-war/src/java/entities/Coursepack.java</file>
+            <file>file:/C:/Users/Jasmine/Documents/GitHub/lmsBackend/LMS-war/src/java/entities/Outlines.java</file>
         </group>
     </open-files>
 </project-private>

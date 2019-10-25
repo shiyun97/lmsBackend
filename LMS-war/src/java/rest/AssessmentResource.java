@@ -1000,6 +1000,11 @@ public class AssessmentResource {
                     .build();
         }
         
+        for(GradeEntry ge: gradeItem.getGradeEntries()){
+            ge.setStudent(null);
+            em.remove(ge);
+        }
+        
         em.remove(gradeItem);
         em.flush();
         

@@ -23,7 +23,7 @@
                     <path-in-war>WEB-INF/lib</path-in-war>
                 </library>
                 <library dirs="200">
-                    <file>${file.reference.jersey-media-multipart-2.29.1.jar-1}</file>
+                    <file>${file.reference.javax.activation-1.2.0.jar}</file>
                     <path-in-war>WEB-INF/lib</path-in-war>
                 </library>
                 <library dirs="200">
