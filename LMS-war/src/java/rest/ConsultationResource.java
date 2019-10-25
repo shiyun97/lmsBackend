@@ -130,9 +130,9 @@ public class ConsultationResource {
             ConsultationTimeslot cs = em.find(ConsultationTimeslot.class, consultationTimeslotId);
             if (cs == null) {
                 return Response.status(Response.Status.BAD_REQUEST).entity(new ErrorRsp("Consultation Not Exists!")).build();
-            } else if (cs.getStartTs().isBefore(LocalTime.now()) == false) {
+            } /*else if (cs.getStartTs().isBefore(LocalTime.now()) == false) {
                 return Response.status(Response.Status.BAD_REQUEST).entity(new ErrorRsp("No valid Consultation Exists!")).build();
-            } else {
+            }*/ else {
                 User user = cs.getBooker();
                 user.getConsultationTimeslotList().remove(cs);
                 cs.setBooker(null);
