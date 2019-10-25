@@ -1319,22 +1319,22 @@ public class AssessmentResource {
             quiz.setDescription(rqst.getDescription());
             quiz.setQuizType(rqst.getQuizType());
             quiz.setQuestionsOrder(rqst.getQuestionsOrder());
-            quiz.setMaxTimeToFinish(rqst.getMaxTimeToFinish());
+//            quiz.setMaxTimeToFinish(rqst.getMaxTimeToFinish());
             quiz.setNoOfAttempts(rqst.getNoOfAttempts());
 //            quiz.setCoursepack(cp);
             quiz.setPublish(rqst.isPublish());
             quiz.setQuestionList(new ArrayList<Question>());
             // Parse Date
-            Date openingDate = dateFormatter.parse(rqst.getOpeningDate());
-            Date closingDate = dateFormatter.parse(rqst.getClosingDate());
+//            Date openingDate = dateFormatter.parse(rqst.getOpeningDate());
+//            Date closingDate = dateFormatter.parse(rqst.getClosingDate());
             
             // Verify date
-            if(!openingDate.before(closingDate)){
-                return Response.status(Status.BAD_REQUEST).entity(new ErrorRsp("Opening date is not before closing date")).build();
-            }
+//            if(!openingDate.before(closingDate)){
+//                return Response.status(Status.BAD_REQUEST).entity(new ErrorRsp("Opening date is not before closing date")).build();
+//            }
             
-            quiz.setOpeningDate(openingDate);
-            quiz.setClosingDate(closingDate);
+//            quiz.setOpeningDate(openingDate);
+//            quiz.setClosingDate(closingDate);
             
             List<QuestionModel> questionsRqst = rqst.getQuestions();
             
@@ -1377,9 +1377,6 @@ public class AssessmentResource {
             
             return Response.status(Status.OK).entity(quiz.getQuizId()).build();
             
-        } catch (ParseException pe){
-            pe.printStackTrace();
-            return Response.status(Status.BAD_REQUEST).entity(new ErrorRsp("Opening or closing date isn't in proper format")).build();
         } catch (Exception e){
             e.printStackTrace();
             return Response.status(Status.INTERNAL_SERVER_ERROR).entity(new ErrorRsp(e.getMessage())).build();
@@ -1486,9 +1483,9 @@ public class AssessmentResource {
             newQ.setMaxMarks(q.getMaxMarks());
             newQ.setDescription(q.getDescription());
             newQ.setTitle(q.getTitle());
-            newQ.setMaxTimeToFinish(q.getMaxTimeToFinish());
+//            newQ.setMaxTimeToFinish(q.getMaxTimeToFinish());
             newQ.setPublish(q.isPublish());
-            newQ.setNoOfAttempts(q.getNoOfAttempts());
+//            newQ.setNoOfAttempts(q.getNoOfAttempts());
             newQ.setQuestionsOrder(q.getQuestionsOrder());
             newQ.setPublishAnswer(q.isPublishAnswer());
             newQ.getPages().add(new PageModel(q.getQuestionList(), "page1"));
@@ -1533,15 +1530,15 @@ public class AssessmentResource {
                 if(ar == AccessRightEnum.Teacher || q.isPublish()){
                     Quiz newQ = new Quiz();
                     newQ.setQuizId(q.getQuizId());
-                    newQ.setOpeningDate(q.getOpeningDate());
-                    newQ.setClosingDate(q.getClosingDate());
+//                    newQ.setOpeningDate(q.getOpeningDate());
+//                    newQ.setClosingDate(q.getClosingDate());
                     newQ.setQuizType(q.getQuizType());
                     newQ.setMaxMarks(q.getMaxMarks());
                     newQ.setDescription(q.getDescription());
                     newQ.setTitle(q.getTitle());
-                    newQ.setMaxTimeToFinish(q.getMaxTimeToFinish());
+//                    newQ.setMaxTimeToFinish(q.getMaxTimeToFinish());
                     newQ.setPublish(q.isPublish());
-                    newQ.setNoOfAttempts(q.getNoOfAttempts());
+//                    newQ.setNoOfAttempts(q.getNoOfAttempts());
                     newQ.setQuestionsOrder(q.getQuestionsOrder());
                     newQ.setPublishAnswer(q.isPublishAnswer());
                     quizzes.add(newQ);
