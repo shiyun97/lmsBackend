@@ -533,10 +533,10 @@ public class DataInitSessionBean {
         
         Attendance a1 = new Attendance();
         a1.setDuration(5);
-        a1.setEndTs(new Timestamp(2020 - 1900, 4, 29, 13, 11, 0, 0));
+        a1.setEndTs(new Timestamp(2019 - 1900, 9, 20, 13, 11, 0, 0));
         a1.setModule(m1);
         a1.setSemester(1);
-        a1.setStartTs(new Timestamp(2020 - 1900, 4, 29, 13, 10, 0, 0));
+        a1.setStartTs(new Timestamp(2019 - 1900, 9, 20, 13, 10, 0, 0));
         a1.setTotal(11);
         //a1.setTutorial(t1);
         //t1.getAttendanceList().add(a1);
@@ -560,11 +560,11 @@ public class DataInitSessionBean {
 
         Attendance a2 = new Attendance();
         a2.setDuration(5);
-        a2.setEndTs(new Timestamp(2020 - 1900, 3, 29, 13, 11, 0, 0));
+        a2.setEndTs(new Timestamp(2019 - 1900, 9, 27, 13, 11, 0, 0));
         //a1.setModule(m1);
         //m1.getAttandanceList().add(a1);
         a2.setSemester(1);
-        a2.setStartTs(new Timestamp(2020 - 1900, 3, 29, 13, 10, 0, 0));
+        a2.setStartTs(new Timestamp(2019 - 1900, 9, 27, 13, 10, 0, 0));
         a2.setTotal(11);
         a2.setTutorial(t1);
         a2.setAttendees(studentList);
@@ -587,9 +587,9 @@ public class DataInitSessionBean {
         
         Attendance a3 = new Attendance();
         a3.setDuration(5);
-        a3.setEndTs(new Timestamp(2020 - 1900, 11, 29, 13, 11, 0, 0));
+        a3.setEndTs(new Timestamp(2019 - 1900, 10, 10, 13, 11, 0, 0));
         a3.setSemester(1);
-        a3.setStartTs(new Timestamp(2020 - 1900, 11, 29, 13, 10, 0, 0));
+        a3.setStartTs(new Timestamp(2019 - 1900, 10, 10, 13, 10, 0, 0));
         a3.setTotal(11);
         a3.setTutorial(t1);
         a3.setAttendees(testMissingStudents);
@@ -605,9 +605,9 @@ public class DataInitSessionBean {
         
         Attendance a4 = new Attendance();
         a4.setDuration(5);
-        a4.setEndTs(new Timestamp(2020 - 1900, 10, 29, 13, 11, 0, 0));
+        a4.setEndTs(new Timestamp(2019 - 1900, 10, 17, 13, 11, 0, 0));
         a4.setSemester(1);
-        a4.setStartTs(new Timestamp(2020 - 1900, 10, 29, 13, 10, 0, 0));
+        a4.setStartTs(new Timestamp(2019 - 1900, 10, 17, 13, 10, 0, 0));
         a4.setTotal(11);
         a4.setTutorial(t1);
         a4.setAttendees(testMissingStudents);
