@@ -6,16 +6,12 @@
 package rest;
 
 import datamodel.rest.CreateCoursepack;
-import datamodel.rest.CreateLessonOrder;
-import datamodel.rest.CreateOutline;
 import datamodel.rest.GetCoursepackRsp;
-import datamodel.rest.GetOutlineRsp;
 import datamodel.rest.UpdateCoursepack;
 import datamodel.rest.GetUserRsp;
-import datamodel.rest.UpdateLessonOrder;
-import datamodel.rest.UpdateOutline;
 import entities.Coursepack;
 import entities.File;
+import entities.ForumTopic;
 import entities.LessonOrder;
 import entities.Outlines;
 import entities.Quiz;
@@ -493,6 +489,15 @@ public class CoursepackResource {
             Coursepack coursepack = em.find(Coursepack.class, coursepackId);
             if(coursepack == null){
                 return Response.status(Response.Status.NOT_FOUND).entity("No coursepack found").build();
+            }
+            
+////            coursepack.getQuizList()
+////            coursepack.setQuizList(null);
+//            coursepack.getAssignedTeacher().getTeacherCoursepackList().remove(coursepack);
+//            coursepack.setAssignedTeacher(null);
+//            coursepack.setOutlineList(outlineList);
+            for(ForumTopic ft: coursepack.getForumTopicList()){
+                ft.setCoursepack(null);
             }
             em.remove(coursepack);
                 
