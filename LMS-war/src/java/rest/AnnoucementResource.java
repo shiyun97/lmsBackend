@@ -127,7 +127,7 @@ public class AnnoucementResource {
             Module module = em.find(Module.class, moduleId);
             User user = em.find(User.class, userId);
             
-            if(startDate.before(createdDate) && endDate.before(createdDate) && endDate.before(startDate)) {
+            if((startDate.before(createdDate) && endDate.before(createdDate)) || endDate.before(startDate)) {
                 return Response.status(Response.Status.BAD_REQUEST).entity(new ErrorRsp("Invalid date")).build();
             }
 
@@ -193,7 +193,7 @@ public class AnnoucementResource {
 
             User user = em.find(User.class, userId);
             
-            if(startDate.before(createdDate) && endDate.before(createdDate) && endDate.before(startDate)) {
+            if((startDate.before(createdDate) && endDate.before(createdDate)) || endDate.before(startDate)) {
                 return Response.status(Response.Status.BAD_REQUEST).entity(new ErrorRsp("Invalid date")).build();
             }
 
@@ -516,7 +516,7 @@ public class AnnoucementResource {
             Date startDate = formatter.parse(updateAnnoucement.getStartDate());
             Date endDate = formatter.parse(updateAnnoucement.getEndDate());
             
-            if(startDate.before(updateDate) && endDate.before(updateDate) && endDate.before(startDate)) {
+            if((startDate.before(updateDate) && endDate.before(updateDate)) || endDate.before(startDate)) {
                 return Response.status(Response.Status.BAD_REQUEST).entity(new ErrorRsp("Invalid date")).build();
             }
 
@@ -575,7 +575,7 @@ public class AnnoucementResource {
             Date startDate = formatter.parse(updateAnnoucement.getStartDate());
             Date endDate = formatter.parse(updateAnnoucement.getEndDate());
             
-            if(startDate.before(updateDate) && endDate.before(updateDate) && endDate.before(startDate)) {
+            if((startDate.before(updateDate) && endDate.before(updateDate)) || endDate.before(startDate)) {
                 return Response.status(Response.Status.BAD_REQUEST).entity(new ErrorRsp("Invalid date")).build();
             }
 

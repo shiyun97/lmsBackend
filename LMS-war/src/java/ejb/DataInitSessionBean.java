@@ -684,6 +684,7 @@ public class DataInitSessionBean {
         topic1.setTitle("Group Formation");
         em.persist(topic1);
         em.flush();
+        m1.getForumTopicList().add(topic1);
 
         ForumTopic topic2 = new ForumTopic();
         topic2.setModule(m1);
@@ -691,6 +692,7 @@ public class DataInitSessionBean {
         topic2.setTitle("Course Administration");
         em.persist(topic2);
         em.flush();
+        m1.getForumTopicList().add(topic2);
 
         ForumTopic topic3 = new ForumTopic();
         topic3.setCoursepack(cp1);
@@ -698,13 +700,15 @@ public class DataInitSessionBean {
         topic3.setTitle("General Enquiries");
         em.persist(topic3);
         em.flush();
+        cp1.getForumTopicList().add(topic3);
 
         ForumTopic topic4 = new ForumTopic();
-        topic3.setModule(m1);
-        topic3.setDescription("Please use this topic heading to ask any questions relating to assignment 6.");
-        topic3.setTitle("Assignment 6");
+        topic4.setModule(m1);
+        topic4.setDescription("Please use this topic heading to ask any questions relating to assignment 6.");
+        topic4.setTitle("Assignment 6");
         em.persist(topic4);
         em.flush();
+        m1.getForumTopicList().add(topic4);
 
         ForumPost thread1 = new ForumPost();
         thread1.setCreateTs(LocalDateTime.now());
@@ -737,6 +741,7 @@ public class DataInitSessionBean {
         comment1.setOwner(student2);
         comment1.setThreadStarter(Boolean.FALSE);
         comment1.setType("comment");
+        comment1.setParentOfComments(thread2);
         em.persist(comment1);
         em.flush();
         thread2.getComments().add(comment1);
@@ -750,6 +755,7 @@ public class DataInitSessionBean {
         reply1.setOwner(teacher);
         reply1.setThreadStarter(Boolean.FALSE);
         reply1.setType("reply");
+        reply1.setParentOfReply(thread2);
         em.persist(reply1);
         em.flush();
         thread2.getReplies().add(reply1);
@@ -789,6 +795,7 @@ public class DataInitSessionBean {
         comment3.setOwner(student2);
         comment3.setThreadStarter(Boolean.FALSE);
         comment3.setType("comment");
+        comment3.setParentOfComments(thread3);
         em.persist(comment3);
         em.flush();
         thread3.getComments().add(comment3);
@@ -801,6 +808,7 @@ public class DataInitSessionBean {
         reply2.setOwner(teacher);
         reply2.setThreadStarter(Boolean.FALSE);
         reply2.setType("reply");
+        reply2.setParentOfReply(thread3);
         em.persist(reply2);
         em.flush();
         thread3.getReplies().add(reply2);
@@ -838,6 +846,7 @@ public class DataInitSessionBean {
         reply3.setOwner(teacher);
         reply3.setThreadStarter(Boolean.FALSE);
         reply3.setType("reply");
+        reply3.setParentOfReply(thread4);
         em.persist(reply3);
         em.flush();
         thread4.getReplies().add(reply3);

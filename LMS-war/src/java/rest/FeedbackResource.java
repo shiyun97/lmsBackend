@@ -350,9 +350,9 @@ public class FeedbackResource {
         Coursepack cp = em.find(Coursepack.class, rqst.getCoursepackId());
         if(cp == null){
             return Response.status(Response.Status.NOT_FOUND).entity(new ErrorRsp("Coursepack with the given ID not found!")).build();
-        } else if (!cp.getPublicUserList().contains(user)){
+        } /*else if (!cp.getPublicUserList().contains(user)){
             return Response.status(Response.Status.FORBIDDEN).entity(new ErrorRsp("User is not a student of this coursepack")).build();
-        }
+        }*/
         
         try {
             Rating rating = new Rating();
@@ -363,7 +363,12 @@ public class FeedbackResource {
             em.persist(rating);
             cp.getRatingList().add(rating);
             
-            cp.setRating((1.0 * cp.getRating() + rating.getRating()) / cp.getRatingList().size());
+            int sum = 0;
+            for (Rating r : cp.getRatingList()) {
+                sum += r.getRating();
+            }
+            cp.setRating(sum * 1.0 / cp.getRatingList().size());
+            //cp.setRating((1.0 * cp.getRating() + rating.getRating()) / cp.getRatingList().size());
             em.flush();
             
             return Response.status(Response.Status.OK).build();
