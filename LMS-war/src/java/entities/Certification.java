@@ -21,12 +21,12 @@ import javax.persistence.ManyToOne;
  * @author Vixson
  */
 @Entity
-public class Badge implements Serializable {
+public class Certification implements Serializable {
 
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long badgeId;
+    private Long certificationId;
     @Column
     private String title;
     @Column
@@ -38,41 +38,41 @@ public class Badge implements Serializable {
     @Column
     private Date dateAchieved;
 
-    public Badge() {
+    public Certification() {
     }
 
-    public Badge(Long badgeId, String title, String description, String criteria, List<User> userList, Date dateAchieved) {
-        this.badgeId = badgeId;
+    public Certification(Long certificationId, String title, String description, String criteria, List<User> userList, Date dateAchieved) {
+        this.certificationId = certificationId;
         this.title = title;
         this.description = description;
         this.criteria = criteria;
         this.userList = userList;
         this.dateAchieved = dateAchieved;
     }
-
+    
     public Long getId() {
-        return badgeId;
+        return certificationId;
     }
 
-    public void setId(Long badgeId) {
-        this.badgeId = badgeId;
+    public void setId(Long certificationId) {
+        this.certificationId = certificationId;
     }
 
     @Override
     public int hashCode() {
         int hash = 0;
-        hash += (badgeId != null ? badgeId.hashCode() : 0);
+        hash += (certificationId != null ? certificationId.hashCode() : 0);
         return hash;
     }
 
     @Override
     public boolean equals(Object object) {
-        // TODO: Warning - this method won't work in the case the badgeId fields are not set
-        if (!(object instanceof Badge)) {
+        // TODO: Warning - this method won't work in the case the certificationId fields are not set
+        if (!(object instanceof Certification)) {
             return false;
         }
-        Badge other = (Badge) object;
-        if ((this.badgeId == null && other.badgeId != null) || (this.badgeId != null && !this.badgeId.equals(other.badgeId))) {
+        Certification other = (Certification) object;
+        if ((this.certificationId == null && other.certificationId != null) || (this.certificationId != null && !this.certificationId.equals(other.certificationId))) {
             return false;
         }
         return true;
@@ -80,7 +80,7 @@ public class Badge implements Serializable {
 
     @Override
     public String toString() {
-        return "entities.Badge[ Id=" + badgeId + " ]";
+        return "entities.Certification[ certificationId=" + certificationId + " ]";
     }
 
     public String getTitle() {
@@ -106,7 +106,7 @@ public class Badge implements Serializable {
     public void setCriteria(String criteria) {
         this.criteria = criteria;
     }
-
+    
     public Date getDateAchieved() {
         return dateAchieved;
     }

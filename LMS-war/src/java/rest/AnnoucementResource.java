@@ -126,8 +126,8 @@ public class AnnoucementResource {
 
             Module module = em.find(Module.class, moduleId);
             User user = em.find(User.class, userId);
-            
-            if((startDate.before(createdDate) && endDate.before(createdDate)) || endDate.before(startDate)) {
+
+            if ((startDate.before(createdDate) && endDate.before(createdDate)) || endDate.before(startDate)) {
                 return Response.status(Response.Status.BAD_REQUEST).entity(new ErrorRsp("Invalid date")).build();
             }
 
@@ -151,9 +151,12 @@ public class AnnoucementResource {
                     null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
                     module.isHasExam(), module.getExamTime(), module.getExamVenue(), module.getLectureDetails(), module.getDepartment(),
                     module.getFaculty());
+            User userCopy = new User(user.getId(), user.getFirstName(), user.getLastName(), user.getEmail(),
+                    user.getUsername(), null, null, user.getAccessRight(),
+                    null, null, null, null, null, null, null, null, null);
             Annoucement annoucementCopy = new Annoucement(annoucement.getAnnoucementId(), annoucement.getTitle(),
                     annoucement.getContent(), createdDate, createdDate, startDate, endDate,
-                    null, annoucement.getEmailNotification(), moduleCopy, null);
+                    null, annoucement.getEmailNotification(), moduleCopy, userCopy);
 
             if (createAnnoucement.getEmailNotification() == true) {
                 List<String> address = new ArrayList<>();
@@ -192,8 +195,8 @@ public class AnnoucementResource {
             Date endDate = formatter.parse(createAnnoucement.getEndDate());
 
             User user = em.find(User.class, userId);
-            
-            if((startDate.before(createdDate) && endDate.before(createdDate)) || endDate.before(startDate)) {
+
+            if ((startDate.before(createdDate) && endDate.before(createdDate)) || endDate.before(startDate)) {
                 return Response.status(Response.Status.BAD_REQUEST).entity(new ErrorRsp("Invalid date")).build();
             }
 
@@ -211,9 +214,12 @@ public class AnnoucementResource {
             annoucement.setOwner(user);
             em.persist(annoucement);
             em.flush();
+            User userCopy = new User(user.getId(), user.getFirstName(), user.getLastName(), user.getEmail(),
+                    user.getUsername(), null, null, user.getAccessRight(),
+                    null, null, null, null, null, null, null, null, null);
             Annoucement annoucementCopy = new Annoucement(annoucement.getAnnoucementId(), annoucement.getTitle(),
                     annoucement.getContent(), createdDate, createdDate, startDate, endDate,
-                    null, annoucement.getEmailNotification(), null, null);
+                    null, annoucement.getEmailNotification(), null, userCopy);
 
             if (createAnnoucement.getEmailNotification() == true) {
                 List<String> address = new ArrayList<>();
@@ -249,7 +255,29 @@ public class AnnoucementResource {
             }
             GetAnnoucementRsp rsp = new GetAnnoucementRsp(new ArrayList<>());
             for (Annoucement a : annoucementList) {
+                User user = a.getOwner();
                 Module module = a.getModule();
+                if (user == null) {
+                    if (module != null) {
+                        Module moduleCopy = new Module(module.getModuleId(), module.getCode(), module.getTitle(), module.getDescription(),
+                                null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
+                                module.isHasExam(), module.getExamTime(), module.getExamVenue(), module.getLectureDetails(), module.getDepartment(),
+                                module.getFaculty());
+                        rsp.getAnnoucementList().add(
+                                new Annoucement(a.getAnnoucementId(), a.getTitle(),
+                                        a.getContent(), a.getCreatedDate(), a.getLastUpdatedDate(),
+                                        a.getStartDate(), a.getEndDate(), a.getPublish(), a.getEmailNotification(),
+                                        moduleCopy, null));
+                    }
+                    rsp.getAnnoucementList().add(
+                            new Annoucement(a.getAnnoucementId(), a.getTitle(),
+                                    a.getContent(), a.getCreatedDate(), a.getLastUpdatedDate(),
+                                    a.getStartDate(), a.getEndDate(), a.getPublish(), a.getEmailNotification(),
+                                    null, null));
+                }
+                User userCopy = new User(user.getId(), user.getFirstName(), user.getLastName(), user.getEmail(),
+                        user.getUsername(), null, null, user.getAccessRight(),
+                        null, null, null, null, null, null, null, null, null);
                 if (module != null) {
                     Module moduleCopy = new Module(module.getModuleId(), module.getCode(), module.getTitle(), module.getDescription(),
                             null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
@@ -259,13 +287,13 @@ public class AnnoucementResource {
                             new Annoucement(a.getAnnoucementId(), a.getTitle(),
                                     a.getContent(), a.getCreatedDate(), a.getLastUpdatedDate(),
                                     a.getStartDate(), a.getEndDate(), a.getPublish(), a.getEmailNotification(),
-                                    moduleCopy, null));
+                                    moduleCopy, userCopy));
                 }
                 rsp.getAnnoucementList().add(
                         new Annoucement(a.getAnnoucementId(), a.getTitle(),
                                 a.getContent(), a.getCreatedDate(), a.getLastUpdatedDate(),
                                 a.getStartDate(), a.getEndDate(), a.getPublish(), a.getEmailNotification(),
-                                null, null));
+                                null, userCopy));
             }
             return Response.status(Response.Status.OK).entity(rsp).build();
         } catch (Exception ex) {
@@ -283,7 +311,30 @@ public class AnnoucementResource {
             if (annoucement == null) {
                 return Response.status(Response.Status.NOT_FOUND).entity("No annoucement found").build();
             }
+            User user = annoucement.getOwner();
             Module module = annoucement.getModule();
+            if (user == null) {
+                if (module != null) {
+                    Module moduleCopy = new Module(module.getModuleId(), module.getCode(), module.getTitle(), module.getDescription(),
+                            null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
+                            module.isHasExam(), module.getExamTime(), module.getExamVenue(), module.getLectureDetails(), module.getDepartment(),
+                            module.getFaculty());
+                    Annoucement annoucementCopy = new Annoucement(annoucement.getAnnoucementId(), annoucement.getTitle(),
+                            annoucement.getContent(), annoucement.getCreatedDate(), annoucement.getLastUpdatedDate(),
+                            annoucement.getStartDate(), annoucement.getEndDate(), annoucement.getPublish(),
+                            annoucement.getEmailNotification(),
+                            moduleCopy, null);
+                    return Response.status(Response.Status.OK).entity(annoucementCopy).build();
+                }
+                Annoucement annoucementCopy = new Annoucement(annoucement.getAnnoucementId(), annoucement.getTitle(),
+                        annoucement.getContent(), annoucement.getCreatedDate(), annoucement.getLastUpdatedDate(),
+                        annoucement.getStartDate(), annoucement.getEndDate(), annoucement.getPublish(),
+                        annoucement.getEmailNotification(),
+                        null, null);
+            }
+            User userCopy = new User(user.getId(), user.getFirstName(), user.getLastName(), user.getEmail(),
+                    user.getUsername(), null, null, user.getAccessRight(),
+                    null, null, null, null, null, null, null, null, null);
             if (module != null) {
                 Module moduleCopy = new Module(module.getModuleId(), module.getCode(), module.getTitle(), module.getDescription(),
                         null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
@@ -293,14 +344,15 @@ public class AnnoucementResource {
                         annoucement.getContent(), annoucement.getCreatedDate(), annoucement.getLastUpdatedDate(),
                         annoucement.getStartDate(), annoucement.getEndDate(), annoucement.getPublish(),
                         annoucement.getEmailNotification(),
-                        moduleCopy, null);
+                        moduleCopy, userCopy);
                 return Response.status(Response.Status.OK).entity(annoucementCopy).build();
             }
             Annoucement annoucementCopy = new Annoucement(annoucement.getAnnoucementId(), annoucement.getTitle(),
                     annoucement.getContent(), annoucement.getCreatedDate(), annoucement.getLastUpdatedDate(),
                     annoucement.getStartDate(), annoucement.getEndDate(), annoucement.getPublish(),
                     annoucement.getEmailNotification(),
-                    null, null);
+                    null, userCopy);
+
             return Response.status(Response.Status.OK).entity(annoucementCopy).build();
         } catch (Exception ex) {
             ex.printStackTrace();
@@ -328,13 +380,27 @@ public class AnnoucementResource {
                     module.getFaculty());
             Date now = new Date();
             for (Annoucement a : annoucementList) {
+                User user = a.getOwner();
+                if (user == null) {
+                    if (a.getStartDate().before(now) && a.getEndDate().after(now)) {
+                        rsp.getAnnoucementList().add(
+                                new Annoucement(a.getAnnoucementId(), a.getTitle(),
+                                        a.getContent(), a.getCreatedDate(), a.getLastUpdatedDate(),
+                                        a.getStartDate(), a.getEndDate(), a.getPublish(),
+                                        a.getEmailNotification(),
+                                        moduleCopy, null));
+                    }
+                }
+                User userCopy = new User(user.getId(), user.getFirstName(), user.getLastName(), user.getEmail(),
+                        user.getUsername(), null, null, user.getAccessRight(),
+                        null, null, null, null, null, null, null, null, null);
                 if (a.getStartDate().before(now) && a.getEndDate().after(now)) {
                     rsp.getAnnoucementList().add(
                             new Annoucement(a.getAnnoucementId(), a.getTitle(),
                                     a.getContent(), a.getCreatedDate(), a.getLastUpdatedDate(),
                                     a.getStartDate(), a.getEndDate(), a.getPublish(),
                                     a.getEmailNotification(),
-                                    moduleCopy, null));
+                                    moduleCopy, userCopy));
                 }
             }
             return Response.status(Response.Status.OK).entity(rsp).build();
@@ -357,12 +423,26 @@ public class AnnoucementResource {
             GetAnnoucementRsp rsp = new GetAnnoucementRsp(new ArrayList<>());
             Date now = new Date();
             for (Annoucement a : annoucementList) {
+                User user = a.getOwner();
+                if (user == null) {
+                    if (a.getStartDate().before(now) && a.getEndDate().after(now)) {
+                        rsp.getAnnoucementList().add(
+                                new Annoucement(a.getAnnoucementId(), a.getTitle(),
+                                        a.getContent(), a.getCreatedDate(), a.getLastUpdatedDate(),
+                                        a.getStartDate(), a.getEndDate(), a.getPublish(), a.getEmailNotification(),
+                                        null, null));
+                    }
+                }
+                User userCopy = new User(user.getId(), user.getFirstName(), user.getLastName(), user.getEmail(),
+                        user.getUsername(), null, null, user.getAccessRight(),
+                        null, null, null, null, null, null, null, null, null);
                 if (a.getStartDate().before(now) && a.getEndDate().after(now)) {
                     rsp.getAnnoucementList().add(
                             new Annoucement(a.getAnnoucementId(), a.getTitle(),
                                     a.getContent(), a.getCreatedDate(), a.getLastUpdatedDate(),
-                                    a.getStartDate(), a.getEndDate(), a.getPublish(), a.getEmailNotification(),
-                                    null, null));
+                                    a.getStartDate(), a.getEndDate(), a.getPublish(),
+                                    a.getEmailNotification(),
+                                    null, userCopy));
                 }
             }
             return Response.status(Response.Status.OK).entity(rsp).build();
@@ -375,7 +455,8 @@ public class AnnoucementResource {
     @GET
     @Path("getAllExpiredAnnoucements")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response getAllExpiredAnnoucements(@QueryParam("moduleId") Long moduleId) {
+    public Response getAllExpiredAnnoucements(@QueryParam("moduleId") Long moduleId
+    ) {
         try {
             Module module = em.find(Module.class, moduleId);
             if (module == null) {
@@ -392,13 +473,27 @@ public class AnnoucementResource {
                     module.getFaculty());
             Date now = new Date();
             for (Annoucement a : annoucementList) {
+                User user = a.getOwner();
+                if (user == null) {
+                    if (a.getEndDate().before(now)) {
+                        rsp.getAnnoucementList().add(
+                                new Annoucement(a.getAnnoucementId(), a.getTitle(),
+                                        a.getContent(), a.getCreatedDate(), a.getLastUpdatedDate(),
+                                        a.getStartDate(), a.getEndDate(), a.getPublish(),
+                                        a.getEmailNotification(),
+                                        moduleCopy, null));
+                    }
+                }
+                User userCopy = new User(user.getId(), user.getFirstName(), user.getLastName(), user.getEmail(),
+                        user.getUsername(), null, null, user.getAccessRight(),
+                        null, null, null, null, null, null, null, null, null);
                 if (a.getEndDate().before(now)) {
                     rsp.getAnnoucementList().add(
                             new Annoucement(a.getAnnoucementId(), a.getTitle(),
                                     a.getContent(), a.getCreatedDate(), a.getLastUpdatedDate(),
                                     a.getStartDate(), a.getEndDate(), a.getPublish(),
                                     a.getEmailNotification(),
-                                    moduleCopy, null));
+                                    moduleCopy, userCopy));
                 }
             }
             return Response.status(Response.Status.OK).entity(rsp).build();
@@ -421,12 +516,26 @@ public class AnnoucementResource {
             GetAnnoucementRsp rsp = new GetAnnoucementRsp(new ArrayList<>());
             Date now = new Date();
             for (Annoucement a : annoucementList) {
+                User user = a.getOwner();
+                if (user == null) {
+                    if (a.getEndDate().before(now)) {
+                        rsp.getAnnoucementList().add(
+                                new Annoucement(a.getAnnoucementId(), a.getTitle(),
+                                        a.getContent(), a.getCreatedDate(), a.getLastUpdatedDate(),
+                                        a.getStartDate(), a.getEndDate(), a.getPublish(), a.getEmailNotification(),
+                                        null, null));
+                    }
+                }
+                User userCopy = new User(user.getId(), user.getFirstName(), user.getLastName(), user.getEmail(),
+                        user.getUsername(), null, null, user.getAccessRight(),
+                        null, null, null, null, null, null, null, null, null);
                 if (a.getEndDate().before(now)) {
                     rsp.getAnnoucementList().add(
                             new Annoucement(a.getAnnoucementId(), a.getTitle(),
                                     a.getContent(), a.getCreatedDate(), a.getLastUpdatedDate(),
-                                    a.getStartDate(), a.getEndDate(), a.getPublish(), a.getEmailNotification(),
-                                    null, null));
+                                    a.getStartDate(), a.getEndDate(), a.getPublish(),
+                                    a.getEmailNotification(),
+                                    null, userCopy));
                 }
             }
             return Response.status(Response.Status.OK).entity(rsp).build();
@@ -439,7 +548,8 @@ public class AnnoucementResource {
     @GET
     @Path("getAllUpcomingAnnoucements")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response getAllUpcomingAnnoucements(@QueryParam("moduleId") Long moduleId) {
+    public Response getAllUpcomingAnnoucements(@QueryParam("moduleId") Long moduleId
+    ) {
         try {
             Module module = em.find(Module.class, moduleId);
             if (module == null) {
@@ -456,13 +566,27 @@ public class AnnoucementResource {
                     module.getFaculty());
             Date now = new Date();
             for (Annoucement a : annoucementList) {
+                User user = a.getOwner();
+                if (user == null) {
+                    if (a.getStartDate().after(now)) {
+                        rsp.getAnnoucementList().add(
+                                new Annoucement(a.getAnnoucementId(), a.getTitle(),
+                                        a.getContent(), a.getCreatedDate(), a.getLastUpdatedDate(),
+                                        a.getStartDate(), a.getEndDate(), a.getPublish(),
+                                        a.getEmailNotification(),
+                                        moduleCopy, null));
+                    }
+                }
+                User userCopy = new User(user.getId(), user.getFirstName(), user.getLastName(), user.getEmail(),
+                        user.getUsername(), null, null, user.getAccessRight(),
+                        null, null, null, null, null, null, null, null, null);
                 if (a.getStartDate().after(now)) {
                     rsp.getAnnoucementList().add(
                             new Annoucement(a.getAnnoucementId(), a.getTitle(),
                                     a.getContent(), a.getCreatedDate(), a.getLastUpdatedDate(),
                                     a.getStartDate(), a.getEndDate(), a.getPublish(),
                                     a.getEmailNotification(),
-                                    moduleCopy, null));
+                                    moduleCopy, userCopy));
                 }
             }
             return Response.status(Response.Status.OK).entity(rsp).build();
@@ -485,12 +609,26 @@ public class AnnoucementResource {
             GetAnnoucementRsp rsp = new GetAnnoucementRsp(new ArrayList<>());
             Date now = new Date();
             for (Annoucement a : annoucementList) {
+                User user = a.getOwner();
+                if (user == null) {
+                    if (a.getStartDate().after(now)) {
+                        rsp.getAnnoucementList().add(
+                                new Annoucement(a.getAnnoucementId(), a.getTitle(),
+                                        a.getContent(), a.getCreatedDate(), a.getLastUpdatedDate(),
+                                        a.getStartDate(), a.getEndDate(), a.getPublish(), a.getEmailNotification(),
+                                        null, null));
+                    }
+                }
+                User userCopy = new User(user.getId(), user.getFirstName(), user.getLastName(), user.getEmail(),
+                        user.getUsername(), null, null, user.getAccessRight(),
+                        null, null, null, null, null, null, null, null, null);
                 if (a.getStartDate().after(now)) {
                     rsp.getAnnoucementList().add(
                             new Annoucement(a.getAnnoucementId(), a.getTitle(),
                                     a.getContent(), a.getCreatedDate(), a.getLastUpdatedDate(),
-                                    a.getStartDate(), a.getEndDate(), a.getPublish(), a.getEmailNotification(),
-                                    null, null));
+                                    a.getStartDate(), a.getEndDate(), a.getPublish(),
+                                    a.getEmailNotification(),
+                                    null, userCopy));
                 }
             }
             return Response.status(Response.Status.OK).entity(rsp).build();
@@ -504,7 +642,10 @@ public class AnnoucementResource {
     @Path(value = "updateSystemAnnoucement")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response updateSystemAnnoucement(UpdateAnnoucement updateAnnoucement, @QueryParam("annoucementId") Long annoucementId, @QueryParam("userId") Long userId) {
+    public Response updateSystemAnnoucement(UpdateAnnoucement updateAnnoucement,
+            @QueryParam("annoucementId") Long annoucementId,
+            @QueryParam("userId") Long userId
+    ) {
         try {
             Annoucement annoucement = em.find(Annoucement.class, annoucementId);
             if (annoucement == null) {
@@ -515,8 +656,8 @@ public class AnnoucementResource {
             //String lastUpdatedDate = formatter.format(date);
             Date startDate = formatter.parse(updateAnnoucement.getStartDate());
             Date endDate = formatter.parse(updateAnnoucement.getEndDate());
-            
-            if((startDate.before(updateDate) && endDate.before(updateDate)) || endDate.before(startDate)) {
+
+            if ((startDate.before(updateDate) && endDate.before(updateDate)) || endDate.before(startDate)) {
                 return Response.status(Response.Status.BAD_REQUEST).entity(new ErrorRsp("Invalid date")).build();
             }
 
@@ -534,9 +675,12 @@ public class AnnoucementResource {
             annoucement.setOwner(user);
             em.merge(annoucement);
             em.flush();
+            User userCopy = new User(user.getId(), user.getFirstName(), user.getLastName(), user.getEmail(),
+                    user.getUsername(), null, null, user.getAccessRight(),
+                    null, null, null, null, null, null, null, null, null);
             Annoucement annoucementCopy = new Annoucement(annoucement.getAnnoucementId(), annoucement.getTitle(),
                     annoucement.getContent(), annoucement.getCreatedDate(), updateDate, startDate, endDate,
-                    annoucement.getPublish(), annoucement.getEmailNotification(), null, null);
+                    annoucement.getPublish(), annoucement.getEmailNotification(), null, userCopy);
 
             if (updateAnnoucement.getEmailNotification() == true) {
                 List<String> address = new ArrayList<>();
@@ -563,7 +707,11 @@ public class AnnoucementResource {
     @Path(value = "updateModuleAnnoucement")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response updateModuleAnnoucement(UpdateAnnoucement updateAnnoucement, @QueryParam("moduleId") Long moduleId, @QueryParam("annoucementId") Long annoucementId, @QueryParam("userId") Long userId) {
+    public Response updateModuleAnnoucement(UpdateAnnoucement updateAnnoucement,
+            @QueryParam("moduleId") Long moduleId,
+            @QueryParam("annoucementId") Long annoucementId,
+            @QueryParam("userId") Long userId
+    ) {
         try {
             Annoucement annoucement = em.find(Annoucement.class, annoucementId);
             if (annoucement == null) {
@@ -574,8 +722,8 @@ public class AnnoucementResource {
             //Date lastUpdatedDate = formatter.parse(updateAnnoucement.getLastUpdatedDate());
             Date startDate = formatter.parse(updateAnnoucement.getStartDate());
             Date endDate = formatter.parse(updateAnnoucement.getEndDate());
-            
-            if((startDate.before(updateDate) && endDate.before(updateDate)) || endDate.before(startDate)) {
+
+            if ((startDate.before(updateDate) && endDate.before(updateDate)) || endDate.before(startDate)) {
                 return Response.status(Response.Status.BAD_REQUEST).entity(new ErrorRsp("Invalid date")).build();
             }
 
@@ -599,9 +747,12 @@ public class AnnoucementResource {
                     null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
                     module.isHasExam(), module.getExamTime(), module.getExamVenue(), module.getLectureDetails(), module.getDepartment(),
                     module.getFaculty());
+            User userCopy = new User(user.getId(), user.getFirstName(), user.getLastName(), user.getEmail(),
+                    user.getUsername(), null, null, user.getAccessRight(),
+                    null, null, null, null, null, null, null, null, null);
             Annoucement annoucementCopy = new Annoucement(annoucement.getAnnoucementId(), annoucement.getTitle(),
                     annoucement.getContent(), annoucement.getCreatedDate(), updateDate, startDate, endDate,
-                    annoucement.getPublish(), annoucement.getEmailNotification(), moduleCopy, null);
+                    annoucement.getPublish(), annoucement.getEmailNotification(), moduleCopy, userCopy);
 
             if (updateAnnoucement.getEmailNotification() == true) {
                 List<String> address = new ArrayList<>();
@@ -627,7 +778,8 @@ public class AnnoucementResource {
     @Path(value = "deleteAnnoucement")
     @DELETE
     @Produces(MediaType.APPLICATION_JSON)
-    public Response deleteAnnoucement(@QueryParam("annoucementId") Long annoucementId) {
+    public Response deleteAnnoucement(@QueryParam("annoucementId") Long annoucementId
+    ) {
         try {
             Annoucement annoucement = em.find(Annoucement.class, annoucementId);
             if (annoucement == null) {
@@ -640,7 +792,7 @@ public class AnnoucementResource {
                 em.merge(module);
                 annoucement.setModule(null);
             }
-            
+
             annoucement.setOwner(null);
             em.remove(annoucement);
             return Response.status(Response.Status.OK).build();
