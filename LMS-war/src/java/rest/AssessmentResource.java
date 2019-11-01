@@ -129,6 +129,12 @@ public class AssessmentResource {
                 question.setChoices(new ArrayList<>());
                 question.setCorrectAnswer(qm.getCorrectAnswer());
                 
+                if(question.getType() == QuestionTypeEnum.radiogroup){
+                    for (ChoiceModel choice: qm.getChoices()){
+                        question.getChoices().add(choice.getText());
+                    }
+                }
+                
                 em.persist(question);
                 em.flush();
                 
@@ -1351,6 +1357,12 @@ public class AssessmentResource {
                 question.setIsRequired(qm.getIsRequired());
                 question.setChoices(new ArrayList<>());
                 question.setCorrectAnswer(qm.getCorrectAnswer());
+                
+                if(question.getType() == QuestionTypeEnum.radiogroup){
+                    for (ChoiceModel choice: qm.getChoices()){
+                        question.getChoices().add(choice.getText());
+                    }
+                }
                 
                 em.persist(question);
                 em.flush();
