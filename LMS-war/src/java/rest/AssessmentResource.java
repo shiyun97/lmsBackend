@@ -1736,4 +1736,36 @@ public class AssessmentResource {
             return Response.status(Status.INTERNAL_SERVER_ERROR).entity(new ErrorRsp(e.getMessage())).build();
         }
     }
+    
+    @POST
+    @Path("completeCoursepackQuiz")
+    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_JSON)
+    public Response completeCoursepackQuiz(@QueryParam("userId") Long userId, @QueryParam("quizId") Long quizId){
+        User user = em.find(User.class, userId);
+        if(user == null || user.getAccessRight() == AccessRightEnum.Teacher || user.getAccessRight() == AccessRightEnum.Admin){
+            return Response.status(Status.FORBIDDEN)
+                    .entity(new ErrorRsp("User doesn't have access to this function"))
+                    .build();
+        }
+        
+        Quiz quiz = em.find(Quiz.class, quizId);
+        if(quiz == null){
+            return Response.status(Status.NOT_FOUND).entity(new ErrorRsp("Quiz with the given ID not found!")).build();
+        } else if (quiz.getLessonOrder() == null){
+            return Response.status(Status.BAD_REQUEST).entity(new ErrorRsp("Quiz is not part of a coursepack")).build();
+        }
+        
+        if(!quiz.getLessonOrder().getOutlines().getCoursepack().getPublicUserList().contains(user)){
+            return Response.status(Status.BAD_REQUEST).entity(new ErrorRsp("User is not enrolled in this coursepack")).build();
+        }
+        
+        if(quiz.getLessonOrder().getPublicUserList().contains(user)){
+            return Response.status(Status.BAD_REQUEST).entity(new ErrorRsp("User already finished this lesson order")).build();
+        }
+        
+        quiz.getLessonOrder().getPublicUserList().add(user);
+        
+        return Response.status(Status.OK).build();
+    }
 }
