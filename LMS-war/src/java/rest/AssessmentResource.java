@@ -248,6 +248,7 @@ public class AssessmentResource {
             question.setType(qm.getType());
             question.setIsRequired(qm.getIsRequired());
             question.setChoices(new ArrayList<>());
+            question.setCorrectAnswer(qm.getCorrectAnswer());
 
             if(question.getType() == QuestionTypeEnum.radiogroup){
                 for (ChoiceModel choice: qm.getChoices()){
@@ -315,6 +316,7 @@ public class AssessmentResource {
                 question.setType(qm.getType());
                 question.setIsRequired(qm.getIsRequired());
                 question.setChoices(new ArrayList<>());
+                question.setCorrectAnswer(qm.getCorrectAnswer());
                 
                 em.persist(question);
                 quiz.getQuestionList().add(question);
@@ -327,6 +329,7 @@ public class AssessmentResource {
                 question.setType(qm.getType());
                 question.setIsRequired(qm.getIsRequired());
                 question.setChoices(new ArrayList<>());
+                question.setCorrectAnswer(qm.getCorrectAnswer());
             }
             
             quiz.setMaxMarks(quiz.getMaxMarks() + pointDiff);
@@ -1586,6 +1589,7 @@ public class AssessmentResource {
             question.setType(qm.getType());
             question.setIsRequired(qm.getIsRequired());
             question.setChoices(new ArrayList<>());
+            question.setCorrectAnswer(qm.getCorrectAnswer());
 
             if(question.getType() == QuestionTypeEnum.radiogroup){
                 for (ChoiceModel choice: qm.getChoices()){
@@ -1653,6 +1657,7 @@ public class AssessmentResource {
                 question.setType(qm.getType());
                 question.setIsRequired(qm.getIsRequired());
                 question.setChoices(new ArrayList<>());
+                question.setCorrectAnswer(qm.getCorrectAnswer());
                 
                 em.persist(question);
                 quiz.getQuestionList().add(question);
@@ -1665,6 +1670,7 @@ public class AssessmentResource {
                 question.setType(qm.getType());
                 question.setIsRequired(qm.getIsRequired());
                 question.setChoices(new ArrayList<>());
+                question.setCorrectAnswer(qm.getCorrectAnswer());
             }
             
             quiz.setMaxMarks(quiz.getMaxMarks() + pointDiff);
