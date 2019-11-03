@@ -3,30 +3,7 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/C:/NETBEANS/lms-assessment/LMS-war/src/java/rest/AssessmentResource.java</file>
-            <file>file:/C:/Users/Vixson/Documents/GitHub/lmsBackend/LMS-war/src/java/rest/ModuleMountingResource.java</file>
-            <file>file:/C:/Users/Vixson/Documents/GitHub/lmsBackend/LMS-war/src/java/datamodel/rest/GetVenueRsp.java</file>
-            <file>file:/C:/Users/Vixson/Documents/GitHub/lmsBackend/LMS-war/src/java/entities/Venue.java</file>
-            <file>file:/C:/Users/Vixson/Documents/GitHub/lmsBackend/LMS-war/src/java/rest/AnnoucementResource.java</file>
-            <file>file:/C:/Users/Vixson/Documents/GitHub/lmsBackend/LMS-war/src/java/entities/Module.java</file>
-            <file>file:/C:/Users/Vixson/Documents/GitHub/lmsBackend/LMS-war/src/java/ejb/SendMailSSL.java</file>
-            <file>file:/C:/Users/Vixson/Documents/GitHub/lmsBackend/LMS-war/src/java/rest/UserResource.java</file>
-            <file>file:/C:/Users/Vixson/Documents/GitHub/lmsBackend/LMS-war/src/java/entities/Tutorial.java</file>
-            <file>file:/C:/Users/Vixson/Documents/GitHub/lmsBackend/LMS-war/src/java/datamodel/rest/GetTutorialRsp.java</file>
-            <file>file:/C:/Users/Vixson/Documents/GitHub/lmsBackend/LMS-war/src/java/entities/User.java</file>
-            <file>file:/C:/Users/Jasmine/Documents/GitHub/lmsBackend/LMS-war/src/java/rest/CoursepackResource.java</file>
-            <file>file:/C:/Users/Jasmine/Documents/GitHub/lmsBackend/LMS-war/src/java/entities/LessonOrder.java</file>
-            <file>file:/C:/Users/Jasmine/Documents/GitHub/lmsBackend/LMS-war/src/java/entities/File.java</file>
-            <file>file:/C:/Users/Jasmine/Documents/GitHub/lmsBackend/LMS-war/src/java/entities/Coursepack.java</file>
-            <file>file:/C:/Users/Jasmine/Documents/GitHub/lmsBackend/LMS-war/src/java/entities/Outlines.java</file>
-            <file>file:/C:/Users/mingfong/Desktop/lmsBackend/LMS-war/nbproject/build-impl.xml</file>
-            <file>file:/C:/Users/mingfong/Desktop/lmsBackend/LMS-war/setup/glassfish-resources.xml</file>
-            <file>file:/C:/Users/mingfong/Desktop/lmsBackend/LMS-war/src/java/ejb/DataInitSessionBean.java</file>
-            <file>file:/C:/Users/mingfong/Desktop/lmsBackend/LMS-war/src/java/rest/FileResource.java</file>
-            <file>file:/C:/Users/mingfong/Desktop/lmsBackend/LMS-war/src/java/rest/ConsultationResource.java</file>
-            <file>file:/C:/Users/mingfong/Desktop/lmsBackend/LMS-war/src/java/entities/ForumPost.java</file>
-            <file>file:/C:/Users/mingfong/Desktop/lmsBackend/LMS-war/src/java/rest/ApplicationConfig.java</file>
-            <file>file:/C:/Users/mingfong/Desktop/lmsBackend/LMS-war/web/WEB-INF/web.xml</file>
+            <file>file:/C:/NETBEANS/lms-second/LMS-war/src/java/rest/AssessmentResource.java</file>
         </group>
     </open-files>
 </project-private>
