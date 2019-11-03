@@ -7,8 +7,13 @@
             <file>file:/C:/Users/Vixson/Documents/GitHub/lmsBackend/LMS-war/src/java/rest/GamificationResource.java</file>
             <file>file:/C:/Users/Vixson/Documents/GitHub/lmsBackend/LMS-war/src/java/entities/Coursepack.java</file>
             <file>file:/C:/Users/Vixson/Documents/GitHub/lmsBackend/LMS-war/src/java/entities/Quiz.java</file>
+            <file>file:/C:/Users/Vixson/Documents/GitHub/lmsBackend/LMS-war/src/java/entities/LessonOrder.java</file>
             <file>file:/C:/Users/Vixson/Documents/GitHub/lmsBackend/LMS-war/src/java/entities/Certification.java</file>
-            <file>file:/C:/Users/Vixson/Documents/GitHub/lmsBackend/LMS-war/src/java/rest/AnnoucementResource.java</file>
+            <file>file:/C:/Users/Vixson/Documents/GitHub/lmsBackend/LMS-war/src/java/entities/File.java</file>
+            <file>file:/C:/Users/Vixson/Documents/GitHub/lmsBackend/LMS-war/src/java/entities/QuizAttempt.java</file>
+            <file>file:/C:/Users/Vixson/Documents/GitHub/lmsBackend/LMS-war/src/java/rest/FileResource.java</file>
+            <file>file:/C:/Users/Vixson/Documents/GitHub/lmsBackend/LMS-war/src/java/rest/UserResource.java</file>
+            <file>file:/C:/Users/Vixson/Documents/GitHub/lmsBackend/LMS-war/src/java/rest/AssessmentResource.java</file>
             <file>file:/C:/Users/Vixson/Documents/GitHub/lmsBackend/LMS-war/src/java/entities/User.java</file>
         </group>
     </open-files>

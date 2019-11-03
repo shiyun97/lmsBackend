@@ -80,7 +80,7 @@ public class CoursepackEnrollmentResource {
             /*if(publicUser.getPayment() == coursepack.getPrice()){
                 publicUser.setHasPaid(true);
             }*/
-            if (publicUser.getAccessRight() == AccessRightEnum.Public && coursepack.isIsPaid() == true) {
+            if (publicUser.getAccessRight() == AccessRightEnum.Public) {
                 coursepack.getStudentList().add(publicUser);
                 publicUser.getPublicUserCoursepackList().add(coursepack);
                 return Response.status(Response.Status.OK).build();
@@ -112,7 +112,7 @@ public class CoursepackEnrollmentResource {
             /*if(publicUser.getPayment() == coursepack.getPrice()){
                 publicUser.setHasPaid(true);
             }*/
-            if (user.getAccessRight() == AccessRightEnum.Public && coursepack.isIsPaid() == true) {
+            if (user.getAccessRight() == AccessRightEnum.Public) {
                 coursepack.getStudentList().add(user);
                 user.getPublicUserCoursepackList().add(coursepack);
                 return Response.status(Response.Status.OK).build();
@@ -123,7 +123,7 @@ public class CoursepackEnrollmentResource {
         }
     }
 
-    @Path("addToCart")
+    /*@Path("addToCart")
     @PUT
     @Produces(MediaType.APPLICATION_JSON)
     public Response addToCart(@QueryParam("userId") Long userId, @QueryParam("coursepackId") Long coursepackId) {
@@ -138,7 +138,7 @@ public class CoursepackEnrollmentResource {
             }
             /*if(publicUser.getPayment() == coursepack.getPrice()){
                 publicUser.setHasPaid(true);
-            }*/
+            }
             if (publicUser.getAccessRight() == AccessRightEnum.Public) {
                 Cart cart = publicUser.getCart();
                 if (cart == null) {
@@ -169,9 +169,6 @@ public class CoursepackEnrollmentResource {
             if (coursepack == null) {
                 return Response.status(Response.Status.NOT_FOUND).entity(new ErrorRsp("Coursepack not found")).build();
             }
-            /*if(publicUser.getPayment() == coursepack.getPrice()){
-                publicUser.setHasPaid(true);
-            }*/
             if (publicUser.getAccessRight() == AccessRightEnum.Public) {
                 Cart cart = publicUser.getCart();
                 if (cart == null) {
@@ -200,9 +197,6 @@ public class CoursepackEnrollmentResource {
             if (publicUser == null) {
                 return Response.status(Response.Status.NOT_FOUND).entity(new ErrorRsp("User not found")).build();
             }
-            /*if(publicUser.getPayment() == coursepack.getPrice()){
-                publicUser.setHasPaid(true);
-            }*/
             if (publicUser.getAccessRight() == AccessRightEnum.Public) {
                 Cart cart = publicUser.getCart();
                 if (cart == null) {
@@ -262,9 +256,6 @@ public class CoursepackEnrollmentResource {
             if (publicUser == null) {
                 return Response.status(Response.Status.NOT_FOUND).entity(new ErrorRsp("User not found")).build();
             }
-            /*if(publicUser.getPayment() == coursepack.getPrice()){
-                publicUser.setHasPaid(true);
-            }*/
             if (publicUser.getAccessRight() == AccessRightEnum.Public) {
                 Cart cart = publicUser.getCart();
                 if (cart == null) {
@@ -287,5 +278,5 @@ public class CoursepackEnrollmentResource {
         } catch (Exception e) {
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(new ErrorRsp(e.getMessage())).build();
         }
-    }
+    }*/
 }

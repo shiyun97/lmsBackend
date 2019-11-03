@@ -271,15 +271,7 @@ public class UserResource {
             user.setGender(createUser.getGender());
             user.setAccessRight(Public);
             user.setUsername(createUser.getUsername());
-            user.setQuizCompleted(0);
-            user.setCoursepackCompleted(0);
             em.persist(user);
-
-            Cart cart = new Cart();
-            cart.setTotalPrice(0.0);
-            cart.setPublicUser(user);
-            em.persist(cart);
-            user.setCart(cart);
             em.flush();
 
             User userCopy = new User(user.getId(), user.getFirstName(), user.getLastName(),

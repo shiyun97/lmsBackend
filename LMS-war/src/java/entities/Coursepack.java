@@ -74,10 +74,6 @@ public class Coursepack implements Serializable {
     private List<File> fileList;
     @OneToMany
     private List<Quiz> quizList;
-    @Column
-    private boolean isPaid;
-    @Column
-    private boolean completed;
 
     public Coursepack(Long coursepackId, String code, String title, String description, String category, Double price, Boolean published, Double rating, String teacherBackground, List<User> publicUserList, List<ForumPost> forumPostList, List<GradeItem> gradeItemList, User assignedTeacher, List<Feedback> feedbackList, List<Outlines> outlineList, List<File> fileList, List<Quiz> quizList) {
         this.coursepackId = coursepackId;
@@ -315,21 +311,4 @@ public class Coursepack implements Serializable {
     public void setStudentList(List<User> studentList) {
         this.studentList = studentList;
     }
-
-    public boolean isIsPaid() {
-        return isPaid;
-    }
-
-    public void setIsPaid(boolean isPaid) {
-        this.isPaid = isPaid;
-    }
-
-    public boolean isCompleted() {
-        return completed;
-    }
-
-    public void setCompleted(boolean completed) {
-        this.completed = completed;
-    }
-
 }
