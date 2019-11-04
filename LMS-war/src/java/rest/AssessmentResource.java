@@ -207,61 +207,6 @@ public class AssessmentResource {
             quiz.setOpeningDate(openingDate);
             quiz.setClosingDate(closingDate);
 
-//            List<QuestionModel> questionsRqst = rqst.getQuestions();
-//            
-//            double total = 0;
-//            int count = 1;
-//            for(QuestionModel qm: questionsRqst){
-//                
-//                Question question = null;
-//                
-//                // No ID means it's a new question
-//                if(qm.getQuestionId() == null){
-//                    question = new Question();
-//                } else { 
-//
-//                    question = em.find(Question.class, qm.getQuestionId());
-//                    
-//                    if(em == null){
-//                        return Response.status(Status.NOT_FOUND).entity(new ErrorRsp()).build();
-//                    }
-//                    
-//                    // IF updated remove old question from quiz and create a new copy of question entity
-//                    if(qm.getUpdated() && attempted){
-//                        quiz.getQuestionList().remove(question);
-//                        question = new Question();
-//                    }
-//                }
-//                
-//                
-//                
-//                // Count max marks
-//                total += qm.getPoints();
-//                
-//                question.setNumber(count++);
-//                question.setTitle(qm.getTitle());
-//                question.setLevel(qm.getLevel());
-//                question.setPoints(qm.getPoints());
-//                question.setExplanation(qm.getExplanation());
-//                question.setType(qm.getType());
-//                question.setIsRequired(qm.getIsRequired());
-//                question.setChoices(new ArrayList<>());
-//                
-//                if(question.getType() == QuestionTypeEnum.radiogroup){
-//                    for (ChoiceModel choice: qm.getChoices()){
-//                        question.getChoices().add(choice.getText());
-//                        if(qm.getCorrectAnswer().equals(choice.getValue())){
-//                            question.setCorrectAnswer(choice.getText());
-//                        }
-//                    }
-//                }
-//                
-//                em.persist(question);
-//                em.flush();
-//                
-//                quiz.getQuestionList().add(question);
-//            }
-//            quiz.setMaxMarks(total);
             return Response.status(Status.OK).build();
 
         } catch (ParseException pe) {
@@ -306,6 +251,7 @@ public class AssessmentResource {
             question.setType(qm.getType());
             question.setIsRequired(qm.getIsRequired());
             question.setChoices(new ArrayList<>());
+            question.setCorrectAnswer(qm.getCorrectAnswer());
 
             if (question.getType() == QuestionTypeEnum.radiogroup) {
                 for (ChoiceModel choice : qm.getChoices()) {
@@ -373,6 +319,7 @@ public class AssessmentResource {
                 question.setType(qm.getType());
                 question.setIsRequired(qm.getIsRequired());
                 question.setChoices(new ArrayList<>());
+                question.setCorrectAnswer(qm.getCorrectAnswer());
 
                 em.persist(question);
                 quiz.getQuestionList().add(question);
@@ -385,6 +332,7 @@ public class AssessmentResource {
                 question.setType(qm.getType());
                 question.setIsRequired(qm.getIsRequired());
                 question.setChoices(new ArrayList<>());
+                question.setCorrectAnswer(qm.getCorrectAnswer());
             }
 
             quiz.setMaxMarks(quiz.getMaxMarks() + pointDiff);
@@ -1402,7 +1350,7 @@ public class AssessmentResource {
 //        if(quiz.getClosingDate().before(now) || quiz.getOpeningDate().after(now)){
 //            return Response.status(Status.BAD_REQUEST).entity(new ErrorRsp("Quiz is closed")).build();
 //        }
-//        
+//
         // Check attempts
         // Only one attempt
         for (QuizAttempt qa : quiz.getQuizAttemptList()) {
@@ -1547,5 +1495,281 @@ public class AssessmentResource {
             e.printStackTrace();
             return Response.status(Status.INTERNAL_SERVER_ERROR).entity(new ErrorRsp(e.getMessage())).build();
         }
+    }
+
+    @POST
+    @Path("updateCoursepackQuiz")
+    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_JSON)
+    public Response updateCoursepackQuiz(QuizRqst rqst, @QueryParam("userId") Long userId){
+        User user = em.find(User.class, userId);
+        if(user == null || user.getAccessRight() != AccessRightEnum.Teacher){
+            return Response.status(Status.FORBIDDEN)
+                    .entity(new ErrorRsp("User doesn't have access to this function"))
+                    .build();
+        }
+
+        Quiz quiz = em.find(Quiz.class, rqst.getQuizId());
+        if(quiz == null){
+            return Response.status(Status.NOT_FOUND).entity(new ErrorRsp("Quiz with the given ID doesn't exist")).build();
+        }
+
+        if(quiz.getLessonOrder().getOutlines().getCoursepack().getAssignedTeacher() != user){
+            return Response.status(Status.FORBIDDEN)
+                    .entity(new ErrorRsp("User doesn't have access to this function"))
+                    .build();
+        }
+
+        boolean attempted = !quiz.getQuizAttemptList().isEmpty();
+
+        try{
+            // Basic Config
+            quiz.setTitle(rqst.getTitle());
+            quiz.setDescription(rqst.getDescription());
+            quiz.setQuizType(rqst.getQuizType());
+            quiz.setQuestionsOrder(rqst.getQuestionsOrder());
+            quiz.setMaxTimeToFinish(rqst.getMaxTimeToFinish());
+            quiz.setNoOfAttempts(rqst.getNoOfAttempts());
+            quiz.setPublish(rqst.isPublish());
+            // Parse Date
+            Date openingDate = dateFormatter.parse(rqst.getOpeningDate());
+            Date closingDate = dateFormatter.parse(rqst.getClosingDate());
+
+            // Verify date
+            if(!openingDate.before(closingDate)){
+                return Response.status(Status.BAD_REQUEST).entity(new ErrorRsp("Opening date is not before closing date")).build();
+            }
+
+            quiz.setOpeningDate(openingDate);
+            quiz.setClosingDate(closingDate);
+
+            return Response.status(Status.OK).build();
+
+        } catch (ParseException pe){
+            pe.printStackTrace();
+            return Response.status(Status.BAD_REQUEST).entity(new ErrorRsp("Opening or closing date isn't in proper format")).build();
+        } catch (Exception e){
+            e.printStackTrace();
+            return Response.status(Status.INTERNAL_SERVER_ERROR).entity(new ErrorRsp(e.getMessage())).build();
+        }
+    }
+
+    @POST
+    @Path("createQuestionCoursepack")
+    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_JSON)
+    public Response createQuestionCoursepack(QuestionModel qm, @QueryParam("userId") Long userId){
+        User user = em.find(User.class, userId);
+        if(user == null || user.getAccessRight() != AccessRightEnum.Teacher){
+            return Response.status(Status.FORBIDDEN)
+                    .entity(new ErrorRsp("User doesn't have access to this function"))
+                    .build();
+        }
+
+        Quiz quiz = em.find(Quiz.class, qm.getQuizId());
+        if(quiz == null){
+            return Response.status(Status.NOT_FOUND).entity(new ErrorRsp("Quiz with the given ID doesn't exist")).build();
+        }
+
+        if(quiz.getLessonOrder().getOutlines().getCoursepack().getAssignedTeacher() != user){
+            return Response.status(Status.FORBIDDEN)
+                    .entity(new ErrorRsp("User doesn't have access to this function"))
+                    .build();
+        }
+
+        try {
+            Question question = new Question();
+            question.setTitle(qm.getTitle());
+            question.setLevel(qm.getLevel());
+            question.setNumber(quiz.getQuestionList().size() + 1);
+            question.setPoints(qm.getPoints());
+            question.setExplanation(qm.getExplanation());
+            question.setType(qm.getType());
+            question.setIsRequired(qm.getIsRequired());
+            question.setChoices(new ArrayList<>());
+            question.setCorrectAnswer(qm.getCorrectAnswer());
+
+            if(question.getType() == QuestionTypeEnum.radiogroup){
+                for (ChoiceModel choice: qm.getChoices()){
+                    question.getChoices().add(choice.getText());
+                    if(qm.getCorrectAnswer().equals(choice.getValue())){
+                        question.setCorrectAnswer(choice.getText());
+                    }
+                }
+            }
+
+            em.persist(question);
+            em.flush();
+
+            quiz.getQuestionList().add(question);
+            quiz.setMaxMarks(quiz.getMaxMarks() + question.getPoints());
+            return Response.status(Status.OK).entity(question).build();
+        } catch (Exception e){
+            e.printStackTrace();
+            return Response.status(Status.INTERNAL_SERVER_ERROR).entity(new ErrorRsp(e.getMessage())).build();
+        }
+    }
+
+    @POST
+    @Path("updateQuestionCoursepack")
+    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_JSON)
+    public Response updateQuestionCoursepack(QuestionModel qm, @QueryParam("userId") Long userId){
+        User user = em.find(User.class, userId);
+        if(user == null || user.getAccessRight() != AccessRightEnum.Teacher){
+            return Response.status(Status.FORBIDDEN)
+                    .entity(new ErrorRsp("User doesn't have access to this function"))
+                    .build();
+        }
+
+        Quiz quiz = em.find(Quiz.class, qm.getQuizId());
+        if(quiz == null){
+            return Response.status(Status.NOT_FOUND).entity(new ErrorRsp("Quiz with the given ID doesn't exist")).build();
+        }
+
+        if(quiz.getLessonOrder().getOutlines().getCoursepack().getAssignedTeacher() != user){
+            return Response.status(Status.FORBIDDEN)
+                    .entity(new ErrorRsp("User doesn't have access to this function"))
+                    .build();
+        }
+
+        boolean attempted = !quiz.getQuizAttemptList().isEmpty();
+
+        try {
+            Question question = em.find(Question.class, qm.getQuestionId());
+
+            if(question == null){
+                return Response.status(Status.NOT_FOUND).entity(new ErrorRsp("Question with the given ID doesn't exist")).build();
+            }
+            double pointDiff = qm.getPoints() - question.getPoints();
+            if(attempted){
+                Question oldQ = question;
+                quiz.getQuestionList().remove(oldQ);
+
+                question = new Question();
+                question.setTitle(qm.getTitle());
+                question.setLevel(qm.getLevel());
+                question.setNumber(oldQ.getNumber());
+                question.setPoints(qm.getPoints());
+                question.setExplanation(qm.getExplanation());
+                question.setType(qm.getType());
+                question.setIsRequired(qm.getIsRequired());
+                question.setChoices(new ArrayList<>());
+                question.setCorrectAnswer(qm.getCorrectAnswer());
+
+                em.persist(question);
+                quiz.getQuestionList().add(question);
+                em.flush();
+            } else {
+                question.setTitle(qm.getTitle());
+                question.setLevel(qm.getLevel());
+                question.setPoints(qm.getPoints());
+                question.setExplanation(qm.getExplanation());
+                question.setType(qm.getType());
+                question.setIsRequired(qm.getIsRequired());
+                question.setChoices(new ArrayList<>());
+                question.setCorrectAnswer(qm.getCorrectAnswer());
+            }
+
+            quiz.setMaxMarks(quiz.getMaxMarks() + pointDiff);
+
+            if(question.getType() == QuestionTypeEnum.radiogroup){
+                for (ChoiceModel choice: qm.getChoices()){
+                    question.getChoices().add(choice.getText());
+                    if(qm.getCorrectAnswer().equals(choice.getValue())){
+                        question.setCorrectAnswer(choice.getText());
+                    }
+                }
+            }
+
+            return Response.status(Status.OK).entity(question).build();
+        } catch (Exception e){
+            e.printStackTrace();
+            return Response.status(Status.INTERNAL_SERVER_ERROR).entity(new ErrorRsp(e.getMessage())).build();
+        }
+    }
+
+    @DELETE
+    @Path("deleteQuestionCoursepack")
+    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_JSON)
+    public Response deleteQuestionCoursepack(QuestionModel qm, @QueryParam("userId") Long userId){
+        User user = em.find(User.class, userId);
+        if(user == null || user.getAccessRight() != AccessRightEnum.Teacher){
+            return Response.status(Status.FORBIDDEN)
+                    .entity(new ErrorRsp("User doesn't have access to this function"))
+                    .build();
+        }
+
+        Quiz quiz = em.find(Quiz.class, qm.getQuizId());
+        if(quiz == null){
+            return Response.status(Status.NOT_FOUND).entity(new ErrorRsp("Quiz with the given ID doesn't exist")).build();
+        }
+
+        if(quiz.getLessonOrder().getOutlines().getCoursepack().getAssignedTeacher() != user){
+            return Response.status(Status.FORBIDDEN)
+                    .entity(new ErrorRsp("User doesn't have access to this function"))
+                    .build();
+        }
+
+        boolean attempted = !quiz.getQuizAttemptList().isEmpty();
+
+        try {
+            Question question = em.find(Question.class, qm.getQuestionId());
+
+            if(question == null){
+                return Response.status(Status.NOT_FOUND).entity(new ErrorRsp("Question with the given ID doesn't exist")).build();
+            }
+
+            // Reduce the number of other questions after this question
+            for (Question q: quiz.getQuestionList()){
+                if(q.getNumber() > question.getNumber()){
+                    q.setNumber(q.getNumber() - 1);
+                }
+            }
+
+            quiz.setMaxMarks(quiz.getMaxMarks() - question.getPoints());
+            quiz.getQuestionList().remove(question);
+            if(!attempted){
+                em.remove(question);
+            }
+
+            return Response.status(Status.OK).build();
+        } catch (Exception e){
+            e.printStackTrace();
+            return Response.status(Status.INTERNAL_SERVER_ERROR).entity(new ErrorRsp(e.getMessage())).build();
+        }
+    }
+
+    @POST
+    @Path("completeCoursepackQuiz")
+    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_JSON)
+    public Response completeCoursepackQuiz(@QueryParam("userId") Long userId, @QueryParam("quizId") Long quizId){
+        User user = em.find(User.class, userId);
+        if(user == null || user.getAccessRight() == AccessRightEnum.Teacher || user.getAccessRight() == AccessRightEnum.Admin){
+            return Response.status(Status.FORBIDDEN)
+                    .entity(new ErrorRsp("User doesn't have access to this function"))
+                    .build();
+        }
+
+        Quiz quiz = em.find(Quiz.class, quizId);
+        if(quiz == null){
+            return Response.status(Status.NOT_FOUND).entity(new ErrorRsp("Quiz with the given ID not found!")).build();
+        } else if (quiz.getLessonOrder() == null){
+            return Response.status(Status.BAD_REQUEST).entity(new ErrorRsp("Quiz is not part of a coursepack")).build();
+        }
+
+        if(!quiz.getLessonOrder().getOutlines().getCoursepack().getPublicUserList().contains(user)){
+            return Response.status(Status.BAD_REQUEST).entity(new ErrorRsp("User is not enrolled in this coursepack")).build();
+        }
+
+        if(quiz.getLessonOrder().getPublicUserList().contains(user)){
+            return Response.status(Status.BAD_REQUEST).entity(new ErrorRsp("User already finished this lesson order")).build();
+        }
+
+        quiz.getLessonOrder().getPublicUserList().add(user);
+
+        return Response.status(Status.OK).build();
     }
 }
