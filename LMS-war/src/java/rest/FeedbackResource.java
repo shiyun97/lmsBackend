@@ -5,6 +5,7 @@
  */
 package rest;
 
+import datamodel.rest.AnswerStatistic;
 import datamodel.rest.CreateNewFeedback;
 import datamodel.rest.CreateQuizAttemptRqst;
 import datamodel.rest.CreateRatingRqst;
@@ -12,10 +13,12 @@ import datamodel.rest.CreateSurveyAttemptRqst;
 import datamodel.rest.ErrorRsp;
 import datamodel.rest.PageModel;
 import datamodel.rest.QuestionAttemptModel;
+import datamodel.rest.QuestionStatistic;
 import datamodel.rest.QuizRsp;
 import datamodel.rest.RetrieveAllFeedbacksForModuleRsp;
 import datamodel.rest.RetrieveRatingsRsp;
 import datamodel.rest.RetrieveSurveyAttempts;
+import datamodel.rest.RetrieveSurveyStatistics;
 import datamodel.rest.RetrieveSurveys;
 import entities.Coursepack;
 import entities.Feedback;
@@ -32,7 +35,11 @@ import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
+import javafx.util.Pair;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
@@ -223,6 +230,61 @@ public class FeedbackResource {
             return Response.status(Response.Status.OK).entity(surveyToReturn).build();
         } catch (NoResultException e){
             return Response.status(Response.Status.NOT_FOUND).entity(new ErrorRsp("There are no surveys for this module")).build();
+        } catch (Exception e){
+            e.printStackTrace();
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(new ErrorRsp(e.getMessage())).build();
+        }
+    }
+    
+    @GET
+    @Path("retrieveSurveyStatistics")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response retrieveSurveyStatistics(@QueryParam("surveyId") Long surveyId){
+        Survey survey = em.find(Survey.class, surveyId);
+        if(survey == null){
+            return Response.status(Response.Status.NOT_FOUND).entity(new ErrorRsp("Survey with the given ID not found!")).build();
+        }
+        
+        if(survey.getSurveyAttemptList().isEmpty()){
+            return Response.status(Response.Status.NOT_FOUND).entity(new ErrorRsp("No attempts yet for this survey!")).build();
+        }
+        
+        try{
+            RetrieveSurveyStatistics resp = new RetrieveSurveyStatistics(new ArrayList<>());
+            resp.setTitle(survey.getTitle());
+            resp.setDescription(survey.getDescription());
+            resp.setSurveyId(survey.getSurveyId());
+            resp.setAttempts(survey.getSurveyAttemptList().size());
+            
+            for(Question q: survey.getQuestionList()){
+                if(q.getType() == QuestionTypeEnum.radiogroup){
+                    QuestionStatistic qs = new QuestionStatistic(q.getQuestionId(), q.getTitle(), new ArrayList<>());
+                    
+                    HashMap<String, Integer> count = new HashMap<>(); // Answer : Attempt
+                    for(SurveyAttempt sa: survey.getSurveyAttemptList()){
+                        for(QuestionAttempt qa: sa.getQuestionAttemptList()){
+                            if(qa.getQuestion() == q){
+                                count.put(qa.getAnswer(), count.get(qa.getAnswer()) + 1);
+                            }
+                        }
+                    }
+                    
+                    Iterator it = count.entrySet().iterator();
+                    while (it.hasNext()) {
+                        Map.Entry pair = (Map.Entry)it.next();
+                        AnswerStatistic as = new AnswerStatistic();
+                        as.setAnswer((String) pair.getKey());
+                        as.setCount((int) pair.getValue());
+                        qs.getAnswers().add(as);
+                        it.remove(); // avoids a ConcurrentModificationException
+                    }
+                    resp.getQuestions().add(qs);
+                } else {
+                    resp.getQuestions().add(new QuestionStatistic(q.getQuestionId(), q.getTitle(), null));
+                }
+            }
+            
+            return Response.status(Response.Status.OK).entity(resp).build();
         } catch (Exception e){
             e.printStackTrace();
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(new ErrorRsp(e.getMessage())).build();
