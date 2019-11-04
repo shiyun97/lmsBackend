@@ -68,16 +68,18 @@ public class User implements Serializable {
     private List<Coursepack> publicUserCoursepackList;
     @ManyToMany(mappedBy = "studentList")
     private List<Coursepack> studentCoursepackList;   
-    @OneToOne(mappedBy = "publicUser")
+    /*@OneToOne(mappedBy = "publicUser")
     private Cart cart;
     @ManyToMany(mappedBy = "userList")
     private List<Badge> badgeList;
     @ManyToMany(mappedBy = "userList")
-    private List<Certification> certificationList;
+    private List<Certification> certificationList;*/
     @Column
     private Integer quizCompleted;
     @Column
     private Integer coursepackCompleted;
+    @OneToMany
+    private List<Certification> certificationList;
 
     public User(String firstName, String lastName, String email, String username, String password, GenderEnum gender, AccessRightEnum accessRight, List<ConsultationTimeslot> consultationTimeslotList, List<QuizAttempt> quizAttemptList, List<SurveyAttempt> surveyAttemptList, List<ClassGroup> classGroupList, List<Module> teacherModuleList, List<Module> studentModuleList, List<Module> publicUserModuleList) {
         this.firstName = firstName;
@@ -354,7 +356,7 @@ public class User implements Serializable {
         this.studentCoursepackList = studentCoursepackList;
     }
     
-    public Cart getCart() {
+    /*public Cart getCart() {
         return cart;
     }
 
@@ -376,7 +378,7 @@ public class User implements Serializable {
 
     public void setCertificationList(List<Certification> certificationList) {
         this.certificationList = certificationList;
-    }
+    }*/
 
     public Integer getQuizCompleted() {
         return quizCompleted;
@@ -392,5 +394,13 @@ public class User implements Serializable {
 
     public void setCoursepackCompleted(Integer coursepackCompleted) {
         this.coursepackCompleted = coursepackCompleted;
+    }
+
+    public List<Certification> getCertificationList() {
+        return certificationList;
+    }
+
+    public void setCertificationList(List<Certification> certificationList) {
+        this.certificationList = certificationList;
     }
 }

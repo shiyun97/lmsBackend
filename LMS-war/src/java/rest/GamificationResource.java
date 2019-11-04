@@ -239,9 +239,9 @@ public class GamificationResource {
     }
     
     @PUT
-    @Path("getBadge")
+    @Path("attainBadge")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response getBadge(@QueryParam("userId") Long userId, @QueryParam("badgeId") Long badgeId) {
+    public Response attainBadge(@QueryParam("userId") Long userId, @QueryParam("badgeId") Long badgeId) {
         try {
             User user = em.find(User.class, userId);
              if (user == null) {
@@ -271,9 +271,9 @@ public class GamificationResource {
     }
     
     @PUT
-    @Path("getCertification")
+    @Path("attainCertification")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response getCertification(@QueryParam("userId") Long userId, @QueryParam("certificationId") Long certificationId) {
+    public Response attainCertification(@QueryParam("userId") Long userId, @QueryParam("certificationId") Long certificationId) {
         try {
             User user = em.find(User.class, userId);
              if (user == null) {

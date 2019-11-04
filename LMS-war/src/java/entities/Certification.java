@@ -38,6 +38,8 @@ public class Certification implements Serializable {
     private List<User> userList;
     @Column
     private Date dateAchieved;
+    @OneToMany
+    private List<Coursepack> coursepackList;
 
     public Certification() {
     }
@@ -122,6 +124,14 @@ public class Certification implements Serializable {
 
     public void setUserList(List<User> userList) {
         this.userList = userList;
+    }
+
+    public List<Coursepack> getCoursepackList() {
+        return coursepackList;
+    }
+
+    public void setCoursepackList(List<Coursepack> coursepackList) {
+        this.coursepackList = coursepackList;
     }
     
 }
