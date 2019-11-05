@@ -1,0 +1,69 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package datamodel.rest;
+
+/**
+ *
+ * @author Asus
+ */
+public class RetrieveBarAnalytics {
+    int classSize;
+    int lectureAttendance;
+    int bookedConsultations;
+    int totalConsultations;
+    int quizAttempts;
+    int forumContributions;
+
+    public int getClassSize() {
+        return classSize;
+    }
+
+    public void setClassSize(int classSize) {
+        this.classSize = classSize;
+    }
+
+    public int getLectureAttendance() {
+        return lectureAttendance;
+    }
+
+    public void setLectureAttendance(int lectureAttendance) {
+        this.lectureAttendance = lectureAttendance;
+    }
+
+    public int getBookedConsultations() {
+        return bookedConsultations;
+    }
+
+    public void setBookedConsultations(int bookedConsultations) {
+        this.bookedConsultations = bookedConsultations;
+    }
+
+    public int getTotalConsultations() {
+        return totalConsultations;
+    }
+
+    public void setTotalConsultations(int totalConsultations) {
+        this.totalConsultations = totalConsultations;
+    }
+
+    public int getQuizAttempts() {
+        return quizAttempts;
+    }
+
+    public void setQuizAttempts(int quizAttempts) {
+        this.quizAttempts = quizAttempts;
+    }
+
+    public int getForumContributions() {
+        return forumContributions;
+    }
+
+    public void setForumContributions(int forumContributions) {
+        this.forumContributions = forumContributions;
+    }
+    
+    
+}
