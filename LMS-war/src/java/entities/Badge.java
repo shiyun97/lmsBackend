@@ -35,8 +35,6 @@ public class Badge implements Serializable {
     @Column
     private Date dateAchieved;
     @Column
-    private String type;
-    @Column
     private String location;
     @Column
     private Timestamp createdDt;
@@ -48,23 +46,20 @@ public class Badge implements Serializable {
     public Badge() {
     }
 
-    public Badge(Long badgeId, String title, String description, Date dateAchieved, String type, String location, Timestamp createdDt, Boolean isDelete) {
+    public Badge(Long badgeId, String title, String description, Date dateAchieved, String location, Timestamp createdDt, Boolean isDelete) {
         this.badgeId = badgeId;
         this.title = title;
         this.description = description;
-        this.dateAchieved = dateAchieved;
-        this.type = type;
         this.location = location;
         this.createdDt = createdDt;
         this.isDelete = isDelete;
     }
 
-    public Badge(Long badgeId, String title, String description, Date dateAchieved, String type, String location, Timestamp createdDt, Boolean isDelete, Folder folder) {
+    public Badge(Long badgeId, String title, String description, Date dateAchieved, String location, Timestamp createdDt, Boolean isDelete, Folder folder) {
         this.badgeId = badgeId;
         this.title = title;
         this.description = description;
         this.dateAchieved = dateAchieved;
-        this.type = type;
         this.location = location;
         this.createdDt = createdDt;
         this.isDelete = isDelete;
@@ -126,14 +121,6 @@ public class Badge implements Serializable {
 
     public void setDateAchieved(Date dateAchieved) {
         this.dateAchieved = dateAchieved;
-    }
-
-    public String getType() {
-        return type;
-    }
-
-    public void setType(String type) {
-        this.type = type;
     }
 
     public String getLocation() {

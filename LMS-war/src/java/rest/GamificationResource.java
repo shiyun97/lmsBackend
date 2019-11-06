@@ -377,10 +377,10 @@ public class GamificationResource {
     @Transactional
     public Response uploadBadge(@FormDataParam("file") InputStream uploadedFileInputStream,
             @FormDataParam("file") FormDataContentDisposition uploadedFileDetails,
-            @QueryParam("folderId") Long folderId, @QueryParam("type") String type) {
-        if (type.equals("document") && folderId == null) {
+            @QueryParam("folderId") Long folderId) {
+        /*if (type.equals("document") && folderId == null) {
             return Response.status(Response.Status.BAD_REQUEST).entity(new ErrorRsp("Require folderId!")).build();
-        }
+        }*/
         try {
             System.err.println("********** FileResource.upload()");
             String outputFilePath = servletContext.getInitParameter("alternatedocroot_1") + System.getProperty("file.separator") + uploadedFileDetails.getFileName();
@@ -408,7 +408,6 @@ public class GamificationResource {
             // create new badge entity
             entities.Badge newFile = new entities.Badge();
             newFile.setTitle(uploadedFileDetails.getFileName());
-            newFile.setType(type);
             newFile.setLocation(outputFilePath);
             Timestamp timestamp = new Timestamp(System.currentTimeMillis());
             newFile.setCreatedDt(timestamp);
@@ -445,10 +444,10 @@ public class GamificationResource {
     @Produces(MediaType.APPLICATION_JSON)
     @Transactional
     public Response uploadMultipleBadges(@FormDataParam("file") FormDataBodyPart body,
-            @QueryParam("folderId") Long folderId, @QueryParam("type") String type) {
-        if (type.equals("document") && folderId == null) {
+            @QueryParam("folderId") Long folderId) {
+        /*if (type.equals("document") && folderId == null) {
             return Response.status(Response.Status.BAD_REQUEST).entity(new ErrorRsp("Require folderId!")).build();
-        }
+        }*/
         try {
             System.out.println(body);
             for (BodyPart part : body.getParent().getBodyParts()) {
@@ -480,7 +479,6 @@ public class GamificationResource {
                 // create new badge entity
                 entities.Badge newFile = new entities.Badge();
                 newFile.setTitle(meta.getFileName());
-                newFile.setType(type);
                 newFile.setLocation(outputFilePath);
                 newFile.setCreatedDt(timestamp);
                 newFile.setIsDelete(false);
@@ -526,7 +524,7 @@ public class GamificationResource {
             for (entities.Badge b : badgeList) {
                 if (b.getIsDelete() == false) {
                     rsp.add(new Badge(
-                            b.getId(), b.getTitle(), b.getDescription(), b.getDateAchieved(), b.getType(),
+                            b.getId(), b.getTitle(), b.getDescription(), b.getDateAchieved(),
                             b.getLocation(), b.getCreatedDt(), b.getIsDelete()));
                 }
             }
@@ -554,7 +552,7 @@ public class GamificationResource {
             for (entities.Badge b : badgeList) {
                 if (b.getIsDelete() == false) {
                     rsp.add(new Badge(
-                            b.getId(), b.getTitle(), b.getDescription(), b.getDateAchieved(), b.getType(),
+                            b.getId(), b.getTitle(), b.getDescription(), b.getDateAchieved(),
                             b.getLocation(), b.getCreatedDt(), b.getIsDelete()));
                 }
             }
