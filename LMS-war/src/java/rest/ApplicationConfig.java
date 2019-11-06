@@ -33,6 +33,7 @@ public class ApplicationConfig extends Application
         resources.add(rest.ForumResource.class);
         resources.add(rest.GamificationResource.class);
         resources.add(rest.GroupManagementResource.class);
+        resources.add(rest.LearningAnalyticsResource.class);
         resources.add(rest.ModuleMountingResource.class);
         resources.add(rest.ModuleResource.class);
         resources.add(rest.StudentEnrollmentResource.class);

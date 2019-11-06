@@ -5,6 +5,7 @@
  */
 package rest;
 
+import datamodel.rest.AnswerStatistic;
 import datamodel.rest.ChoiceModel;
 import datamodel.rest.CreateGradeItemRqst;
 import datamodel.rest.CreateQuizAttemptRqst;
@@ -13,6 +14,7 @@ import datamodel.rest.ErrorRsp;
 import datamodel.rest.PageModel;
 import datamodel.rest.QuestionAttemptModel;
 import datamodel.rest.QuestionModel;
+import datamodel.rest.QuestionStatistic;
 import datamodel.rest.QuizRqst;
 import datamodel.rest.QuizRsp;
 import datamodel.rest.RetrieveGradeEntriesRsp;
@@ -20,6 +22,7 @@ import datamodel.rest.RetrieveGradeItemsRsp;
 import datamodel.rest.RetrieveQuestionAttemptsRsp;
 import datamodel.rest.RetrieveQuizAttemptsRsp;
 import datamodel.rest.RetrieveQuizzesResp;
+import datamodel.rest.RetrieveSurveyStatistics;
 import entities.Coursepack;
 import entities.GradeEntry;
 import entities.GradeItem;
@@ -30,13 +33,17 @@ import entities.Question;
 import entities.QuestionAttempt;
 import entities.Quiz;
 import entities.QuizAttempt;
+import entities.Survey;
+import entities.SurveyAttempt;
 import entities.User;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -1571,11 +1578,11 @@ public class AssessmentResource {
             return Response.status(Status.NOT_FOUND).entity(new ErrorRsp("Quiz with the given ID doesn't exist")).build();
         }
 
-        if(quiz.getLessonOrder().getOutlines().getCoursepack().getAssignedTeacher() != user){
-            return Response.status(Status.FORBIDDEN)
-                    .entity(new ErrorRsp("User doesn't have access to this function"))
-                    .build();
-        }
+//        if(quiz.getLessonOrder().getOutlines().getCoursepack().getAssignedTeacher() != user){
+//            return Response.status(Status.FORBIDDEN)
+//                    .entity(new ErrorRsp("User doesn't have access to this function"))
+//                    .build();
+//        }
 
         try {
             Question question = new Question();
@@ -1627,11 +1634,11 @@ public class AssessmentResource {
             return Response.status(Status.NOT_FOUND).entity(new ErrorRsp("Quiz with the given ID doesn't exist")).build();
         }
 
-        if(quiz.getLessonOrder().getOutlines().getCoursepack().getAssignedTeacher() != user){
-            return Response.status(Status.FORBIDDEN)
-                    .entity(new ErrorRsp("User doesn't have access to this function"))
-                    .build();
-        }
+//        if(quiz.getLessonOrder().getOutlines().getCoursepack().getAssignedTeacher() != user){
+//            return Response.status(Status.FORBIDDEN)
+//                    .entity(new ErrorRsp("User doesn't have access to this function"))
+//                    .build();
+//        }
 
         boolean attempted = !quiz.getQuizAttemptList().isEmpty();
 
@@ -1706,11 +1713,11 @@ public class AssessmentResource {
             return Response.status(Status.NOT_FOUND).entity(new ErrorRsp("Quiz with the given ID doesn't exist")).build();
         }
 
-        if(quiz.getLessonOrder().getOutlines().getCoursepack().getAssignedTeacher() != user){
-            return Response.status(Status.FORBIDDEN)
-                    .entity(new ErrorRsp("User doesn't have access to this function"))
-                    .build();
-        }
+//        if(quiz.getLessonOrder().getOutlines().getCoursepack().getAssignedTeacher() != user){
+//            return Response.status(Status.FORBIDDEN)
+//                    .entity(new ErrorRsp("User doesn't have access to this function"))
+//                    .build();
+//        }
 
         boolean attempted = !quiz.getQuizAttemptList().isEmpty();
 
@@ -1776,41 +1783,59 @@ public class AssessmentResource {
 
         return Response.status(Status.OK).build();
     }
-    
-    @PUT
-    @Path("completeCoursepack")
+
+    @GET
+    @Path("retrieveQuizStatistics")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response completeCoursepack(@QueryParam("userId") Long userId, @QueryParam("coursepackId") Long coursepackId) {
-        try {
-            User user = em.find(User.class, userId);
-            if (user == null) {
-                return Response.status(Response.Status.NOT_FOUND).entity(new ErrorRsp("No user found")).build();
-            }
-            Coursepack coursepack = em.find(Coursepack.class, coursepackId);
-            if (coursepack == null) {
-                return Response.status(Status.NOT_FOUND).entity(new ErrorRsp("Coursepack is not found!")).build();
-            }
-            List<Outlines> outlinesList = coursepack.getOutlineList();
-            if (outlinesList == null || outlinesList.isEmpty()) {
-                return Response.status(Status.NOT_FOUND).entity(new ErrorRsp("No outlines found!")).build();
-            }
-            for (Outlines o : outlinesList) {
-                List<LessonOrder> lessonOrderList = o.getLessonOrder();
-                if (lessonOrderList == null || lessonOrderList.isEmpty()) {
-                    return Response.status(Status.NOT_FOUND).entity(new ErrorRsp("No lesson order found!")).build();
-                }
-                for (LessonOrder l : lessonOrderList) {
-                    if (!l.getPublicUserList().contains(user)) {
-                        return Response.status(Status.NOT_ACCEPTABLE).entity(new ErrorRsp("User has not completed all lessons")).build();
+    public Response retrieveQuizStatistics(@QueryParam("quizId") Long quizId){
+        Quiz quiz = em.find(Quiz.class, quizId);
+        if(quiz == null){
+            return Response.status(Response.Status.NOT_FOUND).entity(new ErrorRsp("Quiz with the given ID not found!")).build();
+        }
+
+        if(quiz.getQuizAttemptList().isEmpty()){
+            return Response.status(Response.Status.NOT_FOUND).entity(new ErrorRsp("No attempts yet for this quiz!")).build();
+        }
+
+        try{
+            RetrieveSurveyStatistics resp = new RetrieveSurveyStatistics(new ArrayList<>());
+            resp.setTitle(quiz.getTitle());
+            resp.setDescription(quiz.getDescription());
+            resp.setQuizId(quiz.getQuizId());
+            resp.setAttempts(quiz.getQuizAttemptList().size());
+
+            for(Question q: quiz.getQuestionList()){
+                if(q.getType() == QuestionTypeEnum.radiogroup){
+                    QuestionStatistic qs = new QuestionStatistic(q.getQuestionId(), q.getTitle(), new ArrayList<>());
+
+                    HashMap<String, Integer> count = new HashMap<>(); // Answer : Attempt
+                    for(QuizAttempt sa: quiz.getQuizAttemptList()){
+                        for(QuestionAttempt qa: sa.getQuestionAttemptList()){
+                            if(qa.getQuestion() == q){
+                                count.put(qa.getAnswer(), count.get(qa.getAnswer()) + 1);
+                            }
+                        }
                     }
+
+                    Iterator it = count.entrySet().iterator();
+                    while (it.hasNext()) {
+                        Map.Entry pair = (Map.Entry)it.next();
+                        AnswerStatistic as = new AnswerStatistic();
+                        as.setAnswer((String) pair.getKey());
+                        as.setCount((int) pair.getValue());
+                        qs.getAnswers().add(as);
+                        it.remove(); // avoids a ConcurrentModificationException
+                    }
+                    resp.getQuestions().add(qs);
+                } else {
+                    resp.getQuestions().add(new QuestionStatistic(q.getQuestionId(), q.getTitle(), null));
                 }
             }
-            user.getPublicUserCompletedCoursepackList().add(coursepack);
-            user.setCoursepackCompleted(+1);
-            return Response.status(Response.Status.OK).build();
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(new ErrorRsp(ex.getMessage())).build();
+
+            return Response.status(Response.Status.OK).entity(resp).build();
+        } catch (Exception e){
+            e.printStackTrace();
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(new ErrorRsp(e.getMessage())).build();
         }
     }
 }
