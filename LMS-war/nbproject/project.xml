@@ -7,10 +7,6 @@
             <minimum-ant-version>1.6.5</minimum-ant-version>
             <web-module-libraries>
                 <library dirs="200">
-                    <file>${file.reference.jersey-media-multipart-2.29.1.jar-1}</file>
-                    <path-in-war>WEB-INF/lib</path-in-war>
-                </library>
-                <library dirs="200">
                     <file>${file.reference.javax.activation-1.2.0.jar-1}</file>
                     <path-in-war>WEB-INF/lib</path-in-war>
                 </library>
@@ -23,7 +19,7 @@
                     <path-in-war>WEB-INF/lib</path-in-war>
                 </library>
                 <library dirs="200">
-                    <file>${file.reference.javax.activation-1.2.0.jar}</file>
+                    <file>${file.reference.jersey-media-multipart-2.29.1.jar-1}</file>
                     <path-in-war>WEB-INF/lib</path-in-war>
                 </library>
                 <library dirs="200">
@@ -32,10 +28,6 @@
                 </library>
                 <library dirs="200">
                     <file>${file.reference.osgi-resource-locator-1.0.3.jar-1}</file>
-                    <path-in-war>WEB-INF/lib</path-in-war>
-                </library>
-                <library dirs="200">
-                    <file>${file.reference.jersey-media-multipart-2.29.1.jar}</file>
                     <path-in-war>WEB-INF/lib</path-in-war>
                 </library>
             </web-module-libraries>
