@@ -15,6 +15,7 @@ import entities.ForumTopic;
 import entities.LessonOrder;
 import entities.Outlines;
 import entities.Quiz;
+import entities.Rating;
 import entities.User;
 import java.util.ArrayList;
 import java.util.List;
@@ -764,10 +765,21 @@ public class CoursepackResource {
             }else{
                 for(Coursepack coursepack : coursepackList){
 
-                    rsp.getCoursepack().add(
-                            new Coursepack(coursepack.getCoursepackId(), coursepack.getCode(), coursepack.getTitle(),
-                                    coursepack.getDescription(), coursepack.getCategory(), coursepack.getPrice(), null, null, 
-                                    coursepack.getTeacherBackground(),null, null, null, null, null, null, null, null));
+                    User teacher = new User();
+                    teacher.setFirstName(coursepack.getAssignedTeacher().getFirstName());
+                    teacher.setLastName(coursepack.getAssignedTeacher().getLastName());
+                    Coursepack cpTemp = new Coursepack(coursepack.getCoursepackId(), coursepack.getCode(), coursepack.getTitle(),
+                                    coursepack.getDescription(), coursepack.getCategory(), coursepack.getPrice(), null, coursepack.getRating(), 
+                                    coursepack.getTeacherBackground(),null, null, null, teacher, null, null, null, null);
+                    List<Rating> ratings = coursepack.getRatingList();
+                    List<Rating> rs = new ArrayList<>();
+                    for (Rating r : ratings) {
+                        Rating rTemp = new Rating();
+                        rTemp.setRatingId(r.getRatingId());
+                        rs.add(rTemp);
+                    }
+                    cpTemp.setRatingList(rs);
+                    rsp.getCoursepack().add(cpTemp);
                 }
                 return Response.status(Response.Status.OK).entity(rsp).build();
             }
@@ -845,12 +857,6 @@ public class CoursepackResource {
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
         }
     }
-
-        
-        
-        
-
-    
     
     
     
