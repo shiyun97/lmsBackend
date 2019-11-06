@@ -16,16 +16,14 @@ public class CreateCertification {
     private Certification certification;
     private String title;
     private String description;
-    private String criteria;
 
     public CreateCertification() {
     }
 
-    public CreateCertification(Certification certification, String title, String description, String criteria) {
+    public CreateCertification(Certification certification, String title, String description) {
         this.certification = certification;
         this.title = title;
         this.description = description;
-        this.criteria = criteria;
     }
 
     public Certification getCertification() {
@@ -50,13 +48,5 @@ public class CreateCertification {
 
     public void setDescription(String description) {
         this.description = description;
-    }
-
-    public String getCriteria() {
-        return criteria;
-    }
-
-    public void setCriteria(String criteria) {
-        this.criteria = criteria;
     }
 }

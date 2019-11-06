@@ -1769,7 +1769,48 @@ public class AssessmentResource {
         }
 
         quiz.getLessonOrder().getPublicUserList().add(user);
+        /*int count = user.getQuizCompleted();
+        count++;
+        user.setQuizCompleted(count);*/
+        user.setQuizCompleted(+1);
 
         return Response.status(Status.OK).build();
+    }
+    
+    @PUT
+    @Path("completeCoursepack")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response completeCoursepack(@QueryParam("userId") Long userId, @QueryParam("coursepackId") Long coursepackId) {
+        try {
+            User user = em.find(User.class, userId);
+            if (user == null) {
+                return Response.status(Response.Status.NOT_FOUND).entity(new ErrorRsp("No user found")).build();
+            }
+            Coursepack coursepack = em.find(Coursepack.class, coursepackId);
+            if (coursepack == null) {
+                return Response.status(Status.NOT_FOUND).entity(new ErrorRsp("Coursepack is not found!")).build();
+            }
+            List<Outlines> outlinesList = coursepack.getOutlineList();
+            if (outlinesList == null || outlinesList.isEmpty()) {
+                return Response.status(Status.NOT_FOUND).entity(new ErrorRsp("No outlines found!")).build();
+            }
+            for (Outlines o : outlinesList) {
+                List<LessonOrder> lessonOrderList = o.getLessonOrder();
+                if (lessonOrderList == null || lessonOrderList.isEmpty()) {
+                    return Response.status(Status.NOT_FOUND).entity(new ErrorRsp("No lesson order found!")).build();
+                }
+                for (LessonOrder l : lessonOrderList) {
+                    if (!l.getPublicUserList().contains(user)) {
+                        return Response.status(Status.NOT_ACCEPTABLE).entity(new ErrorRsp("User has not completed all lessons")).build();
+                    }
+                }
+            }
+            user.getPublicUserCompletedCoursepackList().add(coursepack);
+            user.setCoursepackCompleted(+1);
+            return Response.status(Response.Status.OK).build();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(new ErrorRsp(ex.getMessage())).build();
+        }
     }
 }

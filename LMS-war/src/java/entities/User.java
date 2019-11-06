@@ -12,6 +12,8 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
@@ -67,7 +69,7 @@ public class User implements Serializable {
     @ManyToMany(mappedBy = "publicUserList")
     private List<Coursepack> publicUserCoursepackList;
     @ManyToMany(mappedBy = "studentList")
-    private List<Coursepack> studentCoursepackList;   
+    private List<Coursepack> studentCoursepackList;
     /*@OneToOne(mappedBy = "publicUser")
     private Cart cart;
     @ManyToMany(mappedBy = "userList")
@@ -80,6 +82,14 @@ public class User implements Serializable {
     private Integer coursepackCompleted;
     @OneToMany
     private List<Certification> certificationList;
+    @OneToMany
+    private List<Badge> badgeList;
+    @OneToMany
+    @JoinTable(
+            name = "coursepack_publicuser",
+            joinColumns = @JoinColumn(name = "coursepackid"),
+            inverseJoinColumns = @JoinColumn(name = "publicuserid"))
+    private List<Coursepack> publicUserCompletedCoursepackList;
 
     public User(String firstName, String lastName, String email, String username, String password, GenderEnum gender, AccessRightEnum accessRight, List<ConsultationTimeslot> consultationTimeslotList, List<QuizAttempt> quizAttemptList, List<SurveyAttempt> surveyAttemptList, List<ClassGroup> classGroupList, List<Module> teacherModuleList, List<Module> studentModuleList, List<Module> publicUserModuleList) {
         this.firstName = firstName;
@@ -331,7 +341,7 @@ public class User implements Serializable {
     public void setAttendanceList(List<Attendance> attendanceList) {
         this.attendanceList = attendanceList;
     }
-    
+
     public List<Coursepack> getTeacherCoursepackList() {
         return teacherCoursepackList;
     }
@@ -355,7 +365,7 @@ public class User implements Serializable {
     public void setStudentCoursepackList(List<Coursepack> studentCoursepackList) {
         this.studentCoursepackList = studentCoursepackList;
     }
-    
+
     /*public Cart getCart() {
         return cart;
     }
@@ -379,7 +389,6 @@ public class User implements Serializable {
     public void setCertificationList(List<Certification> certificationList) {
         this.certificationList = certificationList;
     }*/
-
     public Integer getQuizCompleted() {
         return quizCompleted;
     }
@@ -402,5 +411,21 @@ public class User implements Serializable {
 
     public void setCertificationList(List<Certification> certificationList) {
         this.certificationList = certificationList;
+    }
+
+    public List<Badge> getBadgeList() {
+        return badgeList;
+    }
+
+    public void setBadgeList(List<Badge> badgeList) {
+        this.badgeList = badgeList;
+    }
+
+    public List<Coursepack> getPublicUserCompletedCoursepackList() {
+        return publicUserCompletedCoursepackList;
+    }
+
+    public void setPublicUserCompletedCoursepackList(List<Coursepack> publicUserCompletedCoursepackList) {
+        this.publicUserCompletedCoursepackList = publicUserCompletedCoursepackList;
     }
 }

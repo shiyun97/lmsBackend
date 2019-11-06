@@ -32,10 +32,10 @@ public class Certification implements Serializable {
     private String title;
     @Column
     private String description;
-    @Column
+    /*@Column
     private String criteria;
     @ManyToMany
-    private List<User> userList;
+    private List<User> userList;*/
     @Column
     private Date dateAchieved;
     @OneToMany
@@ -44,13 +44,12 @@ public class Certification implements Serializable {
     public Certification() {
     }
 
-    public Certification(Long certificationId, String title, String description, String criteria, List<User> userList, Date dateAchieved) {
+    public Certification(Long certificationId, String title, String description, Date dateAchieved, List<Coursepack> coursepackList) {
         this.certificationId = certificationId;
         this.title = title;
         this.description = description;
-        this.criteria = criteria;
-        this.userList = userList;
         this.dateAchieved = dateAchieved;
+        this.coursepackList = coursepackList;
     }
     
     public Long getId() {
@@ -101,14 +100,6 @@ public class Certification implements Serializable {
     public void setDescription(String description) {
         this.description = description;
     }
-
-    public String getCriteria() {
-        return criteria;
-    }
-
-    public void setCriteria(String criteria) {
-        this.criteria = criteria;
-    }
     
     public Date getDateAchieved() {
         return dateAchieved;
@@ -118,13 +109,13 @@ public class Certification implements Serializable {
         this.dateAchieved = dateAchieved;
     }
 
-    public List<User> getUserList() {
+   /* public List<User> getUserList() {
         return userList;
     }
 
     public void setUserList(List<User> userList) {
         this.userList = userList;
-    }
+    }*/
 
     public List<Coursepack> getCoursepackList() {
         return coursepackList;

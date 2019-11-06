@@ -6,6 +6,7 @@
 package entities;
 
 import java.io.Serializable;
+import java.sql.Timestamp;
 import java.util.Date;
 import java.util.List;
 import javax.persistence.Column;
@@ -32,24 +33,44 @@ public class Badge implements Serializable {
     @Column
     private String description;
     @Column
-    private String criteria;
-    @ManyToMany
-    private List<User> userList;
-    @Column
     private Date dateAchieved;
+    @Column
+    private String type;
+    @Column
+    private String location;
+    @Column
+    private Timestamp createdDt;
+    @Column
+    private Boolean isDelete;
+    @ManyToOne
+    private Folder folder;
 
     public Badge() {
     }
 
-    public Badge(Long badgeId, String title, String description, String criteria, List<User> userList, Date dateAchieved) {
+    public Badge(Long badgeId, String title, String description, Date dateAchieved, String type, String location, Timestamp createdDt, Boolean isDelete) {
         this.badgeId = badgeId;
         this.title = title;
         this.description = description;
-        this.criteria = criteria;
-        this.userList = userList;
         this.dateAchieved = dateAchieved;
+        this.type = type;
+        this.location = location;
+        this.createdDt = createdDt;
+        this.isDelete = isDelete;
     }
 
+    public Badge(Long badgeId, String title, String description, Date dateAchieved, String type, String location, Timestamp createdDt, Boolean isDelete, Folder folder) {
+        this.badgeId = badgeId;
+        this.title = title;
+        this.description = description;
+        this.dateAchieved = dateAchieved;
+        this.type = type;
+        this.location = location;
+        this.createdDt = createdDt;
+        this.isDelete = isDelete;
+        this.folder = folder;
+    }
+   
     public Long getId() {
         return badgeId;
     }
@@ -99,14 +120,6 @@ public class Badge implements Serializable {
         this.description = description;
     }
 
-    public String getCriteria() {
-        return criteria;
-    }
-
-    public void setCriteria(String criteria) {
-        this.criteria = criteria;
-    }
-
     public Date getDateAchieved() {
         return dateAchieved;
     }
@@ -115,12 +128,43 @@ public class Badge implements Serializable {
         this.dateAchieved = dateAchieved;
     }
 
-    public List<User> getUserList() {
-        return userList;
+    public String getType() {
+        return type;
     }
 
-    public void setUserList(List<User> userList) {
-        this.userList = userList;
+    public void setType(String type) {
+        this.type = type;
     }
-    
+
+    public String getLocation() {
+        return location;
+    }
+
+    public void setLocation(String location) {
+        this.location = location;
+    }
+
+    public Timestamp getCreatedDt() {
+        return createdDt;
+    }
+
+    public void setCreatedDt(Timestamp createdDt) {
+        this.createdDt = createdDt;
+    }
+
+    public Boolean getIsDelete() {
+        return isDelete;
+    }
+
+    public void setIsDelete(Boolean isDelete) {
+        this.isDelete = isDelete;
+    }
+
+    public Folder getFolder() {
+        return folder;
+    }
+
+    public void setFolder(Folder folder) {
+        this.folder = folder;
+    }
 }
