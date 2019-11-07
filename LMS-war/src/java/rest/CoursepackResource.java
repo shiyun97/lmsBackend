@@ -6,9 +6,12 @@
 package rest;
 
 import datamodel.rest.CreateCoursepack;
+import datamodel.rest.ErrorRsp;
+import datamodel.rest.GetCategoryRsp;
 import datamodel.rest.GetCoursepackRsp;
 import datamodel.rest.UpdateCoursepack;
 import datamodel.rest.GetUserRsp;
+import entities.Category;
 import entities.Coursepack;
 import entities.File;
 import entities.ForumTopic;
@@ -35,6 +38,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import util.AccessRightEnum;
 
 /**
  *
@@ -79,7 +83,7 @@ public class CoursepackResource {
             coursepack.setCode(createCoursepack.getCode());
             coursepack.setTitle(createCoursepack.getTitle());
             coursepack.setDescription(createCoursepack.getDescription());
-            coursepack.setCategory(createCoursepack.getCategory());
+            //coursepack.setCategory(createCoursepack.getCategory());
             coursepack.setPrice(createCoursepack.getPrice());
             coursepack.setTeacherBackground(createCoursepack.getTeacherBackground());
             em.persist(coursepack);
@@ -91,7 +95,8 @@ public class CoursepackResource {
             coursepack.setAssignedTeacher(user);
 
             Coursepack coursepackCopy = new Coursepack(coursepack.getCoursepackId(), coursepack.getCode(), coursepack.getTitle(),
-                        coursepack.getDescription(), coursepack.getCategory(), coursepack.getPrice(), null, null, 
+                        coursepack.getDescription(),coursepack.getPrice(), null, null, 
+                    coursepack.getImageLocation(), null,
                         coursepack.getTeacherBackground(), null, null, null, userCopy, null, null, null, null);
             
             return Response.status(Response.Status.OK).entity(coursepackCopy).build();
@@ -167,7 +172,8 @@ public class CoursepackResource {
                 Coursepack cp = o.getCoursepack();
 
                     Coursepack coursepackCopy = new Coursepack(cp.getCoursepackId(), cp.getCode(), cp.getTitle(),
-                        cp.getDescription(), cp.getCategory(), cp.getPrice(), null, null, 
+                        cp.getDescription(), cp.getPrice(), null, null, 
+                        cp.getImageLocation(), null,
                         cp.getTeacherBackground(), null, null, 
                         null, null, null, null, null, null);  
                      
@@ -543,7 +549,7 @@ public class CoursepackResource {
                 coursepack.setCode(updateCoursepack.getCode());
                 coursepack.setTitle(updateCoursepack.getTitle());
                 coursepack.setDescription(updateCoursepack.getDescription());
-                coursepack.setCategory(updateCoursepack.getCategory());
+                //coursepack.setCategory(updateCoursepack.getCategory());
                 coursepack.setPrice(updateCoursepack.getPrice());
                 coursepack.setPublished(updateCoursepack.getPublished());
                 coursepack.setTeacherBackground(updateCoursepack.getTeacherBackground());
@@ -560,7 +566,8 @@ public class CoursepackResource {
                     user.getUsername(), null, user.getGender(), null, null, null, null, null, null, null, null);
                 
                 Coursepack coursepackCopy = new Coursepack(coursepack.getCoursepackId(), coursepack.getCode(), coursepack.getTitle(),
-                        coursepack.getDescription(), coursepack.getCategory(), coursepack.getPrice(), null, null, 
+                        coursepack.getDescription(), coursepack.getPrice(), null, null, 
+                        coursepack.getImageLocation(), null,
                         coursepack.getTeacherBackground(), null, null, 
                         null, assignedTeacher, null, null, null, null);
 
@@ -673,11 +680,12 @@ public class CoursepackResource {
             User teacherCopy = new User(null, teacher.getId(), teacher.getFirstName(), teacher.getLastName(), teacher.getEmail(),
                     teacher.getUsername(), null, teacher.getGender(), teacher.getAccessRight(),
                     null, null, null, null, null, null, null);
-           
+            
             
             Coursepack coursepackCopy = new Coursepack(coursepack.getCoursepackId(), coursepack.getCode(), coursepack.getTitle(),
-                        coursepack.getDescription(), coursepack.getCategory(), coursepack.getPrice(), coursepack.getPublished(), null, 
-                        coursepack.getTeacherBackground(),null, null, null, null,null, oline, null, null);
+                        coursepack.getDescription(), coursepack.getPrice(), coursepack.getPublished(), coursepack.getRating(), 
+                        coursepack.getImageLocation(), null,
+                        coursepack.getTeacherBackground(), null, null, null,null, null, oline, null, null);
             
             return Response.status(Response.Status.OK).entity(coursepackCopy).build();
 
@@ -739,7 +747,8 @@ public class CoursepackResource {
                     null, null, null, null, null, null, null);
             
             Coursepack coursepackCopy = new Coursepack(coursepack.getCoursepackId(), coursepack.getCode(), coursepack.getTitle(),
-                        coursepack.getDescription(), coursepack.getCategory(), coursepack.getPrice(),null, null, 
+                        coursepack.getDescription(), coursepack.getPrice(),coursepack.getPublished(), coursepack.getRating(), 
+                        coursepack.getImageLocation(), null,
                         coursepack.getTeacherBackground(), null, null, null, teacherCopy, null, oline, null, null );
             
             return Response.status(Response.Status.OK).entity(coursepackCopy).build();
@@ -764,13 +773,13 @@ public class CoursepackResource {
                 return Response.status(Response.Status.NOT_FOUND).entity("No coursepack found").build();
             }else{
                 for(Coursepack coursepack : coursepackList){
-
                     User teacher = new User();
                     teacher.setFirstName(coursepack.getAssignedTeacher().getFirstName());
                     teacher.setLastName(coursepack.getAssignedTeacher().getLastName());
                     Coursepack cpTemp = new Coursepack(coursepack.getCoursepackId(), coursepack.getCode(), coursepack.getTitle(),
-                                    coursepack.getDescription(), coursepack.getCategory(), coursepack.getPrice(), null, coursepack.getRating(), 
-                                    coursepack.getTeacherBackground(),null, null, null, teacher, null, null, null, null);
+                                    coursepack.getDescription(), coursepack.getPrice(), coursepack.getPublished(), coursepack.getRating(), 
+                                    coursepack.getImageLocation(), null,
+                                    coursepack.getTeacherBackground(), null, null, null, teacher, null, null, null, null);
                     List<Rating> ratings = coursepack.getRatingList();
                     List<Rating> rs = new ArrayList<>();
                     for (Rating r : ratings) {
@@ -802,7 +811,14 @@ public class CoursepackResource {
             }
             
             GetCoursepackRsp rsp = new GetCoursepackRsp(new ArrayList<>()); 
-            List<Coursepack> cp = user.getTeacherCoursepackList();
+            List<Coursepack> cp = new ArrayList<>();
+            
+            if (user.getAccessRight() == AccessRightEnum.Teacher) {
+                cp = user.getTeacherCoursepackList();
+            }
+            else if (user.getAccessRight() == AccessRightEnum.Student) {
+                
+            }
             if(cp == null && cp.isEmpty()){
               return Response.status(Response.Status.NOT_FOUND).entity("No coursepack found").build();  
             }else{
@@ -842,11 +858,12 @@ public class CoursepackResource {
               newOut.setLessonOrder(lessonOrder);
               oline.add(newOut);
             }
-           
+            
             rsp.getCoursepack().add(
                 new Coursepack(coursepack.getCoursepackId(), coursepack.getCode(), coursepack.getTitle(),
-                        coursepack.getDescription(), coursepack.getCategory(), coursepack.getPrice(), null, null, 
-                        coursepack.getTeacherBackground(),null, null, null, null,null, oline, null, null));
+                        coursepack.getDescription(), coursepack.getPrice(), coursepack.getPublished(), coursepack.getRating(), 
+                        coursepack.getImageLocation(), null,
+                        coursepack.getTeacherBackground(), null, null, null, null,null, oline, null, null));
                 
                 }
             }
@@ -858,6 +875,63 @@ public class CoursepackResource {
         }
     }
     
+    @Path(value = "getAllCategories")
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getAllCategories() {
+        try {
+            Query query = em.createQuery("select c from Category c");
+            List<Category> categoryList = query.getResultList();
+            GetCategoryRsp rsp = new GetCategoryRsp();
+            
+            for (Category c : categoryList) {
+                rsp.getCategories().add(new Category(c.getCategoryId(), c.getName(), null));
+            }
+            return Response.status(Response.Status.OK).entity(rsp).build();
+        }
+        catch (Exception ex) {
+            ex.printStackTrace();
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
+        }
+    }
     
+    @Path(value = "getCategoryById")
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getCategoryById(@QueryParam("categoryId") Long categoryId) {
+        try {
+            Category category = em.find(Category.class, categoryId);
+            if (category == null) {
+                return Response.status(Response.Status.NOT_FOUND).entity(new ErrorRsp("Category does not exist")).build();
+            }
+            List<Coursepack> coursepackList = category.getCoursepackList();
+            System.out.println(coursepackList.size());
+            List<Coursepack> rspCoursepacks = new ArrayList<>();
+            for(Coursepack coursepack : coursepackList) {
+                User teacher = new User();
+                teacher.setFirstName(coursepack.getAssignedTeacher().getFirstName());
+                teacher.setLastName(coursepack.getAssignedTeacher().getLastName());
+                Coursepack cpTemp = new Coursepack(coursepack.getCoursepackId(), coursepack.getCode(), coursepack.getTitle(),
+                        coursepack.getDescription(), coursepack.getPrice(), coursepack.getPublished(), coursepack.getRating(), coursepack.getImageLocation(), null,
+                        coursepack.getTeacherBackground(), null, null, null, teacher, null, null, null, null);
+                List<Rating> ratings = coursepack.getRatingList();
+                System.out.println(ratings.size());
+                List<Rating> rs = new ArrayList<>();
+                for (Rating r : ratings) {
+                    Rating rTemp = new Rating();
+                    rTemp.setRatingId(r.getRatingId());
+                    rs.add(rTemp);
+                }
+                cpTemp.setRatingList(rs);
+                rspCoursepacks.add(cpTemp);
+            }
+            Category rsp = new Category(category.getCategoryId(), category.getName(), rspCoursepacks);
+            return Response.status(Response.Status.OK).entity(rsp).build();
+        }
+        catch (Exception ex) {
+            ex.printStackTrace();
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
+        }
+    }
     
 }

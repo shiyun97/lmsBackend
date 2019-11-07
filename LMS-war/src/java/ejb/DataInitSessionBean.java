@@ -7,6 +7,7 @@ package ejb;
 
 import entities.Annoucement;
 import entities.Attendance;
+import entities.Category;
 import entities.ConsultationTimeslot;
 import entities.Coursepack;
 import entities.ForumPost;
@@ -634,29 +635,82 @@ public class DataInitSessionBean {
         em.persist(c3);
         em.flush();
         m4.getConsultationList().add(c3);
+        
+        Category cat1 = new Category();
+        cat1.setName("Development");
+        em.persist(cat1);
+        em.flush();
+        
+        Category cat2 = new Category();
+        cat2.setName("IT & Software");
+        em.persist(cat2);
+        em.flush();
+        
+        Category cat3 = new Category();
+        cat3.setName("Business");
+        em.persist(cat3);
+        em.flush();
+        
+        Category cat4 = new Category();
+        cat4.setName("Design");
+        em.persist(cat4);
+        em.flush();
+        
+        Category cat5 = new Category();
+        cat5.setName("Marketing");
+        em.persist(cat5);
+        em.flush();
+        
+        Category cat6 = new Category();
+        cat6.setName("Engineering");
+        em.persist(cat6);
+        em.flush();
+        
+        Category cat7 = new Category();
+        cat7.setName("Math");
+        em.persist(cat7);
+        em.flush();
+        
+        Category cat8 = new Category();
+        cat8.setName("Science");
+        em.persist(cat8);
+        em.flush();
+        
+        Category cat9 = new Category();
+        cat9.setName("Social Science");
+        em.persist(cat9);
+        em.flush();
+        
+        Category cat10 = new Category();
+        cat10.setName("Language");
+        em.persist(cat10);
+        em.flush();
 
         Coursepack cp1 = new Coursepack();
         cp1.setAssignedTeacher(teacher);
-        cp1.setCategory("Computer Science");
+        cp1.setCategory(cat2);
+        cat2.getCoursepackList().add(cp1);
         cp1.setCode("CS1000");
+        cp1.setImageLocation("data:image/png;base64,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");
         cp1.setDescription("Learn C Programming and unlock doors to careers in computer engineering");
-        cp1.setPrice(500.00);
-        cp1.setRating(5.00);
-        //cp1.setStartDate(new Timestamp(2019-1900, 11, 30, 9, 0, 0, 0));
+        cp1.setPrice(50.00);
+        cp1.setRating(0.00);
         cp1.setPublished(false);
         cp1.setTeacherBackground("Graduated with Master degree in Computer Science from NUS");
-        cp1.setTitle("C Programming");
+        cp1.setTitle("Introduction to C Programming");
         teacher.getTeacherCoursepackList().add(cp1);
         em.persist(cp1);
         em.flush();
 
         Coursepack cp2 = new Coursepack();
         cp2.setAssignedTeacher(teacher);
-        cp2.setCategory("Business Management");
+        cp2.setCategory(cat3);
+        cat3.getCoursepackList().add(cp2);
         cp2.setCode("BM1000");
+        cp2.setImageLocation("https://eduadvisor.my/wp-content/uploads/2015/05/Feature-Header-Business-01-2.png");
         cp2.setDescription("Master the essentials of managing a successful business");
-        cp2.setPrice(300.00);
-        cp2.setRating(4.00);
+        cp2.setPrice(80.00);
+        cp2.setRating(0.00);
         cp2.setPublished(false);
         cp2.setTeacherBackground("With more than 20 years of teaching experiences");
         cp2.setTitle("Operations Management");
@@ -666,16 +720,114 @@ public class DataInitSessionBean {
 
         Coursepack cp3 = new Coursepack();
         cp3.setAssignedTeacher(teacher);
-        cp3.setCategory("Engineering");
+        cp3.setCategory(cat6);
+        cat6.getCoursepackList().add(cp3);
         cp3.setCode("EG1000");
+        cp3.setImageLocation("https://miro.medium.com/max/4186/1*4THiK_g7e8NrzfOks6fYsQ.png");
         cp3.setDescription("This course will introduce you to the Design Thinking process and illustrate best practices for each step along the way.");
-        cp3.setPrice(200.00);
-        cp3.setRating(5.00);
+        cp3.setPrice(50.00);
+        cp3.setRating(0.00);
         cp3.setPublished(false);
         cp3.setTeacherBackground("Microsoft developer");
         cp3.setTitle("Introduction to Design Thinking");
         teacher.getTeacherCoursepackList().add(cp3);
         em.persist(cp3);
+        em.flush();
+        
+        Coursepack cp4 = new Coursepack();
+        cp4.setAssignedTeacher(teacher);
+        cp4.setCategory(cat1);
+        cat1.getCoursepackList().add(cp4);
+        cp4.setCode("DE1000");
+        cp4.setImageLocation("https://cdn.uconnectlabs.com/wp-content/uploads/sites/5/2017/12/20170301155447.jpg");
+        cp4.setDescription("This course will introduce you to learning web development - HTML, CSS, JS, Node and More!");
+        cp4.setPrice(80.00);
+        cp4.setRating(0.00);
+        cp4.setPublished(false);
+        cp4.setTeacherBackground("I am a developer with a passion in teaching!");
+        cp4.setTitle("Introduction to Web Development");
+        teacher.getTeacherCoursepackList().add(cp4);
+        em.persist(cp4);
+        em.flush();
+        
+        Coursepack cp5 = new Coursepack();
+        cp5.setAssignedTeacher(teacher);
+        cp5.setCategory(cat1);
+        cat1.getCoursepackList().add(cp5);
+        cp5.setCode("DE1010");
+        cp5.setImageLocation("https://brainstation-23.com/wp-content/uploads/2019/07/React-for-Web-Development.png");
+        cp5.setDescription("This course will introduce you to learning about modern development stack, React!");
+        cp5.setPrice(80.00);
+        cp5.setRating(0.00);
+        cp5.setPublished(true);
+        cp5.setTeacherBackground("I am a developer with a passion in teaching!");
+        cp5.setTitle("Introduction to Modern React");
+        teacher.getTeacherCoursepackList().add(cp5);
+        em.persist(cp5);
+        em.flush();
+        
+        Coursepack cp6 = new Coursepack();
+        cp6.setAssignedTeacher(teacher);
+        cp6.setCategory(cat1);
+        cat1.getCoursepackList().add(cp6);
+        cp6.setCode("DE1060");
+        cp6.setImageLocation("https://miro.medium.com/max/2530/1*Nj-vU3k0XlhfAn2yqxq49g.jpeg");
+        cp6.setDescription("This course will introduce you to learning about using Angular to develop web applications!");
+        cp6.setPrice(80.00);
+        cp6.setRating(0.00);
+        cp6.setPublished(true);
+        cp6.setTeacherBackground("I am a developer with a passion in teaching!");
+        cp6.setTitle("Introduction to Angular 4");
+        teacher.getTeacherCoursepackList().add(cp6);
+        em.persist(cp6);
+        em.flush();
+        
+        Coursepack cp7 = new Coursepack();
+        cp7.setAssignedTeacher(teacher);
+        cp7.setCategory(cat1);
+        cat1.getCoursepackList().add(cp7);
+        cp7.setCode("DE2000");
+        cp7.setImageLocation("https://icon-library.net/images/no-image-available-icon/no-image-available-icon-6.jpg");
+        cp7.setDescription("This course will introduce you to learning about using HTML and CSS with Wordpress!");
+        cp7.setPrice(60.00);
+        cp7.setRating(0.00);
+        cp7.setPublished(true);
+        cp7.setTeacherBackground("I am a developer with a passion in teaching!");
+        cp7.setTitle("Guide to HTML, CSS, Wordpress");
+        teacher.getTeacherCoursepackList().add(cp7);
+        em.persist(cp7);
+        em.flush();
+        
+        Coursepack cp8 = new Coursepack();
+        cp8.setAssignedTeacher(teacher);
+        cp8.setCategory(cat1);
+        cat1.getCoursepackList().add(cp8);
+        cp8.setCode("DE2010");
+        cp8.setImageLocation("https://icon-library.net/images/no-image-available-icon/no-image-available-icon-6.jpg");
+        cp8.setDescription("This course will introduce you to learning modern JavaScript");
+        cp8.setPrice(50.00);
+        cp8.setRating(0.00);
+        cp8.setPublished(true);
+        cp8.setTeacherBackground("I am a developer with a passion in teaching!");
+        cp8.setTitle("Learn Modern JavaScript");
+        teacher.getTeacherCoursepackList().add(cp8);
+        em.persist(cp8);
+        em.flush();
+        
+        Coursepack cp9 = new Coursepack();
+        cp9.setAssignedTeacher(teacher);
+        cp9.setCategory(cat1);
+        cat1.getCoursepackList().add(cp9);
+        cp9.setCode("DE1015");
+        cp9.setImageLocation("https://icon-library.net/images/no-image-available-icon/no-image-available-icon-6.jpg");
+        cp9.setDescription("This course will introduce you to developing web spplications with PHP");
+        cp9.setPrice(60.00);
+        cp9.setRating(0.00);
+        cp9.setPublished(true);
+        cp9.setTeacherBackground("I am a developer with a passion in teaching!");
+        cp9.setTitle("Introduction to PHP");
+        teacher.getTeacherCoursepackList().add(cp9);
+        em.persist(cp9);
         em.flush();
 
         ForumTopic topic1 = new ForumTopic();
