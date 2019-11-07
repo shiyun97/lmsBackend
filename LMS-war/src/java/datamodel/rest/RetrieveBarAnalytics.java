@@ -10,12 +10,30 @@ package datamodel.rest;
  * @author Asus
  */
 public class RetrieveBarAnalytics {
+    String moduleCode;
+    String moduleTitle;
     int classSize;
     int lectureAttendance;
     int bookedConsultations;
     int totalConsultations;
     int quizAttempts;
     int forumContributions;
+
+    public String getModuleCode() {
+        return moduleCode;
+    }
+
+    public void setModuleCode(String moduleCode) {
+        this.moduleCode = moduleCode;
+    }
+
+    public String getModuleTitle() {
+        return moduleTitle;
+    }
+
+    public void setModuleTitle(String moduleTitle) {
+        this.moduleTitle = moduleTitle;
+    }
 
     public int getClassSize() {
         return classSize;

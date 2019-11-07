@@ -13,7 +13,9 @@ import datamodel.rest.MarksStatistic;
 import datamodel.rest.RetrieveAttendanceStatistics;
 import datamodel.rest.RetrieveBarAnalytics;
 import datamodel.rest.RetrieveForumAnalytics;
+import datamodel.rest.RetrieveListBarAnalytics;
 import datamodel.rest.RetrieveMarksStatistics;
+import ejb.AcademicYearSessionBean;
 import entities.Attendance;
 import entities.Consultation;
 import entities.ConsultationTimeslot;
@@ -32,10 +34,12 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
@@ -61,7 +65,7 @@ public class LearningAnalyticsResource {
     public Response retrieveGradeItemAnalytics(@QueryParam("userId") Long userId, @QueryParam("moduleId") Long moduleId){
         User user = em.find(User.class, userId);
         if(user == null){
-            return Response.status(Response.Status.BAD_REQUEST).entity("User doesn't exist!").build();
+            return Response.status(Response.Status.BAD_REQUEST).entity(new ErrorRsp("User doesn't exist!")).build();
         }
 
         Module module = em.find(Module.class, moduleId);
@@ -90,6 +94,7 @@ public class LearningAnalyticsResource {
                     }
                     Collections.sort(marks);
                     MarksStatistic ms = new MarksStatistic();
+                    ms.setTitle(gi.getTitle());
                     ms.setGradeItemId(gi.getGradeItemId());
                     ms.setMin(marks.get(0));
                     ms.setMax(marks.get(marks.size()-1));
@@ -133,7 +138,7 @@ public class LearningAnalyticsResource {
     public Response retrieveQuizAnalytics(@QueryParam("userId") Long userId, @QueryParam("moduleId") Long moduleId){
         User user = em.find(User.class, userId);
         if(user == null){
-            return Response.status(Response.Status.BAD_REQUEST).entity("User doesn't exist!").build();
+            return Response.status(Response.Status.FORBIDDEN).entity(new ErrorRsp("User doesn't exist!")).build();
         }
 
         Module module = em.find(Module.class, moduleId);
@@ -153,7 +158,7 @@ public class LearningAnalyticsResource {
             RetrieveMarksStatistics resp = new RetrieveMarksStatistics(new ArrayList<>());
             
             for(Quiz q: module.getQuizList()){
-                if(q.isPublishAnswer() || ar == AccessRightEnum.Teacher){
+                if(!q.getQuizAttemptList().isEmpty() && (q.isPublishAnswer() || ar == AccessRightEnum.Teacher)){
                     ArrayList<Double> marks  = new ArrayList<>(q.getQuizAttemptList().size());
                     double total = 0.0;
                     for (QuizAttempt qa : q.getQuizAttemptList()) {
@@ -162,6 +167,7 @@ public class LearningAnalyticsResource {
                     }
                     Collections.sort(marks);
                     MarksStatistic ms = new MarksStatistic();
+                    ms.setTitle(q.getTitle());
                     ms.setQuizId(q.getQuizId());
                     ms.setMin(marks.get(0));
                     ms.setMax(marks.get(marks.size()-1));
@@ -394,5 +400,118 @@ public class LearningAnalyticsResource {
         }
         
         return Response.status(Response.Status.OK).entity(resp).build();
+    }
+    
+    @GET
+    @Path("retrieveListBarAnalytics")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response retrieveListBarAnalytics(@QueryParam("userId") Long userId){
+        
+        User user = em.find(User.class, userId);
+        if(user == null){
+            return Response.status(Response.Status.BAD_REQUEST).entity(new ErrorRsp("User doesn't exist!")).build();
+        }
+        
+        if(user.getAccessRight() != AccessRightEnum.Teacher){
+            return Response.status(Response.Status.FORBIDDEN).entity(new ErrorRsp("User doesn't has access to this function")).build();
+        }
+        
+        try{
+            RetrieveListBarAnalytics resp = new RetrieveListBarAnalytics(new ArrayList<>());
+            
+            Query query = em.createQuery("SELECT DISTINCT m FROM User u join u.studentModuleList m "
+                    + "WHERE m.semesterOffered = :semester AND m.yearOffered = :year AND u.userId = :userId");
+            query.setParameter("semester", AcademicYearSessionBean.getSemester());
+            query.setParameter("year", AcademicYearSessionBean.getYear());
+            query.setParameter("userId", userId);
+            List<Module> modules = query.getResultList();
+
+            if(!modules.isEmpty() && modules.get(0) != null){
+                for(Module module: modules){
+                    RetrieveBarAnalytics rba = new RetrieveBarAnalytics();
+                    rba.setModuleCode(module.getCode());
+                    rba.setModuleTitle(module.getTitle());
+                    rba.setClassSize(module.getStudentList().size());
+
+                    // Find last attendance
+                    Attendance last = module.getAttandanceList().get(0);
+                    for(Attendance a: module.getAttandanceList()){
+                        if(a.getStartTs().after(last.getStartTs())){
+                            last = a;
+                        }
+                    }
+                    rba.setLectureAttendance(last.getAttendees().size());
+
+
+                    // Consultation
+                    rba.setTotalConsultations(module.getConsultationList().size());
+                    for(ConsultationTimeslot c: module.getConsultationList()){
+                        if(c.getBooker() != null){
+                            rba.setBookedConsultations(rba.getBookedConsultations() + 1);
+                        }
+                    }
+
+                    // Quiz
+                    Quiz quiz = module.getQuizList().get(0);
+
+                    if(quiz.getOpeningDate().after(new Date())){ // make sure starting quiz is in the past.
+                        for(Quiz q: module.getQuizList()){
+                            if(q.getOpeningDate().before(new Date())){
+                                quiz = q;
+                                break;
+                            }
+                        }
+                    }
+                    for(Quiz q: module.getQuizList()){ // find latest quiz
+                        if(q.getOpeningDate().before(new Date()) && q.getOpeningDate().after(quiz.getOpeningDate())){
+                            quiz = q;
+                        }
+                    }
+
+                    // Count number of different student attempting the quiz
+                    HashSet<User> set = new HashSet<>();
+                    for(QuizAttempt qa: quiz.getQuizAttemptList()){
+                        if(!set.contains(qa.getQuizTaker())){
+                            set.add(qa.getQuizTaker());
+                        }
+                    }
+                    rba.setQuizAttempts(set.size());
+
+                    set.clear();
+                    for(ForumTopic ft: module.getForumTopicList()){
+                        for(ForumPost thread: ft.getThreads()){
+                            if(!set.contains(thread.getOwner())){
+                                set.add(thread.getOwner());
+                            }
+
+                            for(ForumPost comment: thread.getComments()){
+                                if(!set.contains(comment.getOwner())){
+                                    set.add(comment.getOwner());
+                                }
+                            }
+
+                            for(ForumPost reply: thread.getReplies()){
+                                if(!set.contains(reply.getOwner())){
+                                    set.add(reply.getOwner());
+                                }
+                                for(ForumPost comment: reply.getComments()){
+                                    if(!set.contains(comment.getOwner())){
+                                        set.add(comment.getOwner());
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+                    rba.setForumContributions(set.size());
+                    resp.getBars().add(rba);
+                }
+            }
+        
+            return Response.status(Response.Status.OK).entity(resp).build();
+        } catch (Exception e){
+           e.printStackTrace();
+           return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(new ErrorRsp(e.getMessage())).build();
+       }
     }
 }
