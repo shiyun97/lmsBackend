@@ -292,14 +292,17 @@ public class LearningAnalyticsResource {
         resp.setClassSize(module.getStudentList().size());
         
         // Find last attendance
-        Attendance last = module.getAttandanceList().get(0);
-        for(Attendance a: module.getAttandanceList()){
-            if(a.getStartTs().after(last.getStartTs())){
-                last = a;
+        if(!module.getAttandanceList().isEmpty()){
+            Attendance last = module.getAttandanceList().get(0);
+            for(Attendance a: module.getAttandanceList()){
+                if(a.getStartTs().after(last.getStartTs())){
+                    last = a;
+                }
             }
+            resp.setLectureAttendance(last.getAttendees().size());
+        } else {
+            resp.setLectureAttendance(0);
         }
-        resp.setLectureAttendance(last.getAttendees().size());
-        
         
         // Consultation
         resp.setTotalConsultations(module.getConsultationList().size());
@@ -310,32 +313,36 @@ public class LearningAnalyticsResource {
         }
         
         // Quiz
-        Quiz quiz = module.getQuizList().get(0);
-        
-        if(quiz.getOpeningDate().after(new Date())){ // make sure starting quiz is in the past.
-            for(Quiz q: module.getQuizList()){
-                if(q.getOpeningDate().before(new Date())){
-                    quiz = q;
-                    break;
+        if(module.getQuizList().isEmpty()){
+            resp.setQuizAttempts(0);
+        } else {
+            Quiz quiz = module.getQuizList().get(0);
+
+            if(quiz.getOpeningDate().after(new Date())){ // make sure starting quiz is in the past.
+                for(Quiz q: module.getQuizList()){
+                    if(q.getOpeningDate().before(new Date())){
+                        quiz = q;
+                        break;
+                    }
                 }
             }
-        }
-        for(Quiz q: module.getQuizList()){ // find latest quiz
-            if(q.getOpeningDate().before(new Date()) && q.getOpeningDate().after(quiz.getOpeningDate())){
-                quiz = q;
+            for(Quiz q: module.getQuizList()){ // find latest quiz
+                if(q.getOpeningDate().before(new Date()) && q.getOpeningDate().after(quiz.getOpeningDate())){
+                    quiz = q;
+                }
             }
+
+            // Count number of different student attempting the quiz
+            HashSet<User> set = new HashSet<>();
+            for(QuizAttempt qa: quiz.getQuizAttemptList()){
+                if(!set.contains(qa.getQuizTaker())){
+                    set.add(qa.getQuizTaker());
+                }
+            }
+            resp.setQuizAttempts(set.size());
         }
         
-        // Count number of different student attempting the quiz
         HashSet<User> set = new HashSet<>();
-        for(QuizAttempt qa: quiz.getQuizAttemptList()){
-            if(!set.contains(qa.getQuizTaker())){
-                set.add(qa.getQuizTaker());
-            }
-        }
-        resp.setQuizAttempts(set.size());
-        
-        set.clear();
         for(ForumTopic ft: module.getForumTopicList()){
             for(ForumPost thread: ft.getThreads()){
                 if(!set.contains(thread.getOwner())){
@@ -419,7 +426,7 @@ public class LearningAnalyticsResource {
         try{
             RetrieveListBarAnalytics resp = new RetrieveListBarAnalytics(new ArrayList<>());
             
-            Query query = em.createQuery("SELECT DISTINCT m FROM User u join u.studentModuleList m "
+            Query query = em.createQuery("SELECT DISTINCT m FROM User u join u.teacherModuleList m "
                     + "WHERE m.semesterOffered = :semester AND m.yearOffered = :year AND u.userId = :userId");
             query.setParameter("semester", AcademicYearSessionBean.getSemester());
             query.setParameter("year", AcademicYearSessionBean.getYear());
@@ -431,16 +438,21 @@ public class LearningAnalyticsResource {
                     RetrieveBarAnalytics rba = new RetrieveBarAnalytics();
                     rba.setModuleCode(module.getCode());
                     rba.setModuleTitle(module.getTitle());
+                    rba.setModuleId(module.getModuleId());
                     rba.setClassSize(module.getStudentList().size());
 
                     // Find last attendance
-                    Attendance last = module.getAttandanceList().get(0);
-                    for(Attendance a: module.getAttandanceList()){
-                        if(a.getStartTs().after(last.getStartTs())){
-                            last = a;
+                    if(!module.getAttandanceList().isEmpty()){
+                        Attendance last = module.getAttandanceList().get(0);
+                        for(Attendance a: module.getAttandanceList()){
+                            if(a.getStartTs().after(last.getStartTs())){
+                                last = a;
+                            }
                         }
+                        rba.setLectureAttendance(last.getAttendees().size());
+                    } else {
+                        rba.setLectureAttendance(0);
                     }
-                    rba.setLectureAttendance(last.getAttendees().size());
 
 
                     // Consultation
@@ -452,32 +464,36 @@ public class LearningAnalyticsResource {
                     }
 
                     // Quiz
-                    Quiz quiz = module.getQuizList().get(0);
+                    if(module.getQuizList().isEmpty()){
+                        rba.setQuizAttempts(0);
+                    } else {
+                        Quiz quiz = module.getQuizList().get(0);
 
-                    if(quiz.getOpeningDate().after(new Date())){ // make sure starting quiz is in the past.
-                        for(Quiz q: module.getQuizList()){
-                            if(q.getOpeningDate().before(new Date())){
-                                quiz = q;
-                                break;
+                        if(quiz.getOpeningDate().after(new Date())){ // make sure starting quiz is in the past.
+                            for(Quiz q: module.getQuizList()){
+                                if(q.getOpeningDate().before(new Date())){
+                                    quiz = q;
+                                    break;
+                                }
                             }
                         }
-                    }
-                    for(Quiz q: module.getQuizList()){ // find latest quiz
-                        if(q.getOpeningDate().before(new Date()) && q.getOpeningDate().after(quiz.getOpeningDate())){
-                            quiz = q;
+                        for(Quiz q: module.getQuizList()){ // find latest quiz
+                            if(q.getOpeningDate().before(new Date()) && q.getOpeningDate().after(quiz.getOpeningDate())){
+                                quiz = q;
+                            }
                         }
+
+                        // Count number of different student attempting the quiz
+                        HashSet<User> set = new HashSet<>();
+                        for(QuizAttempt qa: quiz.getQuizAttemptList()){
+                            if(!set.contains(qa.getQuizTaker())){
+                                set.add(qa.getQuizTaker());
+                            }
+                        }
+                        rba.setQuizAttempts(set.size());
                     }
 
-                    // Count number of different student attempting the quiz
                     HashSet<User> set = new HashSet<>();
-                    for(QuizAttempt qa: quiz.getQuizAttemptList()){
-                        if(!set.contains(qa.getQuizTaker())){
-                            set.add(qa.getQuizTaker());
-                        }
-                    }
-                    rba.setQuizAttempts(set.size());
-
-                    set.clear();
                     for(ForumTopic ft: module.getForumTopicList()){
                         for(ForumPost thread: ft.getThreads()){
                             if(!set.contains(thread.getOwner())){

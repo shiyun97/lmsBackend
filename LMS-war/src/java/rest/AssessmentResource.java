@@ -1818,6 +1818,16 @@ public class AssessmentResource {
                         }
                     }
 
+                    // For count 0 answers
+                    for(String choice: q.getChoices()){
+                        if(!count.containsKey(choice)){
+                            AnswerStatistic as = new AnswerStatistic();
+                            as.setAnswer(choice);
+                            as.setCount(0);
+                            qs.getAnswers().add(as);
+                        }
+                    }
+
                     Iterator it = count.entrySet().iterator();
                     while (it.hasNext()) {
                         Map.Entry pair = (Map.Entry) it.next();
@@ -1908,7 +1918,7 @@ public class AssessmentResource {
         }
         return false;
     }
-    
+
     public boolean rewardCompleteTenAssessmentBadge(User user) {
         Query query = em.createQuery("select b from Badge b where b.title =: title");
         query.setParameter("title", "10quiz.JPG");
@@ -1923,7 +1933,7 @@ public class AssessmentResource {
         }
         return false;
     }
-    
+
     public boolean rewardCompleteTwentyAssessmentBadge(User user) {
         Query query = em.createQuery("select b from Badge b where b.title =: title");
         query.setParameter("title", "20quiz.JPG");
@@ -1953,7 +1963,7 @@ public class AssessmentResource {
         }
         return false;
     }
-    
+
     public boolean rewardCompleteThreeCoursepackBadge(User user) {
         Query query = em.createQuery("select b from Badge b where b.title =: title");
         query.setParameter("title", "3coursepack.JPG");
