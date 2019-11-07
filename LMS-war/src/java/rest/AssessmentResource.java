@@ -23,6 +23,7 @@ import datamodel.rest.RetrieveQuestionAttemptsRsp;
 import datamodel.rest.RetrieveQuizAttemptsRsp;
 import datamodel.rest.RetrieveQuizzesResp;
 import datamodel.rest.RetrieveSurveyStatistics;
+import entities.Certification;
 import entities.Coursepack;
 import entities.GradeEntry;
 import entities.GradeItem;
@@ -1854,7 +1855,31 @@ public class AssessmentResource {
             }
             user.getPublicUserCompletedCoursepackList().add(coursepack);
             user.setCoursepackCompleted(+1);
+            rewardCertification(user, coursepack);
         }
+        return true;
+    }
+
+    public boolean rewardCertification(User user, Coursepack coursepack) {
+        Query query = em.createQuery("select c from Certification c where c.coursepackList in coursepack");
+        query.setParameter("coursepack", coursepack);
+        Certification certification = (Certification) query.getSingleResult();
+        if (certification == null) {
+            System.out.println("No certifcation found");
+            return false;
+        }
+        List<Coursepack> coursepackList = certification.getCoursepackList();
+        if(coursepackList == null || coursepackList.isEmpty()){
+            System.out.println("No coursepack in certifcation criteria");
+            return false;
+        }
+        for(Coursepack cp : coursepackList){
+            if(!user.getPublicUserCompletedCoursepackList().contains(cp)){
+                System.out.println("Certification criteria not completed");
+                return false;
+            }
+        }
+        user.getCertificationList().add(certification);
         return true;
     }
 }

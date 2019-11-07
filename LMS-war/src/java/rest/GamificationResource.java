@@ -266,7 +266,7 @@ public class GamificationResource {
         }
     }
 
-    @PUT
+    /*@PUT
     @Path("attainCertification")
     @Produces(MediaType.APPLICATION_JSON)
     public Response attainCertification(@QueryParam("userId") Long userId, @QueryParam("certificationId") Long certificationId) {
@@ -302,7 +302,7 @@ public class GamificationResource {
             ex.printStackTrace();
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(new ErrorRsp(ex.getMessage())).build();
         }
-    }
+    }*/
 
     @GET
     @Path("getAllUserCertifications")
