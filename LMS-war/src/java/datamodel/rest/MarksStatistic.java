@@ -19,6 +19,7 @@ public class MarksStatistic {
     double min;
     double twentyfifth;
     double seventyfifth;
+    double studentMarks;
 
     public String getTitle() {
         return title;
@@ -90,6 +91,14 @@ public class MarksStatistic {
 
     public void setSeventyfifth(double seventyfifth) {
         this.seventyfifth = seventyfifth;
+    }
+
+    public double getStudentMarks() {
+        return studentMarks;
+    }
+
+    public void setStudentMarks(double studentMarks) {
+        this.studentMarks = studentMarks;
     }
     
     
