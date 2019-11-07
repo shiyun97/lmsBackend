@@ -278,6 +278,16 @@ public class FeedbackResource {
                         qs.getAnswers().add(as);
                         it.remove(); // avoids a ConcurrentModificationException
                     }
+                    
+                    // For count 0 answers
+                    for(String choice: q.getChoices()){
+                        if(!count.containsKey(choice)){
+                            AnswerStatistic as = new AnswerStatistic();
+                            as.setAnswer(choice);
+                            as.setCount(0);
+                            qs.getAnswers().add(as);
+                        }
+                    }
                     resp.getQuestions().add(qs);
                 } else {
                     resp.getQuestions().add(new QuestionStatistic(q.getQuestionId(), q.getTitle(), null));
