@@ -81,7 +81,7 @@ public class CoursepackEnrollmentResource {
                 publicUser.setHasPaid(true);
             }*/
             if (publicUser.getAccessRight() == AccessRightEnum.Public) {
-                coursepack.getStudentList().add(publicUser);
+                coursepack.getPublicUserList().add(publicUser);
                 publicUser.getPublicUserCoursepackList().add(coursepack);
                 return Response.status(Response.Status.OK).build();
             }
@@ -113,7 +113,7 @@ public class CoursepackEnrollmentResource {
                 publicUser.setHasPaid(true);
             }*/
             if (user.getAccessRight() == AccessRightEnum.Public) {
-                coursepack.getStudentList().add(user);
+                coursepack.getPublicUserList().add(user);
                 user.getPublicUserCoursepackList().add(coursepack);
                 return Response.status(Response.Status.OK).build();
             }

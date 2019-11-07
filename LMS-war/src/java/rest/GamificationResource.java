@@ -496,9 +496,9 @@ public class GamificationResource {
             if (badgeList == null || badgeList.size() == 0) {
                 return Response.status(Response.Status.NOT_FOUND).entity(new ErrorRsp("No badge found")).build();
             }
-            List<entities.Badge> rsp = new ArrayList<>();
+            GetBadgeRsp rsp = new GetBadgeRsp(new ArrayList<>());
             for (entities.Badge b : badgeList) {
-                    rsp.add(new Badge(
+                    rsp.getBadgeList().add(new Badge(
                             b.getId(), b.getTitle(), b.getDescription(), b.getDateAchieved(),
                             b.getLocation(), b.getCreatedDt()));
             }
@@ -522,9 +522,9 @@ public class GamificationResource {
             if (badgeList == null || badgeList.isEmpty()) {
                 return Response.status(Response.Status.NOT_FOUND).entity(new ErrorRsp("No badge found")).build();
             }
-            List<entities.Badge> rsp = new ArrayList<>();
+            GetBadgeRsp rsp = new GetBadgeRsp(new ArrayList<>());
             for (entities.Badge b : badgeList) {
-                    rsp.add(new Badge(
+                    rsp.getBadgeList().add(new Badge(
                             b.getId(), b.getTitle(), b.getDescription(), b.getDateAchieved(),
                             b.getLocation(), b.getCreatedDt()));
             }

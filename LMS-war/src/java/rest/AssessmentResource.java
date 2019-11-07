@@ -23,6 +23,7 @@ import datamodel.rest.RetrieveQuestionAttemptsRsp;
 import datamodel.rest.RetrieveQuizAttemptsRsp;
 import datamodel.rest.RetrieveQuizzesResp;
 import datamodel.rest.RetrieveSurveyStatistics;
+import entities.Badge;
 import entities.Certification;
 import entities.Coursepack;
 import entities.GradeEntry;
@@ -365,7 +366,7 @@ public class AssessmentResource {
     @Path("deleteQuestion")
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
-    public Response deleteQuestion(@QueryParam("userId") Long userId, @QueryParam("quizId") Long quizId, @QueryParam("questionId") Long questionId){
+    public Response deleteQuestion(@QueryParam("userId") Long userId, @QueryParam("quizId") Long quizId, @QueryParam("questionId") Long questionId) {
         User user = em.find(User.class, userId);
         if (user == null || user.getAccessRight() != AccessRightEnum.Teacher) {
             return Response.status(Status.FORBIDDEN)
@@ -374,7 +375,7 @@ public class AssessmentResource {
         }
 
         Quiz quiz = em.find(Quiz.class, quizId);
-        if(quiz == null){
+        if (quiz == null) {
             return Response.status(Status.NOT_FOUND).entity(new ErrorRsp("Quiz with the given ID doesn't exist")).build();
         }
 
@@ -389,7 +390,7 @@ public class AssessmentResource {
         try {
             Question question = em.find(Question.class, questionId);
 
-            if(question == null){
+            if (question == null) {
                 return Response.status(Status.NOT_FOUND).entity(new ErrorRsp("Question with the given ID doesn't exist")).build();
             }
 
@@ -1699,7 +1700,7 @@ public class AssessmentResource {
     @Path("deleteQuestionCoursepack")
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
-    public Response deleteQuestionCoursepack(@QueryParam("userId") Long userId, @QueryParam("quizId") Long quizId, @QueryParam("questionId") Long questionId){
+    public Response deleteQuestionCoursepack(@QueryParam("userId") Long userId, @QueryParam("quizId") Long quizId, @QueryParam("questionId") Long questionId) {
         User user = em.find(User.class, userId);
         if (user == null || user.getAccessRight() != AccessRightEnum.Teacher) {
             return Response.status(Status.FORBIDDEN)
@@ -1708,7 +1709,7 @@ public class AssessmentResource {
         }
 
         Quiz quiz = em.find(Quiz.class, quizId);
-        if(quiz == null){
+        if (quiz == null) {
             return Response.status(Status.NOT_FOUND).entity(new ErrorRsp("Quiz with the given ID doesn't exist")).build();
         }
 
@@ -1722,7 +1723,7 @@ public class AssessmentResource {
         try {
             Question question = em.find(Question.class, questionId);
 
-            if(question == null){
+            if (question == null) {
                 return Response.status(Status.NOT_FOUND).entity(new ErrorRsp("Question with the given ID doesn't exist")).build();
             }
 
@@ -1807,9 +1808,9 @@ public class AssessmentResource {
                     QuestionStatistic qs = new QuestionStatistic(q.getQuestionId(), q.getTitle(), new ArrayList<>());
 
                     HashMap<String, Integer> count = new HashMap<>(); // Answer : Attempt
-                    for(QuizAttempt sa: quiz.getQuizAttemptList()){
-                        for(QuestionAttempt qa: sa.getQuestionAttemptList()){
-                            if(qa.getQuestion() == q){
+                    for (QuizAttempt sa : quiz.getQuizAttemptList()) {
+                        for (QuestionAttempt qa : sa.getQuestionAttemptList()) {
+                            if (qa.getQuestion() == q) {
                                 count.put(qa.getAnswer(), count.getOrDefault(qa.getAnswer(), 0) + 1);
                             }
                         }
@@ -1869,17 +1870,39 @@ public class AssessmentResource {
             return false;
         }
         List<Coursepack> coursepackList = certification.getCoursepackList();
-        if(coursepackList == null || coursepackList.isEmpty()){
+        if (coursepackList == null || coursepackList.isEmpty()) {
             System.out.println("No coursepack in certifcation criteria");
             return false;
         }
-        for(Coursepack cp : coursepackList){
-            if(!user.getPublicUserCompletedCoursepackList().contains(cp)){
+        for (Coursepack cp : coursepackList) {
+            if (!user.getPublicUserCompletedCoursepackList().contains(cp)) {
                 System.out.println("Certification criteria not completed");
                 return false;
             }
         }
         user.getCertificationList().add(certification);
         return true;
+    }
+
+    public boolean rewardCompleteFiveAssessmentBadge(User user) {
+        Query query = em.createQuery("select b from Badge b where b.title =: title");
+        query.setParameter("title", "5quiz");
+        Badge badge = (Badge) query.getSingleResult();
+        if (user.getQuizCompleted() == 5) {
+            user.getBadgeList().add(badge);
+            return true;
+        }
+        return false;
+    }
+
+    public boolean rewardCompleteFirstCoursepackBadge(User user) {
+        Query query = em.createQuery("select b from Badge b where b.title =: title");
+        query.setParameter("title", "1coursepack");
+        Badge badge = (Badge) query.getSingleResult();
+        if (user.getCoursepackCompleted() == 1) {
+            user.getBadgeList().add(badge);
+            return true;
+        }
+        return false;
     }
 }
