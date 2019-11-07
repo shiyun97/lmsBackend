@@ -115,7 +115,7 @@ public class GamificationResource {
                     for (Coursepack cp : coursepackList) {
                         coursepackListCopy.add((new Coursepack(cp.getCoursepackId(), cp.getCode(), cp.getTitle(),
                                 cp.getDescription(), null, null, null, null, null, null,
-                                null, null, null, null, null, null, null)));
+                                null, null, null, null, null, null, null, null)));
                     }
                 }
                 rsp.getCertificationList().add(new Certification(
@@ -143,7 +143,7 @@ public class GamificationResource {
                 for (Coursepack cp : coursepackList) {
                     coursepackListCopy.add((new Coursepack(cp.getCoursepackId(), cp.getCode(), cp.getTitle(),
                             cp.getDescription(), null, null, null, null, null, null,
-                            null, null, null, null, null, null, null)));
+                            null, null, null, null, null, null, null, null)));
                 }
             }
             Certification certificationCopy = new Certification(certification.getId(), certification.getTitle(),
@@ -222,7 +222,7 @@ public class GamificationResource {
                 for (Coursepack c : coursepackList) {
                     coursepackListCopy.add((new Coursepack(c.getCoursepackId(), c.getCode(), c.getTitle(),
                             c.getDescription(), null, null, null, null, null, null,
-                            null, null, null, null, null, null, null)));
+                            null, null, null, null, null, null, null, null)));
                 }
             }
             Certification certificationCopy = new Certification(certification.getId(), certification.getTitle(), certification.getDescription(),
@@ -254,7 +254,7 @@ public class GamificationResource {
                 for (Coursepack c : coursepackList) {
                     coursepackListCopy.add((new Coursepack(c.getCoursepackId(), c.getCode(), c.getTitle(),
                             c.getDescription(), null, null, null, null, null, null,
-                            null, null, null, null, null, null, null)));
+                            null, null, null, null, null, null, null, null)));
                 }
             }
             Certification certificationCopy = new Certification(certification.getId(), certification.getTitle(), certification.getDescription(),
@@ -325,7 +325,7 @@ public class GamificationResource {
                     for (Coursepack cp : coursepackList) {
                         coursepackListCopy.add((new Coursepack(cp.getCoursepackId(), cp.getCode(), cp.getTitle(),
                                 cp.getDescription(), null, null, null, null, null, null,
-                                null, null, null, null, null, null, null)));
+                                null, null, null, null, null, null, null, null)));
                     }
                 }
                 rsp.getCertificationList().add(new Certification(
@@ -357,7 +357,7 @@ public class GamificationResource {
                 for (Coursepack cp : coursepackList) {
                     coursepackListCopy.add((new Coursepack(cp.getCoursepackId(), cp.getCode(), cp.getTitle(),
                             cp.getDescription(), null, null, null, null, null, null,
-                            null, null, null, null, null, null, null)));
+                            null, null, null, null, null, null, null, null)));
                 }
             }
             Certification certificationcopy = new Certification(certification.getId(), certification.getTitle(),

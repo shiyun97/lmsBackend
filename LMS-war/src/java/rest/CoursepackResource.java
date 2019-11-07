@@ -38,6 +38,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import util.AccessRightEnum;
 
 /**
  *
@@ -95,7 +96,8 @@ public class CoursepackResource {
 
             Coursepack coursepackCopy = new Coursepack(coursepack.getCoursepackId(), coursepack.getCode(), coursepack.getTitle(),
                         coursepack.getDescription(),coursepack.getPrice(), null, null, 
-                        coursepack.getTeacherBackground(), coursepack.getImageLocation(), null, null, null, null, userCopy, null, null, null, null);
+                    coursepack.getImageLocation(), null,
+                        coursepack.getTeacherBackground(), null, null, null, userCopy, null, null, null, null);
             
             return Response.status(Response.Status.OK).entity(coursepackCopy).build();
         } catch (Exception ex) {
@@ -171,7 +173,8 @@ public class CoursepackResource {
 
                     Coursepack coursepackCopy = new Coursepack(cp.getCoursepackId(), cp.getCode(), cp.getTitle(),
                         cp.getDescription(), cp.getPrice(), null, null, 
-                        cp.getTeacherBackground(), cp.getImageLocation(), null, null, null, 
+                        cp.getImageLocation(), null,
+                        cp.getTeacherBackground(), null, null, 
                         null, null, null, null, null, null);  
                      
                     Outlines outline = new Outlines(o.getOutlineId(), coursepackCopy, null, o.getName(), o.getNumber());  
@@ -564,7 +567,8 @@ public class CoursepackResource {
                 
                 Coursepack coursepackCopy = new Coursepack(coursepack.getCoursepackId(), coursepack.getCode(), coursepack.getTitle(),
                         coursepack.getDescription(), coursepack.getPrice(), null, null, 
-                        coursepack.getTeacherBackground(), coursepack.getImageLocation(), null, null, null, 
+                        coursepack.getImageLocation(), null,
+                        coursepack.getTeacherBackground(), null, null, 
                         null, assignedTeacher, null, null, null, null);
 
                 return Response.status(Response.Status.OK).entity(coursepackCopy).build();
@@ -680,7 +684,8 @@ public class CoursepackResource {
             
             Coursepack coursepackCopy = new Coursepack(coursepack.getCoursepackId(), coursepack.getCode(), coursepack.getTitle(),
                         coursepack.getDescription(), coursepack.getPrice(), coursepack.getPublished(), coursepack.getRating(), 
-                        coursepack.getTeacherBackground(), coursepack.getImageLocation(), null, null, null, null,null, null, oline, null, null);
+                        coursepack.getImageLocation(), null,
+                        coursepack.getTeacherBackground(), null, null, null,null, null, oline, null, null);
             
             return Response.status(Response.Status.OK).entity(coursepackCopy).build();
 
@@ -743,7 +748,8 @@ public class CoursepackResource {
             
             Coursepack coursepackCopy = new Coursepack(coursepack.getCoursepackId(), coursepack.getCode(), coursepack.getTitle(),
                         coursepack.getDescription(), coursepack.getPrice(),coursepack.getPublished(), coursepack.getRating(), 
-                        coursepack.getTeacherBackground(), coursepack.getImageLocation(), null, null, null, null, teacherCopy, null, oline, null, null );
+                        coursepack.getImageLocation(), null,
+                        coursepack.getTeacherBackground(), null, null, null, teacherCopy, null, oline, null, null );
             
             return Response.status(Response.Status.OK).entity(coursepackCopy).build();
 
@@ -772,7 +778,8 @@ public class CoursepackResource {
                     teacher.setLastName(coursepack.getAssignedTeacher().getLastName());
                     Coursepack cpTemp = new Coursepack(coursepack.getCoursepackId(), coursepack.getCode(), coursepack.getTitle(),
                                     coursepack.getDescription(), coursepack.getPrice(), coursepack.getPublished(), coursepack.getRating(), 
-                                    coursepack.getTeacherBackground(), coursepack.getImageLocation(), null, null, null, null, teacher, null, null, null, null);
+                                    coursepack.getImageLocation(), null,
+                                    coursepack.getTeacherBackground(), null, null, null, teacher, null, null, null, null);
                     List<Rating> ratings = coursepack.getRatingList();
                     List<Rating> rs = new ArrayList<>();
                     for (Rating r : ratings) {
@@ -804,7 +811,14 @@ public class CoursepackResource {
             }
             
             GetCoursepackRsp rsp = new GetCoursepackRsp(new ArrayList<>()); 
-            List<Coursepack> cp = user.getTeacherCoursepackList();
+            List<Coursepack> cp = new ArrayList<>();
+            
+            if (user.getAccessRight() == AccessRightEnum.Teacher) {
+                cp = user.getTeacherCoursepackList();
+            }
+            else if (user.getAccessRight() == AccessRightEnum.Student) {
+                
+            }
             if(cp == null && cp.isEmpty()){
               return Response.status(Response.Status.NOT_FOUND).entity("No coursepack found").build();  
             }else{
@@ -844,11 +858,12 @@ public class CoursepackResource {
               newOut.setLessonOrder(lessonOrder);
               oline.add(newOut);
             }
-           
+            
             rsp.getCoursepack().add(
                 new Coursepack(coursepack.getCoursepackId(), coursepack.getCode(), coursepack.getTitle(),
                         coursepack.getDescription(), coursepack.getPrice(), coursepack.getPublished(), coursepack.getRating(), 
-                        coursepack.getTeacherBackground(), coursepack.getImageLocation(), null, null, null, null,null, null, oline, null, null));
+                        coursepack.getImageLocation(), null,
+                        coursepack.getTeacherBackground(), null, null, null, null,null, oline, null, null));
                 
                 }
             }
@@ -890,15 +905,17 @@ public class CoursepackResource {
                 return Response.status(Response.Status.NOT_FOUND).entity(new ErrorRsp("Category does not exist")).build();
             }
             List<Coursepack> coursepackList = category.getCoursepackList();
+            System.out.println(coursepackList.size());
             List<Coursepack> rspCoursepacks = new ArrayList<>();
             for(Coursepack coursepack : coursepackList) {
                 User teacher = new User();
                 teacher.setFirstName(coursepack.getAssignedTeacher().getFirstName());
                 teacher.setLastName(coursepack.getAssignedTeacher().getLastName());
                 Coursepack cpTemp = new Coursepack(coursepack.getCoursepackId(), coursepack.getCode(), coursepack.getTitle(),
-                        coursepack.getDescription(), coursepack.getPrice(), coursepack.getPublished(), coursepack.getRating(),
-                        coursepack.getTeacherBackground(), coursepack.getImageLocation(), null, null, null, null, teacher, null, null, null, null);
+                        coursepack.getDescription(), coursepack.getPrice(), coursepack.getPublished(), coursepack.getRating(), coursepack.getImageLocation(), null,
+                        coursepack.getTeacherBackground(), null, null, null, teacher, null, null, null, null);
                 List<Rating> ratings = coursepack.getRatingList();
+                System.out.println(ratings.size());
                 List<Rating> rs = new ArrayList<>();
                 for (Rating r : ratings) {
                     Rating rTemp = new Rating();
