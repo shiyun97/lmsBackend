@@ -376,8 +376,7 @@ public class GamificationResource {
     @Produces(MediaType.APPLICATION_JSON)
     @Transactional
     public Response uploadBadge(@FormDataParam("file") InputStream uploadedFileInputStream,
-            @FormDataParam("file") FormDataContentDisposition uploadedFileDetails,
-            @QueryParam("folderId") Long folderId) {
+            @FormDataParam("file") FormDataContentDisposition uploadedFileDetails) {
         /*if (type.equals("document") && folderId == null) {
             return Response.status(Response.Status.BAD_REQUEST).entity(new ErrorRsp("Require folderId!")).build();
         }*/
@@ -411,18 +410,7 @@ public class GamificationResource {
             newFile.setLocation(outputFilePath);
             Timestamp timestamp = new Timestamp(System.currentTimeMillis());
             newFile.setCreatedDt(timestamp);
-            newFile.setIsDelete(false);
 
-            if (folderId != null) {
-                Folder folder = em.find(Folder.class, folderId);
-                if (folder == null || folder.getIsDelete() == true) {
-                    return Response.status(Response.Status.BAD_REQUEST).entity(new ErrorRsp("Folder does not exist!")).build();
-                }
-                if (folder != null && folder.getIsDelete() == false) {
-                    newFile.setFolder(folder);
-                    folder.getBadgeList().add(newFile);
-                }
-            }
             em.persist(newFile);
             em.flush();
 
@@ -481,18 +469,6 @@ public class GamificationResource {
                 newFile.setTitle(meta.getFileName());
                 newFile.setLocation(outputFilePath);
                 newFile.setCreatedDt(timestamp);
-                newFile.setIsDelete(false);
-
-                if (folderId != null) {
-                    Folder folder = em.find(Folder.class, folderId);
-                    if (folder == null || folder.getIsDelete() == true) {
-                        return Response.status(Response.Status.BAD_REQUEST).entity(new ErrorRsp("Folder does not exist!")).build();
-                    }
-                    if (folder != null && folder.getIsDelete() == false) {
-                        newFile.setFolder(folder);
-                        folder.getBadgeList().add(newFile);
-                    }
-                }
 
                 em.persist(newFile);
                 em.flush();
@@ -522,11 +498,9 @@ public class GamificationResource {
             }
             List<entities.Badge> rsp = new ArrayList<>();
             for (entities.Badge b : badgeList) {
-                if (b.getIsDelete() == false) {
                     rsp.add(new Badge(
                             b.getId(), b.getTitle(), b.getDescription(), b.getDateAchieved(),
-                            b.getLocation(), b.getCreatedDt(), b.getIsDelete()));
-                }
+                            b.getLocation(), b.getCreatedDt()));
             }
             return Response.status(Response.Status.OK).entity(rsp).build();
         } catch (Exception ex) {
@@ -550,11 +524,9 @@ public class GamificationResource {
             }
             List<entities.Badge> rsp = new ArrayList<>();
             for (entities.Badge b : badgeList) {
-                if (b.getIsDelete() == false) {
                     rsp.add(new Badge(
                             b.getId(), b.getTitle(), b.getDescription(), b.getDateAchieved(),
-                            b.getLocation(), b.getCreatedDt(), b.getIsDelete()));
-                }
+                            b.getLocation(), b.getCreatedDt()));
             }
             return Response.status(Response.Status.OK).entity(rsp).build();
         } catch (Exception ex) {
@@ -577,7 +549,6 @@ public class GamificationResource {
 
             File actualFile = new File(badge.getLocation());
             actualFile.delete();
-            badge.setIsDelete(true);
             em.merge(badge);
             em.flush();
 

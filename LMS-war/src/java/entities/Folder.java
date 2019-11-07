@@ -77,8 +77,6 @@ public class Folder implements Serializable {
     private Module module;
     @ManyToOne
     private Folder parentFolder;
-    @OneToMany(mappedBy = "folder")
-    private List<Badge> badgeList;
 
     public Long getFolderId() {
         return folderId;
@@ -192,13 +190,4 @@ public class Folder implements Serializable {
     public void setIsDelete(Boolean isDelete) {
         this.isDelete = isDelete;
     }
-
-    public List<Badge> getBadgeList() {
-        return badgeList;
-    }
-
-    public void setBadgeList(List<Badge> badgeList) {
-        this.badgeList = badgeList;
-    }
-    
 }
