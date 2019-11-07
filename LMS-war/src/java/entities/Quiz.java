@@ -90,6 +90,8 @@ public class Quiz implements Serializable {
     private List<Question> questionList;
     @OneToMany(mappedBy = "quiz")
     private List<QuizAttempt> quizAttemptList;
+    @Column
+    private boolean completed;
     
     @OneToOne
     private LessonOrder lessonOrder;
@@ -255,6 +257,14 @@ public class Quiz implements Serializable {
 
     public void setGradeitemCreated(boolean gradeitemCreated) {
         this.gradeitemCreated = gradeitemCreated;
+    }
+
+    public boolean isCompleted() {
+        return completed;
+    }
+
+    public void setCompleted(boolean completed) {
+        this.completed = completed;
     }
     
 }

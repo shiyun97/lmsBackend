@@ -15,6 +15,8 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
@@ -53,6 +55,12 @@ public class Coursepack implements Serializable {
     private Category category;
 
     @ManyToMany
+    private List<User> studentList;
+    @ManyToMany
+    @JoinTable(
+            name = "coursepack_publicUser",
+            joinColumns = @JoinColumn(name = "coursepackId"),
+            inverseJoinColumns = @JoinColumn(name = "publicUserId"))
     private List<User> publicUserList;
     @OneToMany(mappedBy = "coursepack")
     private List<ForumTopic> forumTopicList;
@@ -72,10 +80,7 @@ public class Coursepack implements Serializable {
     @OneToMany
     private List<Quiz> quizList;
 
-
-
-
-    public Coursepack(Long coursepackId, String code, String title, String description, Double price, Boolean published, Double rating, String teacherBackground, String imageLocation, Category category, List<User> publicUserList, List<ForumPost> forumPostList, List<GradeItem> gradeItemList, User assignedTeacher, List<Feedback> feedbackList, List<Outlines> outlineList, List<File> fileList,List<Quiz> quizList ) {
+    public Coursepack(Long coursepackId, String code, String title, String description, String category, Double price, Boolean published, Double rating, String teacherBackground, List<User> publicUserList, List<ForumPost> forumPostList, List<GradeItem> gradeItemList, User assignedTeacher, List<Feedback> feedbackList, List<Outlines> outlineList, List<File> fileList, List<Quiz> quizList) {
         this.coursepackId = coursepackId;
         this.code = code;
         this.title = title;
@@ -121,14 +126,36 @@ public class Coursepack implements Serializable {
     
 
     public Coursepack(){
-        publicUserList = new ArrayList<>();
-        gradeItemList = new ArrayList<>();
-        feedbackList = new ArrayList<>();
-        outlineList = new ArrayList<>();
-        fileList = new ArrayList<>();
-        quizList = new ArrayList<>();
+        this.publicUserList = new ArrayList<>();
+        this.gradeItemList = new ArrayList<>();
+        this.feedbackList = new ArrayList<>();
+        this.outlineList = new ArrayList<>();
+        this.fileList = new ArrayList<>();
+        this.quizList = new ArrayList<>();
     }
 
+    public Coursepack(Long coursepackId, String code, String title, String description, String category, Double price, Boolean published, Double rating, String teacherBackground, List<User> studentList, List<User> publicUserList, List<ForumTopic> forumTopicList, List<GradeItem> gradeItemList, User assignedTeacher, List<Feedback> feedbackList, List<Outlines> outlineList, List<Rating> ratingList, List<File> multimediaList, List<File> fileList, List<Quiz> quizList) {
+        this.coursepackId = coursepackId;
+        this.code = code;
+        this.title = title;
+        this.description = description;
+        this.category = category;
+        this.price = price;
+        this.published = published;
+        this.rating = rating;
+        this.teacherBackground = teacherBackground;
+        this.studentList = studentList;
+        this.publicUserList = publicUserList;
+        this.forumTopicList = forumTopicList;
+        this.gradeItemList = gradeItemList;
+        this.assignedTeacher = assignedTeacher;
+        this.feedbackList = feedbackList;
+        this.outlineList = outlineList;
+        this.ratingList = ratingList;
+        this.multimediaList = multimediaList;
+        this.fileList = fileList;
+        this.quizList = quizList;
+    }
 
     @Override
     public int hashCode() {
@@ -282,6 +309,7 @@ public class Coursepack implements Serializable {
     public void setRatingList(List<Rating> ratingList) {
         this.ratingList = ratingList;
     }
+
     public Boolean getPublished() {
         return published;
     }
@@ -314,4 +342,11 @@ public class Coursepack implements Serializable {
         this.multimediaList = multimediaList;
     }
 
+    public List<User> getStudentList() {
+        return studentList;
+    }
+
+    public void setStudentList(List<User> studentList) {
+        this.studentList = studentList;
+    }
 }

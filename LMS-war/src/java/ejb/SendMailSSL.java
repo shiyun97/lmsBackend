@@ -11,15 +11,20 @@ package ejb;
  */
 import java.util.List;
 import java.util.Properties;
+import java.util.concurrent.Future;
+import javax.ejb.AsyncResult;
 import javax.ejb.Asynchronous;
+import javax.ejb.Stateless;
 import javax.mail.*;
 import javax.mail.internet.*;
 
+@Stateless
 public class SendMailSSL {
-    
+
     @Asynchronous
-    public void send(String from, String password, List<String> to, String sub, String msg) throws AddressException {
-        //Get properties object    
+    public Future<String> send(String from, String password, List<String> to, String sub, String msg) throws AddressException {
+        //Get properties object   
+        String status;
         Properties props = new Properties();
         props.put("mail.smtp.host", "smtp.gmail.com");
         props.put("mail.smtp.socketFactory.port", "587");
@@ -37,10 +42,10 @@ public class SendMailSSL {
         });
         //compose message    
         InternetAddress[] mailTo = new InternetAddress[to.size()];
-        for(int i = 0; i<mailTo.length; i++){
+        for (int i = 0; i < mailTo.length; i++) {
             mailTo[i] = new InternetAddress(to.get(i));
         }
-        
+
         try {
             MimeMessage message = new MimeMessage(session);
             message.setRecipients(Message.RecipientType.TO, mailTo);
@@ -48,15 +53,18 @@ public class SendMailSSL {
             message.setText(msg);
             //send message  
             Transport.send(message);
-            System.out.println("message sent successfully");
+            status = "message sent successfully";
+            System.out.println(status);
         } catch (MessagingException e) {
             throw new RuntimeException(e);
         }
+        return new AsyncResult<>(status);
     }
-    
+
     @Asynchronous
-    public void sendSingle(String from, String password, String to, String sub, String msg) throws AddressException {
+    public Future<String> sendSingle(String from, String password, String to, String sub, String msg) throws AddressException {
         //Get properties object    
+        String status;
         Properties props = new Properties();
         props.put("mail.smtp.host", "smtp.gmail.com");
         props.put("mail.smtp.socketFactory.port", "587");
@@ -80,9 +88,11 @@ public class SendMailSSL {
             message.setText(msg);
             //send message  
             Transport.send(message);
-            System.out.println("message sent successfully");
+            status = "message sent successfully";
+            System.out.println(status);
         } catch (MessagingException e) {
             throw new RuntimeException(e);
         }
+        return new AsyncResult<>(status);
     }
 }

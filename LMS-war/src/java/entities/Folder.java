@@ -77,7 +77,6 @@ public class Folder implements Serializable {
     private Module module;
     @ManyToOne
     private Folder parentFolder;
-  
 
     public Long getFolderId() {
         return folderId;
@@ -191,5 +190,4 @@ public class Folder implements Serializable {
     public void setIsDelete(Boolean isDelete) {
         this.isDelete = isDelete;
     }
-    
 }

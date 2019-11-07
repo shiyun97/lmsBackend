@@ -6,7 +6,6 @@
 package entities;
 
 import java.io.Serializable;
-import java.sql.Timestamp;
 import java.util.Date;
 import java.util.List;
 import javax.persistence.Column;
@@ -16,64 +15,66 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 
 /**
  *
  * @author Vixson
  */
 @Entity
-public class Badge implements Serializable {
+public class Certification implements Serializable {
 
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long badgeId;
+    private Long certificationId;
     @Column
     private String title;
     @Column
     private String description;
+    /*@Column
+    private String criteria;
+    @ManyToMany
+    private List<User> userList;*/
     @Column
     private Date dateAchieved;
-    @Column
-    private String location;
-    @Column
-    private Timestamp createdDt;
+    @OneToMany
+    private List<Coursepack> coursepackList;
 
-    public Badge() {
+    public Certification() {
     }
 
-    public Badge(Long badgeId, String title, String description, Date dateAchieved, String location, Timestamp createdDt) {
-        this.badgeId = badgeId;
+    public Certification(Long certificationId, String title, String description, Date dateAchieved, List<Coursepack> coursepackList) {
+        this.certificationId = certificationId;
         this.title = title;
         this.description = description;
         this.dateAchieved = dateAchieved;
-        this.location = location;
-        this.createdDt = createdDt;
+        this.coursepackList = coursepackList;
     }
     
     public Long getId() {
-        return badgeId;
+        return certificationId;
     }
 
-    public void setId(Long badgeId) {
-        this.badgeId = badgeId;
+    public void setId(Long certificationId) {
+        this.certificationId = certificationId;
     }
 
     @Override
     public int hashCode() {
         int hash = 0;
-        hash += (badgeId != null ? badgeId.hashCode() : 0);
+        hash += (certificationId != null ? certificationId.hashCode() : 0);
         return hash;
     }
 
     @Override
     public boolean equals(Object object) {
-        // TODO: Warning - this method won't work in the case the badgeId fields are not set
-        if (!(object instanceof Badge)) {
+        // TODO: Warning - this method won't work in the case the certificationId fields are not set
+        if (!(object instanceof Certification)) {
             return false;
         }
-        Badge other = (Badge) object;
-        if ((this.badgeId == null && other.badgeId != null) || (this.badgeId != null && !this.badgeId.equals(other.badgeId))) {
+        Certification other = (Certification) object;
+        if ((this.certificationId == null && other.certificationId != null) || (this.certificationId != null && !this.certificationId.equals(other.certificationId))) {
             return false;
         }
         return true;
@@ -81,7 +82,7 @@ public class Badge implements Serializable {
 
     @Override
     public String toString() {
-        return "entities.Badge[ Id=" + badgeId + " ]";
+        return "entities.Certification[ certificationId=" + certificationId + " ]";
     }
 
     public String getTitle() {
@@ -99,7 +100,7 @@ public class Badge implements Serializable {
     public void setDescription(String description) {
         this.description = description;
     }
-
+    
     public Date getDateAchieved() {
         return dateAchieved;
     }
@@ -108,19 +109,20 @@ public class Badge implements Serializable {
         this.dateAchieved = dateAchieved;
     }
 
-    public String getLocation() {
-        return location;
+   /* public List<User> getUserList() {
+        return userList;
     }
 
-    public void setLocation(String location) {
-        this.location = location;
+    public void setUserList(List<User> userList) {
+        this.userList = userList;
+    }*/
+
+    public List<Coursepack> getCoursepackList() {
+        return coursepackList;
     }
 
-    public Timestamp getCreatedDt() {
-        return createdDt;
+    public void setCoursepackList(List<Coursepack> coursepackList) {
+        this.coursepackList = coursepackList;
     }
-
-    public void setCreatedDt(Timestamp createdDt) {
-        this.createdDt = createdDt;
-    }
+    
 }
