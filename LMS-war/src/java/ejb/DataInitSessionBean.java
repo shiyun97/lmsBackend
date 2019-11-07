@@ -7,6 +7,7 @@ package ejb;
 
 import entities.Annoucement;
 import entities.Attendance;
+import entities.Category;
 import entities.ConsultationTimeslot;
 import entities.Coursepack;
 import entities.ForumPost;
@@ -634,15 +635,65 @@ public class DataInitSessionBean {
         em.persist(c3);
         em.flush();
         m4.getConsultationList().add(c3);
+        
+        Category cat1 = new Category();
+        cat1.setName("Development");
+        em.persist(cat1);
+        em.flush();
+        
+        Category cat2 = new Category();
+        cat2.setName("IT & Software");
+        em.persist(cat2);
+        em.flush();
+        
+        Category cat3 = new Category();
+        cat3.setName("Business");
+        em.persist(cat3);
+        em.flush();
+        
+        Category cat4 = new Category();
+        cat4.setName("Design");
+        em.persist(cat4);
+        em.flush();
+        
+        Category cat5 = new Category();
+        cat5.setName("Marketing");
+        em.persist(cat5);
+        em.flush();
+        
+        Category cat6 = new Category();
+        cat6.setName("Engineering");
+        em.persist(cat6);
+        em.flush();
+        
+        Category cat7 = new Category();
+        cat7.setName("Math");
+        em.persist(cat7);
+        em.flush();
+        
+        Category cat8 = new Category();
+        cat8.setName("Science");
+        em.persist(cat8);
+        em.flush();
+        
+        Category cat9 = new Category();
+        cat9.setName("Social Science");
+        em.persist(cat9);
+        em.flush();
+        
+        Category cat10 = new Category();
+        cat10.setName("Language");
+        em.persist(cat10);
+        em.flush();
 
         Coursepack cp1 = new Coursepack();
         cp1.setAssignedTeacher(teacher);
-        cp1.setCategory("Computer Science");
+        cp1.setCategory(cat2);
+        cat2.getCoursepackList().add(cp1);
         cp1.setCode("CS1000");
         cp1.setDescription("Learn C Programming and unlock doors to careers in computer engineering");
         cp1.setPrice(500.00);
-        cp1.setRating(5.00);
-        //cp1.setStartDate(new Timestamp(2019-1900, 11, 30, 9, 0, 0, 0));
+        cp1.setRating(0.00);
         cp1.setPublished(false);
         cp1.setTeacherBackground("Graduated with Master degree in Computer Science from NUS");
         cp1.setTitle("C Programming");
@@ -652,11 +703,12 @@ public class DataInitSessionBean {
 
         Coursepack cp2 = new Coursepack();
         cp2.setAssignedTeacher(teacher);
-        cp2.setCategory("Business Management");
+        cp2.setCategory(cat3);
+        cat3.getCoursepackList().add(cp2);
         cp2.setCode("BM1000");
         cp2.setDescription("Master the essentials of managing a successful business");
         cp2.setPrice(300.00);
-        cp2.setRating(4.00);
+        cp2.setRating(0.00);
         cp2.setPublished(false);
         cp2.setTeacherBackground("With more than 20 years of teaching experiences");
         cp2.setTitle("Operations Management");
@@ -666,16 +718,62 @@ public class DataInitSessionBean {
 
         Coursepack cp3 = new Coursepack();
         cp3.setAssignedTeacher(teacher);
-        cp3.setCategory("Engineering");
+        cp3.setCategory(cat6);
+        cat6.getCoursepackList().add(cp3);
         cp3.setCode("EG1000");
         cp3.setDescription("This course will introduce you to the Design Thinking process and illustrate best practices for each step along the way.");
         cp3.setPrice(200.00);
-        cp3.setRating(5.00);
+        cp3.setRating(0.00);
         cp3.setPublished(false);
         cp3.setTeacherBackground("Microsoft developer");
         cp3.setTitle("Introduction to Design Thinking");
         teacher.getTeacherCoursepackList().add(cp3);
         em.persist(cp3);
+        em.flush();
+        
+        Coursepack cp4 = new Coursepack();
+        cp4.setAssignedTeacher(teacher);
+        cp4.setCategory(cat1);
+        cat1.getCoursepackList().add(cp4);
+        cp4.setCode("DE1000");
+        cp4.setDescription("This course will introduce you to learning web development - HTML, CSS, JS, Node and More!");
+        cp4.setPrice(200.00);
+        cp4.setRating(0.00);
+        cp4.setPublished(false);
+        cp4.setTeacherBackground("I am a developer with a passion in teaching!");
+        cp4.setTitle("Introduction to Web Development");
+        teacher.getTeacherCoursepackList().add(cp4);
+        em.persist(cp4);
+        em.flush();
+        
+        Coursepack cp5 = new Coursepack();
+        cp5.setAssignedTeacher(teacher);
+        cp5.setCategory(cat1);
+        cat1.getCoursepackList().add(cp5);
+        cp5.setCode("DE1010");
+        cp5.setDescription("This course will introduce you to learning about modern development stack, React!");
+        cp5.setPrice(200.00);
+        cp5.setRating(0.00);
+        cp5.setPublished(true);
+        cp5.setTeacherBackground("I am a developer with a passion in teaching!");
+        cp5.setTitle("Introduction to Modern React");
+        teacher.getTeacherCoursepackList().add(cp5);
+        em.persist(cp5);
+        em.flush();
+        
+        Coursepack cp6 = new Coursepack();
+        cp6.setAssignedTeacher(teacher);
+        cp6.setCategory(cat1);
+        cat1.getCoursepackList().add(cp6);
+        cp6.setCode("DE1010");
+        cp6.setDescription("This course will introduce you to learning about using Angular to develop web applications!");
+        cp6.setPrice(200.00);
+        cp6.setRating(0.00);
+        cp6.setPublished(true);
+        cp6.setTeacherBackground("I am a developer with a passion in teaching!");
+        cp6.setTitle("Introduction to Angular 4");
+        teacher.getTeacherCoursepackList().add(cp6);
+        em.persist(cp6);
         em.flush();
 
         ForumTopic topic1 = new ForumTopic();

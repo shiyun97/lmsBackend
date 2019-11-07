@@ -37,8 +37,8 @@ public class Coursepack implements Serializable {
     private String title;
     @Column
     private String description;
-    @Column
-    private String category;
+    //@Column
+    //private String category;
     @Column
     private Double price;
     @Column
@@ -47,6 +47,10 @@ public class Coursepack implements Serializable {
     private Double rating;
     @Column
     private String teacherBackground;
+    @Column
+    private String imageLocation;
+    @ManyToOne
+    private Category category;
 
     @ManyToMany
     private List<User> publicUserList;
@@ -71,17 +75,17 @@ public class Coursepack implements Serializable {
 
 
 
-
-    public Coursepack(Long coursepackId, String code, String title, String description, String category, Double price, Boolean published, Double rating, String teacherBackground, List<User> publicUserList, List<ForumPost> forumPostList, List<GradeItem> gradeItemList, User assignedTeacher, List<Feedback> feedbackList, List<Outlines> outlineList, List<File> fileList,List<Quiz> quizList ) {
+    public Coursepack(Long coursepackId, String code, String title, String description, Double price, Boolean published, Double rating, String teacherBackground, String imageLocation, Category category, List<User> publicUserList, List<ForumPost> forumPostList, List<GradeItem> gradeItemList, User assignedTeacher, List<Feedback> feedbackList, List<Outlines> outlineList, List<File> fileList,List<Quiz> quizList ) {
         this.coursepackId = coursepackId;
         this.code = code;
         this.title = title;
         this.description = description;
-        this.category = category;
         this.price = price;
         this.published = published;
         this.rating = rating;
         this.teacherBackground = teacherBackground;
+        this.imageLocation = imageLocation;
+        this.category = category;
         this.publicUserList = publicUserList;
         this.gradeItemList = gradeItemList;
         this.assignedTeacher = assignedTeacher;
@@ -91,6 +95,30 @@ public class Coursepack implements Serializable {
         this.fileList = fileList;
         this.quizList = quizList;
     }
+
+    public Coursepack(Long coursepackId, String code, String title, String description, Double price, Boolean published, Double rating, String teacherBackground, String imageLocation, Category category, List<User> publicUserList, List<ForumTopic> forumTopicList, List<GradeItem> gradeItemList, User assignedTeacher, List<Feedback> feedbackList, List<Outlines> outlineList, List<Rating> ratingList, List<File> multimediaList, List<File> fileList, List<Quiz> quizList) {
+        this.coursepackId = coursepackId;
+        this.code = code;
+        this.title = title;
+        this.description = description;
+        this.price = price;
+        this.published = published;
+        this.rating = rating;
+        this.teacherBackground = teacherBackground;
+        this.imageLocation = imageLocation;
+        this.category = category;
+        this.publicUserList = publicUserList;
+        this.forumTopicList = forumTopicList;
+        this.gradeItemList = gradeItemList;
+        this.assignedTeacher = assignedTeacher;
+        this.feedbackList = feedbackList;
+        this.outlineList = outlineList;
+        this.ratingList = ratingList;
+        this.multimediaList = multimediaList;
+        this.fileList = fileList;
+        this.quizList = quizList;
+    }
+    
 
     public Coursepack(){
         publicUserList = new ArrayList<>();
@@ -159,14 +187,6 @@ public class Coursepack implements Serializable {
         this.description = description;
     }
 
-    public String getCategory() {
-        return category;
-    }
-
-    public void setCategory(String category) {
-        this.category = category;
-    }
-
     public Double getPrice() {
         return price;
     }
@@ -189,6 +209,22 @@ public class Coursepack implements Serializable {
 
     public void setTeacherBackground(String teacherBackground) {
         this.teacherBackground = teacherBackground;
+    }
+
+    public String getImageLocation() {
+        return imageLocation;
+    }
+
+    public void setImageLocation(String imageLocation) {
+        this.imageLocation = imageLocation;
+    }
+
+    public Category getCategory() {
+        return category;
+    }
+
+    public void setCategory(Category category) {
+        this.category = category;
     }
 
     public List<User> getPublicUserList() {
