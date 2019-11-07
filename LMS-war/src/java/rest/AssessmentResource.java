@@ -1815,16 +1815,6 @@ public class AssessmentResource {
                         }
                     }
                     
-                    Iterator it = count.entrySet().iterator();
-                    while (it.hasNext()) {
-                        Map.Entry pair = (Map.Entry)it.next();
-                        AnswerStatistic as = new AnswerStatistic();
-                        as.setAnswer((String) pair.getKey());
-                        as.setCount((int) pair.getValue());
-                        qs.getAnswers().add(as);
-                        it.remove(); // avoids a ConcurrentModificationException
-                    }
-                    
                     // For count 0 answers
                     for(String choice: q.getChoices()){
                         if(!count.containsKey(choice)){
@@ -1833,6 +1823,16 @@ public class AssessmentResource {
                             as.setCount(0);
                             qs.getAnswers().add(as);
                         }
+                    }
+                    
+                    Iterator it = count.entrySet().iterator();
+                    while (it.hasNext()) {
+                        Map.Entry pair = (Map.Entry)it.next();
+                        AnswerStatistic as = new AnswerStatistic();
+                        as.setAnswer((String) pair.getKey());
+                        as.setCount((int) pair.getValue());
+                        qs.getAnswers().add(as);
+                        it.remove(); // avoids a ConcurrentModificationException
                     }
                     resp.getQuestions().add(qs);
                 } else {
