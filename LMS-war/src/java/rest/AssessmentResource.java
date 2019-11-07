@@ -1779,7 +1779,9 @@ public class AssessmentResource {
         count++;
         user.setQuizCompleted(count);*/
         user.setQuizCompleted(+1);
-
+        rewardCompleteFiveAssessmentBadge(user);
+        rewardCompleteTenAssessmentBadge(user);
+        rewardCompleteTwentyAssessmentBadge(user);
         return Response.status(Status.OK).build();
     }
 
@@ -1857,6 +1859,8 @@ public class AssessmentResource {
             user.getPublicUserCompletedCoursepackList().add(coursepack);
             user.setCoursepackCompleted(+1);
             rewardCertification(user, coursepack);
+            rewardCompleteFirstCoursepackBadge(user);
+            rewardCompleteThreeCoursepackBadge(user);
         }
         return true;
     }
@@ -1867,6 +1871,10 @@ public class AssessmentResource {
         Certification certification = (Certification) query.getSingleResult();
         if (certification == null) {
             System.out.println("No certifcation found");
+            return false;
+        }
+        if(user.getCertificationList().contains(certification)){
+            System.out.println("Certification has been attained");
             return false;
         }
         List<Coursepack> coursepackList = certification.getCoursepackList();
@@ -1880,14 +1888,50 @@ public class AssessmentResource {
                 return false;
             }
         }
+        Date currentDate = new Date();
+        certification.setDateAchieved(currentDate);
         user.getCertificationList().add(certification);
         return true;
     }
 
     public boolean rewardCompleteFiveAssessmentBadge(User user) {
         Query query = em.createQuery("select b from Badge b where b.title =: title");
-        query.setParameter("title", "5quiz");
+        query.setParameter("title", "5quiz.JPG");
         Badge badge = (Badge) query.getSingleResult();
+        if(user.getBadgeList().contains(badge)){
+            System.out.println("Badge has been attained");
+            return false;
+        }
+        if (user.getQuizCompleted() == 5) {
+            user.getBadgeList().add(badge);
+            return true;
+        }
+        return false;
+    }
+    
+    public boolean rewardCompleteTenAssessmentBadge(User user) {
+        Query query = em.createQuery("select b from Badge b where b.title =: title");
+        query.setParameter("title", "10quiz.JPG");
+        Badge badge = (Badge) query.getSingleResult();
+        if(user.getBadgeList().contains(badge)){
+            System.out.println("Badge has been attained");
+            return false;
+        }
+        if (user.getQuizCompleted() == 5) {
+            user.getBadgeList().add(badge);
+            return true;
+        }
+        return false;
+    }
+    
+    public boolean rewardCompleteTwentyAssessmentBadge(User user) {
+        Query query = em.createQuery("select b from Badge b where b.title =: title");
+        query.setParameter("title", "20quiz.JPG");
+        Badge badge = (Badge) query.getSingleResult();
+        if(user.getBadgeList().contains(badge)){
+            System.out.println("Badge has been attained");
+            return false;
+        }
         if (user.getQuizCompleted() == 5) {
             user.getBadgeList().add(badge);
             return true;
@@ -1897,8 +1941,27 @@ public class AssessmentResource {
 
     public boolean rewardCompleteFirstCoursepackBadge(User user) {
         Query query = em.createQuery("select b from Badge b where b.title =: title");
-        query.setParameter("title", "1coursepack");
+        query.setParameter("title", "1coursepack.JPG");
         Badge badge = (Badge) query.getSingleResult();
+        if(user.getBadgeList().contains(badge)){
+            System.out.println("Badge has been attained");
+            return false;
+        }
+        if (user.getCoursepackCompleted() == 1) {
+            user.getBadgeList().add(badge);
+            return true;
+        }
+        return false;
+    }
+    
+    public boolean rewardCompleteThreeCoursepackBadge(User user) {
+        Query query = em.createQuery("select b from Badge b where b.title =: title");
+        query.setParameter("title", "3coursepack.JPG");
+        Badge badge = (Badge) query.getSingleResult();
+        if(user.getBadgeList().contains(badge)){
+            System.out.println("Badge has been attained");
+            return false;
+        }
         if (user.getCoursepackCompleted() == 1) {
             user.getBadgeList().add(badge);
             return true;

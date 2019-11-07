@@ -303,7 +303,6 @@ public class GamificationResource {
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(new ErrorRsp(ex.getMessage())).build();
         }
     }*/
-
     @GET
     @Path("getAllUserCertifications")
     @Produces(MediaType.APPLICATION_JSON)
@@ -410,6 +409,7 @@ public class GamificationResource {
             newFile.setLocation(outputFilePath);
             Timestamp timestamp = new Timestamp(System.currentTimeMillis());
             newFile.setCreatedDt(timestamp);
+            newFile.setIsDelete(false);
 
             em.persist(newFile);
             em.flush();
@@ -469,6 +469,7 @@ public class GamificationResource {
                 newFile.setTitle(meta.getFileName());
                 newFile.setLocation(outputFilePath);
                 newFile.setCreatedDt(timestamp);
+                newFile.setIsDelete(false);
 
                 em.persist(newFile);
                 em.flush();
@@ -498,9 +499,11 @@ public class GamificationResource {
             }
             GetBadgeRsp rsp = new GetBadgeRsp(new ArrayList<>());
             for (entities.Badge b : badgeList) {
+                if (b.isIsDelete() == false) {
                     rsp.getBadgeList().add(new Badge(
-                            b.getId(), b.getTitle(), b.getDescription(), b.getDateAchieved(),
-                            b.getLocation(), b.getCreatedDt()));
+                            b.getId(), b.getTitle(),
+                            b.getLocation(), b.getCreatedDt(), b.isIsDelete()));
+                }
             }
             return Response.status(Response.Status.OK).entity(rsp).build();
         } catch (Exception ex) {
@@ -524,9 +527,11 @@ public class GamificationResource {
             }
             GetBadgeRsp rsp = new GetBadgeRsp(new ArrayList<>());
             for (entities.Badge b : badgeList) {
+                if (b.isIsDelete() == false) {
                     rsp.getBadgeList().add(new Badge(
-                            b.getId(), b.getTitle(), b.getDescription(), b.getDateAchieved(),
-                            b.getLocation(), b.getCreatedDt()));
+                            b.getId(), b.getTitle(),
+                            b.getLocation(), b.getCreatedDt(), b.isIsDelete()));
+                }
             }
             return Response.status(Response.Status.OK).entity(rsp).build();
         } catch (Exception ex) {
@@ -549,6 +554,7 @@ public class GamificationResource {
 
             File actualFile = new File(badge.getLocation());
             actualFile.delete();
+            badge.setIsDelete(true);
             em.merge(badge);
             em.flush();
 
@@ -559,7 +565,7 @@ public class GamificationResource {
         }
     }
 
-    @PUT
+    /*@PUT
     @Path("attainCompleteFiveAssessmentBadge")
     @Produces(MediaType.APPLICATION_JSON)
     public Response attainCompleteFiveAssessmentBadge(@QueryParam("userId") Long userId, @QueryParam("badgeId") Long badgeId) {
@@ -606,7 +612,7 @@ public class GamificationResource {
         }
     }
 
-    /*@POST
+    @POST
     @Path(value = "createBadge")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)

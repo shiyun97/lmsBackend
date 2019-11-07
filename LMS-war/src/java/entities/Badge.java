@@ -31,25 +31,24 @@ public class Badge implements Serializable {
     @Column
     private String title;
     @Column
-    private String description;
-    @Column
-    private Date dateAchieved;
-    @Column
     private String location;
     @Column
     private Timestamp createdDt;
+    @Column
+    private boolean isDelete;
 
     public Badge() {
     }
 
-    public Badge(Long badgeId, String title, String description, Date dateAchieved, String location, Timestamp createdDt) {
+    public Badge(Long badgeId, String title, String location, Timestamp createdDt, boolean isDelete) {
         this.badgeId = badgeId;
         this.title = title;
-        this.description = description;
-        this.dateAchieved = dateAchieved;
         this.location = location;
         this.createdDt = createdDt;
+        this.isDelete = isDelete;
     }
+    
+    
     
     public Long getId() {
         return badgeId;
@@ -92,22 +91,6 @@ public class Badge implements Serializable {
         this.title = title;
     }
 
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-    public Date getDateAchieved() {
-        return dateAchieved;
-    }
-
-    public void setDateAchieved(Date dateAchieved) {
-        this.dateAchieved = dateAchieved;
-    }
-
     public String getLocation() {
         return location;
     }
@@ -122,5 +105,13 @@ public class Badge implements Serializable {
 
     public void setCreatedDt(Timestamp createdDt) {
         this.createdDt = createdDt;
+    }
+
+    public boolean isIsDelete() {
+        return isDelete;
+    }
+
+    public void setIsDelete(boolean isDelete) {
+        this.isDelete = isDelete;
     }
 }
