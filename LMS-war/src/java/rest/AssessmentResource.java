@@ -1861,7 +1861,7 @@ public class AssessmentResource {
     }
 
     public boolean rewardCertification(User user, Coursepack coursepack) {
-        Query query = em.createQuery("select c from Certification c where c.coursepackList in coursepack");
+        Query query = em.createQuery("select c from Certification c join c.coursepackList cp where cp = :coursepack");
         query.setParameter("coursepack", coursepack);
         Certification certification = (Certification) query.getSingleResult();
         if (certification == null) {
