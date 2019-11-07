@@ -576,10 +576,10 @@ public class StudentEnrollmentResource {
         
         try{
             Query query = em.createQuery("SELECT DISTINCT m FROM User u join u.studentModuleList m "
-                    + "WHERE m.semesterOffered = :semester AND m.yearOffered = :year");
+                    + "WHERE m.semesterOffered = :semester AND m.yearOffered = :year AND u.userId = :userId");
             query.setParameter("semester", AcademicYearSessionBean.getSemester());
             query.setParameter("year", AcademicYearSessionBean.getYear());
-//            query.setParameter("userId", userId);
+            query.setParameter("userId", userId);
             List<Module> modules = query.getResultList();
             RetrieveEnrolledStudentModulesRsp resp = new RetrieveEnrolledStudentModulesRsp(new ArrayList<>());
             if(modules.isEmpty()|| modules.get(0) == null){
