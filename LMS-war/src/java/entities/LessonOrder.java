@@ -16,13 +16,15 @@ import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
+import javax.persistence.Transient;
+import util.LessonOrderStatusEnum;
 
 /**
  *
  * @author Jasmine
  */
 @Entity
-public class LessonOrder implements Serializable {
+public class LessonOrder implements Serializable, Comparable<LessonOrder> {
 
     private static final long serialVersionUID = 1L;
     @Id
@@ -44,6 +46,8 @@ public class LessonOrder implements Serializable {
     private Outlines outlines; 
     @OneToMany
     private List<User> publicUserList;
+    @Transient
+    private LessonOrderStatusEnum status; // Status of a lesson order; not persisted
     
 
     public LessonOrder(){
@@ -158,8 +162,22 @@ public class LessonOrder implements Serializable {
     public void setPublicUserList(List<User> publicUserList) {
         this.publicUserList = publicUserList;
     }
+
+    public LessonOrderStatusEnum getStatus() {
+        return status;
+    }
+
+    public void setStatus(LessonOrderStatusEnum status) {
+        this.status = status;
+    }
     
-    
+    public int compareTo(LessonOrder o){
+        if(o.getOutlines().compareTo(this.getOutlines()) == 0){
+            return this.getNumber() - o.getNumber();
+        }
+        
+        return this.getOutlines().compareTo(o.getOutlines());
+    }
     
     
     

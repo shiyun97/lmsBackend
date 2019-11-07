@@ -6,6 +6,7 @@
 package rest;
 
 import datamodel.rest.CreateCoursepack;
+import datamodel.rest.ErrorRsp;
 import datamodel.rest.GetCoursepackRsp;
 import datamodel.rest.UpdateCoursepack;
 import datamodel.rest.GetUserRsp;
@@ -17,6 +18,8 @@ import entities.Outlines;
 import entities.Quiz;
 import entities.User;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
@@ -34,6 +37,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import util.LessonOrderStatusEnum;
 
 /**
  *
@@ -660,6 +664,93 @@ public class CoursepackResource {
                      fileCopy.setFileId(lo.getFile().getFileId());
                      
                      nlo.setFile(fileCopy);
+                  }
+                  
+                  lessonOrder.add(nlo);
+              }
+              newOut.setLessonOrder(lessonOrder);
+              oline.add(newOut);
+            }
+            
+            User teacher = coursepack.getAssignedTeacher();
+            User teacherCopy = new User(null, teacher.getId(), teacher.getFirstName(), teacher.getLastName(), teacher.getEmail(),
+                    teacher.getUsername(), null, teacher.getGender(), teacher.getAccessRight(),
+                    null, null, null, null, null, null, null);
+           
+            
+            Coursepack coursepackCopy = new Coursepack(coursepack.getCoursepackId(), coursepack.getCode(), coursepack.getTitle(),
+                        coursepack.getDescription(), coursepack.getCategory(), coursepack.getPrice(), coursepack.getPublished(), null, 
+                        coursepack.getTeacherBackground(),null, null, null, null,null, oline, null, null);
+            
+            return Response.status(Response.Status.OK).entity(coursepackCopy).build();
+
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
+        }
+    }
+    
+    @Path(value = "getCoursepack/{coursepackId}")
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getCoursepackById(@PathParam("coursepackId") Long coursepackId, @QueryParam("userId") Long userId){
+        try{
+            Coursepack coursepack = em.find(Coursepack.class, coursepackId);
+            if(coursepack == null){
+                return Response.status(Response.Status.NOT_FOUND).entity("Coursepack does not exist").build();
+            }
+            
+            User user = em.find(User.class, userId);
+            if(user == null){
+                return Response.status(Response.Status.BAD_REQUEST).entity(new ErrorRsp("User doesn't exist!")).build();
+            }
+            
+            if(!coursepack.getPublicUserList().contains(user)){
+                return Response.status(Response.Status.BAD_REQUEST).entity(new ErrorRsp("User is not enrolled in this coursepack!")).build();
+            }
+            
+            List<Outlines> oline = new ArrayList<>();
+            boolean before = true;
+            Collections.sort(coursepack.getOutlineList());
+            for(Outlines o: coursepack.getOutlineList()){
+                 //add in lesson order (Loop inside loop)
+              Outlines newOut = new Outlines();
+              newOut.setName(o.getName());
+              newOut.setNumber(o.getNumber());
+              newOut.setOutlineId(o.getOutlineId());
+              
+              List<LessonOrder> lessonOrder = new ArrayList<>();
+              
+              Collections.sort(o.getLessonOrder());
+              for(LessonOrder lo: o.getLessonOrder() ){
+                  LessonOrder nlo = new LessonOrder();
+                  nlo.setName(lo.getName());
+                  nlo.setNumber(lo.getNumber());
+                  nlo.setLessonOrderId(lo.getLessonOrderId());
+                  if(lo.getQuiz()!=null){
+                      Quiz quizCopy = new Quiz();
+                      quizCopy.setTitle(lo.getQuiz().getTitle());
+                      quizCopy.setQuizId(lo.getQuiz().getQuizId());
+                      
+                      nlo.setQuiz(quizCopy);
+                  }
+                  
+                  if(lo.getFile()!=null){
+                     File fileCopy = new File();
+                     fileCopy.setName(lo.getFile().getName());
+                     fileCopy.setFileId(lo.getFile().getFileId());
+                     
+                     nlo.setFile(fileCopy);
+                  }
+                  
+                  if(lo.getPublicUserList().contains(user)){
+                      nlo.setStatus(LessonOrderStatusEnum.Completed);
+                      before = true;
+                  } else if(before){
+                      nlo.setStatus(LessonOrderStatusEnum.Unlocked);
+                      before = false;
+                  } else {
+                      nlo.setStatus(LessonOrderStatusEnum.Locked);
                   }
                   
                   lessonOrder.add(nlo);
