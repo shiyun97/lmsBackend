@@ -361,7 +361,7 @@ public class AssessmentResource {
     @Path("deleteQuestion")
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
-    public Response deleteQuestion(QuestionModel qm, @QueryParam("userId") Long userId){
+    public Response deleteQuestion(@QueryParam("userId") Long userId, @QueryParam("quizId") Long quizId, @QueryParam("questionId") Long questionId){
         User user = em.find(User.class, userId);
         if(user == null || user.getAccessRight() != AccessRightEnum.Teacher){
             return Response.status(Status.FORBIDDEN)
@@ -369,7 +369,7 @@ public class AssessmentResource {
                     .build();
         }
         
-        Quiz quiz = em.find(Quiz.class, qm.getQuizId());
+        Quiz quiz = em.find(Quiz.class, quizId);
         if(quiz == null){
             return Response.status(Status.NOT_FOUND).entity(new ErrorRsp("Quiz with the given ID doesn't exist")).build();
         }
@@ -383,7 +383,7 @@ public class AssessmentResource {
         boolean attempted = !quiz.getQuizAttemptList().isEmpty();
         
         try {
-            Question question = em.find(Question.class, qm.getQuestionId());
+            Question question = em.find(Question.class, questionId);
             
             if(question == null){
                 return Response.status(Status.NOT_FOUND).entity(new ErrorRsp("Question with the given ID doesn't exist")).build();
@@ -1702,7 +1702,7 @@ public class AssessmentResource {
     @Path("deleteQuestionCoursepack")
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
-    public Response deleteQuestionCoursepack(QuestionModel qm, @QueryParam("userId") Long userId){
+    public Response deleteQuestionCoursepack(@QueryParam("userId") Long userId, @QueryParam("quizId") Long quizId, @QueryParam("questionId") Long questionId){
         User user = em.find(User.class, userId);
         if(user == null || user.getAccessRight() != AccessRightEnum.Teacher){
             return Response.status(Status.FORBIDDEN)
@@ -1710,7 +1710,7 @@ public class AssessmentResource {
                     .build();
         }
         
-        Quiz quiz = em.find(Quiz.class, qm.getQuizId());
+        Quiz quiz = em.find(Quiz.class, quizId);
         if(quiz == null){
             return Response.status(Status.NOT_FOUND).entity(new ErrorRsp("Quiz with the given ID doesn't exist")).build();
         }
@@ -1724,7 +1724,7 @@ public class AssessmentResource {
         boolean attempted = !quiz.getQuizAttemptList().isEmpty();
         
         try {
-            Question question = em.find(Question.class, qm.getQuestionId());
+            Question question = em.find(Question.class, questionId);
             
             if(question == null){
                 return Response.status(Status.NOT_FOUND).entity(new ErrorRsp("Question with the given ID doesn't exist")).build();
@@ -1810,7 +1810,7 @@ public class AssessmentResource {
                     for(QuizAttempt sa: quiz.getQuizAttemptList()){
                         for(QuestionAttempt qa: sa.getQuestionAttemptList()){
                             if(qa.getQuestion() == q){
-                                count.put(qa.getAnswer(), count.get(qa.getAnswer()) + 1);
+                                count.put(qa.getAnswer(), count.getOrDefault(qa.getAnswer(), 0) + 1);
                             }
                         }
                     }
