@@ -698,10 +698,10 @@ public class CoursepackResource {
         }
     }
     
-    @Path(value = "getCoursepack/{coursepackId}")
+    @Path(value = "getCoursepackUser/{coursepackId}")
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    public Response getCoursepackById(@PathParam("coursepackId") Long coursepackId, @QueryParam("userId") Long userId){
+    public Response getCoursepackByIdUser(@PathParam("coursepackId") Long coursepackId, @QueryParam("userId") Long userId){
         try{
             Coursepack coursepack = em.find(Coursepack.class, coursepackId);
             if(coursepack == null){
