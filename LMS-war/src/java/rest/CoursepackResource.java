@@ -1008,11 +1008,29 @@ public class CoursepackResource {
               oline.add(newOut);
             }
             
-            rsp.getCoursepack().add(
-                new Coursepack(coursepack.getCoursepackId(), coursepack.getCode(), coursepack.getTitle(),
+            User teacher = new User();
+            teacher.setFirstName(coursepack.getAssignedTeacher().getFirstName());
+            teacher.setLastName(coursepack.getAssignedTeacher().getLastName());
+
+            List<Rating> ratings = coursepack.getRatingList();
+            List<Rating> userRatings = new ArrayList<>();
+            for (Rating r : ratings) {
+                if (r.getUser().getUserId() == user.getUserId()) {
+                    Rating ratingRsp = new Rating();
+                    ratingRsp.setRatingId(r.getRatingId());
+                    ratingRsp.setRating(r.getRating());
+                    ratingRsp.setComment(r.getComment());
+                    userRatings.add(ratingRsp);
+                }
+            }
+            
+            Coursepack cpTemp = new Coursepack(coursepack.getCoursepackId(), coursepack.getCode(), coursepack.getTitle(),
                         coursepack.getDescription(), coursepack.getPrice(), coursepack.getPublished(), coursepack.getRating(), 
                         coursepack.getImageLocation(), null,
-                        coursepack.getTeacherBackground(), null, null, null, null,null, oline, null, null));
+                        coursepack.getTeacherBackground(), null, null, null, teacher,null, oline, null, null);
+            cpTemp.setRatingList(userRatings);
+                
+            rsp.getCoursepack().add(cpTemp);
                 
                 }
             }
