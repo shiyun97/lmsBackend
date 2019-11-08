@@ -12,12 +12,22 @@ package datamodel.rest;
 public class MarksStatistic {
     Long gradeItemId;
     Long quizId;
+    String title;
     double mean;
     double median;
     double max;
     double min;
     double twentyfifth;
     double seventyfifth;
+    double studentMarks;
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
 
     public Long getGradeItemId() {
         return gradeItemId;
@@ -81,6 +91,14 @@ public class MarksStatistic {
 
     public void setSeventyfifth(double seventyfifth) {
         this.seventyfifth = seventyfifth;
+    }
+
+    public double getStudentMarks() {
+        return studentMarks;
+    }
+
+    public void setStudentMarks(double studentMarks) {
+        this.studentMarks = studentMarks;
     }
     
     

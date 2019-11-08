@@ -23,6 +23,8 @@ import datamodel.rest.RetrieveQuestionAttemptsRsp;
 import datamodel.rest.RetrieveQuizAttemptsRsp;
 import datamodel.rest.RetrieveQuizzesResp;
 import datamodel.rest.RetrieveSurveyStatistics;
+import entities.Badge;
+import entities.Certification;
 import entities.Coursepack;
 import entities.GradeEntry;
 import entities.GradeItem;
@@ -364,7 +366,7 @@ public class AssessmentResource {
     @Path("deleteQuestion")
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
-    public Response deleteQuestion(QuestionModel qm, @QueryParam("userId") Long userId) {
+    public Response deleteQuestion(@QueryParam("userId") Long userId, @QueryParam("quizId") Long quizId, @QueryParam("questionId") Long questionId) {
         User user = em.find(User.class, userId);
         if (user == null || user.getAccessRight() != AccessRightEnum.Teacher) {
             return Response.status(Status.FORBIDDEN)
@@ -372,7 +374,7 @@ public class AssessmentResource {
                     .build();
         }
 
-        Quiz quiz = em.find(Quiz.class, qm.getQuizId());
+        Quiz quiz = em.find(Quiz.class, quizId);
         if (quiz == null) {
             return Response.status(Status.NOT_FOUND).entity(new ErrorRsp("Quiz with the given ID doesn't exist")).build();
         }
@@ -386,7 +388,7 @@ public class AssessmentResource {
         boolean attempted = !quiz.getQuizAttemptList().isEmpty();
 
         try {
-            Question question = em.find(Question.class, qm.getQuestionId());
+            Question question = em.find(Question.class, questionId);
 
             if (question == null) {
                 return Response.status(Status.NOT_FOUND).entity(new ErrorRsp("Question with the given ID doesn't exist")).build();
@@ -1698,7 +1700,7 @@ public class AssessmentResource {
     @Path("deleteQuestionCoursepack")
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
-    public Response deleteQuestionCoursepack(QuestionModel qm, @QueryParam("userId") Long userId) {
+    public Response deleteQuestionCoursepack(@QueryParam("userId") Long userId, @QueryParam("quizId") Long quizId, @QueryParam("questionId") Long questionId) {
         User user = em.find(User.class, userId);
         if (user == null || user.getAccessRight() != AccessRightEnum.Teacher) {
             return Response.status(Status.FORBIDDEN)
@@ -1706,7 +1708,7 @@ public class AssessmentResource {
                     .build();
         }
 
-        Quiz quiz = em.find(Quiz.class, qm.getQuizId());
+        Quiz quiz = em.find(Quiz.class, quizId);
         if (quiz == null) {
             return Response.status(Status.NOT_FOUND).entity(new ErrorRsp("Quiz with the given ID doesn't exist")).build();
         }
@@ -1719,7 +1721,7 @@ public class AssessmentResource {
         boolean attempted = !quiz.getQuizAttemptList().isEmpty();
 
         try {
-            Question question = em.find(Question.class, qm.getQuestionId());
+            Question question = em.find(Question.class, questionId);
 
             if (question == null) {
                 return Response.status(Status.NOT_FOUND).entity(new ErrorRsp("Question with the given ID doesn't exist")).build();
@@ -1771,13 +1773,17 @@ public class AssessmentResource {
         if (quiz.getLessonOrder().getPublicUserList().contains(user)) {
             return Response.status(Status.BAD_REQUEST).entity(new ErrorRsp("User already finished this lesson order")).build();
         }
-
+        
+        Coursepack coursepack = quiz.getLessonOrder().getOutlines().getCoursepack();
+        if(coursepack == null){
+            return Response.status(Status.NOT_FOUND).entity(new ErrorRsp("No coursepack found")).build();
+        }
         quiz.getLessonOrder().getPublicUserList().add(user);
-        /*int count = user.getQuizCompleted();
-        count++;
-        user.setQuizCompleted(count);*/
+        completeCoursepack(user, coursepack);
         user.setQuizCompleted(+1);
-
+        rewardCompleteFiveAssessmentBadge(user);
+        rewardCompleteTenAssessmentBadge(user);
+        rewardCompleteTwentyAssessmentBadge(user);
         return Response.status(Status.OK).build();
     }
 
@@ -1809,8 +1815,20 @@ public class AssessmentResource {
                     for (QuizAttempt sa : quiz.getQuizAttemptList()) {
                         for (QuestionAttempt qa : sa.getQuestionAttemptList()) {
                             if (qa.getQuestion() == q) {
-                                count.put(qa.getAnswer(), count.get(qa.getAnswer()) + 1);
+                                if(qa.getAnswer() != null){
+                                    count.put(qa.getAnswer(), count.getOrDefault(qa.getAnswer(), 0) + 1);
+                                }
                             }
+                        }
+                    }
+
+                    // For count 0 answers
+                    for(String choice: q.getChoices()){
+                        if(!count.containsKey(choice)){
+                            AnswerStatistic as = new AnswerStatistic();
+                            as.setAnswer(choice);
+                            as.setCount(0);
+                            qs.getAnswers().add(as);
                         }
                     }
 
@@ -1824,8 +1842,6 @@ public class AssessmentResource {
                         it.remove(); // avoids a ConcurrentModificationException
                     }
                     resp.getQuestions().add(qs);
-                } else {
-                    resp.getQuestions().add(new QuestionStatistic(q.getQuestionId(), q.getTitle(), null));
                 }
             }
 
@@ -1854,7 +1870,114 @@ public class AssessmentResource {
             }
             user.getPublicUserCompletedCoursepackList().add(coursepack);
             user.setCoursepackCompleted(+1);
+            rewardCertification(user, coursepack);
+            rewardCompleteFirstCoursepackBadge(user);
+            rewardCompleteThreeCoursepackBadge(user);
         }
         return true;
+    }
+
+    public boolean rewardCertification(User user, Coursepack coursepack) {
+        Query query = em.createQuery("select c from Certification c join c.coursepackList cp where cp = :coursepack");
+        query.setParameter("coursepack", coursepack);
+        Certification certification = (Certification) query.getSingleResult();
+        if (certification == null) {
+            System.out.println("No certifcation found");
+            return false;
+        }
+        if(user.getCertificationList().contains(certification)){
+            System.out.println("Certification has been attained");
+            return false;
+        }
+        List<Coursepack> coursepackList = certification.getCoursepackList();
+        if (coursepackList == null || coursepackList.isEmpty()) {
+            System.out.println("No coursepack in certifcation criteria");
+            return false;
+        }
+        for (Coursepack cp : coursepackList) {
+            if (!user.getPublicUserCompletedCoursepackList().contains(cp)) {
+                System.out.println("Certification criteria not completed");
+                return false;
+            }
+        }
+        Date currentDate = new Date();
+        certification.setDateAchieved(currentDate);
+        user.getCertificationList().add(certification);
+        return true;
+    }
+
+    public boolean rewardCompleteFiveAssessmentBadge(User user) {
+        Query query = em.createQuery("select b from Badge b where b.title =: title");
+        query.setParameter("title", "5quiz.JPG");
+        Badge badge = (Badge) query.getSingleResult();
+        if(user.getBadgeList().contains(badge)){
+            System.out.println("Badge has been attained");
+            return false;
+        }
+        if (user.getQuizCompleted() == 5) {
+            user.getBadgeList().add(badge);
+            return true;
+        }
+        return false;
+    }
+
+    public boolean rewardCompleteTenAssessmentBadge(User user) {
+        Query query = em.createQuery("select b from Badge b where b.title =: title");
+        query.setParameter("title", "10quiz.JPG");
+        Badge badge = (Badge) query.getSingleResult();
+        if(user.getBadgeList().contains(badge)){
+            System.out.println("Badge has been attained");
+            return false;
+        }
+        if (user.getQuizCompleted() == 5) {
+            user.getBadgeList().add(badge);
+            return true;
+        }
+        return false;
+    }
+
+    public boolean rewardCompleteTwentyAssessmentBadge(User user) {
+        Query query = em.createQuery("select b from Badge b where b.title =: title");
+        query.setParameter("title", "20quiz.JPG");
+        Badge badge = (Badge) query.getSingleResult();
+        if(user.getBadgeList().contains(badge)){
+            System.out.println("Badge has been attained");
+            return false;
+        }
+        if (user.getQuizCompleted() == 5) {
+            user.getBadgeList().add(badge);
+            return true;
+        }
+        return false;
+    }
+
+    public boolean rewardCompleteFirstCoursepackBadge(User user) {
+        Query query = em.createQuery("select b from Badge b where b.title =: title");
+        query.setParameter("title", "1coursepack.JPG");
+        Badge badge = (Badge) query.getSingleResult();
+        if(user.getBadgeList().contains(badge)){
+            System.out.println("Badge has been attained");
+            return false;
+        }
+        if (user.getCoursepackCompleted() == 1) {
+            user.getBadgeList().add(badge);
+            return true;
+        }
+        return false;
+    }
+
+    public boolean rewardCompleteThreeCoursepackBadge(User user) {
+        Query query = em.createQuery("select b from Badge b where b.title =: title");
+        query.setParameter("title", "3coursepack.JPG");
+        Badge badge = (Badge) query.getSingleResult();
+        if(user.getBadgeList().contains(badge)){
+            System.out.println("Badge has been attained");
+            return false;
+        }
+        if (user.getCoursepackCompleted() == 1) {
+            user.getBadgeList().add(badge);
+            return true;
+        }
+        return false;
     }
 }
