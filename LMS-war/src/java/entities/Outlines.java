@@ -24,7 +24,7 @@ import javax.xml.bind.annotation.XmlRootElement;
  * @author Jasmine
  */
 @Entity
-public class Outlines implements Serializable {
+public class Outlines implements Serializable, Comparable<Outlines> {
 
     private static final long serialVersionUID = 1L;
     @Id
@@ -121,7 +121,9 @@ public class Outlines implements Serializable {
         this.name = name;
     }
     
-    
+    public int compareTo(Outlines o){
+        return this.getNumber() - o.getNumber();
+    }
     
     
 }
