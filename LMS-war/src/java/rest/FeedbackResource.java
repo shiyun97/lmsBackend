@@ -264,7 +264,9 @@ public class FeedbackResource {
                     for(SurveyAttempt sa: survey.getSurveyAttemptList()){
                         for(QuestionAttempt qa: sa.getQuestionAttemptList()){
                             if(qa.getQuestion() == q){
-                                count.put(qa.getAnswer(), count.getOrDefault(qa.getAnswer(), 0) + 1);
+                                if(qa.getAnswer() != null){
+                                    count.put(qa.getAnswer(), count.getOrDefault(qa.getAnswer(), 0) + 1);
+                                }
                             }
                         }
                     }
@@ -291,8 +293,6 @@ public class FeedbackResource {
                     
                     
                     resp.getQuestions().add(qs);
-                } else {
-                    resp.getQuestions().add(new QuestionStatistic(q.getQuestionId(), q.getTitle(), null));
                 }
             }
             
