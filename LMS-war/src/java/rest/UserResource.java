@@ -11,6 +11,7 @@ import datamodel.rest.CheckUserLogin;
 import datamodel.rest.GetUserRsp;
 import ejb.SHAExample;
 import ejb.SendMailSSL;
+import entities.Cart;
 import entities.User;
 import java.util.ArrayList;
 import java.util.List;
@@ -272,8 +273,14 @@ public class UserResource {
             user.setUsername(createUser.getUsername());
             em.persist(user);
             em.flush();
-            return Response.status(Response.Status.OK).entity(user).build();
+
+            User userCopy = new User(user.getId(), user.getFirstName(), user.getLastName(),
+                    user.getEmail(), user.getUsername(), null, user.getGender(),
+                    user.getAccessRight(), null, null, null, null, null, null,
+                    null, null, null, null, null, null);
+            return Response.status(Response.Status.OK).entity(userCopy).build();
         } catch (Exception ex) {
+            ex.printStackTrace();
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
         }
     }

@@ -12,6 +12,8 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
@@ -66,6 +68,28 @@ public class User implements Serializable {
     private List<Coursepack> teacherCoursepackList;
     @ManyToMany(mappedBy = "publicUserList")
     private List<Coursepack> publicUserCoursepackList;
+    @ManyToMany(mappedBy = "studentList")
+    private List<Coursepack> studentCoursepackList;
+    /*@OneToOne(mappedBy = "publicUser")
+    private Cart cart;
+    @ManyToMany(mappedBy = "userList")
+    private List<Badge> badgeList;
+    @ManyToMany(mappedBy = "userList")
+    private List<Certification> certificationList;*/
+    @Column
+    private Integer quizCompleted;
+    @Column
+    private Integer coursepackCompleted;
+    @OneToMany
+    private List<Certification> certificationList;
+    @OneToMany
+    private List<Badge> badgeList;
+    @OneToMany
+    @JoinTable(
+            name = "coursepack_publicuser",
+            joinColumns = @JoinColumn(name = "coursepackid"),
+            inverseJoinColumns = @JoinColumn(name = "publicuserid"))
+    private List<Coursepack> publicUserCompletedCoursepackList;
 
     public User(String firstName, String lastName, String email, String username, String password, GenderEnum gender, AccessRightEnum accessRight, List<ConsultationTimeslot> consultationTimeslotList, List<QuizAttempt> quizAttemptList, List<SurveyAttempt> surveyAttemptList, List<ClassGroup> classGroupList, List<Module> teacherModuleList, List<Module> studentModuleList, List<Module> publicUserModuleList) {
         this.firstName = firstName;
@@ -121,6 +145,29 @@ public class User implements Serializable {
         this.publicUserModuleList = publicUserModuleList;
         this.tutorials = tutorials;
         this.attendanceList = attendanceList;
+    }
+
+    public User(Long userId, String firstName, String lastName, String email, String username, String password, GenderEnum gender, AccessRightEnum accessRight, List<ConsultationTimeslot> consultationTimeslotList, List<QuizAttempt> quizAttemptList, List<SurveyAttempt> surveyAttemptList, List<ClassGroup> classGroupList, List<Module> teacherModuleList, List<Module> studentModuleList, List<Module> publicUserModuleList, List<Tutorial> tutorials, List<Attendance> attendanceList, List<Coursepack> teacherCoursepackList, List<Coursepack> publicUserCoursepackList, List<Coursepack> studentCoursepackList) {
+        this.userId = userId;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.email = email;
+        this.username = username;
+        this.password = password;
+        this.gender = gender;
+        this.accessRight = accessRight;
+        this.consultationTimeslotList = consultationTimeslotList;
+        this.quizAttemptList = quizAttemptList;
+        this.surveyAttemptList = surveyAttemptList;
+        this.classGroupList = classGroupList;
+        this.teacherModuleList = teacherModuleList;
+        this.studentModuleList = studentModuleList;
+        this.publicUserModuleList = publicUserModuleList;
+        this.tutorials = tutorials;
+        this.attendanceList = attendanceList;
+        this.teacherCoursepackList = teacherCoursepackList;
+        this.publicUserCoursepackList = publicUserCoursepackList;
+        this.studentCoursepackList = studentCoursepackList;
     }
 
     public User() {
@@ -294,7 +341,7 @@ public class User implements Serializable {
     public void setAttendanceList(List<Attendance> attendanceList) {
         this.attendanceList = attendanceList;
     }
-    
+
     public List<Coursepack> getTeacherCoursepackList() {
         return teacherCoursepackList;
     }
@@ -309,5 +356,76 @@ public class User implements Serializable {
 
     public void setPublicUserCoursepackList(List<Coursepack> publicUserCoursepackList) {
         this.publicUserCoursepackList = publicUserCoursepackList;
+    }
+
+    public List<Coursepack> getStudentCoursepackList() {
+        return studentCoursepackList;
+    }
+
+    public void setStudentCoursepackList(List<Coursepack> studentCoursepackList) {
+        this.studentCoursepackList = studentCoursepackList;
+    }
+
+    /*public Cart getCart() {
+        return cart;
+    }
+
+    public void setCart(Cart cart) {
+        this.cart = cart;
+    }
+
+    public List<Badge> getBadgeList() {
+        return badgeList;
+    }
+
+    public void setBadgeList(List<Badge> badgeList) {
+        this.badgeList = badgeList;
+    }
+
+    public List<Certification> getCertificationList() {
+        return certificationList;
+    }
+
+    public void setCertificationList(List<Certification> certificationList) {
+        this.certificationList = certificationList;
+    }*/
+    public Integer getQuizCompleted() {
+        return quizCompleted;
+    }
+
+    public void setQuizCompleted(Integer quizCompleted) {
+        this.quizCompleted = quizCompleted;
+    }
+
+    public Integer getCoursepackCompleted() {
+        return coursepackCompleted;
+    }
+
+    public void setCoursepackCompleted(Integer coursepackCompleted) {
+        this.coursepackCompleted = coursepackCompleted;
+    }
+
+    public List<Certification> getCertificationList() {
+        return certificationList;
+    }
+
+    public void setCertificationList(List<Certification> certificationList) {
+        this.certificationList = certificationList;
+    }
+
+    public List<Badge> getBadgeList() {
+        return badgeList;
+    }
+
+    public void setBadgeList(List<Badge> badgeList) {
+        this.badgeList = badgeList;
+    }
+
+    public List<Coursepack> getPublicUserCompletedCoursepackList() {
+        return publicUserCompletedCoursepackList;
+    }
+
+    public void setPublicUserCompletedCoursepackList(List<Coursepack> publicUserCompletedCoursepackList) {
+        this.publicUserCompletedCoursepackList = publicUserCompletedCoursepackList;
     }
 }

@@ -6,11 +6,15 @@
 package entities;
 
 import java.io.Serializable;
+import java.sql.Timestamp;
+import java.util.Date;
+import java.util.List;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 
 /**
@@ -20,16 +24,6 @@ import javax.persistence.ManyToOne;
 @Entity
 public class Badge implements Serializable {
 
-    public Badge(String title, String description, String criteria, User user) {
-        this.title = title;
-        this.description = description;
-        this.criteria = criteria;
-        this.user = user;
-    }
-
-    public Badge() {
-    }
-
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -37,12 +31,25 @@ public class Badge implements Serializable {
     @Column
     private String title;
     @Column
-    private String description;
+    private String location;
     @Column
-    private String criteria;
-    @ManyToOne
-    private User user;
+    private Timestamp createdDt;
+    @Column
+    private boolean isDelete;
 
+    public Badge() {
+    }
+
+    public Badge(Long badgeId, String title, String location, Timestamp createdDt, boolean isDelete) {
+        this.badgeId = badgeId;
+        this.title = title;
+        this.location = location;
+        this.createdDt = createdDt;
+        this.isDelete = isDelete;
+    }
+    
+    
+    
     public Long getId() {
         return badgeId;
     }
@@ -84,28 +91,27 @@ public class Badge implements Serializable {
         this.title = title;
     }
 
-    public String getDescription() {
-        return description;
+    public String getLocation() {
+        return location;
     }
 
-    public void setDescription(String description) {
-        this.description = description;
+    public void setLocation(String location) {
+        this.location = location;
     }
 
-    public String getCriteria() {
-        return criteria;
+    public Timestamp getCreatedDt() {
+        return createdDt;
     }
 
-    public void setCriteria(String criteria) {
-        this.criteria = criteria;
+    public void setCreatedDt(Timestamp createdDt) {
+        this.createdDt = createdDt;
     }
 
-    public User getUser() {
-        return user;
+    public boolean isIsDelete() {
+        return isDelete;
     }
 
-    public void setUser(User user) {
-        this.user = user;
+    public void setIsDelete(boolean isDelete) {
+        this.isDelete = isDelete;
     }
-    
 }

@@ -88,12 +88,15 @@ public class LearningAnalyticsResource {
                 if(gi.getPublish() || ar == AccessRightEnum.Teacher){
                     ArrayList<Double> marks  = new ArrayList<>(gi.getGradeEntries().size());
                     double total = 0.0;
+                    MarksStatistic ms = new MarksStatistic();
                     for (GradeEntry ge : gi.getGradeEntries()) {
                         marks.add(ge.getMarks());
                         total += ge.getMarks();
+                        if(ar == AccessRightEnum.Student && ge.getStudent() == user){
+                            ms.setStudentMarks(ge.getMarks());
+                        }
                     }
                     Collections.sort(marks);
-                    MarksStatistic ms = new MarksStatistic();
                     ms.setTitle(gi.getTitle());
                     ms.setGradeItemId(gi.getGradeItemId());
                     ms.setMin(marks.get(0));
@@ -161,12 +164,15 @@ public class LearningAnalyticsResource {
                 if(!q.getQuizAttemptList().isEmpty() && (q.isPublishAnswer() || ar == AccessRightEnum.Teacher)){
                     ArrayList<Double> marks  = new ArrayList<>(q.getQuizAttemptList().size());
                     double total = 0.0;
+                    MarksStatistic ms = new MarksStatistic();
                     for (QuizAttempt qa : q.getQuizAttemptList()) {
                         marks.add(qa.getTotalMarks());
                         total += qa.getTotalMarks();
+                        if(ar == AccessRightEnum.Student && qa.getQuizTaker() == user){
+                            ms.setStudentMarks(qa.getTotalMarks());
+                        }
                     }
                     Collections.sort(marks);
-                    MarksStatistic ms = new MarksStatistic();
                     ms.setTitle(q.getTitle());
                     ms.setQuizId(q.getQuizId());
                     ms.setMin(marks.get(0));
