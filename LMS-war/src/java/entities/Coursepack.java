@@ -40,8 +40,6 @@ public class Coursepack implements Serializable {
     private String title;
     @Column
     private String description;
-    //@Column
-    //private String category;
     @Column
     private Double price;
     @Column
