@@ -438,6 +438,7 @@ public class LearningAnalyticsResource {
                     RetrieveBarAnalytics rba = new RetrieveBarAnalytics();
                     rba.setModuleCode(module.getCode());
                     rba.setModuleTitle(module.getTitle());
+                    rba.setModuleId(module.getModuleId());
                     rba.setClassSize(module.getStudentList().size());
 
                     // Find last attendance

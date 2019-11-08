@@ -12,12 +12,21 @@ package datamodel.rest;
 public class RetrieveBarAnalytics {
     String moduleCode;
     String moduleTitle;
+    Long moduleId;
     int classSize;
     int lectureAttendance;
     int bookedConsultations;
     int totalConsultations;
     int quizAttempts;
     int forumContributions;
+
+    public Long getModuleId() {
+        return moduleId;
+    }
+
+    public void setModuleId(Long moduleId) {
+        this.moduleId = moduleId;
+    }
 
     public String getModuleCode() {
         return moduleCode;
