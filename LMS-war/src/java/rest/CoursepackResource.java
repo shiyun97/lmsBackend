@@ -774,8 +774,9 @@ public class CoursepackResource {
            
             
             Coursepack coursepackCopy = new Coursepack(coursepack.getCoursepackId(), coursepack.getCode(), coursepack.getTitle(),
-                        coursepack.getDescription(), coursepack.getCategory(), coursepack.getPrice(), coursepack.getPublished(), null, 
-                        coursepack.getTeacherBackground(),null, null, null, null,null, oline, null, null);
+                        coursepack.getDescription(), coursepack.getPrice(), coursepack.getPublished(), coursepack.getRating(), 
+                        coursepack.getImageLocation(), null,
+                        coursepack.getTeacherBackground(), null, null, null,null, null, oline, null, null);
             
             return Response.status(Response.Status.OK).entity(coursepackCopy).build();
 
