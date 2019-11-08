@@ -1773,11 +1773,13 @@ public class AssessmentResource {
         if (quiz.getLessonOrder().getPublicUserList().contains(user)) {
             return Response.status(Status.BAD_REQUEST).entity(new ErrorRsp("User already finished this lesson order")).build();
         }
-
+        
+        Coursepack coursepack = quiz.getLessonOrder().getOutlines().getCoursepack();
+        if(coursepack == null){
+            return Response.status(Status.NOT_FOUND).entity(new ErrorRsp("No coursepack found")).build();
+        }
         quiz.getLessonOrder().getPublicUserList().add(user);
-        /*int count = user.getQuizCompleted();
-        count++;
-        user.setQuizCompleted(count);*/
+        completeCoursepack(user, coursepack);
         user.setQuizCompleted(+1);
         rewardCompleteFiveAssessmentBadge(user);
         rewardCompleteTenAssessmentBadge(user);
