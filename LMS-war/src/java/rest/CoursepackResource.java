@@ -799,6 +799,61 @@ public class CoursepackResource {
         
     }
     
+    @GET
+    @Path(value = "getRecommendedCoursepack")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getRecommendedCoursepack(@QueryParam("userId") Long userId){
+        try{
+            User user = em.find(User.class, userId);
+            if(user == null){
+                return Response.status(Response.Status.NOT_FOUND).entity("User does not exist").build();
+            }
+            
+            List<Coursepack> userCoursepackList = new ArrayList<>();
+            if (user.getAccessRight() == AccessRightEnum.Public) {
+                userCoursepackList = user.getPublicUserCoursepackList();
+            }
+            else if (user.getAccessRight() == AccessRightEnum.Student) {
+                userCoursepackList = user.getStudentCoursepackList();
+            }
+            
+            GetCoursepackRsp rsp = new GetCoursepackRsp();
+            rsp.setCoursepack(new ArrayList<>());
+            
+            List<Coursepack> sameCatCoursepacks = new ArrayList<>();
+            if (userCoursepackList.size() > 0) {
+                sameCatCoursepacks = userCoursepackList.get(userCoursepackList.size()-1).getCategory().getCoursepackList();
+            }
+            
+            for (Coursepack coursepack : sameCatCoursepacks) {
+                if (!userCoursepackList.contains(coursepack)) {
+                    User teacher = new User();
+                    teacher.setFirstName(coursepack.getAssignedTeacher().getFirstName());
+                    teacher.setLastName(coursepack.getAssignedTeacher().getLastName());
+                    Coursepack cpTemp = new Coursepack(coursepack.getCoursepackId(), coursepack.getCode(), coursepack.getTitle(),
+                                    coursepack.getDescription(), coursepack.getPrice(), coursepack.getPublished(), coursepack.getRating(), 
+                                    coursepack.getImageLocation(), null,
+                                    coursepack.getTeacherBackground(), null, null, null, teacher, null, null, null, null);
+                    List<Rating> ratings = coursepack.getRatingList();
+                    List<Rating> rs = new ArrayList<>();
+                    for (Rating r : ratings) {
+                        Rating rTemp = new Rating();
+                        rTemp.setRatingId(r.getRatingId());
+                        rs.add(rTemp);
+                    }
+                    cpTemp.setRatingList(rs);
+                    rsp.getCoursepack().add(cpTemp);
+                }
+            }
+            return Response.status(Response.Status.OK).entity(rsp).build();
+            
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
+        }
+        
+    }
+    
     
     @Path(value = "getUserCoursepack/{userId}")
     @GET
@@ -817,7 +872,10 @@ public class CoursepackResource {
                 cp = user.getTeacherCoursepackList();
             }
             else if (user.getAccessRight() == AccessRightEnum.Student) {
-                
+                cp = user.getStudentCoursepackList();
+            }
+            else if (user.getAccessRight() == AccessRightEnum.Public) {
+                cp = user.getPublicUserCoursepackList();
             }
             if(cp == null && cp.isEmpty()){
               return Response.status(Response.Status.NOT_FOUND).entity("No coursepack found").build();  
