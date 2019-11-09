@@ -70,12 +70,6 @@ public class User implements Serializable {
     private List<Coursepack> publicUserCoursepackList;
     @ManyToMany(mappedBy = "studentList")
     private List<Coursepack> studentCoursepackList;
-    /*@OneToOne(mappedBy = "publicUser")
-    private Cart cart;
-    @ManyToMany(mappedBy = "userList")
-    private List<Badge> badgeList;
-    @ManyToMany(mappedBy = "userList")
-    private List<Certification> certificationList;*/
     @Column
     private Integer quizCompleted;
     @Column
@@ -86,7 +80,7 @@ public class User implements Serializable {
     private List<Badge> badgeList;
     @OneToMany
     @JoinTable(
-            name = "coursepack_publicuser",
+            name = "completedCoursepack_publicuser",
             joinColumns = @JoinColumn(name = "coursepackid"),
             inverseJoinColumns = @JoinColumn(name = "publicuserid"))
     private List<Coursepack> publicUserCompletedCoursepackList;
