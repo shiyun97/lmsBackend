@@ -26,6 +26,7 @@ import datamodel.rest.RetrieveSurveyStatistics;
 import entities.Badge;
 import entities.Certification;
 import entities.Coursepack;
+import entities.File;
 import entities.GradeEntry;
 import entities.GradeItem;
 import entities.LessonOrder;
@@ -1414,7 +1415,7 @@ public class AssessmentResource {
     @Produces(MediaType.APPLICATION_JSON)
     public Response retrieveCoursepackQuiz(@PathParam("quizId") Long quizId, @QueryParam("userId") Long userId) {
         User user = em.find(User.class, userId);
-        if (user == null || user.getAccessRight() == AccessRightEnum.Admin || user.getAccessRight() == AccessRightEnum.Public) {
+        if (user == null || user.getAccessRight() == AccessRightEnum.Admin) {
             return Response.status(Status.FORBIDDEN)
                     .entity(new ErrorRsp("User doesn't have access to this function"))
                     .build();
@@ -1784,6 +1785,46 @@ public class AssessmentResource {
         rewardCompleteFiveAssessmentBadge(user);
         rewardCompleteTenAssessmentBadge(user);
         rewardCompleteTwentyAssessmentBadge(user);
+        return Response.status(Status.OK).build();
+    }
+    
+    @POST
+    @Path("completeCoursepackFile")
+    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_JSON)
+    public Response completeCoursepackFile(@QueryParam("userId") Long userId, @QueryParam("fileId") Long fileId) {
+        User user = em.find(User.class, userId);
+        if (user == null || user.getAccessRight() == AccessRightEnum.Teacher || user.getAccessRight() == AccessRightEnum.Admin) {
+            return Response.status(Status.FORBIDDEN)
+                    .entity(new ErrorRsp("User doesn't have access to this function"))
+                    .build();
+        }
+
+        File file = em.find(File.class, fileId);
+        if (file == null) {
+            return Response.status(Status.NOT_FOUND).entity(new ErrorRsp("File with the given ID not found!")).build();
+        } else if (file.getLessonOrder() == null) {
+            return Response.status(Status.BAD_REQUEST).entity(new ErrorRsp("File is not part of a coursepack")).build();
+        }
+
+        if (!file.getLessonOrder().getOutlines().getCoursepack().getPublicUserList().contains(user)) {
+            return Response.status(Status.BAD_REQUEST).entity(new ErrorRsp("User is not enrolled in this coursepack")).build();
+        }
+
+        if (file.getLessonOrder().getPublicUserList().contains(user)) {
+            return Response.status(Status.BAD_REQUEST).entity(new ErrorRsp("User already finished this lesson order")).build();
+        }
+        
+        Coursepack coursepack = file.getLessonOrder().getOutlines().getCoursepack();
+        if(coursepack == null){
+            return Response.status(Status.NOT_FOUND).entity(new ErrorRsp("No coursepack found")).build();
+        }
+        file.getLessonOrder().getPublicUserList().add(user);
+        completeCoursepack(user, coursepack);
+//        user.setQuizCompleted(+1);
+//        rewardCompleteFiveAssessmentBadge(user);
+//        rewardCompleteTenAssessmentBadge(user);
+//        rewardCompleteTwentyAssessmentBadge(user);
         return Response.status(Status.OK).build();
     }
 
