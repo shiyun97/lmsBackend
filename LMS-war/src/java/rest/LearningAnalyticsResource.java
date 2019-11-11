@@ -9,6 +9,7 @@ import datamodel.rest.AnswerStatistic;
 import datamodel.rest.AttendanceStatistic;
 import datamodel.rest.ErrorRsp;
 import datamodel.rest.ForumTopicStatistic;
+import datamodel.rest.GetUserRsp;
 import datamodel.rest.MarksStatistic;
 import datamodel.rest.RetrieveAttendanceStatistics;
 import datamodel.rest.RetrieveBarAnalytics;
@@ -535,5 +536,43 @@ public class LearningAnalyticsResource {
            e.printStackTrace();
            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(new ErrorRsp(e.getMessage())).build();
        }
+    }
+    
+    @GET
+    @Path("retrieveBottomStudents")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response retrieveBottomStudents(@QueryParam("moduleId") Long moduleId){
+        Module module = em.find(Module.class, moduleId);
+        if(module == null){
+            return Response.status(Response.Status.BAD_REQUEST).entity(new ErrorRsp("Module doesn't exist!")).build();
+        }
+        
+        HashSet<User> bottoms = new HashSet<>();
+        bottoms.addAll(module.getStudentList());
+        
+        for(GradeItem gi: module.getGradeItemList()){
+            ArrayList<Double> marks  = new ArrayList<>(gi.getGradeEntries().size());
+            for (GradeEntry ge : gi.getGradeEntries()) {
+                marks.add(ge.getMarks());
+            }
+            Collections.sort(marks);
+            double rank25 = 1.0*marks.size()/4;
+            int rank25r = (int) Math.round(rank25);
+
+            double twentyfifth;
+            if(rank25-rank25r == 0){
+                twentyfifth = marks.get(rank25r);
+            } else {
+                twentyfifth = marks.get(rank25r) + (rank25-rank25r)*(marks.get(rank25r+1) - marks.get(rank25r));
+            }
+            
+            for (GradeEntry ge : gi.getGradeEntries()) {
+                if(ge.getMarks() > twentyfifth){
+                    bottoms.remove(ge.getStudent());
+                }
+            }
+        }
+        
+        return Response.status(Response.Status.OK).entity(new GetUserRsp(new ArrayList<>(bottoms))).build();
     }
 }
