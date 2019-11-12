@@ -585,7 +585,7 @@ public class GamificationResource {
                         c.getDescription(), null, null, null, null, null, null,
                         null, null, null, null, null, null, null, null));
             }
-            return Response.status(Response.Status.OK).build();
+            return Response.status(Response.Status.OK).entity(rsp).build();
         } catch (Exception e) {
             e.printStackTrace();
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(new ErrorRsp(e.getMessage())).build();
