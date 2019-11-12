@@ -13,8 +13,13 @@ import entities.ConsultationTimeslot;
 import entities.Coursepack;
 import entities.ForumPost;
 import entities.ForumTopic;
+import entities.GradeEntry;
+import entities.GradeItem;
 import entities.Module;
 import entities.Question;
+import entities.QuestionAttempt;
+import entities.Quiz;
+import entities.QuizAttempt;
 import entities.Schedule;
 import entities.Survey;
 import entities.Tutorial;
@@ -27,6 +32,7 @@ import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Random;
 import javax.annotation.PostConstruct;
 import javax.ejb.Singleton;
 import javax.ejb.LocalBean;
@@ -36,7 +42,9 @@ import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 import util.AccessRightEnum;
 import util.GenderEnum;
+import util.QuestionOrderEnum;
 import util.QuestionTypeEnum;
+import util.QuizTypeEnum;
 
 /**
  *
@@ -299,6 +307,8 @@ public class DataInitSessionBean {
         student11.getStudentModuleList().add(m1);
         em.persist(m1);
         em.flush();
+        createQuiz(m1);
+        createGradeItem(m1);
 
         Module m2 = new Module();
         m2.setCode("CS2040");
@@ -320,6 +330,8 @@ public class DataInitSessionBean {
         student11.getStudentModuleList().add(m2);
         em.persist(m2);
         em.flush();
+        createQuiz(m2);
+        createGradeItem(m2);
 
         Module m3 = new Module();
         m3.setCode("IS4103");
@@ -339,6 +351,8 @@ public class DataInitSessionBean {
         teacher.getTeacherModuleList().add(m3);
         em.persist(m3);
         em.flush();
+        createQuiz(m3);
+        createGradeItem(m3);
 
         Module m4 = new Module();
         m4.setCode("IS4103");
@@ -1292,6 +1306,463 @@ public class DataInitSessionBean {
         em.persist(sq18);
         em.flush();
         survey.getQuestionList().add(sq18);        
+    }
+    
+    public void createQuiz(Module module){
+        Quiz quiz = new Quiz();
+        quiz.setOpeningDate(new Date(2019-1900, 11, 1));
+        quiz.setClosingDate(new Date(2019-1900, 12, 5));
+        quiz.setTitle("Quiz 1");
+        quiz.setDescription("This quiz will cover all the topics discussed in the first 3 lectures of this module.");
+        quiz.setQuizType(QuizTypeEnum.normal);
+        quiz.setQuestionsOrder(QuestionOrderEnum.initial);
+        quiz.setQuestionList(new ArrayList<>());
+        quiz.setMaxMarks(5.0);
+        
+        Question q1 = new Question();
+        q1.setTitle("Who is the creator of this quiz?");
+        q1.setChoices(new ArrayList<>());
+        q1.getChoices().add("Kristo");
+        q1.getChoices().add("Vixson");
+        q1.getChoices().add("Both A and B");
+        q1.getChoices().add("No correct options");
+        q1.setCorrectAnswer("Kristo");
+        q1.setPoints(1.0);
+        q1.setNumber(1);
+        q1.setType(QuestionTypeEnum.radiogroup);
+        q1.setIsRequired(Boolean.TRUE);
+        q1.setExplanation("The correct answer can be check on the Git history.");
+        quiz.getQuestionList().add(q1);
+        em.persist(q1);
+        
+        Question q2 = new Question();
+        q2.setTitle("When is this quiz created?");
+        q2.setChoices(new ArrayList<>());
+        q2.getChoices().add("Last night");
+        q2.getChoices().add("Last week");
+        q2.getChoices().add("Two weeks ago");
+        q2.getChoices().add("Last weekend");
+        q2.setCorrectAnswer("Last night");
+        q2.setPoints(1.0);
+        q2.setNumber(2);
+        q2.setType(QuestionTypeEnum.radiogroup);
+        q2.setIsRequired(Boolean.TRUE);
+        q2.setExplanation("This quiz is created last night");
+        quiz.getQuestionList().add(q2);
+        em.persist(q2);
+        
+        Question q3 = new Question();
+        q3.setTitle("How many people are in a Capstone group?");
+        q3.setChoices(new ArrayList<>());
+        q3.getChoices().add("4");
+        q3.getChoices().add("5");
+        q3.getChoices().add("6");
+        q3.getChoices().add("7");
+        q3.getChoices().add("All answers are correct");
+        q3.setCorrectAnswer("All answers are correct");
+        q3.setPoints(1.0);
+        q3.setNumber(3);
+        q3.setType(QuestionTypeEnum.radiogroup);
+        q3.setIsRequired(Boolean.TRUE);
+        q3.setExplanation("Capstone groups can range from 4-7 people");
+        quiz.getQuestionList().add(q3);
+        em.persist(q3);
+        
+        Question q4 = new Question();
+        q4.setTitle("Who should you vote in STePS?");
+        q4.setChoices(new ArrayList<>());
+        q4.getChoices().add("Team A");
+        q4.getChoices().add("Team B");
+        q4.getChoices().add("Team C");
+        q4.getChoices().add("FlipIt - TT02");
+        q4.setCorrectAnswer("FlipIt - TT02");
+        q4.setPoints(1.0);
+        q4.setNumber(4);
+        q4.setType(QuestionTypeEnum.radiogroup);
+        q4.setIsRequired(Boolean.TRUE);
+        q4.setExplanation("flipIt provides a holistic learning management platform for all universities.");
+        quiz.getQuestionList().add(q4);
+        em.persist(q4);
+        
+        Question q5 = new Question();
+        q5.setTitle("What score should we get for this module?");
+        q5.setChoices(new ArrayList<>());
+        q5.getChoices().add("A+");
+        q5.getChoices().add("A");
+        q5.getChoices().add("A-");
+        q5.getChoices().add("B+ or lower");
+        q5.setCorrectAnswer("A+");
+        q5.setPoints(1.0);
+        q5.setNumber(5);
+        q5.setType(QuestionTypeEnum.radiogroup);
+        q5.setIsRequired(Boolean.TRUE);
+        q5.setExplanation("Our team works hard through night and day and deserves it.");
+        quiz.getQuestionList().add(q5);
+        em.persist(q5);
+        
+        em.persist(quiz);
+        module.getQuizList().add(quiz);
+        quiz.setModule(module);
+        createQuizAttempt(quiz);
+        
+        Quiz quiz2 = new Quiz();
+        quiz2.setOpeningDate(new Date(2019-1900, 11, 10));
+        quiz2.setClosingDate(new Date(2019-1900, 12, 5));
+        quiz2.setTitle("Quiz 2");
+        quiz2.setDescription("This quiz will test your algebra skills.");
+        quiz2.setQuizType(QuizTypeEnum.normal);
+        quiz2.setQuestionsOrder(QuestionOrderEnum.initial);
+        quiz2.setQuestionList(new ArrayList<>());
+        quiz2.setMaxMarks(5.0);
+        
+        q1 = new Question();
+        q1.setTitle("Find x if x + 5 = 2");
+        q1.setChoices(new ArrayList<>());
+        q1.getChoices().add("2");
+        q1.getChoices().add("3");
+        q1.getChoices().add("-3");
+        q1.getChoices().add("-2");
+        q1.setCorrectAnswer("-3");
+        q1.setPoints(1.0);
+        q1.setNumber(1);
+        q1.setType(QuestionTypeEnum.radiogroup);
+        q1.setIsRequired(Boolean.TRUE);
+        q1.setExplanation("x = 2 - 5 = -3");
+        quiz2.getQuestionList().add(q1);
+        em.persist(q1);
+        
+        q2 = new Question();
+        q2.setTitle("Find x if 10x + 1 = 51");
+        q2.setChoices(new ArrayList<>());
+        q2.getChoices().add("5");
+        q2.getChoices().add("4.9");
+        q2.getChoices().add("5.1");
+        q2.getChoices().add("4");
+        q2.setCorrectAnswer("5");
+        q2.setPoints(1.0);
+        q2.setNumber(2);
+        q2.setType(QuestionTypeEnum.radiogroup);
+        q2.setIsRequired(Boolean.TRUE);
+        q2.setExplanation("x = (51 - 1)/10");
+        quiz2.getQuestionList().add(q2);
+        em.persist(q2);
+        
+        q3 = new Question();
+        q3.setTitle("y = 3x + 2. What is the value of y if x is 2");
+        q3.setChoices(new ArrayList<>());
+        q3.getChoices().add("2");
+        q3.getChoices().add("3");
+        q3.getChoices().add("4");
+        q3.getChoices().add("8");
+        q3.getChoices().add("11");
+        q3.setCorrectAnswer("8");
+        q3.setPoints(1.0);
+        q3.setNumber(3);
+        q3.setType(QuestionTypeEnum.radiogroup);
+        q3.setIsRequired(Boolean.TRUE);
+        q3.setExplanation("y = 3*2 + 2 = 8");
+        quiz2.getQuestionList().add(q3);
+        em.persist(q3);
+        
+        q4 = new Question();
+        q4.setTitle("What is the distance from (1,1) to (2,1)");
+        q4.setChoices(new ArrayList<>());
+        q4.getChoices().add("1");
+        q4.getChoices().add("2");
+        q4.getChoices().add("3");
+        q4.getChoices().add("0");
+        q4.setCorrectAnswer("1");
+        q4.setPoints(1.0);
+        q4.setNumber(4);
+        q4.setType(QuestionTypeEnum.radiogroup);
+        q4.setIsRequired(Boolean.TRUE);
+        q4.setExplanation("Distance is 1");
+        quiz2.getQuestionList().add(q4);
+        em.persist(q4);
+        
+        q5 = new Question();
+        q5.setTitle("If x + y = 2 and x - y = 1. The value of x and y respectively is");
+        q5.setChoices(new ArrayList<>());
+        q5.getChoices().add("1.5, 3");
+        q5.getChoices().add("1.5, 0.5");
+        q5.getChoices().add("1, 0.5");
+        q5.getChoices().add("1, 2");
+        q5.setCorrectAnswer("1.5, 0.5");
+        q5.setPoints(1.0);
+        q5.setNumber(5);
+        q5.setType(QuestionTypeEnum.radiogroup);
+        q5.setIsRequired(Boolean.TRUE);
+        q5.setExplanation("Our team works hard through night and day and deserves it.");
+        quiz2.getQuestionList().add(q5);
+        em.persist(q5);
+        
+        em.persist(quiz2);
+        module.getQuizList().add(quiz2);
+        quiz2.setModule(module);
+        createQuizAttempt(quiz2);
+    }
+    
+    public void createQuiz(Coursepack coursepack){
+        Quiz quiz = new Quiz();
+        quiz.setOpeningDate(new Date(2019-1900, 11, 1));
+        quiz.setClosingDate(new Date(2019-1900, 12, 5));
+        quiz.setTitle("Quiz 1");
+        quiz.setDescription("This quiz will cover all the topics discussed in the first 3 lectures of this module.");
+        quiz.setQuizType(QuizTypeEnum.normal);
+        quiz.setQuestionsOrder(QuestionOrderEnum.initial);
+        quiz.setQuestionList(new ArrayList<>());
+        quiz.setMaxMarks(5.0);
+        
+        Question q1 = new Question();
+        q1.setTitle("Who is the creator of this quiz?");
+        q1.setChoices(new ArrayList<>());
+        q1.getChoices().add("Kristo");
+        q1.getChoices().add("Vixson");
+        q1.getChoices().add("Both A and B");
+        q1.getChoices().add("No correct options");
+        q1.setCorrectAnswer("Kristo");
+        q1.setPoints(1.0);
+        q1.setNumber(1);
+        q1.setType(QuestionTypeEnum.radiogroup);
+        q1.setIsRequired(Boolean.TRUE);
+        q1.setExplanation("The correct answer can be check on the Git history.");
+        quiz.getQuestionList().add(q1);
+        em.persist(q1);
+        
+        Question q2 = new Question();
+        q2.setTitle("When is this quiz created?");
+        q2.setChoices(new ArrayList<>());
+        q2.getChoices().add("Last night");
+        q2.getChoices().add("Last week");
+        q2.getChoices().add("Two weeks ago");
+        q2.getChoices().add("Last weekend");
+        q2.setCorrectAnswer("Last night");
+        q2.setPoints(1.0);
+        q2.setNumber(2);
+        q2.setType(QuestionTypeEnum.radiogroup);
+        q2.setIsRequired(Boolean.TRUE);
+        q2.setExplanation("This quiz is created last night");
+        quiz.getQuestionList().add(q2);
+        em.persist(q2);
+        
+        Question q3 = new Question();
+        q3.setTitle("How many people are in a Capstone group?");
+        q3.setChoices(new ArrayList<>());
+        q3.getChoices().add("4");
+        q3.getChoices().add("5");
+        q3.getChoices().add("6");
+        q3.getChoices().add("7");
+        q3.getChoices().add("All answers are correct");
+        q3.setCorrectAnswer("All answers are correct");
+        q3.setPoints(1.0);
+        q3.setNumber(3);
+        q3.setType(QuestionTypeEnum.radiogroup);
+        q3.setIsRequired(Boolean.TRUE);
+        q3.setExplanation("Capstone groups can range from 4-7 people");
+        quiz.getQuestionList().add(q3);
+        em.persist(q3);
+        
+        Question q4 = new Question();
+        q4.setTitle("Who should you vote in STePS?");
+        q4.setChoices(new ArrayList<>());
+        q4.getChoices().add("Team A");
+        q4.getChoices().add("Team B");
+        q4.getChoices().add("Team C");
+        q4.getChoices().add("FlipIt - TT02");
+        q4.setCorrectAnswer("FlipIt - TT02");
+        q4.setPoints(1.0);
+        q4.setNumber(4);
+        q4.setType(QuestionTypeEnum.radiogroup);
+        q4.setIsRequired(Boolean.TRUE);
+        q4.setExplanation("flipIt provides a holistic learning management platform for all universities.");
+        quiz.getQuestionList().add(q4);
+        em.persist(q4);
+        
+        Question q5 = new Question();
+        q5.setTitle("What score should we get for this module?");
+        q5.setChoices(new ArrayList<>());
+        q5.getChoices().add("A+");
+        q5.getChoices().add("A");
+        q5.getChoices().add("A-");
+        q5.getChoices().add("B+ or lower");
+        q5.setCorrectAnswer("A+");
+        q5.setPoints(1.0);
+        q5.setNumber(5);
+        q5.setType(QuestionTypeEnum.radiogroup);
+        q5.setIsRequired(Boolean.TRUE);
+        q5.setExplanation("Our team works hard through night and day and deserves it.");
+        quiz.getQuestionList().add(q5);
+        em.persist(q5);
+        
+        em.persist(quiz);
+        coursepack.getQuizList().add(quiz);
+        
+        Quiz quiz2 = new Quiz();
+        quiz2.setOpeningDate(new Date(2019-1900, 11, 10));
+        quiz2.setClosingDate(new Date(2019-1900, 12, 5));
+        quiz2.setTitle("Quiz 2");
+        quiz2.setDescription("This quiz will test your algebra skills.");
+        quiz2.setQuizType(QuizTypeEnum.normal);
+        quiz2.setQuestionsOrder(QuestionOrderEnum.initial);
+        quiz2.setQuestionList(new ArrayList<>());
+        quiz2.setMaxMarks(5.0);
+        
+        q1 = new Question();
+        q1.setTitle("Find x if x + 5 = 2");
+        q1.setChoices(new ArrayList<>());
+        q1.getChoices().add("2");
+        q1.getChoices().add("3");
+        q1.getChoices().add("-3");
+        q1.getChoices().add("-2");
+        q1.setCorrectAnswer("-3");
+        q1.setPoints(1.0);
+        q1.setNumber(1);
+        q1.setType(QuestionTypeEnum.radiogroup);
+        q1.setIsRequired(Boolean.TRUE);
+        q1.setExplanation("x = 2 - 5 = -3");
+        quiz2.getQuestionList().add(q1);
+        em.persist(q1);
+        
+        q2 = new Question();
+        q2.setTitle("Find x if 10x + 1 = 51");
+        q2.setChoices(new ArrayList<>());
+        q2.getChoices().add("5");
+        q2.getChoices().add("4.9");
+        q2.getChoices().add("5.1");
+        q2.getChoices().add("4");
+        q2.setCorrectAnswer("5");
+        q2.setPoints(1.0);
+        q2.setNumber(2);
+        q2.setType(QuestionTypeEnum.radiogroup);
+        q2.setIsRequired(Boolean.TRUE);
+        q2.setExplanation("x = (51 - 1)/10");
+        quiz2.getQuestionList().add(q2);
+        em.persist(q2);
+        
+        q3 = new Question();
+        q3.setTitle("y = 3x + 2. What is the value of y if x is 2");
+        q3.setChoices(new ArrayList<>());
+        q3.getChoices().add("2");
+        q3.getChoices().add("3");
+        q3.getChoices().add("4");
+        q3.getChoices().add("8");
+        q3.getChoices().add("11");
+        q3.setCorrectAnswer("8");
+        q3.setPoints(1.0);
+        q3.setNumber(3);
+        q3.setType(QuestionTypeEnum.radiogroup);
+        q3.setIsRequired(Boolean.TRUE);
+        q3.setExplanation("y = 3*2 + 2 = 8");
+        quiz2.getQuestionList().add(q3);
+        em.persist(q3);
+        
+        q4 = new Question();
+        q4.setTitle("What is the distance from (1,1) to (2,1)");
+        q4.setChoices(new ArrayList<>());
+        q4.getChoices().add("1");
+        q4.getChoices().add("2");
+        q4.getChoices().add("3");
+        q4.getChoices().add("0");
+        q4.setCorrectAnswer("1");
+        q4.setPoints(1.0);
+        q4.setNumber(4);
+        q4.setType(QuestionTypeEnum.radiogroup);
+        q4.setIsRequired(Boolean.TRUE);
+        q4.setExplanation("Distance is 1");
+        quiz2.getQuestionList().add(q4);
+        em.persist(q4);
+        
+        q5 = new Question();
+        q5.setTitle("If x + y = 2 and x - y = 1. The value of x and y respectively is");
+        q5.setChoices(new ArrayList<>());
+        q5.getChoices().add("1.5, 3");
+        q5.getChoices().add("1.5, 0.5");
+        q5.getChoices().add("1, 0.5");
+        q5.getChoices().add("1, 2");
+        q5.setCorrectAnswer("1.5, 0.5");
+        q5.setPoints(1.0);
+        q5.setNumber(5);
+        q5.setType(QuestionTypeEnum.radiogroup);
+        q5.setIsRequired(Boolean.TRUE);
+        q5.setExplanation("Our team works hard through night and day and deserves it.");
+        quiz2.getQuestionList().add(q5);
+        em.persist(q5);
+        
+        em.persist(quiz2);
+        coursepack.getQuizList().add(quiz2);
+    }
+    
+    public void createQuizAttempt(Quiz quiz){
+        Random random = new Random();
+        for(User u: quiz.getModule().getStudentList()){ // For all students in the module
+            QuizAttempt qa = new QuizAttempt();
+            qa.setCreateTs(new Date());
+            qa.setQuiz(quiz);
+            qa.setQuizTaker(u);
+            qa.setTotalMarks(0.0);
+            qa.setQuestionAttemptList(new ArrayList<>());
+            
+            // For each questions
+            for(Question que: quiz.getQuestionList()){
+                if(que.getType() == QuestionTypeEnum.radiogroup){
+                    QuestionAttempt queA = new QuestionAttempt();
+                    // Randomly select options
+                    queA.setAnswer(que.getChoices().get(random.nextInt(que.getChoices().size())));
+                    queA.setMarks(0.0);
+                    
+                    if(queA.getAnswer().equals(que.getCorrectAnswer())){ // If Correct
+                        queA.setMarks(que.getPoints());
+                        qa.setTotalMarks(qa.getTotalMarks() + que.getPoints());
+                    }
+                    em.persist(queA);
+                    qa.getQuestionAttemptList().add(queA);
+                }
+            }
+            em.persist(qa);
+            u.getQuizAttemptList().add(qa);
+            quiz.getQuizAttemptList().add(qa);
+            em.flush();
+        }
+    }
+    
+    public void createGradeItem(Module module){
+        GradeItem gi = new GradeItem();
+        gi.setTitle("Mid-Term Test");
+        gi.setDescription("Mid-Term test on first half of this module.");
+        gi.setModule(module);
+        gi.setGradeEntries(new ArrayList<>());
+        gi.setMaxMarks(100.0);
+        em.persist(gi);
+        
+        Random random = new Random();
+        for(User u: module.getStudentList()){
+            GradeEntry ge = new GradeEntry();
+            ge.setMarks(random.nextDouble() * 100);
+            ge.setStudent(u);
+            ge.setGradeItem(gi);
+            em.persist(ge);
+            
+            gi.getGradeEntries().add(ge);
+        }
+        
+        GradeItem gi2 = new GradeItem();
+        gi2.setTitle("Mid-Term Test");
+        gi2.setDescription("Mid-Term test on first half of this module.");
+        gi2.setModule(module);
+        gi2.setGradeEntries(new ArrayList<>());
+        gi2.setMaxMarks(100.0);
+        em.persist(gi2);
+        
+        for(User u: module.getStudentList()){
+            GradeEntry ge = new GradeEntry();
+            ge.setMarks(random.nextDouble() * 100);
+            ge.setStudent(u);
+            ge.setGradeItem(gi2);
+            em.persist(ge);
+            
+            gi2.getGradeEntries().add(ge);
+        }
+        em.flush();
     }
     
     public void persist(Object object) {
