@@ -16,6 +16,7 @@ import datamodel.rest.GetVenueRsp;
 import datamodel.rest.MountTutorial;
 import datamodel.rest.UpdateModuleTutorial;
 import datamodel.rest.UpdateTutorialStudent;
+import ejb.DataInitSessionBean;
 import entities.Feedback;
 import entities.Module;
 import entities.Tutorial;
@@ -115,6 +116,8 @@ public class ModuleMountingResource {
             module.setFaculty(mountModuleReq.getFaculty());
             module.setDepartment(mountModuleReq.getDepartment());
             em.persist(module);
+            DataInitSessionBean dataInit = new DataInitSessionBean();
+            dataInit.createSurvey(module);
             em.flush();
             Module moduleCopy = new Module(module.getModuleId(), module.getCode(), module.getTitle(), module.getDescription(),
                     module.getSemesterOffered(), module.getYearOffered(), module.getCreditUnit(), null, module.getMaxEnrollment(), null,
