@@ -8,6 +8,7 @@ package ejb;
 import entities.Annoucement;
 import entities.Attendance;
 import entities.Category;
+import entities.Certification;
 import entities.ConsultationTimeslot;
 import entities.Coursepack;
 import entities.ForumPost;
@@ -1075,6 +1076,19 @@ public class DataInitSessionBean {
         an4.setOwner(teacher);
         em.persist(an4);
         em.flush();
+        
+                
+        List<Coursepack> coursepackList = new ArrayList<>();
+        coursepackList.add(cp1);
+        coursepackList.add(cp2);
+        coursepackList.add(cp3);
+         
+        Certification cer1 = new Certification();
+        cer1.setTitle("IT Genius");
+        cer1.setDescription("You good");
+        cer1.setCoursepackList(coursepackList);
+        em.persist(cer1);
+        em.flush();
     }
 
     public void createSurvey(Module module) {
@@ -1276,9 +1290,9 @@ public class DataInitSessionBean {
         sq18.setIsRequired(false);
         em.persist(sq18);
         em.flush();
-        survey.getQuestionList().add(sq18);
+        survey.getQuestionList().add(sq18);        
     }
-
+    
     public void persist(Object object) {
         em.persist(object);
     }
