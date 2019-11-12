@@ -582,8 +582,8 @@ public class GamificationResource {
             GetCoursepackRsp rsp = new GetCoursepackRsp(new ArrayList<>());
             for (Coursepack c : coursepackList) {
                 rsp.getCoursepack().add(new Coursepack(c.getCoursepackId(), c.getCode(), c.getTitle(),
-                        c.getDescription(), null, null, null, null, c.getCategory(), c.getTeacherBackground(),
-                        null, null, null, c.getAssignedTeacher(), null, null, null, null));
+                        c.getDescription(), null, null, null, null, null, null,
+                        null, null, null, null, null, null, null, null));
             }
             return Response.status(Response.Status.OK).build();
         } catch (Exception e) {
