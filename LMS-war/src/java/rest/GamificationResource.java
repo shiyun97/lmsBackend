@@ -10,6 +10,7 @@ import datamodel.rest.CreateCertification;
 import datamodel.rest.ErrorRsp;
 import datamodel.rest.GetBadgeRsp;
 import datamodel.rest.GetCertificationRsp;
+import datamodel.rest.GetCoursepackRsp;
 import datamodel.rest.UpdateBadge;
 import datamodel.rest.UpdateCertification;
 import entities.Badge;
@@ -558,6 +559,32 @@ public class GamificationResource {
             em.merge(badge);
             em.flush();
 
+            return Response.status(Response.Status.OK).build();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(new ErrorRsp(e.getMessage())).build();
+        }
+    }
+
+    @GET
+    @Path(value = "getCompletedCoursepacks")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getCompletedCoursepacks(@QueryParam("userId") Long userId) {
+        try {
+            User user = em.find(User.class, userId);
+            if (user == null) {
+                return Response.status(Response.Status.NOT_FOUND).entity(new ErrorRsp("No user found")).build();
+            }
+            List<Coursepack> coursepackList = user.getPublicUserCompletedCoursepackList();
+            if (coursepackList == null || coursepackList.isEmpty()) {
+                return Response.status(Response.Status.NOT_FOUND).entity(new ErrorRsp("No coursepack completed")).build();
+            }
+            GetCoursepackRsp rsp = new GetCoursepackRsp(new ArrayList<>());
+            for (Coursepack c : coursepackList) {
+                rsp.getCoursepack().add(new Coursepack(c.getCoursepackId(), c.getCode(), c.getTitle(),
+                        c.getDescription(), null, null, null, null, c.getCategory(), c.getTeacherBackground(),
+                        null, null, null, c.getAssignedTeacher(), null, null, null, null));
+            }
             return Response.status(Response.Status.OK).build();
         } catch (Exception e) {
             e.printStackTrace();
