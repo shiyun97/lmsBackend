@@ -432,8 +432,7 @@ public class GamificationResource {
     @Consumes(MediaType.MULTIPART_FORM_DATA)
     @Produces(MediaType.APPLICATION_JSON)
     @Transactional
-    public Response uploadMultipleBadges(@FormDataParam("file") FormDataBodyPart body,
-            @QueryParam("folderId") Long folderId) {
+    public Response uploadMultipleBadges(@FormDataParam("file") FormDataBodyPart body) {
         /*if (type.equals("document") && folderId == null) {
             return Response.status(Response.Status.BAD_REQUEST).entity(new ErrorRsp("Require folderId!")).build();
         }*/
