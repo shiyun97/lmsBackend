@@ -26,6 +26,7 @@ import datamodel.rest.RetrieveSurveyStatistics;
 import entities.Badge;
 import entities.Certification;
 import entities.Coursepack;
+import entities.File;
 import entities.GradeEntry;
 import entities.GradeItem;
 import entities.LessonOrder;
@@ -1414,7 +1415,7 @@ public class AssessmentResource {
     @Produces(MediaType.APPLICATION_JSON)
     public Response retrieveCoursepackQuiz(@PathParam("quizId") Long quizId, @QueryParam("userId") Long userId) {
         User user = em.find(User.class, userId);
-        if (user == null || user.getAccessRight() == AccessRightEnum.Admin || user.getAccessRight() == AccessRightEnum.Public) {
+        if (user == null || user.getAccessRight() == AccessRightEnum.Admin) {
             return Response.status(Status.FORBIDDEN)
                     .entity(new ErrorRsp("User doesn't have access to this function"))
                     .build();
@@ -1773,9 +1774,9 @@ public class AssessmentResource {
         if (quiz.getLessonOrder().getPublicUserList().contains(user)) {
             return Response.status(Status.BAD_REQUEST).entity(new ErrorRsp("User already finished this lesson order")).build();
         }
-        
+
         Coursepack coursepack = quiz.getLessonOrder().getOutlines().getCoursepack();
-        if(coursepack == null){
+        if (coursepack == null) {
             return Response.status(Status.NOT_FOUND).entity(new ErrorRsp("No coursepack found")).build();
         }
         quiz.getLessonOrder().getPublicUserList().add(user);
@@ -1784,6 +1785,46 @@ public class AssessmentResource {
         rewardCompleteFiveAssessmentBadge(user);
         rewardCompleteTenAssessmentBadge(user);
         rewardCompleteTwentyAssessmentBadge(user);
+        return Response.status(Status.OK).build();
+    }
+    
+    @POST
+    @Path("completeCoursepackFile")
+    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_JSON)
+    public Response completeCoursepackFile(@QueryParam("userId") Long userId, @QueryParam("fileId") Long fileId) {
+        User user = em.find(User.class, userId);
+        if (user == null || user.getAccessRight() == AccessRightEnum.Teacher || user.getAccessRight() == AccessRightEnum.Admin) {
+            return Response.status(Status.FORBIDDEN)
+                    .entity(new ErrorRsp("User doesn't have access to this function"))
+                    .build();
+        }
+
+        File file = em.find(File.class, fileId);
+        if (file == null) {
+            return Response.status(Status.NOT_FOUND).entity(new ErrorRsp("File with the given ID not found!")).build();
+        } else if (file.getLessonOrder() == null) {
+            return Response.status(Status.BAD_REQUEST).entity(new ErrorRsp("File is not part of a coursepack")).build();
+        }
+
+        if (!file.getLessonOrder().getOutlines().getCoursepack().getPublicUserList().contains(user)) {
+            return Response.status(Status.BAD_REQUEST).entity(new ErrorRsp("User is not enrolled in this coursepack")).build();
+        }
+
+        if (file.getLessonOrder().getPublicUserList().contains(user)) {
+            return Response.status(Status.BAD_REQUEST).entity(new ErrorRsp("User already finished this lesson order")).build();
+        }
+        
+        Coursepack coursepack = file.getLessonOrder().getOutlines().getCoursepack();
+        if(coursepack == null){
+            return Response.status(Status.NOT_FOUND).entity(new ErrorRsp("No coursepack found")).build();
+        }
+        file.getLessonOrder().getPublicUserList().add(user);
+        completeCoursepack(user, coursepack);
+//        user.setQuizCompleted(+1);
+//        rewardCompleteFiveAssessmentBadge(user);
+//        rewardCompleteTenAssessmentBadge(user);
+//        rewardCompleteTwentyAssessmentBadge(user);
         return Response.status(Status.OK).build();
     }
 
@@ -1815,7 +1856,7 @@ public class AssessmentResource {
                     for (QuizAttempt sa : quiz.getQuizAttemptList()) {
                         for (QuestionAttempt qa : sa.getQuestionAttemptList()) {
                             if (qa.getQuestion() == q) {
-                                if(qa.getAnswer() != null){
+                                if (qa.getAnswer() != null) {
                                     count.put(qa.getAnswer(), count.getOrDefault(qa.getAnswer(), 0) + 1);
                                 }
                             }
@@ -1823,8 +1864,8 @@ public class AssessmentResource {
                     }
 
                     // For count 0 answers
-                    for(String choice: q.getChoices()){
-                        if(!count.containsKey(choice)){
+                    for (String choice : q.getChoices()) {
+                        if (!count.containsKey(choice)) {
                             AnswerStatistic as = new AnswerStatistic();
                             as.setAnswer(choice);
                             as.setCount(0);
@@ -1880,104 +1921,134 @@ public class AssessmentResource {
     public boolean rewardCertification(User user, Coursepack coursepack) {
         Query query = em.createQuery("select c from Certification c join c.coursepackList cp where cp = :coursepack");
         query.setParameter("coursepack", coursepack);
-        Certification certification = (Certification) query.getSingleResult();
-        if (certification == null) {
-            System.out.println("No certifcation found");
-            return false;
-        }
-        if(user.getCertificationList().contains(certification)){
-            System.out.println("Certification has been attained");
-            return false;
-        }
-        List<Coursepack> coursepackList = certification.getCoursepackList();
-        if (coursepackList == null || coursepackList.isEmpty()) {
-            System.out.println("No coursepack in certifcation criteria");
-            return false;
-        }
-        for (Coursepack cp : coursepackList) {
-            if (!user.getPublicUserCompletedCoursepackList().contains(cp)) {
-                System.out.println("Certification criteria not completed");
+        try {
+            Certification certification = (Certification) query.getSingleResult();
+            if (certification == null) {
+                System.out.println("No certifcation found");
                 return false;
             }
+            if (user.getCertificationList().contains(certification)) {
+                System.out.println("Certification has been attained");
+                return false;
+            }
+            List<Coursepack> coursepackList = certification.getCoursepackList();
+            if (coursepackList == null || coursepackList.isEmpty()) {
+                System.out.println("No coursepack in certifcation criteria");
+                return false;
+            }
+            for (Coursepack cp : coursepackList) {
+                if (!user.getPublicUserCompletedCoursepackList().contains(cp)) {
+                    System.out.println("Certification criteria not completed");
+                    return false;
+                }
+            }
+            Date currentDate = new Date();
+            certification.setDateAchieved(currentDate);
+            user.getCertificationList().add(certification);
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
         }
-        Date currentDate = new Date();
-        certification.setDateAchieved(currentDate);
-        user.getCertificationList().add(certification);
-        return true;
     }
 
     public boolean rewardCompleteFiveAssessmentBadge(User user) {
-        Query query = em.createQuery("select b from Badge b where b.title =: title");
+        Query query = em.createQuery("select b from Badge b where b.title = :title");
         query.setParameter("title", "5quiz.JPG");
-        Badge badge = (Badge) query.getSingleResult();
-        if(user.getBadgeList().contains(badge)){
-            System.out.println("Badge has been attained");
+        try {
+            Badge badge = (Badge) query.getSingleResult();
+            if (user.getBadgeList().contains(badge)) {
+                System.out.println("Badge has been attained");
+                return false;
+            }
+            if (user.getQuizCompleted() == 5) {
+                user.getBadgeList().add(badge);
+                return true;
+            }
+            return false;
+        } catch (Exception e) {
+            e.printStackTrace();
             return false;
         }
-        if (user.getQuizCompleted() == 5) {
-            user.getBadgeList().add(badge);
-            return true;
-        }
-        return false;
     }
 
     public boolean rewardCompleteTenAssessmentBadge(User user) {
-        Query query = em.createQuery("select b from Badge b where b.title =: title");
+        Query query = em.createQuery("select b from Badge b where b.title = :title");
         query.setParameter("title", "10quiz.JPG");
-        Badge badge = (Badge) query.getSingleResult();
-        if(user.getBadgeList().contains(badge)){
-            System.out.println("Badge has been attained");
+        try {
+            Badge badge = (Badge) query.getSingleResult();
+            if (user.getBadgeList().contains(badge)) {
+                System.out.println("Badge has been attained");
+                return false;
+            }
+            if (user.getQuizCompleted() == 5) {
+                user.getBadgeList().add(badge);
+                return true;
+            }
+            return false;
+        } catch (Exception e) {
+            e.printStackTrace();
             return false;
         }
-        if (user.getQuizCompleted() == 5) {
-            user.getBadgeList().add(badge);
-            return true;
-        }
-        return false;
     }
 
     public boolean rewardCompleteTwentyAssessmentBadge(User user) {
-        Query query = em.createQuery("select b from Badge b where b.title =: title");
+        Query query = em.createQuery("select b from Badge b where b.title = :title");
         query.setParameter("title", "20quiz.JPG");
-        Badge badge = (Badge) query.getSingleResult();
-        if(user.getBadgeList().contains(badge)){
-            System.out.println("Badge has been attained");
+        try {
+            Badge badge = (Badge) query.getSingleResult();
+            if (user.getBadgeList().contains(badge)) {
+                System.out.println("Badge has been attained");
+                return false;
+            }
+            if (user.getQuizCompleted() == 5) {
+                user.getBadgeList().add(badge);
+                return true;
+            }
+            return false;
+        } catch (Exception e) {
+            e.printStackTrace();
             return false;
         }
-        if (user.getQuizCompleted() == 5) {
-            user.getBadgeList().add(badge);
-            return true;
-        }
-        return false;
     }
 
     public boolean rewardCompleteFirstCoursepackBadge(User user) {
-        Query query = em.createQuery("select b from Badge b where b.title =: title");
+        Query query = em.createQuery("select b from Badge b where b.title = :title");
         query.setParameter("title", "1coursepack.JPG");
-        Badge badge = (Badge) query.getSingleResult();
-        if(user.getBadgeList().contains(badge)){
-            System.out.println("Badge has been attained");
+        try {
+            Badge badge = (Badge) query.getSingleResult();
+            if (user.getBadgeList().contains(badge)) {
+                System.out.println("Badge has been attained");
+                return false;
+            }
+            if (user.getCoursepackCompleted() == 1) {
+                user.getBadgeList().add(badge);
+                return true;
+            }
+            return false;
+        } catch (Exception e) {
+            e.printStackTrace();
             return false;
         }
-        if (user.getCoursepackCompleted() == 1) {
-            user.getBadgeList().add(badge);
-            return true;
-        }
-        return false;
     }
 
     public boolean rewardCompleteThreeCoursepackBadge(User user) {
-        Query query = em.createQuery("select b from Badge b where b.title =: title");
+        Query query = em.createQuery("select b from Badge b where b.title = :title");
         query.setParameter("title", "3coursepack.JPG");
-        Badge badge = (Badge) query.getSingleResult();
-        if(user.getBadgeList().contains(badge)){
-            System.out.println("Badge has been attained");
+        try {
+            Badge badge = (Badge) query.getSingleResult();
+            if (user.getBadgeList().contains(badge)) {
+                System.out.println("Badge has been attained");
+                return false;
+            }
+            if (user.getCoursepackCompleted() == 1) {
+                user.getBadgeList().add(badge);
+                return true;
+            }
+            return false;
+        } catch (Exception e) {
+            e.printStackTrace();
             return false;
         }
-        if (user.getCoursepackCompleted() == 1) {
-            user.getBadgeList().add(badge);
-            return true;
-        }
-        return false;
     }
 }
