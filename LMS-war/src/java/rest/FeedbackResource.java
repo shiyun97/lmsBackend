@@ -48,6 +48,7 @@ import javax.persistence.Query;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
+import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
@@ -436,6 +437,55 @@ public class FeedbackResource {
             
             em.persist(rating);
             cp.getRatingList().add(rating);
+            
+            int sum = 0;
+            for (Rating r : cp.getRatingList()) {
+                sum += r.getRating();
+            }
+            cp.setRating(sum * 1.0 / cp.getRatingList().size());
+            //cp.setRating((1.0 * cp.getRating() + rating.getRating()) / cp.getRatingList().size());
+            em.flush();
+            
+            return Response.status(Response.Status.OK).build();
+        } catch (Exception e){
+            e.printStackTrace();
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(new ErrorRsp(e.getMessage())).build();
+        }
+    }
+    
+    @PUT
+    @Path("editRating")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response editRating(CreateRatingRqst rqst, @QueryParam("ratingId") Long ratingId){
+        User user = em.find(User.class, rqst.getUserId());
+        if(user == null || (user.getAccessRight() != AccessRightEnum.Student && user.getAccessRight() != AccessRightEnum.Public)){
+            return Response.status(Response.Status.FORBIDDEN)
+                    .entity(new ErrorRsp("User doesn't have access to this function"))
+                    .build();
+        }
+        
+        Rating rating = em.find(Rating.class, ratingId);
+        if(rating == null){
+            return Response.status(Response.Status.NOT_FOUND)
+                    .entity(new ErrorRsp("Rating not found"))
+                    .build();
+        }
+        
+        Coursepack cp = em.find(Coursepack.class, rqst.getCoursepackId());
+        if(cp == null){
+            return Response.status(Response.Status.NOT_FOUND).entity(new ErrorRsp("Coursepack with the given ID not found!")).build();
+        } /*else if (!cp.getPublicUserList().contains(user)){
+            return Response.status(Response.Status.FORBIDDEN).entity(new ErrorRsp("User is not a student of this coursepack")).build();
+        }*/
+        
+        try {
+            rating.setRating(rqst.getRating());
+            rating.setComment(rqst.getComment());
+            rating.setUser(user);
+            
+            em.merge(rating);
+            em.flush();
             
             int sum = 0;
             for (Rating r : cp.getRatingList()) {
