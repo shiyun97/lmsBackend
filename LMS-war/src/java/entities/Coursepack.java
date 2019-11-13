@@ -21,6 +21,7 @@ import javax.persistence.Lob;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.Transient;
 import javax.xml.bind.annotation.XmlRootElement;
 
 /**
@@ -79,6 +80,8 @@ public class Coursepack implements Serializable {
     private List<File> fileList;
     @OneToMany
     private List<Quiz> quizList;
+    @Transient
+    private double progress;
 
     public Coursepack(Long coursepackId, String code, String title, String description, Double price, Boolean published, Double rating, String imageLocation, Category category, String teacherBackground, List<User> publicUserList, List<ForumPost> forumPostList, List<GradeItem> gradeItemList, User assignedTeacher, List<Feedback> feedbackList, List<Outlines> outlineList, List<File> fileList, List<Quiz> quizList) {
         this.coursepackId = coursepackId;
@@ -326,5 +329,13 @@ public class Coursepack implements Serializable {
 
     public void setStudentList(List<User> studentList) {
         this.studentList = studentList;
+    }
+
+    public double getProgress() {
+        return progress;
+    }
+
+    public void setProgress(double progress) {
+        this.progress = progress;
     }
 }
