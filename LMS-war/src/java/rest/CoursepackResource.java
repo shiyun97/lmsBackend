@@ -1038,7 +1038,12 @@ public class CoursepackResource {
                         coursepack.getImageLocation(), null,
                         coursepack.getTeacherBackground(), null, null, null, teacher,null, oline, null, null);
             cpTemp.setRatingList(userRatings);
-            cpTemp.setProgress(1.0*progress/total);
+            
+            double progressPer = 0.0;
+            if(total > 0) {
+                progressPer = 1.0*progress/total;
+            }
+            cpTemp.setProgress(progressPer);
                 
             rsp.getCoursepack().add(cpTemp);
                 
