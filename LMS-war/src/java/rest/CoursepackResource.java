@@ -719,7 +719,6 @@ public class CoursepackResource {
                 return Response.status(Response.Status.BAD_REQUEST).entity(new ErrorRsp("User is not enrolled in this coursepack!")).build();
             }
             
-            int total = 0, progress = 0;
             
             List<Outlines> oline = new ArrayList<>();
             boolean before = true;
@@ -735,8 +734,6 @@ public class CoursepackResource {
               
               Collections.sort(o.getLessonOrder());
               for(LessonOrder lo: o.getLessonOrder() ){
-                  total++;
-                  
                   LessonOrder nlo = new LessonOrder();
                   nlo.setName(lo.getName());
                   nlo.setNumber(lo.getNumber());
@@ -758,7 +755,6 @@ public class CoursepackResource {
                   }
                   
                   if(lo.getPublicUserList().contains(user)){
-                      progress++;
                       nlo.setStatus(LessonOrderStatusEnum.Completed);
                       before = true;
                   } else if(before){
@@ -784,7 +780,7 @@ public class CoursepackResource {
                         coursepack.getDescription(), coursepack.getPrice(), coursepack.getPublished(), coursepack.getRating(), 
                         coursepack.getImageLocation(), null,
                         coursepack.getTeacherBackground(), null, null, null,null, null, oline, null, null);
-            coursepackCopy.setProgress(1.0 * progress/total);
+            
             return Response.status(Response.Status.OK).entity(coursepackCopy).build();
 
         } catch (Exception ex) {
@@ -979,7 +975,8 @@ public class CoursepackResource {
               return Response.status(Response.Status.NOT_FOUND).entity("No coursepack found").build();  
             }else{
                 for(Coursepack coursepack : cp){
-
+                    
+            int total = 0, progress = 0;
             List<Outlines> oline = new ArrayList<>();
             for(Outlines o: coursepack.getOutlineList()){
               Outlines newOut = new Outlines();
@@ -1010,6 +1007,11 @@ public class CoursepackResource {
                   }
                   
                   lessonOrder.add(nlo);
+                  
+                  total++;
+                  if(lo.getPublicUserList().contains(user)){
+                     progress++;
+                  }
               }
               newOut.setLessonOrder(lessonOrder);
               oline.add(newOut);
@@ -1036,6 +1038,7 @@ public class CoursepackResource {
                         coursepack.getImageLocation(), null,
                         coursepack.getTeacherBackground(), null, null, null, teacher,null, oline, null, null);
             cpTemp.setRatingList(userRatings);
+            cpTemp.setProgress(1.0*progress/total);
                 
             rsp.getCoursepack().add(cpTemp);
                 
