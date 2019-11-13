@@ -7,6 +7,7 @@ package rest;
 
 import datamodel.rest.AnswerStatistic;
 import datamodel.rest.ChoiceModel;
+import datamodel.rest.CompleteCoursepackRsp;
 import datamodel.rest.CreateGradeItemRqst;
 import datamodel.rest.CreateQuizAttemptRqst;
 import datamodel.rest.EnterMarksRqst;
@@ -1780,12 +1781,22 @@ public class AssessmentResource {
             return Response.status(Status.NOT_FOUND).entity(new ErrorRsp("No coursepack found")).build();
         }
         quiz.getLessonOrder().getPublicUserList().add(user);
-        completeCoursepack(user, coursepack);
+        CompleteCoursepackRsp resp = new CompleteCoursepackRsp();
+        if(completeCoursepack(user, coursepack)){
+            resp.setCompleteCoursepack(true);
+            resp.setUnlockCertificate(rewardCertification(user, coursepack));
+            if(rewardCompleteFirstCoursepackBadge(user) || rewardCompleteThreeCoursepackBadge(user)){
+                resp.setUnlockBadge(true);
+            }
+        }
         user.setQuizCompleted(+1);
-        rewardCompleteFiveAssessmentBadge(user);
-        rewardCompleteTenAssessmentBadge(user);
-        rewardCompleteTwentyAssessmentBadge(user);
-        return Response.status(Status.OK).build();
+        if(rewardCompleteFiveAssessmentBadge(user) ||
+        rewardCompleteTenAssessmentBadge(user) ||
+        rewardCompleteTwentyAssessmentBadge(user)){
+            resp.setUnlockBadge(true);
+        }
+        
+        return Response.status(Status.OK).entity(resp).build();
     }
     
     @POST
@@ -1820,12 +1831,16 @@ public class AssessmentResource {
             return Response.status(Status.NOT_FOUND).entity(new ErrorRsp("No coursepack found")).build();
         }
         file.getLessonOrder().getPublicUserList().add(user);
-        completeCoursepack(user, coursepack);
-//        user.setQuizCompleted(+1);
-//        rewardCompleteFiveAssessmentBadge(user);
-//        rewardCompleteTenAssessmentBadge(user);
-//        rewardCompleteTwentyAssessmentBadge(user);
-        return Response.status(Status.OK).build();
+        
+        CompleteCoursepackRsp resp = new CompleteCoursepackRsp();
+        if(completeCoursepack(user, coursepack)){
+            resp.setCompleteCoursepack(true);
+            resp.setUnlockCertificate(rewardCertification(user, coursepack));
+            if(rewardCompleteFirstCoursepackBadge(user) || rewardCompleteThreeCoursepackBadge(user)){
+                resp.setUnlockBadge(true);
+            }
+        }
+        return Response.status(Status.OK).entity(resp).build();
     }
 
     @GET
@@ -1912,9 +1927,6 @@ public class AssessmentResource {
             }
             user.getPublicUserCompletedCoursepackList().add(coursepack);
             user.setCoursepackCompleted(+1);
-            rewardCertification(user, coursepack);
-            rewardCompleteFirstCoursepackBadge(user);
-            rewardCompleteThreeCoursepackBadge(user);
         }
         return true;
     }
