@@ -690,6 +690,8 @@ public class CoursepackResource {
                         coursepack.getImageLocation(), null,
                         coursepack.getTeacherBackground(), null, null, null,null, null, oline, null, null);
             
+            coursepackCopy.setAssignedTeacher(teacherCopy);
+            
             return Response.status(Response.Status.OK).entity(coursepackCopy).build();
 
         } catch (Exception ex) {
