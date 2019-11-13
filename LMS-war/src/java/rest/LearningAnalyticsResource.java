@@ -310,8 +310,10 @@ public class LearningAnalyticsResource {
         // Find last attendance
         if (!module.getAttandanceList().isEmpty()) {
             Attendance last = module.getAttandanceList().get(0);
+            boolean t = last.getTutorial() != null;
             for (Attendance a : module.getAttandanceList()) {
-                if (a.getStartTs().after(last.getStartTs())) {
+                if (t || (a.getStartTs().after(last.getStartTs()) && a.getTutorial() == null)) {
+                    t = false;
                     last = a;
                 }
             }
@@ -460,8 +462,10 @@ public class LearningAnalyticsResource {
                     // Find last attendance
                     if (!module.getAttandanceList().isEmpty()) {
                         Attendance last = module.getAttandanceList().get(0);
+                        boolean t = last.getTutorial() != null;
                         for (Attendance a : module.getAttandanceList()) {
-                            if (a.getStartTs().after(last.getStartTs())) {
+                            if (t || (a.getStartTs().after(last.getStartTs()) && a.getTutorial() == null)) {
+                                t = false;
                                 last = a;
                             }
                         }
