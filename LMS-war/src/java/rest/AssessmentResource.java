@@ -7,6 +7,7 @@ package rest;
 
 import datamodel.rest.AnswerStatistic;
 import datamodel.rest.ChoiceModel;
+import datamodel.rest.CompleteCoursepackRsp;
 import datamodel.rest.CreateGradeItemRqst;
 import datamodel.rest.CreateQuizAttemptRqst;
 import datamodel.rest.EnterMarksRqst;
@@ -1780,12 +1781,22 @@ public class AssessmentResource {
             return Response.status(Status.NOT_FOUND).entity(new ErrorRsp("No coursepack found")).build();
         }
         quiz.getLessonOrder().getPublicUserList().add(user);
-        completeCoursepack(user, coursepack);
+        CompleteCoursepackRsp resp = new CompleteCoursepackRsp();
+        if(completeCoursepack(user, coursepack)){
+            resp.setCompleteCoursepack(true);
+            resp.setUnlockCertificate(rewardCertification(user, coursepack));
+            if(rewardCompleteFirstCoursepackBadge(user) || rewardCompleteThreeCoursepackBadge(user)){
+                resp.setUnlockBadge(true);
+            }
+        }
         user.setQuizCompleted(+1);
-        rewardCompleteFiveAssessmentBadge(user);
-        rewardCompleteTenAssessmentBadge(user);
-        rewardCompleteTwentyAssessmentBadge(user);
-        return Response.status(Status.OK).build();
+        if(rewardCompleteFiveAssessmentBadge(user) ||
+        rewardCompleteTenAssessmentBadge(user) ||
+        rewardCompleteTwentyAssessmentBadge(user)){
+            resp.setUnlockBadge(true);
+        }
+        
+        return Response.status(Status.OK).entity(resp).build();
     }
     
     @POST
@@ -1820,12 +1831,16 @@ public class AssessmentResource {
             return Response.status(Status.NOT_FOUND).entity(new ErrorRsp("No coursepack found")).build();
         }
         file.getLessonOrder().getPublicUserList().add(user);
-        completeCoursepack(user, coursepack);
-//        user.setQuizCompleted(+1);
-//        rewardCompleteFiveAssessmentBadge(user);
-//        rewardCompleteTenAssessmentBadge(user);
-//        rewardCompleteTwentyAssessmentBadge(user);
-        return Response.status(Status.OK).build();
+        
+        CompleteCoursepackRsp resp = new CompleteCoursepackRsp();
+        if(completeCoursepack(user, coursepack)){
+            resp.setCompleteCoursepack(true);
+            resp.setUnlockCertificate(rewardCertification(user, coursepack));
+            if(rewardCompleteFirstCoursepackBadge(user) || rewardCompleteThreeCoursepackBadge(user)){
+                resp.setUnlockBadge(true);
+            }
+        }
+        return Response.status(Status.OK).entity(resp).build();
     }
 
     @GET
@@ -1903,17 +1918,15 @@ public class AssessmentResource {
             List<LessonOrder> lessonOrderList = o.getLessonOrder();
             if (lessonOrderList == null || lessonOrderList.isEmpty()) {
                 System.out.println("no lesson order");
-                for (LessonOrder l : lessonOrderList) {
-                    if (!l.getPublicUserList().contains(user)) {
-                        return false;
-                    }
+                return false;
+            }
+            for (LessonOrder l : lessonOrderList) {
+                if (!l.getPublicUserList().contains(user)) {
+                    return false;
                 }
             }
             user.getPublicUserCompletedCoursepackList().add(coursepack);
             user.setCoursepackCompleted(+1);
-            rewardCertification(user, coursepack);
-            rewardCompleteFirstCoursepackBadge(user);
-            rewardCompleteThreeCoursepackBadge(user);
         }
         return true;
     }
@@ -1954,7 +1967,7 @@ public class AssessmentResource {
 
     public boolean rewardCompleteFiveAssessmentBadge(User user) {
         Query query = em.createQuery("select b from Badge b where b.title = :title");
-        query.setParameter("title", "5quiz.JPG");
+        query.setParameter("title", "5quiz.jpg");
         try {
             Badge badge = (Badge) query.getSingleResult();
             if (user.getBadgeList().contains(badge)) {
@@ -1974,7 +1987,7 @@ public class AssessmentResource {
 
     public boolean rewardCompleteTenAssessmentBadge(User user) {
         Query query = em.createQuery("select b from Badge b where b.title = :title");
-        query.setParameter("title", "10quiz.JPG");
+        query.setParameter("title", "10quiz.jpg");
         try {
             Badge badge = (Badge) query.getSingleResult();
             if (user.getBadgeList().contains(badge)) {
@@ -1994,7 +2007,7 @@ public class AssessmentResource {
 
     public boolean rewardCompleteTwentyAssessmentBadge(User user) {
         Query query = em.createQuery("select b from Badge b where b.title = :title");
-        query.setParameter("title", "20quiz.JPG");
+        query.setParameter("title", "20quiz.jpg");
         try {
             Badge badge = (Badge) query.getSingleResult();
             if (user.getBadgeList().contains(badge)) {
@@ -2014,7 +2027,7 @@ public class AssessmentResource {
 
     public boolean rewardCompleteFirstCoursepackBadge(User user) {
         Query query = em.createQuery("select b from Badge b where b.title = :title");
-        query.setParameter("title", "1coursepack.JPG");
+        query.setParameter("title", "1coursepack.jpg");
         try {
             Badge badge = (Badge) query.getSingleResult();
             if (user.getBadgeList().contains(badge)) {
@@ -2034,14 +2047,14 @@ public class AssessmentResource {
 
     public boolean rewardCompleteThreeCoursepackBadge(User user) {
         Query query = em.createQuery("select b from Badge b where b.title = :title");
-        query.setParameter("title", "3coursepack.JPG");
+        query.setParameter("title", "3coursepack.jpg");
         try {
             Badge badge = (Badge) query.getSingleResult();
             if (user.getBadgeList().contains(badge)) {
                 System.out.println("Badge has been attained");
                 return false;
             }
-            if (user.getCoursepackCompleted() == 1) {
+            if (user.getCoursepackCompleted() == 3) {
                 user.getBadgeList().add(badge);
                 return true;
             }
