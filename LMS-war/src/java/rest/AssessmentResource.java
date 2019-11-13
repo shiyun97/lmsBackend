@@ -1966,8 +1966,9 @@ public class AssessmentResource {
     }
 
     public boolean rewardCompleteFiveAssessmentBadge(User user) {
-        Query query = em.createQuery("select b from Badge b where b.title = :title");
+        Query query = em.createQuery("select b from Badge b where b.title = :title AND b.isDelete = :deleted");
         query.setParameter("title", "5quiz.jpg");
+        query.setParameter("deleted", false);
         try {
             Badge badge = (Badge) query.getSingleResult();
             if (user.getBadgeList().contains(badge)) {
@@ -1986,8 +1987,9 @@ public class AssessmentResource {
     }
 
     public boolean rewardCompleteTenAssessmentBadge(User user) {
-        Query query = em.createQuery("select b from Badge b where b.title = :title");
+        Query query = em.createQuery("select b from Badge b where b.title = :title AND b.isDelete = :deleted");
         query.setParameter("title", "10quiz.jpg");
+        query.setParameter("deleted", false);
         try {
             Badge badge = (Badge) query.getSingleResult();
             if (user.getBadgeList().contains(badge)) {
@@ -2006,8 +2008,9 @@ public class AssessmentResource {
     }
 
     public boolean rewardCompleteTwentyAssessmentBadge(User user) {
-        Query query = em.createQuery("select b from Badge b where b.title = :title");
+        Query query = em.createQuery("select b from Badge b where b.title = :title AND b.isDelete = :deleted");
         query.setParameter("title", "20quiz.jpg");
+        query.setParameter("deleted", false);
         try {
             Badge badge = (Badge) query.getSingleResult();
             if (user.getBadgeList().contains(badge)) {
@@ -2026,8 +2029,9 @@ public class AssessmentResource {
     }
 
     public boolean rewardCompleteFirstCoursepackBadge(User user) {
-        Query query = em.createQuery("select b from Badge b where b.title = :title");
+        Query query = em.createQuery("select b from Badge b where b.title = :title AND b.isDelete = :deleted");
         query.setParameter("title", "1coursepack.jpg");
+        query.setParameter("deleted", false);
         try {
             Badge badge = (Badge) query.getSingleResult();
             if (user.getBadgeList().contains(badge)) {
@@ -2046,8 +2050,9 @@ public class AssessmentResource {
     }
 
     public boolean rewardCompleteThreeCoursepackBadge(User user) {
-        Query query = em.createQuery("select b from Badge b where b.title = :title");
+        Query query = em.createQuery("select b from Badge b where b.title = :title AND b.isDelete = :deleted");
         query.setParameter("title", "3coursepack.jpg");
+        query.setParameter("deleted", false);
         try {
             Badge badge = (Badge) query.getSingleResult();
             if (user.getBadgeList().contains(badge)) {
