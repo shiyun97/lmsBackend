@@ -713,7 +713,7 @@ public class CoursepackResource {
                 return Response.status(Response.Status.BAD_REQUEST).entity(new ErrorRsp("User doesn't exist!")).build();
             }
             
-            if(!coursepack.getPublicUserList().contains(user)){
+            if(!coursepack.getPublicUserList().contains(user) && !coursepack.getStudentList().contains(user)){
                 return Response.status(Response.Status.BAD_REQUEST).entity(new ErrorRsp("User is not enrolled in this coursepack!")).build();
             }
             
