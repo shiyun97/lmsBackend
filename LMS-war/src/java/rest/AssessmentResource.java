@@ -1903,10 +1903,11 @@ public class AssessmentResource {
             List<LessonOrder> lessonOrderList = o.getLessonOrder();
             if (lessonOrderList == null || lessonOrderList.isEmpty()) {
                 System.out.println("no lesson order");
-                for (LessonOrder l : lessonOrderList) {
-                    if (!l.getPublicUserList().contains(user)) {
-                        return false;
-                    }
+                return false;
+            }
+            for (LessonOrder l : lessonOrderList) {
+                if (!l.getPublicUserList().contains(user)) {
+                    return false;
                 }
             }
             user.getPublicUserCompletedCoursepackList().add(coursepack);
