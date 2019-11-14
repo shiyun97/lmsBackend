@@ -1126,18 +1126,24 @@ public class DataInitSessionBean {
         Outlines outline1 = new Outlines();
         outline1.setName("Topic 1");
         outline1.setNumber(1);
+        outline1.setCoursepack(coursepack);
         em.persist(outline1);
+        coursepack.getOutlineList().add(outline1);
 
         Outlines outline2 = new Outlines();
         outline2.setName("Topic 2");
         outline2.setNumber(2);
+        outline2.setCoursepack(coursepack);
         em.persist(outline2);
+        coursepack.getOutlineList().add(outline2);
 
         Outlines outline3 = new Outlines();
         outline3.setName("Topic 3");
         outline3.setNumber(3);
+        outline3.setCoursepack(coursepack);
         em.persist(outline3);
         em.flush();
+        coursepack.getOutlineList().add(outline3);
     }
 
     public void createSurvey(Module module) {
@@ -1841,6 +1847,7 @@ public class DataInitSessionBean {
                     // Randomly select options
                     queA.setAnswer(que.getChoices().get(random.nextInt(que.getChoices().size())));
                     queA.setMarks(0.0);
+                    queA.setQuestion(que);
 
                     if (queA.getAnswer().equals(que.getCorrectAnswer())) { // If Correct
                         queA.setMarks(que.getPoints());
@@ -1877,10 +1884,12 @@ public class DataInitSessionBean {
 
             gi.getGradeEntries().add(ge);
         }
+        
+        module.getGradeItemList().add(gi);
 
         GradeItem gi2 = new GradeItem();
-        gi2.setTitle("Mid-Term Test");
-        gi2.setDescription("Mid-Term test on first half of this module.");
+        gi2.setTitle("Final Test");
+        gi2.setDescription("Test everything!");
         gi2.setModule(module);
         gi2.setGradeEntries(new ArrayList<>());
         gi2.setPublish(true);
@@ -1896,6 +1905,8 @@ public class DataInitSessionBean {
 
             gi2.getGradeEntries().add(ge);
         }
+        
+        module.getGradeItemList().add(gi2);
         em.flush();
     }
 

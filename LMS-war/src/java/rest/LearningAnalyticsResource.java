@@ -87,12 +87,12 @@ public class LearningAnalyticsResource {
             RetrieveMarksStatistics resp = new RetrieveMarksStatistics(new ArrayList<>());
 
             for (GradeItem gi : module.getGradeItemList()) {
-                if (gi.getPublish() || ar == AccessRightEnum.Teacher) {
+                if (ar == AccessRightEnum.Teacher) {
                     ArrayList<Double> marks = new ArrayList<>(gi.getGradeEntries().size());
                     double total = 0.0;
                     MarksStatistic ms = new MarksStatistic();
                     for (GradeEntry ge : gi.getGradeEntries()) {
-                        if (ge.getMarks() == null || ge.getMarks() == 0) {
+                        if (ge.getMarks() == null) {
                             marks.add(0.0);
                             total += 0;
                             if (ar == AccessRightEnum.Student && ge.getStudent() == user) {
