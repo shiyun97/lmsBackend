@@ -145,37 +145,38 @@ public class CoursepackResource {
     @Produces(MediaType.APPLICATION_JSON)
     public Response deleteOutline(@QueryParam("outlineId") Long outlineId) {
         Outlines outline = em.find(Outlines.class, outlineId);
-
         if (outline == null) {
             return Response.status(Response.Status.NOT_FOUND).entity("Outline does not exist").build();
         }
-
-        outline.getCoursepack().getOutlineList().remove(outline);
         List<LessonOrder> lessonOrderList = outline.getLessonOrder();
-        if (!lessonOrderList.isEmpty() || lessonOrderList != null) {
-            for (LessonOrder lo : lessonOrderList) {
-                outline.getLessonOrder().remove(lo);
-                lo.setOutlines(null);
-                File file = lo.getFile();
-                if (file != null) {
-                    file.setLessonOrder(null);
-                    lo.setFile(null);
-                }
-                Quiz quiz = lo.getQuiz();
-                if (quiz != null) {
-                    quiz.setLessonOrder(null);
-                    lo.setQuiz(null);
-                }
-                List<User> userList = lo.getPublicUserList();
-                if (!userList.isEmpty() || userList != null) {
-                    for (User u : userList) {
-                        lo.getPublicUserList().remove(u);
-                    }
-                    return Response.status(Response.Status.NOT_FOUND).entity("User does not exist").build();
-                }
-            }
-            return Response.status(Response.Status.NOT_FOUND).entity("Lesson order does not exist").build();
+        if (lessonOrderList.isEmpty() || lessonOrderList == null) {
+            outline.getCoursepack().getOutlineList().remove(outline);
         }
+        for (LessonOrder lo : lessonOrderList) {
+            File file = lo.getFile();
+            if (file != null) {
+                file.setLessonOrder(null);
+                lo.setFile(null);
+//                em.flush();
+            }
+            Quiz quiz = lo.getQuiz();
+            if (quiz != null) {
+                quiz.setLessonOrder(null);
+                lo.setQuiz(null);
+//                em.flush();
+            }
+//            List<User> userList = lo.getPublicUserList();
+//            if (!userList.isEmpty() || userList != null) {
+//                for (User u : userList) {
+//                    lo.getPublicUserList().remove(u);
+//                }
+//                em.flush();
+//            }
+            lo.setOutlines(null);
+//            outline.getLessonOrder().remove(lo);
+        }
+        outline.setLessonOrder(null);
+        outline.getCoursepack().getOutlineList().remove(outline);
         em.remove(outline);
         return Response.status(Response.Status.OK).build();
     }
