@@ -15,6 +15,7 @@ public class QuestionStatistic {
     Long questionId;
     String question;
     List<AnswerStatistic> answers;
+    String correctAnswer;
 
     public Long getQuestionId() {
         return questionId;
@@ -44,6 +45,14 @@ public class QuestionStatistic {
         this.questionId = questionId;
         this.question = question;
         this.answers = answers;
+    }
+
+    public String getCorrectAnswer() {
+        return correctAnswer;
+    }
+
+    public void setCorrectAnswer(String correctAnswer) {
+        this.correctAnswer = correctAnswer;
     }
 
     public QuestionStatistic() {
