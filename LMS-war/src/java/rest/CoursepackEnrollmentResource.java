@@ -7,7 +7,6 @@ package rest;
 
 import datamodel.rest.ErrorRsp;
 import datamodel.rest.GetCoursepackRsp;
-import entities.Cart;
 import entities.Coursepack;
 import entities.User;
 import java.util.ArrayList;
