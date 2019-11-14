@@ -1350,6 +1350,8 @@ public class DataInitSessionBean {
         quiz.setDescription("This quiz will cover all the topics discussed in the first 3 lectures of this module.");
         quiz.setQuizType(QuizTypeEnum.normal);
         quiz.setQuestionsOrder(QuestionOrderEnum.initial);
+        quiz.setPublish(true);
+        quiz.setPublishAnswer(true);
         quiz.setQuestionList(new ArrayList<>());
         quiz.setMaxMarks(5.0);
 
@@ -1446,6 +1448,8 @@ public class DataInitSessionBean {
         quiz2.setDescription("This quiz will test your algebra skills.");
         quiz2.setQuizType(QuizTypeEnum.normal);
         quiz2.setQuestionsOrder(QuestionOrderEnum.initial);
+        quiz2.setPublish(true);
+        quiz2.setPublishAnswer(true);
         quiz2.setQuestionList(new ArrayList<>());
         quiz2.setMaxMarks(5.0);
 
@@ -1859,6 +1863,7 @@ public class DataInitSessionBean {
         gi.setDescription("Mid-Term test on first half of this module.");
         gi.setModule(module);
         gi.setGradeEntries(new ArrayList<>());
+        gi.setPublish(true);
         gi.setMaxMarks(100.0);
         em.persist(gi);
 
@@ -1878,6 +1883,7 @@ public class DataInitSessionBean {
         gi2.setDescription("Mid-Term test on first half of this module.");
         gi2.setModule(module);
         gi2.setGradeEntries(new ArrayList<>());
+        gi2.setPublish(true);
         gi2.setMaxMarks(100.0);
         em.persist(gi2);
 
