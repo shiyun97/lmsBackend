@@ -202,7 +202,7 @@ public class CoursepackEnrollmentResource {
                 cs.setRevenue(getRevenue(coursepack));
                 rsp.getItems().add(cs);
                 totalEnrolled = (int) pair.getValue();
-                totalRevenue = coursepack.getPrice() * (double) pair.getValue();
+                totalRevenue = getRevenue(coursepack);
                 rsp.setTotalEnrolled(totalEnrolled);
                 rsp.setTotalRevenue(getRevenue(coursepack));
                 it.remove();
