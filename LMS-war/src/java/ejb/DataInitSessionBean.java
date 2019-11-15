@@ -1109,6 +1109,33 @@ public class DataInitSessionBean {
         em.persist(an4);
         em.flush();
 
+        Annoucement an5 = new Annoucement();
+        an5.setTitle("expired 1");
+        an5.setContent("expired 1");
+        an5.setCreatedDate(new Date(2019 - 1900, 01, 01, 01, 0));
+        an5.setLastUpdatedDate(new Date(2019 - 1900, 01, 01, 01, 0));
+        an5.setStartDate(new Date(2019 - 1900, 02, 02, 02, 0));
+        an5.setEndDate(new Date(2019 - 1900, 03, 03, 03, 0));
+        an5.setPublish(true);
+        an5.setEmailNotification(false);
+        an5.setOwner(admin);
+        em.persist(an5);
+        em.flush();
+
+        Annoucement an6 = new Annoucement();
+        an6.setTitle("expired 2");
+        an6.setContent("expired 2");
+        an6.setCreatedDate(new Date(2019 - 1900, 01, 01, 01, 0));
+        an6.setLastUpdatedDate(new Date(2019 - 1900, 01, 01, 01, 0));
+        an6.setStartDate(new Date(2019 - 1900, 02, 02, 02, 0));
+        an6.setEndDate(new Date(2019 - 1900, 03, 03, 03, 0));
+        an6.setPublish(true);
+        an6.setEmailNotification(false);
+        an6.setModule(m1);
+        an6.setOwner(teacher);
+        em.persist(an6);
+        em.flush();
+
         List<Coursepack> coursepackList = new ArrayList<>();
         coursepackList.add(cp1);
         coursepackList.add(cp2);
@@ -1884,7 +1911,7 @@ public class DataInitSessionBean {
 
             gi.getGradeEntries().add(ge);
         }
-        
+
         module.getGradeItemList().add(gi);
 
         GradeItem gi2 = new GradeItem();
@@ -1905,7 +1932,7 @@ public class DataInitSessionBean {
 
             gi2.getGradeEntries().add(ge);
         }
-        
+
         module.getGradeItemList().add(gi2);
         em.flush();
     }
