@@ -197,8 +197,10 @@ public class LearningAnalyticsResource {
                     double rank75 = 0.75 * marks.size();
                     int rank25r = (int) Math.round(rank25);
                     int rank75r = (int) Math.round(rank75);
-
+                    
                     if (rank25 - rank25r == 0) {
+                        ms.setTwentyfifth(marks.get(rank25r));
+                    } else if (rank25r + 1 >= marks.size()){
                         ms.setTwentyfifth(marks.get(rank25r));
                     } else {
                         ms.setTwentyfifth(marks.get(rank25r) + (rank25 - rank25r) * (marks.get(rank25r + 1) - marks.get(rank25r)));
@@ -206,6 +208,8 @@ public class LearningAnalyticsResource {
 
                     if (rank75 - rank75r == 0) {
                         ms.setSeventyfifth(marks.get(rank75r));
+                    } else if (rank75r >= marks.size()){
+                        ms.setSeventyfifth(marks.get(rank75r - 1));
                     } else {
                         ms.setSeventyfifth(marks.get(rank75r) + (rank75 - rank75r) * (marks.get(rank75r + 1) - marks.get(rank75r)));
                     }
@@ -239,7 +243,7 @@ public class LearningAnalyticsResource {
             dateOfWeek.setHours(0);
             dateOfWeek.setMinutes(0);
             dateOfWeek.setSeconds(0);
-            weekAtt.put(dateOfWeek, weekAtt.getOrDefault(dateOfWeek, 0) + 1);
+            weekAtt.put(dateOfWeek, a.getAttendedNumber());
         }
 
         HashMap<Date, Integer> tutorialAtt = new HashMap<>();
@@ -252,10 +256,12 @@ public class LearningAnalyticsResource {
                 dateOfWeek.setHours(0);
                 dateOfWeek.setMinutes(0);
                 dateOfWeek.setSeconds(0);
-                tutorialAtt.put(dateOfWeek, tutorialAtt.getOrDefault(dateOfWeek, 0) + 1);
+                tutorialAtt.put(dateOfWeek, tutorialAtt.getOrDefault(dateOfWeek, 0) + a.getAttendedNumber());
             }
         }
 
+//        System.out.println(tutorialAtt.size());
+//        System.out.println(weekAtt.size());
         RetrieveAttendanceStatistics resp = new RetrieveAttendanceStatistics(new ArrayList<>());
 
         int classSize = module.getStudentList().size();
@@ -280,9 +286,12 @@ public class LearningAnalyticsResource {
 
         it = tutorialAtt.entrySet().iterator();
         while (it.hasNext()) {
+//            System.out.println("hrer");
             Map.Entry pair = (Map.Entry) it.next();
             if (!weekAtt.containsKey((Date) pair.getKey())) {
+//                System.out.println("TEST");
                 AttendanceStatistic as = new AttendanceStatistic();
+                as.setStartDate((Date) pair.getKey());
                 as.setPresentLecture(0);
                 as.setAbsentLecture(classSize);
                 as.setPresentTutorial((int) pair.getValue());

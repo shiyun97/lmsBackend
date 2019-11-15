@@ -23,6 +23,7 @@ import entities.Quiz;
 import entities.QuizAttempt;
 import entities.Schedule;
 import entities.Survey;
+import entities.SurveyAttempt;
 import entities.Tutorial;
 import entities.User;
 import entities.Venue;
@@ -1373,6 +1374,28 @@ public class DataInitSessionBean {
         em.persist(sq18);
         em.flush();
         survey.getQuestionList().add(sq18);
+        
+        createSurveyAttempts(survey);
+    }
+    
+    public void createSurveyAttempts(Survey survey){
+        Random random = new Random();
+        for(User u: survey.getModule().getStudentList()){
+            SurveyAttempt sa = new SurveyAttempt();
+            sa.setSurvey(survey);
+            sa.setSurveyTaker(u);
+            sa.setQuestionAttemptList(new ArrayList<>());
+            em.persist(sa);
+            for(Question que: survey.getQuestionList()){
+                if(que.getType() == QuestionTypeEnum.radiogroup){
+                    QuestionAttempt qa = new QuestionAttempt();
+                    qa.setAnswer(que.getChoices().get(random.nextInt(que.getChoices().size())));
+                    qa.setQuestion(que);
+                    em.persist(qa);
+                    sa.getQuestionAttemptList().add(qa);
+                }
+            }
+        }
     }
 
     public void createQuiz(Module module) {
