@@ -70,5 +70,8 @@ public class RetrieveSurveyStatistics {
     public RetrieveSurveyStatistics(List<QuestionStatistic> questions) {
         this.questions = questions;
     }
+
+    public RetrieveSurveyStatistics() {
+    }
     
 }

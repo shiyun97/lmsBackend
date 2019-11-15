@@ -7,7 +7,6 @@ package rest;
 
 import datamodel.rest.ErrorRsp;
 import datamodel.rest.GetCoursepackRsp;
-import entities.Cart;
 import entities.Coursepack;
 import entities.User;
 import java.util.ArrayList;
@@ -118,6 +117,37 @@ public class CoursepackEnrollmentResource {
                 return Response.status(Response.Status.OK).build();
             }
             return Response.status(Response.Status.UNAUTHORIZED).entity(new ErrorRsp("Not allowed")).build();
+        } catch (Exception e) {
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(new ErrorRsp(e.getMessage())).build();
+        }
+    }
+    
+    
+    @Path("findStudentInCoursepack")
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response findStudentInCoursepack(@QueryParam("userId") Long userId, @QueryParam("coursepackId") Long coursepackId) {
+        try {
+            User user = em.find(User.class, userId);
+            if (user == null) {
+                return Response.status(Response.Status.NOT_FOUND).entity(new ErrorRsp("User not found")).build();
+            }
+            Coursepack coursepack = em.find(Coursepack.class, coursepackId);
+            if (coursepack == null) {
+                return Response.status(Response.Status.NOT_FOUND).entity(new ErrorRsp("Coursepack not found")).build();
+            }
+            
+            List<Coursepack> studentCoursepacks = new ArrayList<>();
+            if (user.getAccessRight() == AccessRightEnum.Student) {
+                studentCoursepacks = user.getStudentCoursepackList();
+            }
+            if (user.getAccessRight() == AccessRightEnum.Public) {
+                studentCoursepacks = user.getPublicUserCoursepackList();
+            }
+            if (studentCoursepacks.contains(coursepack)) {
+                return Response.status(Response.Status.OK).build();
+            }
+            return Response.status(Response.Status.NOT_FOUND).entity(new ErrorRsp("Student not enrolled in coursepack")).build();
         } catch (Exception e) {
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(new ErrorRsp(e.getMessage())).build();
         }

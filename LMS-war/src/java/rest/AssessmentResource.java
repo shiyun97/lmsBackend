@@ -7,6 +7,7 @@ package rest;
 
 import datamodel.rest.AnswerStatistic;
 import datamodel.rest.ChoiceModel;
+import datamodel.rest.CompleteCoursepackRsp;
 import datamodel.rest.CreateGradeItemRqst;
 import datamodel.rest.CreateQuizAttemptRqst;
 import datamodel.rest.EnterMarksRqst;
@@ -1780,12 +1781,22 @@ public class AssessmentResource {
             return Response.status(Status.NOT_FOUND).entity(new ErrorRsp("No coursepack found")).build();
         }
         quiz.getLessonOrder().getPublicUserList().add(user);
-        completeCoursepack(user, coursepack);
+        CompleteCoursepackRsp resp = new CompleteCoursepackRsp();
+        if(completeCoursepack(user, coursepack)){
+            resp.setCompleteCoursepack(true);
+            resp.setUnlockCertificate(rewardCertification(user, coursepack));
+            if(rewardCompleteFirstCoursepackBadge(user) || rewardCompleteThreeCoursepackBadge(user)){
+                resp.setUnlockBadge(true);
+            }
+        }
         user.setQuizCompleted(+1);
-        rewardCompleteFiveAssessmentBadge(user);
-        rewardCompleteTenAssessmentBadge(user);
-        rewardCompleteTwentyAssessmentBadge(user);
-        return Response.status(Status.OK).build();
+        if(rewardCompleteFiveAssessmentBadge(user) ||
+        rewardCompleteTenAssessmentBadge(user) ||
+        rewardCompleteTwentyAssessmentBadge(user)){
+            resp.setUnlockBadge(true);
+        }
+        
+        return Response.status(Status.OK).entity(resp).build();
     }
     
     @POST
@@ -1820,12 +1831,16 @@ public class AssessmentResource {
             return Response.status(Status.NOT_FOUND).entity(new ErrorRsp("No coursepack found")).build();
         }
         file.getLessonOrder().getPublicUserList().add(user);
-        completeCoursepack(user, coursepack);
-//        user.setQuizCompleted(+1);
-//        rewardCompleteFiveAssessmentBadge(user);
-//        rewardCompleteTenAssessmentBadge(user);
-//        rewardCompleteTwentyAssessmentBadge(user);
-        return Response.status(Status.OK).build();
+        
+        CompleteCoursepackRsp resp = new CompleteCoursepackRsp();
+        if(completeCoursepack(user, coursepack)){
+            resp.setCompleteCoursepack(true);
+            resp.setUnlockCertificate(rewardCertification(user, coursepack));
+            if(rewardCompleteFirstCoursepackBadge(user) || rewardCompleteThreeCoursepackBadge(user)){
+                resp.setUnlockBadge(true);
+            }
+        }
+        return Response.status(Status.OK).entity(resp).build();
     }
 
     @GET
@@ -1851,7 +1866,7 @@ public class AssessmentResource {
             for (Question q : quiz.getQuestionList()) {
                 if (q.getType() == QuestionTypeEnum.radiogroup) {
                     QuestionStatistic qs = new QuestionStatistic(q.getQuestionId(), q.getTitle(), new ArrayList<>());
-
+                    qs.setCorrectAnswer(q.getCorrectAnswer());
                     HashMap<String, Integer> count = new HashMap<>(); // Answer : Attempt
                     for (QuizAttempt sa : quiz.getQuizAttemptList()) {
                         for (QuestionAttempt qa : sa.getQuestionAttemptList()) {
@@ -1912,9 +1927,6 @@ public class AssessmentResource {
             }
             user.getPublicUserCompletedCoursepackList().add(coursepack);
             user.setCoursepackCompleted(+1);
-            rewardCertification(user, coursepack);
-            rewardCompleteFirstCoursepackBadge(user);
-            rewardCompleteThreeCoursepackBadge(user);
         }
         return true;
     }
@@ -1954,8 +1966,9 @@ public class AssessmentResource {
     }
 
     public boolean rewardCompleteFiveAssessmentBadge(User user) {
-        Query query = em.createQuery("select b from Badge b where b.title = :title");
+        Query query = em.createQuery("select b from Badge b where b.title = :title AND b.isDelete = :deleted");
         query.setParameter("title", "5quiz.jpg");
+        query.setParameter("deleted", false);
         try {
             Badge badge = (Badge) query.getSingleResult();
             if (user.getBadgeList().contains(badge)) {
@@ -1974,8 +1987,9 @@ public class AssessmentResource {
     }
 
     public boolean rewardCompleteTenAssessmentBadge(User user) {
-        Query query = em.createQuery("select b from Badge b where b.title = :title");
+        Query query = em.createQuery("select b from Badge b where b.title = :title AND b.isDelete = :deleted");
         query.setParameter("title", "10quiz.jpg");
+        query.setParameter("deleted", false);
         try {
             Badge badge = (Badge) query.getSingleResult();
             if (user.getBadgeList().contains(badge)) {
@@ -1994,8 +2008,9 @@ public class AssessmentResource {
     }
 
     public boolean rewardCompleteTwentyAssessmentBadge(User user) {
-        Query query = em.createQuery("select b from Badge b where b.title = :title");
+        Query query = em.createQuery("select b from Badge b where b.title = :title AND b.isDelete = :deleted");
         query.setParameter("title", "20quiz.jpg");
+        query.setParameter("deleted", false);
         try {
             Badge badge = (Badge) query.getSingleResult();
             if (user.getBadgeList().contains(badge)) {
@@ -2014,8 +2029,9 @@ public class AssessmentResource {
     }
 
     public boolean rewardCompleteFirstCoursepackBadge(User user) {
-        Query query = em.createQuery("select b from Badge b where b.title = :title");
+        Query query = em.createQuery("select b from Badge b where b.title = :title AND b.isDelete = :deleted");
         query.setParameter("title", "1coursepack.jpg");
+        query.setParameter("deleted", false);
         try {
             Badge badge = (Badge) query.getSingleResult();
             if (user.getBadgeList().contains(badge)) {
@@ -2034,8 +2050,9 @@ public class AssessmentResource {
     }
 
     public boolean rewardCompleteThreeCoursepackBadge(User user) {
-        Query query = em.createQuery("select b from Badge b where b.title = :title");
+        Query query = em.createQuery("select b from Badge b where b.title = :title AND b.isDelete = :deleted");
         query.setParameter("title", "3coursepack.jpg");
+        query.setParameter("deleted", false);
         try {
             Badge badge = (Badge) query.getSingleResult();
             if (user.getBadgeList().contains(badge)) {

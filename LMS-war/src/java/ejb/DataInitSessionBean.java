@@ -16,6 +16,7 @@ import entities.ForumTopic;
 import entities.GradeEntry;
 import entities.GradeItem;
 import entities.Module;
+import entities.Outlines;
 import entities.Question;
 import entities.QuestionAttempt;
 import entities.Quiz;
@@ -108,7 +109,7 @@ public class DataInitSessionBean {
         student3.setUsername("student3");
         em.persist(student3);
         em.flush();
-        
+
         User student4 = new User();
         student4.setFirstName("Bob");
         student4.setLastName("Lim");
@@ -119,7 +120,7 @@ public class DataInitSessionBean {
         student4.setUsername("student4");
         em.persist(student4);
         em.flush();
-        
+
         User student5 = new User();
         student5.setFirstName("Mark");
         student5.setLastName("Lee");
@@ -130,7 +131,7 @@ public class DataInitSessionBean {
         student5.setUsername("student5");
         em.persist(student5);
         em.flush();
-        
+
         User student6 = new User();
         student6.setFirstName("Marcus");
         student6.setLastName("Chua");
@@ -141,7 +142,7 @@ public class DataInitSessionBean {
         student6.setUsername("student6");
         em.persist(student6);
         em.flush();
-        
+
         User student7 = new User();
         student7.setFirstName("Josephine");
         student7.setLastName("Tan");
@@ -152,7 +153,7 @@ public class DataInitSessionBean {
         student7.setUsername("student7");
         em.persist(student7);
         em.flush();
-        
+
         User student8 = new User();
         student8.setFirstName("Da");
         student8.setLastName("Wei");
@@ -163,7 +164,7 @@ public class DataInitSessionBean {
         student8.setUsername("student8");
         em.persist(student8);
         em.flush();
-        
+
         User student9 = new User();
         student9.setFirstName("Rose");
         student9.setLastName("May");
@@ -174,7 +175,7 @@ public class DataInitSessionBean {
         student9.setUsername("student9");
         em.persist(student9);
         em.flush();
-        
+
         User student10 = new User();
         student10.setFirstName("Jane");
         student10.setLastName("Loaer");
@@ -185,7 +186,7 @@ public class DataInitSessionBean {
         student10.setUsername("student10");
         em.persist(student10);
         em.flush();
-        
+
         User student11 = new User();
         student11.setFirstName("Kate");
         student11.setLastName("Low");
@@ -209,10 +210,10 @@ public class DataInitSessionBean {
         studentList.add(student9);
         studentList.add(student10);
         studentList.add(student11);
-        
+
         List<User> studentList2 = new ArrayList<>();
         studentList2.add(student11);
-        
+
         User teacher = new User();
         teacher.setFirstName("Alice");
         teacher.setLastName("Tan");
@@ -234,7 +235,7 @@ public class DataInitSessionBean {
         extStu.setUsername("public");
         em.persist(extStu);
         em.flush();
-        
+
         User extStu2 = new User();
         extStu2.setFirstName("May");
         extStu2.setLastName("Doe");
@@ -245,7 +246,7 @@ public class DataInitSessionBean {
         extStu2.setUsername("public");
         em.persist(extStu2);
         em.flush();
-        
+
         User extStu3 = new User();
         extStu3.setFirstName("April");
         extStu3.setLastName("Doe");
@@ -501,7 +502,6 @@ public class DataInitSessionBean {
 
         //student2.getTutorials().add(t1);
         //t1.getStudentList().add(student2);
-
         Schedule schedule = new Schedule();
         schedule.setSemester(1);
         schedule.setYear("2019/2020");
@@ -546,7 +546,7 @@ public class DataInitSessionBean {
         testMissingStudents.add(student3);
         testMissingStudents.add(student4);
         testMissingStudents.add(student5);
-        
+
         Attendance a1 = new Attendance();
         a1.setDuration(5);
         a1.setEndTs(new Timestamp(2019 - 1900, 9, 20, 13, 11, 0, 0));
@@ -600,7 +600,7 @@ public class DataInitSessionBean {
         t1.getAttendanceList().add(a2);
         em.persist(a2);
         em.flush();
-        
+
         Attendance a3 = new Attendance();
         a3.setDuration(5);
         a3.setEndTs(new Timestamp(2019 - 1900, 10, 10, 13, 11, 0, 0));
@@ -618,7 +618,7 @@ public class DataInitSessionBean {
         m1.getAttandanceList().add(a3);
         em.persist(a3);
         em.flush();
-        
+
         Attendance a4 = new Attendance();
         a4.setDuration(5);
         a4.setEndTs(new Timestamp(2019 - 1900, 10, 17, 13, 11, 0, 0));
@@ -650,52 +650,52 @@ public class DataInitSessionBean {
         em.persist(c3);
         em.flush();
         m4.getConsultationList().add(c3);
-        
+
         Category cat1 = new Category();
         cat1.setName("Development");
         em.persist(cat1);
         em.flush();
-        
+
         Category cat2 = new Category();
         cat2.setName("IT & Software");
         em.persist(cat2);
         em.flush();
-        
+
         Category cat3 = new Category();
         cat3.setName("Business");
         em.persist(cat3);
         em.flush();
-        
+
         Category cat4 = new Category();
         cat4.setName("Design");
         em.persist(cat4);
         em.flush();
-        
+
         Category cat5 = new Category();
         cat5.setName("Marketing");
         em.persist(cat5);
         em.flush();
-        
+
         Category cat6 = new Category();
         cat6.setName("Engineering");
         em.persist(cat6);
         em.flush();
-        
+
         Category cat7 = new Category();
         cat7.setName("Math");
         em.persist(cat7);
         em.flush();
-        
+
         Category cat8 = new Category();
         cat8.setName("Science");
         em.persist(cat8);
         em.flush();
-        
+
         Category cat9 = new Category();
         cat9.setName("Social Science");
         em.persist(cat9);
         em.flush();
-        
+
         Category cat10 = new Category();
         cat10.setName("Language");
         em.persist(cat10);
@@ -716,6 +716,8 @@ public class DataInitSessionBean {
         teacher.getTeacherCoursepackList().add(cp1);
         em.persist(cp1);
         em.flush();
+        createOutline(cp1);
+        createQuiz(cp1);
 
         Coursepack cp2 = new Coursepack();
         cp2.setAssignedTeacher(teacher);
@@ -732,6 +734,8 @@ public class DataInitSessionBean {
         teacher.getTeacherCoursepackList().add(cp2);
         em.persist(cp2);
         em.flush();
+        createOutline(cp2);
+        createQuiz(cp2);
 
         Coursepack cp3 = new Coursepack();
         cp3.setAssignedTeacher(teacher);
@@ -748,7 +752,9 @@ public class DataInitSessionBean {
         teacher.getTeacherCoursepackList().add(cp3);
         em.persist(cp3);
         em.flush();
-        
+        createOutline(cp3);
+        createQuiz(cp3);
+
         Coursepack cp4 = new Coursepack();
         cp4.setAssignedTeacher(teacher);
         cp4.setCategory(cat1);
@@ -764,7 +770,9 @@ public class DataInitSessionBean {
         teacher.getTeacherCoursepackList().add(cp4);
         em.persist(cp4);
         em.flush();
-        
+        createOutline(cp4);
+        createQuiz(cp4);
+
         Coursepack cp5 = new Coursepack();
         cp5.setAssignedTeacher(teacher);
         cp5.setCategory(cat1);
@@ -780,7 +788,9 @@ public class DataInitSessionBean {
         teacher.getTeacherCoursepackList().add(cp5);
         em.persist(cp5);
         em.flush();
-        
+        createOutline(cp5);
+        createQuiz(cp5);
+
         Coursepack cp6 = new Coursepack();
         cp6.setAssignedTeacher(teacher);
         cp6.setCategory(cat1);
@@ -796,7 +806,9 @@ public class DataInitSessionBean {
         teacher.getTeacherCoursepackList().add(cp6);
         em.persist(cp6);
         em.flush();
-        
+        createOutline(cp6);
+        createQuiz(cp6);
+
         Coursepack cp7 = new Coursepack();
         cp7.setAssignedTeacher(teacher);
         cp7.setCategory(cat1);
@@ -812,7 +824,9 @@ public class DataInitSessionBean {
         teacher.getTeacherCoursepackList().add(cp7);
         em.persist(cp7);
         em.flush();
-        
+        createOutline(cp7);
+        createQuiz(cp7);
+
         Coursepack cp8 = new Coursepack();
         cp8.setAssignedTeacher(teacher);
         cp8.setCategory(cat1);
@@ -828,7 +842,9 @@ public class DataInitSessionBean {
         teacher.getTeacherCoursepackList().add(cp8);
         em.persist(cp8);
         em.flush();
-        
+        createOutline(cp8);
+        createQuiz(cp8);
+
         Coursepack cp9 = new Coursepack();
         cp9.setAssignedTeacher(teacher);
         cp9.setCategory(cat1);
@@ -844,6 +860,8 @@ public class DataInitSessionBean {
         teacher.getTeacherCoursepackList().add(cp9);
         em.persist(cp9);
         em.flush();
+        createOutline(cp9);
+        createQuiz(cp9);
 
         ForumTopic topic1 = new ForumTopic();
         topic1.setModule(m1);
@@ -1031,13 +1049,12 @@ public class DataInitSessionBean {
         em.persist(comment5);
         em.flush();
         reply3.getComments().add(comment5);
-        
 
         createSurvey(m1);
         createSurvey(m2);
         createSurvey(m3);
         createSurvey(m4);
-        
+
         Annoucement an1 = new Annoucement();
         an1.setTitle("abc");
         an1.setContent("learn you abc");
@@ -1049,8 +1066,8 @@ public class DataInitSessionBean {
         an1.setEmailNotification(true);
         an1.setOwner(admin);
         em.persist(an1);
-        em.flush();   
-        
+        em.flush();
+
         Annoucement an2 = new Annoucement();
         an2.setTitle("def");
         an2.setContent("learn your def");
@@ -1064,7 +1081,7 @@ public class DataInitSessionBean {
         an2.setOwner(teacher);
         em.persist(an2);
         em.flush();
-        
+
         Annoucement an3 = new Annoucement();
         an3.setTitle("ghi");
         an3.setContent("learn your ghi");
@@ -1077,7 +1094,7 @@ public class DataInitSessionBean {
         an3.setOwner(admin);
         em.persist(an3);
         em.flush();
-        
+
         Annoucement an4 = new Annoucement();
         an4.setTitle("jkl");
         an4.setContent("learn your jkl");
@@ -1091,19 +1108,42 @@ public class DataInitSessionBean {
         an4.setOwner(teacher);
         em.persist(an4);
         em.flush();
-        
-                
+
         List<Coursepack> coursepackList = new ArrayList<>();
         coursepackList.add(cp1);
         coursepackList.add(cp2);
         coursepackList.add(cp3);
-         
+
         Certification cer1 = new Certification();
         cer1.setTitle("IT Genius");
         cer1.setDescription("You good");
         cer1.setCoursepackList(coursepackList);
         em.persist(cer1);
         em.flush();
+    }
+
+    public void createOutline(Coursepack coursepack) {
+        Outlines outline1 = new Outlines();
+        outline1.setName("Topic 1");
+        outline1.setNumber(1);
+        outline1.setCoursepack(coursepack);
+        em.persist(outline1);
+        coursepack.getOutlineList().add(outline1);
+
+        Outlines outline2 = new Outlines();
+        outline2.setName("Topic 2");
+        outline2.setNumber(2);
+        outline2.setCoursepack(coursepack);
+        em.persist(outline2);
+        coursepack.getOutlineList().add(outline2);
+
+        Outlines outline3 = new Outlines();
+        outline3.setName("Topic 3");
+        outline3.setNumber(3);
+        outline3.setCoursepack(coursepack);
+        em.persist(outline3);
+        em.flush();
+        coursepack.getOutlineList().add(outline3);
     }
 
     public void createSurvey(Module module) {
@@ -1130,7 +1170,7 @@ public class DataInitSessionBean {
         choices.add("Neutral");
         choices.add("Agree");
         choices.add("Strongly Agree");
-        
+
         List<String> grades = new ArrayList<>();
         grades.add("A+");
         grades.add("A");
@@ -1202,7 +1242,7 @@ public class DataInitSessionBean {
         em.persist(sq7);
         em.flush();
         survey.getQuestionList().add(sq7);
-        
+
         Question sq8 = new Question();
         sq8.setHtml("<h5>Quantitative on Content</h5>");
         sq8.setType(QuestionTypeEnum.html);
@@ -1305,20 +1345,22 @@ public class DataInitSessionBean {
         sq18.setIsRequired(false);
         em.persist(sq18);
         em.flush();
-        survey.getQuestionList().add(sq18);        
+        survey.getQuestionList().add(sq18);
     }
-    
-    public void createQuiz(Module module){
+
+    public void createQuiz(Module module) {
         Quiz quiz = new Quiz();
-        quiz.setOpeningDate(new Date(2019-1900, 11, 1));
-        quiz.setClosingDate(new Date(2019-1900, 12, 5));
+        quiz.setOpeningDate(new Date(2019 - 1900, 11, 1));
+        quiz.setClosingDate(new Date(2019 - 1900, 12, 5));
         quiz.setTitle("Quiz 1");
         quiz.setDescription("This quiz will cover all the topics discussed in the first 3 lectures of this module.");
         quiz.setQuizType(QuizTypeEnum.normal);
         quiz.setQuestionsOrder(QuestionOrderEnum.initial);
+        quiz.setPublish(true);
+        quiz.setPublishAnswer(true);
         quiz.setQuestionList(new ArrayList<>());
         quiz.setMaxMarks(5.0);
-        
+
         Question q1 = new Question();
         q1.setTitle("Who is the creator of this quiz?");
         q1.setChoices(new ArrayList<>());
@@ -1334,7 +1376,7 @@ public class DataInitSessionBean {
         q1.setExplanation("The correct answer can be check on the Git history.");
         quiz.getQuestionList().add(q1);
         em.persist(q1);
-        
+
         Question q2 = new Question();
         q2.setTitle("When is this quiz created?");
         q2.setChoices(new ArrayList<>());
@@ -1350,7 +1392,7 @@ public class DataInitSessionBean {
         q2.setExplanation("This quiz is created last night");
         quiz.getQuestionList().add(q2);
         em.persist(q2);
-        
+
         Question q3 = new Question();
         q3.setTitle("How many people are in a Capstone group?");
         q3.setChoices(new ArrayList<>());
@@ -1367,7 +1409,7 @@ public class DataInitSessionBean {
         q3.setExplanation("Capstone groups can range from 4-7 people");
         quiz.getQuestionList().add(q3);
         em.persist(q3);
-        
+
         Question q4 = new Question();
         q4.setTitle("Who should you vote in STePS?");
         q4.setChoices(new ArrayList<>());
@@ -1383,7 +1425,7 @@ public class DataInitSessionBean {
         q4.setExplanation("flipIt provides a holistic learning management platform for all universities.");
         quiz.getQuestionList().add(q4);
         em.persist(q4);
-        
+
         Question q5 = new Question();
         q5.setTitle("What score should we get for this module?");
         q5.setChoices(new ArrayList<>());
@@ -1399,22 +1441,24 @@ public class DataInitSessionBean {
         q5.setExplanation("Our team works hard through night and day and deserves it.");
         quiz.getQuestionList().add(q5);
         em.persist(q5);
-        
+
         em.persist(quiz);
         module.getQuizList().add(quiz);
         quiz.setModule(module);
         createQuizAttempt(quiz);
-        
+
         Quiz quiz2 = new Quiz();
-        quiz2.setOpeningDate(new Date(2019-1900, 11, 10));
-        quiz2.setClosingDate(new Date(2019-1900, 12, 5));
+        quiz2.setOpeningDate(new Date(2019 - 1900, 11, 10));
+        quiz2.setClosingDate(new Date(2019 - 1900, 12, 5));
         quiz2.setTitle("Quiz 2");
         quiz2.setDescription("This quiz will test your algebra skills.");
         quiz2.setQuizType(QuizTypeEnum.normal);
         quiz2.setQuestionsOrder(QuestionOrderEnum.initial);
+        quiz2.setPublish(true);
+        quiz2.setPublishAnswer(true);
         quiz2.setQuestionList(new ArrayList<>());
         quiz2.setMaxMarks(5.0);
-        
+
         q1 = new Question();
         q1.setTitle("Find x if x + 5 = 2");
         q1.setChoices(new ArrayList<>());
@@ -1430,7 +1474,7 @@ public class DataInitSessionBean {
         q1.setExplanation("x = 2 - 5 = -3");
         quiz2.getQuestionList().add(q1);
         em.persist(q1);
-        
+
         q2 = new Question();
         q2.setTitle("Find x if 10x + 1 = 51");
         q2.setChoices(new ArrayList<>());
@@ -1446,7 +1490,7 @@ public class DataInitSessionBean {
         q2.setExplanation("x = (51 - 1)/10");
         quiz2.getQuestionList().add(q2);
         em.persist(q2);
-        
+
         q3 = new Question();
         q3.setTitle("y = 3x + 2. What is the value of y if x is 2");
         q3.setChoices(new ArrayList<>());
@@ -1463,7 +1507,7 @@ public class DataInitSessionBean {
         q3.setExplanation("y = 3*2 + 2 = 8");
         quiz2.getQuestionList().add(q3);
         em.persist(q3);
-        
+
         q4 = new Question();
         q4.setTitle("What is the distance from (1,1) to (2,1)");
         q4.setChoices(new ArrayList<>());
@@ -1479,7 +1523,7 @@ public class DataInitSessionBean {
         q4.setExplanation("Distance is 1");
         quiz2.getQuestionList().add(q4);
         em.persist(q4);
-        
+
         q5 = new Question();
         q5.setTitle("If x + y = 2 and x - y = 1. The value of x and y respectively is");
         q5.setChoices(new ArrayList<>());
@@ -1495,24 +1539,24 @@ public class DataInitSessionBean {
         q5.setExplanation("Our team works hard through night and day and deserves it.");
         quiz2.getQuestionList().add(q5);
         em.persist(q5);
-        
+
         em.persist(quiz2);
         module.getQuizList().add(quiz2);
         quiz2.setModule(module);
         createQuizAttempt(quiz2);
     }
-    
-    public void createQuiz(Coursepack coursepack){
+
+    public void createQuiz(Coursepack coursepack) {
         Quiz quiz = new Quiz();
-        quiz.setOpeningDate(new Date(2019-1900, 11, 1));
-        quiz.setClosingDate(new Date(2019-1900, 12, 5));
+        quiz.setOpeningDate(new Date(2019 - 1900, 11, 1));
+        quiz.setClosingDate(new Date(2019 - 1900, 12, 5));
         quiz.setTitle("Quiz 1");
         quiz.setDescription("This quiz will cover all the topics discussed in the first 3 lectures of this module.");
         quiz.setQuizType(QuizTypeEnum.normal);
         quiz.setQuestionsOrder(QuestionOrderEnum.initial);
         quiz.setQuestionList(new ArrayList<>());
         quiz.setMaxMarks(5.0);
-        
+
         Question q1 = new Question();
         q1.setTitle("Who is the creator of this quiz?");
         q1.setChoices(new ArrayList<>());
@@ -1528,7 +1572,7 @@ public class DataInitSessionBean {
         q1.setExplanation("The correct answer can be check on the Git history.");
         quiz.getQuestionList().add(q1);
         em.persist(q1);
-        
+
         Question q2 = new Question();
         q2.setTitle("When is this quiz created?");
         q2.setChoices(new ArrayList<>());
@@ -1544,7 +1588,7 @@ public class DataInitSessionBean {
         q2.setExplanation("This quiz is created last night");
         quiz.getQuestionList().add(q2);
         em.persist(q2);
-        
+
         Question q3 = new Question();
         q3.setTitle("How many people are in a Capstone group?");
         q3.setChoices(new ArrayList<>());
@@ -1561,7 +1605,7 @@ public class DataInitSessionBean {
         q3.setExplanation("Capstone groups can range from 4-7 people");
         quiz.getQuestionList().add(q3);
         em.persist(q3);
-        
+
         Question q4 = new Question();
         q4.setTitle("Who should you vote in STePS?");
         q4.setChoices(new ArrayList<>());
@@ -1577,7 +1621,7 @@ public class DataInitSessionBean {
         q4.setExplanation("flipIt provides a holistic learning management platform for all universities.");
         quiz.getQuestionList().add(q4);
         em.persist(q4);
-        
+
         Question q5 = new Question();
         q5.setTitle("What score should we get for this module?");
         q5.setChoices(new ArrayList<>());
@@ -1593,20 +1637,20 @@ public class DataInitSessionBean {
         q5.setExplanation("Our team works hard through night and day and deserves it.");
         quiz.getQuestionList().add(q5);
         em.persist(q5);
-        
+
         em.persist(quiz);
         coursepack.getQuizList().add(quiz);
-        
+
         Quiz quiz2 = new Quiz();
-        quiz2.setOpeningDate(new Date(2019-1900, 11, 10));
-        quiz2.setClosingDate(new Date(2019-1900, 12, 5));
+        quiz2.setOpeningDate(new Date(2019 - 1900, 11, 10));
+        quiz2.setClosingDate(new Date(2019 - 1900, 12, 5));
         quiz2.setTitle("Quiz 2");
         quiz2.setDescription("This quiz will test your algebra skills.");
         quiz2.setQuizType(QuizTypeEnum.normal);
         quiz2.setQuestionsOrder(QuestionOrderEnum.initial);
         quiz2.setQuestionList(new ArrayList<>());
         quiz2.setMaxMarks(5.0);
-        
+
         q1 = new Question();
         q1.setTitle("Find x if x + 5 = 2");
         q1.setChoices(new ArrayList<>());
@@ -1622,7 +1666,7 @@ public class DataInitSessionBean {
         q1.setExplanation("x = 2 - 5 = -3");
         quiz2.getQuestionList().add(q1);
         em.persist(q1);
-        
+
         q2 = new Question();
         q2.setTitle("Find x if 10x + 1 = 51");
         q2.setChoices(new ArrayList<>());
@@ -1638,7 +1682,7 @@ public class DataInitSessionBean {
         q2.setExplanation("x = (51 - 1)/10");
         quiz2.getQuestionList().add(q2);
         em.persist(q2);
-        
+
         q3 = new Question();
         q3.setTitle("y = 3x + 2. What is the value of y if x is 2");
         q3.setChoices(new ArrayList<>());
@@ -1655,7 +1699,7 @@ public class DataInitSessionBean {
         q3.setExplanation("y = 3*2 + 2 = 8");
         quiz2.getQuestionList().add(q3);
         em.persist(q3);
-        
+
         q4 = new Question();
         q4.setTitle("What is the distance from (1,1) to (2,1)");
         q4.setChoices(new ArrayList<>());
@@ -1671,7 +1715,7 @@ public class DataInitSessionBean {
         q4.setExplanation("Distance is 1");
         quiz2.getQuestionList().add(q4);
         em.persist(q4);
-        
+
         q5 = new Question();
         q5.setTitle("If x + y = 2 and x - y = 1. The value of x and y respectively is");
         q5.setChoices(new ArrayList<>());
@@ -1687,30 +1731,125 @@ public class DataInitSessionBean {
         q5.setExplanation("Our team works hard through night and day and deserves it.");
         quiz2.getQuestionList().add(q5);
         em.persist(q5);
-        
+
         em.persist(quiz2);
         coursepack.getQuizList().add(quiz2);
+
+        Quiz quiz3 = new Quiz();
+        quiz3.setOpeningDate(new Date(2019 - 1900, 11, 10));
+        quiz3.setClosingDate(new Date(2019 - 1900, 12, 5));
+        quiz3.setTitle("Quiz 3");
+        quiz3.setDescription("This quiz will test your life.");
+        quiz3.setQuizType(QuizTypeEnum.normal);
+        quiz3.setQuestionsOrder(QuestionOrderEnum.initial);
+        quiz3.setQuestionList(new ArrayList<>());
+        quiz3.setMaxMarks(5.0);
+
+        q1 = new Question();
+        q1.setTitle("Life is");
+        q1.setChoices(new ArrayList<>());
+        q1.getChoices().add("having fun");
+        q1.getChoices().add("death");
+        q1.getChoices().add("a joke");
+        q1.getChoices().add("very sad");
+        q1.setCorrectAnswer("creating life");
+        q1.setPoints(1.0);
+        q1.setNumber(1);
+        q1.setType(QuestionTypeEnum.radiogroup);
+        q1.setIsRequired(Boolean.TRUE);
+        q1.setExplanation("Life is what you believe life is");
+        quiz3.getQuestionList().add(q1);
+        em.persist(q1);
+
+        q2 = new Question();
+        q2.setTitle("Life finds a way");
+        q2.setChoices(new ArrayList<>());
+        q2.getChoices().add("somehow");
+        q2.getChoices().add("nowhere");
+        q2.getChoices().add("back");
+        q2.getChoices().add("to the future");
+        q2.setCorrectAnswer("for longevity");
+        q2.setPoints(1.0);
+        q2.setNumber(2);
+        q2.setType(QuestionTypeEnum.radiogroup);
+        q2.setIsRequired(Boolean.TRUE);
+        q2.setExplanation("Life finds a way somehow");
+        quiz3.getQuestionList().add(q2);
+        em.persist(q2);
+
+        q3 = new Question();
+        q3.setTitle("Death should be celebrated");
+        q3.setChoices(new ArrayList<>());
+        q3.getChoices().add("Strongly Agree");
+        q3.getChoices().add("Agree");
+        q3.getChoices().add("Neutral");
+        q3.getChoices().add("Disagree");
+        q3.getChoices().add("Strongly Disagree");
+        q3.setCorrectAnswer("8");
+        q3.setPoints(1.0);
+        q3.setNumber(3);
+        q3.setType(QuestionTypeEnum.radiogroup);
+        q3.setIsRequired(Boolean.TRUE);
+        q3.setExplanation("Up to you");
+        quiz3.getQuestionList().add(q3);
+        em.persist(q3);
+
+        q4 = new Question();
+        q4.setTitle("The goal of life is to");
+        q4.setChoices(new ArrayList<>());
+        q4.getChoices().add("achieve ZEN");
+        q4.getChoices().add("create chaos");
+        q4.getChoices().add("go to war");
+        q4.getChoices().add("lalala");
+        q4.setCorrectAnswer("no way");
+        q4.setPoints(1.0);
+        q4.setNumber(4);
+        q4.setType(QuestionTypeEnum.radiogroup);
+        q4.setIsRequired(Boolean.TRUE);
+        q4.setExplanation("achieve ZEN");
+        quiz3.getQuestionList().add(q4);
+        em.persist(q4);
+
+        q5 = new Question();
+        q5.setTitle("Thoughts on PMD ban on footpaths?");
+        q5.setChoices(new ArrayList<>());
+        q5.getChoices().add("why you do this");
+        q5.getChoices().add("adapt, overcome");
+        q5.getChoices().add("not using anymore");
+        q5.getChoices().add("need another plan");
+        q5.setCorrectAnswer("like that lo");
+        q5.setPoints(1.0);
+        q5.setNumber(5);
+        q5.setType(QuestionTypeEnum.radiogroup);
+        q5.setIsRequired(Boolean.TRUE);
+        q5.setExplanation("great");
+        quiz3.getQuestionList().add(q5);
+        em.persist(q5);
+
+        em.persist(quiz3);
+        coursepack.getQuizList().add(quiz3);
     }
-    
-    public void createQuizAttempt(Quiz quiz){
+
+    public void createQuizAttempt(Quiz quiz) {
         Random random = new Random();
-        for(User u: quiz.getModule().getStudentList()){ // For all students in the module
+        for (User u : quiz.getModule().getStudentList()) { // For all students in the module
             QuizAttempt qa = new QuizAttempt();
             qa.setCreateTs(new Date());
             qa.setQuiz(quiz);
             qa.setQuizTaker(u);
             qa.setTotalMarks(0.0);
             qa.setQuestionAttemptList(new ArrayList<>());
-            
+
             // For each questions
-            for(Question que: quiz.getQuestionList()){
-                if(que.getType() == QuestionTypeEnum.radiogroup){
+            for (Question que : quiz.getQuestionList()) {
+                if (que.getType() == QuestionTypeEnum.radiogroup) {
                     QuestionAttempt queA = new QuestionAttempt();
                     // Randomly select options
                     queA.setAnswer(que.getChoices().get(random.nextInt(que.getChoices().size())));
                     queA.setMarks(0.0);
-                    
-                    if(queA.getAnswer().equals(que.getCorrectAnswer())){ // If Correct
+                    queA.setQuestion(que);
+
+                    if (queA.getAnswer().equals(que.getCorrectAnswer())) { // If Correct
                         queA.setMarks(que.getPoints());
                         qa.setTotalMarks(qa.getTotalMarks() + que.getPoints());
                     }
@@ -1724,47 +1863,53 @@ public class DataInitSessionBean {
             em.flush();
         }
     }
-    
-    public void createGradeItem(Module module){
+
+    public void createGradeItem(Module module) {
         GradeItem gi = new GradeItem();
         gi.setTitle("Mid-Term Test");
         gi.setDescription("Mid-Term test on first half of this module.");
         gi.setModule(module);
         gi.setGradeEntries(new ArrayList<>());
+        gi.setPublish(true);
         gi.setMaxMarks(100.0);
         em.persist(gi);
-        
+
         Random random = new Random();
-        for(User u: module.getStudentList()){
+        for (User u : module.getStudentList()) {
             GradeEntry ge = new GradeEntry();
             ge.setMarks(random.nextDouble() * 100);
             ge.setStudent(u);
             ge.setGradeItem(gi);
             em.persist(ge);
-            
+
             gi.getGradeEntries().add(ge);
         }
         
+        module.getGradeItemList().add(gi);
+
         GradeItem gi2 = new GradeItem();
-        gi2.setTitle("Mid-Term Test");
-        gi2.setDescription("Mid-Term test on first half of this module.");
+        gi2.setTitle("Final Test");
+        gi2.setDescription("Test everything!");
         gi2.setModule(module);
         gi2.setGradeEntries(new ArrayList<>());
+        gi2.setPublish(true);
         gi2.setMaxMarks(100.0);
         em.persist(gi2);
-        
-        for(User u: module.getStudentList()){
+
+        for (User u : module.getStudentList()) {
             GradeEntry ge = new GradeEntry();
             ge.setMarks(random.nextDouble() * 100);
             ge.setStudent(u);
             ge.setGradeItem(gi2);
             em.persist(ge);
-            
+
             gi2.getGradeEntries().add(ge);
         }
+        
+        module.getGradeItemList().add(gi2);
         em.flush();
     }
-    
+
     public void persist(Object object) {
         em.persist(object);
     }
