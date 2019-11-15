@@ -27,6 +27,8 @@ public class CoursepackEnrollment implements Serializable {
     private Long id;
     @Column
     private Date enrollDate;
+    @Column
+    private int numberEnrolled;
 
     public CoursepackEnrollment() {
     }
@@ -34,6 +36,12 @@ public class CoursepackEnrollment implements Serializable {
     public CoursepackEnrollment(Long id, Date enrollDate) {
         this.id = id;
         this.enrollDate = enrollDate;
+    }
+
+    public CoursepackEnrollment(Long id, Date enrollDate, int numberEnrolled) {
+        this.id = id;
+        this.enrollDate = enrollDate;
+        this.numberEnrolled = numberEnrolled;
     }
 
     public Long getId() {
@@ -75,6 +83,14 @@ public class CoursepackEnrollment implements Serializable {
 
     public void setEnrollDate(Date enrollDate) {
         this.enrollDate = enrollDate;
+    }
+
+    public int getNumberEnrolled() {
+        return numberEnrolled;
+    }
+
+    public void setNumberEnrolled(int numberEnrolled) {
+        this.numberEnrolled = numberEnrolled;
     }
     
 }

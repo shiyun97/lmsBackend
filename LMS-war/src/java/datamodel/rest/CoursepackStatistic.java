@@ -15,6 +15,7 @@ public class CoursepackStatistic {
     Date startDate;
     Date endDate;
     private int usersEnrolled;
+    private double revenue;
 
     public Date getStartDate() {
         return startDate;
@@ -38,5 +39,13 @@ public class CoursepackStatistic {
 
     public void setUsersEnrolled(int usersEnrolled) {
         this.usersEnrolled = usersEnrolled;
+    }
+
+    public double getRevenue() {
+        return revenue;
+    }
+
+    public void setRevenue(double revenue) {
+        this.revenue = revenue;
     }
 }
