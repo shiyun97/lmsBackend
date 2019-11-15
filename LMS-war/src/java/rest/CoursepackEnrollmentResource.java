@@ -190,19 +190,38 @@ public class CoursepackEnrollmentResource {
                 dateOfMonth.setSeconds(0);
                 monthNumber.put(dateOfMonth, monthNumber.getOrDefault(dateOfMonth, 0) + 1);
             }
-            RetrieveCoursepackStatistics rsp = new RetrieveCoursepackStatistics(new ArrayList<>());
+            RetrieveCoursepackStatistics rsp = new RetrieveCoursepackStatistics(new ArrayList<>(), 0, 0.0);
+            int totalEnrolled = 0;
+            double totalRevenue = 0.0;
             Iterator it = monthNumber.entrySet().iterator();
             while (it.hasNext()) {
                 Map.Entry pair = (Map.Entry) it.next();
                 CoursepackStatistic cs = new CoursepackStatistic();
                 cs.setStartDate((Date) pair.getKey());
                 cs.setUsersEnrolled((int) pair.getValue());
+                cs.setRevenue(getRevenue(coursepack));
                 rsp.getItems().add(cs);
+                totalEnrolled = (int) pair.getValue();
+                totalRevenue = coursepack.getPrice() * (double) pair.getValue();
+                rsp.setTotalEnrolled(totalEnrolled);
+                rsp.setTotalRevenue(getRevenue(coursepack));
                 it.remove();
             }
             return Response.status(Response.Status.OK).entity(rsp).build();
         } catch (Exception e) {
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(new ErrorRsp(e.getMessage())).build();
+        }
+    }
+
+    public double getRevenue(Coursepack coursepack) {
+        double totalRevenue = 0.0;
+        try{
+            List<User> publicList = coursepack.getPublicUserList();
+            totalRevenue = coursepack.getPrice() * publicList.size();
+            return totalRevenue;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return 0.0;
         }
     }
 
