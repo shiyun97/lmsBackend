@@ -1866,7 +1866,7 @@ public class AssessmentResource {
             for (Question q : quiz.getQuestionList()) {
                 if (q.getType() == QuestionTypeEnum.radiogroup) {
                     QuestionStatistic qs = new QuestionStatistic(q.getQuestionId(), q.getTitle(), new ArrayList<>());
-
+                    qs.setCorrectAnswer(q.getCorrectAnswer());
                     HashMap<String, Integer> count = new HashMap<>(); // Answer : Attempt
                     for (QuizAttempt sa : quiz.getQuizAttemptList()) {
                         for (QuestionAttempt qa : sa.getQuestionAttemptList()) {
@@ -2000,7 +2000,7 @@ public class AssessmentResource {
                 System.out.println("Badge has been attained");
                 return false;
             }
-            if (user.getQuizCompleted() == 5) {
+            if (user.getQuizCompleted() == 10) {
                 user.getBadgeList().add(badge);
                 return true;
             }
@@ -2021,7 +2021,7 @@ public class AssessmentResource {
                 System.out.println("Badge has been attained");
                 return false;
             }
-            if (user.getQuizCompleted() == 5) {
+            if (user.getQuizCompleted() == 20) {
                 user.getBadgeList().add(badge);
                 return true;
             }

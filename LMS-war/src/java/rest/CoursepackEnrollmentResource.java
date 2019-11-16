@@ -5,13 +5,19 @@
  */
 package rest;
 
+import datamodel.rest.CoursepackStatistic;
 import datamodel.rest.ErrorRsp;
 import datamodel.rest.GetCoursepackRsp;
-import entities.Cart;
+import datamodel.rest.RetrieveCoursepackStatistics;
 import entities.Coursepack;
+import entities.CoursepackEnrollment;
 import entities.User;
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -96,6 +102,7 @@ public class CoursepackEnrollmentResource {
     @Produces(MediaType.APPLICATION_JSON)
     public Response enrollCoursepack(@QueryParam("userId") Long userId, @QueryParam("coursepackId") Long coursepackId) {
         try {
+            Date dateNow = new Date();
             User user = em.find(User.class, userId);
             if (user == null) {
                 return Response.status(Response.Status.NOT_FOUND).entity(new ErrorRsp("User not found")).build();
@@ -107,6 +114,11 @@ public class CoursepackEnrollmentResource {
             if (user.getAccessRight() == AccessRightEnum.Student) {
                 coursepack.getStudentList().add(user);
                 user.getStudentCoursepackList().add(coursepack);
+                CoursepackEnrollment ce = new CoursepackEnrollment();
+                ce.setEnrollDate(dateNow);
+                em.persist(ce);
+                em.flush();
+                coursepack.getCoursepackEnrollment().add(ce);
                 return Response.status(Response.Status.OK).build();
             }
             /*if(publicUser.getPayment() == coursepack.getPrice()){
@@ -115,6 +127,11 @@ public class CoursepackEnrollmentResource {
             if (user.getAccessRight() == AccessRightEnum.Public) {
                 coursepack.getPublicUserList().add(user);
                 user.getPublicUserCoursepackList().add(coursepack);
+                CoursepackEnrollment ce = new CoursepackEnrollment();
+                ce.setEnrollDate(dateNow);
+                em.persist(ce);
+                em.flush();
+                coursepack.getCoursepackEnrollment().add(ce);
                 return Response.status(Response.Status.OK).build();
             }
             return Response.status(Response.Status.UNAUTHORIZED).entity(new ErrorRsp("Not allowed")).build();
@@ -122,8 +139,7 @@ public class CoursepackEnrollmentResource {
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(new ErrorRsp(e.getMessage())).build();
         }
     }
-    
-    
+
     @Path("findStudentInCoursepack")
     @GET
     @Produces(MediaType.APPLICATION_JSON)
@@ -137,7 +153,7 @@ public class CoursepackEnrollmentResource {
             if (coursepack == null) {
                 return Response.status(Response.Status.NOT_FOUND).entity(new ErrorRsp("Coursepack not found")).build();
             }
-            
+
             List<Coursepack> studentCoursepacks = new ArrayList<>();
             if (user.getAccessRight() == AccessRightEnum.Student) {
                 studentCoursepacks = user.getStudentCoursepackList();
@@ -151,6 +167,61 @@ public class CoursepackEnrollmentResource {
             return Response.status(Response.Status.NOT_FOUND).entity(new ErrorRsp("Student not enrolled in coursepack")).build();
         } catch (Exception e) {
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(new ErrorRsp(e.getMessage())).build();
+        }
+    }
+
+    @Path("getNumberOfUsersEnrolled")
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getNumberOfUsersEnrolled(@QueryParam("coursepackId") Long coursepackId) {
+        try {
+            Coursepack coursepack = em.find(Coursepack.class, coursepackId);
+            if (coursepack == null) {
+                return Response.status(Response.Status.NOT_FOUND).entity(new ErrorRsp("Coursepack not found")).build();
+            }
+            HashMap<Date, Integer> monthNumber = new HashMap<>();
+            for (CoursepackEnrollment ce : coursepack.getCoursepackEnrollment()) {
+                long timeInMs = ce.getEnrollDate().getTime();
+                int day = ce.getEnrollDate().getDay();
+                long startOfMonth = timeInMs - (24 * 3600 * 1000 * day);
+                Date dateOfMonth = new Date(startOfMonth);
+                dateOfMonth.setHours(0);
+                dateOfMonth.setMinutes(0);
+                dateOfMonth.setSeconds(0);
+                monthNumber.put(dateOfMonth, monthNumber.getOrDefault(dateOfMonth, 0) + 1);
+            }
+            RetrieveCoursepackStatistics rsp = new RetrieveCoursepackStatistics(new ArrayList<>(), 0, 0.0);
+            int totalEnrolled = 0;
+            double totalRevenue = 0.0;
+            Iterator it = monthNumber.entrySet().iterator();
+            while (it.hasNext()) {
+                Map.Entry pair = (Map.Entry) it.next();
+                CoursepackStatistic cs = new CoursepackStatistic();
+                cs.setStartDate((Date) pair.getKey());
+                cs.setUsersEnrolled((int) pair.getValue());
+                cs.setRevenue(getRevenue(coursepack));
+                rsp.getItems().add(cs);
+                totalEnrolled = (int) pair.getValue();
+                totalRevenue = getRevenue(coursepack);
+                rsp.setTotalEnrolled(totalEnrolled);
+                rsp.setTotalRevenue(getRevenue(coursepack));
+                it.remove();
+            }
+            return Response.status(Response.Status.OK).entity(rsp).build();
+        } catch (Exception e) {
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(new ErrorRsp(e.getMessage())).build();
+        }
+    }
+
+    public double getRevenue(Coursepack coursepack) {
+        double totalRevenue = 0.0;
+        try{
+            List<User> publicList = coursepack.getPublicUserList();
+            totalRevenue = coursepack.getPrice() * publicList.size();
+            return totalRevenue;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return 0.0;
         }
     }
 

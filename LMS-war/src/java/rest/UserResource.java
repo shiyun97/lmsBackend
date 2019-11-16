@@ -11,7 +11,6 @@ import datamodel.rest.CheckUserLogin;
 import datamodel.rest.GetUserRsp;
 import ejb.SHAExample;
 import ejb.SendMailSSL;
-import entities.Cart;
 import entities.User;
 import java.util.ArrayList;
 import java.util.List;
