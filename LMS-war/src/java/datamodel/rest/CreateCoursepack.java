@@ -18,12 +18,12 @@ import java.util.List;
  */
 public class CreateCoursepack {
     
-    private Coursepack coursepack;
     private Long coursepackId;
     private String code;
     private String title;
     private String description;
-    private String category;
+    private Long categoryId;
+    private String imageLocation;
     private Double price;
     private Boolean published;
     private String teacherBackground;
@@ -39,13 +39,11 @@ public class CreateCoursepack {
         
     }
 
-    public CreateCoursepack(Coursepack coursepack, Long coursepackId, String code, String title, String description, String category, Double price, Boolean published, String teacherBackground,List<String> outlines, User assignedTeacher, User user, Long userId, String email, String password) {
-        this.coursepack = coursepack;
+    public CreateCoursepack(Long coursepackId, String code, String title, String description, Double price, Boolean published, String teacherBackground,List<String> outlines, User assignedTeacher, User user, Long userId, String email, String password) {
         this.coursepackId = coursepackId;
         this.code = code;
         this.title = title;
         this.description = description;
-        this.category = category;
         this.price = price;
         this.published = published;
         this.teacherBackground = teacherBackground;
@@ -58,14 +56,25 @@ public class CreateCoursepack {
         this.password = password;
     }
 
-    public Coursepack getCoursepack() {
-        return coursepack;
+    public CreateCoursepack(Long coursepackId, String code, String title, String description, Long categoryId, String imageLocation, Double price, Boolean published, String teacherBackground, List<String> outlines, User assignedTeacher, User user, Long userId, String email, String password) {
+        this.coursepackId = coursepackId;
+        this.code = code;
+        this.title = title;
+        this.description = description;
+        this.categoryId = categoryId;
+        this.imageLocation = imageLocation;
+        this.price = price;
+        this.published = published;
+        this.teacherBackground = teacherBackground;
+        this.outlines = outlines;
+        this.assignedTeacher = assignedTeacher;
+        this.user = user;
+        this.userId = userId;
+        this.email = email;
+        this.password = password;
     }
-
-    public void setCoursepack(Coursepack coursepack) {
-        this.coursepack = coursepack;
-    }
-
+    
+    
     public Long getCoursepackId() {
         return coursepackId;
     }
@@ -98,12 +107,20 @@ public class CreateCoursepack {
         this.description = description;
     }
 
-    public String getCategory() {
-        return category;
+    public Long getCategoryId() {
+        return categoryId;
     }
 
-    public void setCategory(String category) {
-        this.category = category;
+    public void setCategoryId(Long categoryId) {
+        this.categoryId = categoryId;
+    }
+
+    public String getImageLocation() {
+        return imageLocation;
+    }
+
+    public void setImageLocation(String imageLocation) {
+        this.imageLocation = imageLocation;
     }
 
     public Double getPrice() {

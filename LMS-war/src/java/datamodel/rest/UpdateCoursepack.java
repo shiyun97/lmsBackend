@@ -20,7 +20,8 @@ public class UpdateCoursepack {
     private String code;
     private String title;
     private String description;
-    private String category;
+    private Long categoryId;
+    private String imageLocation;
     private Double price;
     private Boolean published;
     private Double rating;
@@ -36,13 +37,14 @@ public class UpdateCoursepack {
         
     }
     
-    public UpdateCoursepack(Coursepack coursepack, Long coursepackId, String code, String title, String description, String category, Double price, Boolean published, Double rating, String teacherBackground,User user, Long userId, String email, String password ) {
+    public UpdateCoursepack(Coursepack coursepack, Long coursepackId, String code, String title, String description, Long categoryId, String imageLocation, Double price, Boolean published, Double rating, String teacherBackground,User user, Long userId, String email, String password ) {
         this.coursepack = coursepack;
         this.coursepackId = coursepackId;
         this.code = code;
         this.title = title;
         this.description = description;
-        this.category = category;
+        this.categoryId = categoryId;
+        this.imageLocation = imageLocation;
         this.price = price;
         this.published = published;
         this.rating = rating;
@@ -93,12 +95,20 @@ public class UpdateCoursepack {
         this.description = description;
     }
 
-    public String getCategory() {
-        return category;
+    public Long getCategoryId() {
+        return categoryId;
     }
 
-    public void setCategory(String category) {
-        this.category = category;
+    public void setCategoryId(Long categoryId) {
+        this.categoryId = categoryId;
+    }
+
+    public String getImageLocation() {
+        return imageLocation;
+    }
+
+    public void setImageLocation(String imageLocation) {
+        this.imageLocation = imageLocation;
     }
 
     public Double getPrice() {

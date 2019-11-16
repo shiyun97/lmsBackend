@@ -87,15 +87,32 @@ public class CoursepackResource {
             coursepack.setTitle(createCoursepack.getTitle());
             coursepack.setDescription(createCoursepack.getDescription());
             //coursepack.setCategory(createCoursepack.getCategory());
+            if (createCoursepack.getImageLocation() != null && createCoursepack.getImageLocation().length() > 0) {
+                coursepack.setImageLocation(createCoursepack.getImageLocation());
+            }
+            else {
+                coursepack.setImageLocation("https://icon-library.net/images/no-image-available-icon/no-image-available-icon-6.jpg");
+            }
+            
+            Category category = em.find(Category.class, createCoursepack.getCategoryId());
+            if (category == null) {
+                return Response.status(Response.Status.NOT_FOUND).entity("Category does not exist").build();
+            }
             coursepack.setPrice(createCoursepack.getPrice());
             coursepack.setTeacherBackground(createCoursepack.getTeacherBackground());
+            coursepack.setRating(0.00);
             em.persist(coursepack);
+            em.flush();
+            
+            coursepack.setCategory(category);
+            category.getCoursepackList().add(coursepack);
             em.flush();
 
             User user = em.find(User.class, userId);
             User userCopy = new User(user.getFirstName(), user.getLastName(), user.getEmail(),
                     user.getUsername(), null, user.getGender(), null, null, null, null, null, null, null, null);
             coursepack.setAssignedTeacher(user);
+            user.getTeacherCoursepackList().add(coursepack);
 
             Coursepack coursepackCopy = new Coursepack(coursepack.getCoursepackId(), coursepack.getCode(), coursepack.getTitle(),
                     coursepack.getDescription(), coursepack.getPrice(), null, null,
@@ -554,6 +571,18 @@ public class CoursepackResource {
                 coursepack.setTitle(updateCoursepack.getTitle());
                 coursepack.setDescription(updateCoursepack.getDescription());
                 //coursepack.setCategory(updateCoursepack.getCategory());
+
+                if (updateCoursepack.getImageLocation() != null && updateCoursepack.getImageLocation().length() > 0) {
+                    coursepack.setImageLocation(updateCoursepack.getImageLocation());
+                } else {
+                    coursepack.setImageLocation("https://icon-library.net/images/no-image-available-icon/no-image-available-icon-6.jpg");
+                }
+
+                Category category = em.find(Category.class, updateCoursepack.getCategoryId());
+                if (category == null) {
+                    return Response.status(Response.Status.NOT_FOUND).entity("Category does not exist").build();
+                }
+
                 coursepack.setPrice(updateCoursepack.getPrice());
                 coursepack.setPublished(updateCoursepack.getPublished());
                 coursepack.setTeacherBackground(updateCoursepack.getTeacherBackground());
@@ -563,6 +592,8 @@ public class CoursepackResource {
 //                User userCopy = new User(user.getFirstName(), user.getLastName(), user.getEmail(),
 //                    user.getUsername(), null, user.getGender(), null, null, null, null, null, null, null, null);
                 //coursepack.setAssignedTeacher(user);
+                coursepack.setCategory(category);
+                category.getCoursepackList().add(coursepack);
                 em.merge(coursepack);
                 em.flush();
 
@@ -679,6 +710,10 @@ public class CoursepackResource {
                 newOut.setLessonOrder(lessonOrder);
                 oline.add(newOut);
             }
+            
+            Category catout = new Category();
+            catout.setCategoryId(coursepack.getCategory().getCategoryId());
+            catout.setName(coursepack.getCategory().getName());
 
             User teacher = coursepack.getAssignedTeacher();
             User teacherCopy = new User(null, teacher.getId(), teacher.getFirstName(), teacher.getLastName(), teacher.getEmail(),
@@ -687,7 +722,7 @@ public class CoursepackResource {
 
             Coursepack coursepackCopy = new Coursepack(coursepack.getCoursepackId(), coursepack.getCode(), coursepack.getTitle(),
                     coursepack.getDescription(), coursepack.getPrice(), coursepack.getPublished(), coursepack.getRating(),
-                    coursepack.getImageLocation(), null,
+                    coursepack.getImageLocation(), catout,
                     coursepack.getTeacherBackground(), null, null, null, null, null, oline, null, null);
 
             coursepackCopy.setAssignedTeacher(teacherCopy);
