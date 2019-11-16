@@ -1935,30 +1935,34 @@ public class AssessmentResource {
         Query query = em.createQuery("select c from Certification c join c.coursepackList cp where cp = :coursepack");
         query.setParameter("coursepack", coursepack);
         try {
-            Certification certification = (Certification) query.getSingleResult();
-            if (certification == null) {
+//            Certification certification = (Certification) query.getSingleResult();
+            List<Certification> certificates = query.getResultList();
+            if (certificates == null || certificates.isEmpty()) {
                 System.out.println("No certifcation found");
                 return false;
             }
-            if (user.getCertificationList().contains(certification)) {
-                System.out.println("Certification has been attained");
-                return false;
-            }
-            List<Coursepack> coursepackList = certification.getCoursepackList();
-            if (coursepackList == null || coursepackList.isEmpty()) {
-                System.out.println("No coursepack in certifcation criteria");
-                return false;
-            }
-            for (Coursepack cp : coursepackList) {
-                if (!user.getPublicUserCompletedCoursepackList().contains(cp)) {
-                    System.out.println("Certification criteria not completed");
-                    return false;
+            
+            boolean received = false;
+            for(Certification certification: certificates){
+            
+                if (user.getCertificationList().contains(certification)) {
+                    System.out.println("Certification has been attained");
                 }
+                List<Coursepack> coursepackList = certification.getCoursepackList();
+                if (coursepackList == null || coursepackList.isEmpty()) {
+                    System.out.println("No coursepack in certifcation criteria");
+                }
+                for (Coursepack cp : coursepackList) {
+                    if (!user.getPublicUserCompletedCoursepackList().contains(cp)) {
+                        System.out.println("Certification criteria not completed");
+                    }
+                }
+                Date currentDate = new Date();
+                certification.setDateAchieved(currentDate);
+                user.getCertificationList().add(certification);
+                received = true;
             }
-            Date currentDate = new Date();
-            certification.setDateAchieved(currentDate);
-            user.getCertificationList().add(certification);
-            return true;
+            return received;
         } catch (Exception e) {
             e.printStackTrace();
             return false;
